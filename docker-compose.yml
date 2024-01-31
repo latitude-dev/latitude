@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  reverse-proxy:
+    image: traefik:v2.9
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.toml:/traefik.toml
+  runtime:
+    image: latitude-runtime
+    platform: linux/amd64
+    build:
+      context: runtime
+    ports:
+      - 8080
+    volumes:
+      - ./runtime:/code
+    labels:
+      - traefik.enable=true
+      - "traefik.http.routers.backend.rule=Host(`runtime.localhost`)"
+

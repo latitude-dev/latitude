@@ -1,0 +1,17 @@
+[log]
+  level = "INFO"
+  format = "common"
+
+[api]
+  dashboard=true
+  insecure=true
+
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+
+[providers]
+  [providers.docker]
+    endpoint = "unix:///var/run/docker.sock"
+    exposedByDefault = false
+
