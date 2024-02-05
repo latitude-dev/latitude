@@ -1,0 +1,16 @@
+{
+  "name": "@latitude-dev/tokens",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "exports": "./dist/index.tsx",
+  "source": "./src/index.tsx",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prettier": "prettier -w src/**/*.{ts,tsx}"
+  }
+}

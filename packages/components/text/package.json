@@ -1,0 +1,27 @@
+{
+  "name": "@latitude-dev/text",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "exports": "./dist/index.tsx",
+  "source": "./src/index.tsx",
+  "main": "./dist/index.js",
+  "module": "./dist/index.esm.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prettier": "prettier -w src/**/*.{ts,tsx}"
+  },
+  "dependencies": {
+    "@latitude-dev/tokens": "workspace:*"
+  },
+  "peerDependencies": {
+    "classnames": "^2.5.1",
+    "react": "^18.2.0",
+    "@types/react": "^18.2.53"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1"
+  }
+}
