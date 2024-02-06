@@ -1,0 +1,35 @@
+{
+  "name": "@latitude-dev/latitude",
+  "description": "CLI for Latitude",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "@latitude-dev/typescript-config": "workspace:*",
+    "@latitude-dev/eslint-config": "workspace:*"
+  },
+  "main": "index.ts",
+  "files": [
+    "cli.js"
+  ],
+  "author": "",
+  "license": "MIT",
+  "keywords": [
+    "analytics",
+    "business-intelligence",
+    "data",
+    "sql",
+    "jinja",
+    "react",
+    "data-visualization",
+    "visualization",
+    "data-viz",
+    "charts",
+    "echarts"
+  ]
+}
