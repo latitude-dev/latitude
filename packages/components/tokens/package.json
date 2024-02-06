@@ -11,6 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "prettier": "prettier -w src/**/*.{ts,tsx}"
+    "prettier": "prettier -w src/**/*.{ts,tsx}",
+    "build": "rollup src/index.ts"
   }
 }

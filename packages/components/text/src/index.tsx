@@ -5,7 +5,7 @@ import {
   colors,
   whiteSpace as whiteSpaceOptions,
   wordBreak as wordBreakOptions,
-} from "src/tokens";
+} from "@latitude-dev/tokens";
 
 import type {
   FontSize,
@@ -15,7 +15,7 @@ import type {
   WordBreak,
   WhiteSpace,
   TextGroupHoverColor,
-} from "src/tokens";
+} from "@latitude-dev/tokens";
 
 type Display = "inline" | "inline-block" | "block";
 
