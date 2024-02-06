@@ -1,5 +1,5 @@
 {
-  "name": "@latitude/server",
+  "name": "@latitude-dev/server",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
