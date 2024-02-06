@@ -1,0 +1,11 @@
+{
+  "name": "latitude-test-environment",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@latitude-dev/latitude": "workspace:*"
+  }
+}

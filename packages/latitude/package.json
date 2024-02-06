@@ -3,19 +3,31 @@
   "description": "CLI for Latitude",
   "version": "0.0.1",
   "type": "module",
+  "bin": {
+    "latitude": "dist/cli.js"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build"
+    "dev": "concurrently \"npm:dev:*\"",
+    "dev:vite": "vite",
+    "dev:nodemon": "nodemon --watch 'src/**/*.ts' --exec 'ts-node-esm' ./src/cli.ts",
+    "build": "tsc && vite build",
+    "lint": "eslint . --max-warnings 0"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8",
+    "@latitude-dev/eslint-config": "workspace:*",
     "@latitude-dev/typescript-config": "workspace:*",
-    "@latitude-dev/eslint-config": "workspace:*"
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@types/eslint": "^8.56.1",
+    "@types/node": "^20.10.6",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.3",
+    "picocolors": "^1.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
   },
-  "main": "index.ts",
   "files": [
-    "cli.js"
+    "dist/cli.js"
   ],
   "author": "",
   "license": "MIT",
@@ -31,5 +43,10 @@
     "data-viz",
     "charts",
     "echarts"
-  ]
+  ],
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "fs-extra": "^11.2.0",
+    "sade": "^1.8.1"
+  }
 }
