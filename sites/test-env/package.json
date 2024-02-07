@@ -1,11 +1,21 @@
 {
   "name": "latitude-test-environment",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
+  "module": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "@latitude-dev/cli": "workspace:*"
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3",
+    "@latitude-dev/base-connector": "workspace:*",
+    "@latitude-dev/postgresql-connector": "workspace:*"
   }
 }

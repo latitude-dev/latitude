@@ -1,0 +1,13 @@
+{
+  "extends": "@latitude-dev/typescript/base.json",
+  "compilerOptions": {
+    "target": "ES2018",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
