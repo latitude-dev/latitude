@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite'
-import nodeResolver from '@rollup/plugin-node-resolve'
 
 export default defineConfig({
   build: {
@@ -10,12 +9,6 @@ export default defineConfig({
     },
     minify: true,
     rollupOptions: {
-      plugins: [
-        nodeResolver({
-          exportConditions: ['node'],
-          preferBuiltins: false,
-        }),
-      ],
       external: ['url', 'path', 'fs', 'fs/promises'], // Mark Node.js built-ins as external
       input: 'src/cli.ts',
       output: {

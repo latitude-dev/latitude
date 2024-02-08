@@ -1,5 +1,5 @@
 {
-  "extends": "@latitude-dev/typescript-config/base.json",
+  "extends": "@latitude-dev/typescript/base.json",
   "compilerOptions": {
     "rootDir": "src"
   },

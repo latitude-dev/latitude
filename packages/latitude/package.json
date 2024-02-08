@@ -14,9 +14,8 @@
     "lint": "eslint . --max-warnings 0"
   },
   "devDependencies": {
-    "@latitude-dev/eslint-config": "workspace:*",
-    "@latitude-dev/typescript-config": "workspace:*",
-    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@latitude-dev/eslint": "workspace:*",
+    "@latitude-dev/typescript": "workspace:*",
     "@types/eslint": "^8.56.1",
     "@types/node": "^20.10.6",
     "concurrently": "^8.2.2",
@@ -26,16 +25,16 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },
-  "files": ["dist/cli.js"],
+  "files": [
+    "dist/cli.js"
+  ],
   "author": "",
-  "license": "MIT",
+  "license": "BSL-1.0",
   "keywords": [
     "analytics",
     "business-intelligence",
     "data",
     "sql",
-    "jinja",
-    "react",
     "data-visualization",
     "visualization",
     "data-viz",
