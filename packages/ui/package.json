@@ -32,26 +32,29 @@
     "./H4": {
       "types": "./dist/H4.svelte.d.ts",
       "svelte": "./dist/H4.svelte"
+    },
+    "./Row": {
+      "types": "./dist/Row.svelte.d.ts",
+      "svelte": "./dist/Row.svelte"
+    },
+    "./Column": {
+      "types": "./dist/Column.svelte.d.ts",
+      "svelte": "./dist/Column.svelte"
     }
   },
   "typesVersions": {
     ">4.0": {
-      "Text": [
-        "./dist/Text.d.ts"
-      ]
+      "Text": ["./dist/Text.d.ts"]
     }
   },
-  "files": [
-    "dist",
-    "!dist/**/*.test.*",
-    "!dist/**/*.spec.*"
-  ],
+  "files": ["dist", "!dist/**/*.test.*", "!dist/**/*.spec.*"],
   "peerDependencies": {
     "svelte": "^4.0.0"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/package": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/eslint": "8.56.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
@@ -73,8 +76,11 @@
   "type": "module",
   "dependencies": {
     "@latitude-dev/tailwind": "workspace:*",
+    "@types/lodash": "^4.14.202",
     "autoprefixer": "^10.4.17",
     "classnames": "^2.5.1",
+    "echarts": "^5.4.3",
+    "lodash": "^4.17.21",
     "postcss": "^8.4.34",
     "tailwindcss": "^3.4.1"
   }
