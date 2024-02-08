@@ -26,9 +26,7 @@
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },
-  "files": [
-    "dist/cli.js"
-  ],
+  "files": ["dist/cli.js"],
   "author": "",
   "license": "MIT",
   "keywords": [
