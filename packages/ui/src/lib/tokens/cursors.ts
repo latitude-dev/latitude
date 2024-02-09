@@ -4,6 +4,6 @@ export const cursors = {
   move: 'cursor-move',
   grab: 'cursor-grab',
   grabbing: 'cursor-grabbing',
-}
+};
 
-export type Cursors = keyof typeof cursors
+export type Cursors = keyof typeof cursors;
