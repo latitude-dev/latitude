@@ -14,7 +14,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "devDependencies": {
-    "@latitude-dev/eslint": "workspace:*",
+    "@latitude-dev/eslint-config": "workspace:*",
     "@latitude-dev/typescript": "workspace:*",
     "@types/eslint": "^8.56.1",
     "@types/node": "^20.10.6",
@@ -41,9 +41,9 @@
     "charts",
     "echarts"
   ],
-  "dependencies": {
-    "chokidar": "^3.5.3",
-    "fs-extra": "^11.2.0",
-    "sade": "^1.8.1"
-  }
+  "files": [
+    "dist/cli.js"
+  ],
+  "author": "",
+  "license": "BSL-1.0"
 }

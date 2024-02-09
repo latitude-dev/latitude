@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Text from './Text.svelte';
+  import Text from './Text.svelte';
 
-	import type { Props } from './props.ts';
+  import type { Props } from './props.ts';
 
-	export let restProps = $$restProps as Omit<Props, 'size'>;
+  export let restProps = $$restProps as Omit<Props, 'size'>;
 </script>
 
 <!-- @ts-ignore -->
 <Text size="h1" {...restProps}>
-	<slot />
+  <slot />
 </Text>

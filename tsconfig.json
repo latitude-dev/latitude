@@ -1,3 +1,4 @@
 {
-  "extends": "@latitude-dev/typescript/base.json"
+  "extends": "@latitude-dev/typescript/base.json",
+  "include": [".eslintrc.cjs"]
 }

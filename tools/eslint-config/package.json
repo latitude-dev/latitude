@@ -1,11 +1,9 @@
 {
-  "name": "@latitude-dev/eslint",
+  "name": "@latitude-dev/eslint-config",
   "version": "0.0.0",
   "private": true,
   "files": [
-    "library.js",
-    "next.js",
-    "react-internal.js"
+    "library.js"
   ],
   "devDependencies": {
     "@vercel/style-guide": "^5.1.0",
