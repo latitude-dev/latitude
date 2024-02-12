@@ -7,7 +7,6 @@
     "dev": "tsc --watch"
   },
   "devDependencies": {
-    "@latitude-dev/eslint-config": "workspace:*",
     "@latitude-dev/typescript": "workspace:*",
     "@types/pg": "^8.11.0",
     "typescript": "^5.2.2"

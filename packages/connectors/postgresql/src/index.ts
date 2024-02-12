@@ -1,4 +1,4 @@
-import { BaseConnector, QueryRequest, QueryResult, DataType, ConnectionError, QueryError } from '@latitude-dev/base-connector'
+import { BaseConnector, BaseAdapter, QueryParams, QueryRequest, QueryResult, DataType, ConnectionError, QueryError } from '@latitude-dev/base-connector'
 import { Pool, types, DatabaseError } from 'pg'
 
 export type ConnectionParams = {
@@ -7,6 +7,35 @@ export type ConnectionParams = {
   password: string
   host: string
   port: number
+  schema?: string
+}
+class PostgresAdapter extends BaseAdapter {
+  private params: { varName: string, value: unknown }[] = []
+
+  constructor() {
+    super()
+  }
+
+  resolve(varName: string, value: unknown): string {
+    let index = this.params.findIndex(param => param.varName === varName)
+    if (index === -1) {
+      this.params.push({
+        varName,
+        value,
+      })
+      index = this.params.length - 1
+    }
+
+    const isText = typeof value === 'string'
+    return `$${index + 1}${isText ? '::text' : ''}`
+  }
+
+  getParams(): QueryParams {
+    return this.params.reduce((acc, param, index) => {
+      acc[index] = param.value
+      return acc
+    }, {} as QueryParams)
+  }
 }
 
 export class PostgresConnector extends BaseConnector {
@@ -15,24 +44,33 @@ export class PostgresConnector extends BaseConnector {
   constructor(connectionParams: ConnectionParams) {
     super()
     this.pool = new Pool(connectionParams)
+    if (connectionParams.schema) {
+      this.pool.on('connect', client => {
+        client.query(`SET search_path TO ${connectionParams.schema}`)
+      })
+    }
   }
 
-  async query({ sql, params }: QueryRequest): Promise<QueryResult> {
+  adapter(): BaseAdapter {
+    return new PostgresAdapter()
+  }
+
+  async runQuery({ sql, params }: QueryRequest): Promise<QueryResult> {
     const client = await this.createClient()
     
     try {
       const result = await client.query({
         text: sql,
-        values: params,
+        values: Object.values(params || {}),
       })
 
       return {
         rowCount: result.rowCount,
         fields: result.fields.map(field => ({
           name: field.name,
-          dataType: this.convertDataType(field.dataTypeID),
+          type: this.convertDataType(field.dataTypeID),
         })),
-        payload: result.rows.map(row => Object.values(row)),
+        rows: result.rows.map(row => Object.values(row)),
       }
     } catch (error: unknown) {
       const errorObj = error as DatabaseError

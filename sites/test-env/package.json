@@ -1,6 +1,6 @@
 {
   "name": "latitude-test-environment",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "module": "dist/index.js",
@@ -13,9 +13,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@latitude-dev/base-connector": "workspace:*",
+    "@latitude-dev/postgresql-connector": "workspace:*",
     "@types/node": "^20.10.6",
     "typescript": "^5.3.3",
-    "@latitude-dev/base-connector": "workspace:*",
-    "@latitude-dev/postgresql-connector": "workspace:*"
+    "vitest": "^1.2.2"
   }
 }
