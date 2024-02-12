@@ -1,0 +1,1 @@
+# `@latitude-dev/query_result`

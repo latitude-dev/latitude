@@ -1,0 +1,6 @@
+{
+  "extends": ["@latitude-dev/typescript/base.json"],
+  "compilerOptions": {
+    "outDir": "dist"
+  }
+}
