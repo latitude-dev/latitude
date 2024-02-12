@@ -1,4 +1,4 @@
-import { BaseConnector, BaseAdapter, QueryParams, QueryRequest, QueryResult, DataType, ConnectionError, QueryError } from '@latitude-dev/base-connector'
+import { BaseConnector, QueryResult, DataType, ConnectionError, QueryError, SequentialCompiledParams, CompiledQuery } from '@latitude-dev/base-connector'
 import { Pool, types, DatabaseError } from 'pg'
 
 export type ConnectionParams = {
@@ -8,34 +8,6 @@ export type ConnectionParams = {
   host: string
   port: number
   schema?: string
-}
-class PostgresAdapter extends BaseAdapter {
-  private params: { varName: string, value: unknown }[] = []
-
-  constructor() {
-    super()
-  }
-
-  resolve(varName: string, value: unknown): string {
-    let index = this.params.findIndex(param => param.varName === varName)
-    if (index === -1) {
-      this.params.push({
-        varName,
-        value,
-      })
-      index = this.params.length - 1
-    }
-
-    const isText = typeof value === 'string'
-    return `$${index + 1}${isText ? '::text' : ''}`
-  }
-
-  getParams(): QueryParams {
-    return this.params.reduce((acc, param, index) => {
-      acc[index] = param.value
-      return acc
-    }, {} as QueryParams)
-  }
 }
 
 export class PostgresConnector extends BaseConnector {
@@ -51,17 +23,44 @@ export class PostgresConnector extends BaseConnector {
     }
   }
 
-  adapter(): BaseAdapter {
-    return new PostgresAdapter()
+  /**
+   * Postgres parameterises variables sequentially, so this popParams() method must
+   * return a SequentialCompiledParams. But in order to reuse the same resolved string
+   * for the same parameter, we must save the varName while resolving them.
+   */
+  private resolvedParams: { varName: string, value: unknown }[] = []
+
+  /**
+   * The pg library parameterises variables as $i where i is an increasing number starting
+   * from 1, for regular variables, and $i::text for strings.
+   */
+  resolve(varName: string, value: unknown): string {
+    let index = this.resolvedParams.findIndex(param => param.varName === varName)
+    if (index === -1) {
+      this.resolvedParams.push({
+        varName,
+        value,
+      })
+      index = this.resolvedParams.length - 1
+    }
+
+    const isText = typeof value === 'string'
+    return `$${index + 1}${isText ? '::text' : ''}`
   }
 
-  async runQuery({ sql, params }: QueryRequest): Promise<QueryResult> {
+  popParams(): SequentialCompiledParams {
+    const pop = this.resolvedParams
+    this.resolvedParams = []
+    return pop.map(param => param.value)
+  }
+
+  async runQuery(request: CompiledQuery): Promise<QueryResult> {
     const client = await this.createClient()
     
     try {
       const result = await client.query({
-        text: sql,
-        values: Object.values(params || {}),
+        text: request.sql,
+        values: Object.values(request.params || {}),
       })
 
       return {
