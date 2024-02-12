@@ -2,6 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "pipeline": {
+    "prettier": {
+      "dependsOn": ["^prettier"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "outputs": []
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": []

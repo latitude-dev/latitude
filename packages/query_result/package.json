@@ -1,7 +1,7 @@
 {
   "name": "@latitude-dev/query_result",
   "version": "0.0.0",
-  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",

@@ -1,14 +1,19 @@
 {
   "name": "@latitude-dev/postgresql-connector",
   "version": "0.0.1",
-  "description": "",
+  "description": "PostgreSQL connector for Latitude",
+  "type": "module",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
     "@latitude-dev/typescript": "workspace:*",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/pg": "^8.11.0",
+    "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
