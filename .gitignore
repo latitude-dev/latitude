@@ -22,7 +22,6 @@ coverage
 .vercel
 
 # Build Outputs
-.next/
 out/
 build
 dist
@@ -36,3 +35,4 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+pacomerlo

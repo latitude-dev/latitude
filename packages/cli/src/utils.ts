@@ -1,8 +1,7 @@
-#!/usr/bin/env node
-
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { readFile } from 'fs/promises'
+import { Handler } from 'sade'
 
 const CURRENT_FILE = fileURLToPath(import.meta.url)
 const CURRENT_DIR = dirname(CURRENT_FILE)
@@ -17,4 +16,14 @@ export async function getPackageVersion() {
     console.error('Error reading package.json:', error)
     return null
   }
+}
+
+export const setDebugMode: Handler = (args) => {
+  if (!args.debug) return
+
+  process.env.VITE_LATITUDE_DEBUG = String(true)
+
+  delete args.debug
+
+  return args
 }

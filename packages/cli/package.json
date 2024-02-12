@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/latitude",
+  "name": "@latitude-dev/cli",
   "description": "CLI for Latitude",
   "version": "0.0.1",
   "type": "module",
@@ -7,21 +7,20 @@
     "latitude": "dist/cli.js"
   },
   "scripts": {
-    "dev": "concurrently \"npm:dev:*\"",
-    "dev:vite": "vite",
-    "dev:nodemon": "nodemon --watch 'src/**/*.ts' --exec 'ts-node-esm' ./src/cli.ts",
-    "build": "tsc && vite build",
+    "base-tsc": "tsc --outDir dist",
+    "tsc": "npm run base-tsc",
+    "dev": "npm run base-tsc -- --watch",
+    "build": "pnpm run tsc && vite build",
     "lint": "eslint . --max-warnings 0"
   },
   "devDependencies": {
     "@latitude-dev/eslint-config": "workspace:*",
     "@latitude-dev/typescript": "workspace:*",
+    "@types/degit": "^2.8.6",
     "@types/eslint": "^8.56.1",
+    "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.10.6",
-    "concurrently": "^8.2.2",
-    "nodemon": "^3.0.3",
     "picocolors": "^1.0.0",
-    "ts-node": "^10.9.2",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },
@@ -41,9 +40,14 @@
     "charts",
     "echarts"
   ],
-  "files": [
-    "dist/cli.js"
-  ],
-  "author": "",
-  "license": "BSL-1.0"
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "chokidar": "^3.5.3",
+    "degit": "^2.8.4",
+    "enquirer": "^2.4.1",
+    "fs-extra": "^11.2.0",
+    "node-banner": "^1.4.0",
+    "rimraf": "^5.0.5",
+    "sade": "^1.8.1"
+  }
 }

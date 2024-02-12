@@ -6,6 +6,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@latitude-dev/latitude": "workspace:*"
+    "@latitude-dev/cli": "workspace:*"
   }
 }
