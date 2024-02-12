@@ -4,12 +4,17 @@
   "description": "",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest"
   },
   "devDependencies": {
     "@latitude-dev/typescript": "workspace:*",
-    "@latitude-dev/eslint-config": "workspace:*",
-    "typescript": "^5.2.2"
+    "@types/estree": "^1.0.1",
+    "typescript": "^5.2.2",
+    "vitest": "^1.2.2"
+  },
+  "dependencies": {
+    "svelte": "^4.2.10"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

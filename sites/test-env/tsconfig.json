@@ -1,7 +1,6 @@
 {
   "extends": "@latitude-dev/typescript/base.json",
   "compilerOptions": {
-    "target": "ES2018",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
