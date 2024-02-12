@@ -7,9 +7,9 @@ import {
   SequentialCompiledParams,
   CompiledQuery,
 } from '@latitude-dev/base-connector'
-import pg, { DatabaseError } from 'pg'
+import { Pool, DatabaseError } from 'pg'
 
-export type ConnectionParams = {
+type ConnectionParams = {
   database: string
   user: string
   password: string
@@ -21,9 +21,11 @@ export type ConnectionParams = {
 export class PostgresConnector extends BaseConnector {
   private pool
 
-  constructor(connectionParams: ConnectionParams) {
-    super()
-    this.pool = new pg.Pool(connectionParams)
+  constructor(rootPath: string, connectionParams: ConnectionParams) {
+    super(rootPath)
+
+    this.pool = new Pool(connectionParams)
+
     if (connectionParams.schema) {
       this.pool.on('connect', (client) => {
         client.query(`SET search_path TO ${connectionParams.schema}`)
@@ -44,7 +46,7 @@ export class PostgresConnector extends BaseConnector {
    */
   resolve(varName: string, value: unknown): string {
     let index = this.resolvedParams.findIndex(
-      (param) => param.varName === varName
+      (param) => param.varName === varName,
     )
     if (index === -1) {
       this.resolvedParams.push({
@@ -100,7 +102,7 @@ export class PostgresConnector extends BaseConnector {
 
   private convertDataType(
     dataTypeID: number,
-    fallbackType = DataType.Unknown
+    fallbackType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
       case pg.types.builtins.BOOL:

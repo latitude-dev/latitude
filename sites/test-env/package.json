@@ -14,7 +14,7 @@
     "@latitude-dev/typescript": "workspace:*",
     "@latitude-dev/cli": "workspace:*",
     "@latitude-dev/base-connector": "workspace:*",
-    "@latitude-dev/postgresql-connector": "workspace:*",
+    "@latitude-dev/connector-factory": "workspace:^",
     "@types/node": "^20.10.6",
     "typescript": "^5.3.3",
     "vitest": "^1.2.2"

@@ -1,21 +1,18 @@
-import { PostgresConnector } from '@latitude-dev/postgresql-connector'
-import { ConnectionError, QueryError, ConnectorError } from '@latitude-dev/base-connector'
+import { createConnector } from '@latitude-dev/connector-factory'
+import { ConnectionError, QueryError, ConnectorError, SyntaxError } from '@latitude-dev/base-connector'
 import fs from 'fs';
 
 async function main() {
   try {
-    const connector = new PostgresConnector({
-      database: 'latitude_development',
-      user: 'latitude',
-      password: 'papapa44',
-      host: 'localhost',
-      port: 5432
-    })
 
-    const sql = fs.readFileSync('sql/query.sql', 'utf8');
+    const connector = createConnector('sql')
     const params = JSON.parse(fs.readFileSync('sql/params.json', 'utf8'));
 
-    const result = await connector.query({ sql, params })
+    const result = await connector.query({
+      queryPath: 'main',
+      params
+    })
+
     console.table(result.rows.map((row: unknown[]) => row.reduce((acc: Record<string, unknown>, value: unknown, index: number) => ({...acc, [result.fields[index]!.name]: value}), {})))
 
   } catch (error: unknown) {
