@@ -3,13 +3,12 @@ import path from 'path'
 import colors from 'picocolors'
 import { APP_FOLDER } from '../constants.js'
 
-export async function installAppDependencies(appFolder: string = APP_FOLDER) {
-  process.chdir(path.resolve(appFolder))
+export async function installAppDependencies() {
   console.log(colors.yellow('Installing dependencies...'))
   const npmInstall = spawn('npm', ['install'])
 
   npmInstall.stderr.on('data', (data) => {
-    console.error(colors.red(`💥 Error: ${data}`))
+    console.error(colors.red(`💥 Error on npm install: ${data}`))
   })
 
   return new Promise<void>((resolve) => {

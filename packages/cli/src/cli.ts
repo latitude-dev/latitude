@@ -2,35 +2,34 @@
 
 import sade from 'sade'
 import colors from 'picocolors'
-import { setDebugMode } from './utils'
 import startDataProject from './commands/start/index'
+import config from './config'
+import devCommand from './commands/dev'
 
-const DEBUG = { flag: '--debug', msg: 'Enables verbose console logs' }
 const CLI = sade('latitude')
 
-CLI.version('0.0.0')
+CLI.version(process.env.PACKAGE_VERSION ?? 'development').option(
+  '--debug',
+  'Enables verbose console logs',
+)
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')
-  .option(DEBUG.flag, DEBUG.msg)
   .action(startDataProject)
 
 CLI.command('dev')
   .describe('Launch the local Latitude development environment')
-  .option(DEBUG.flag, DEBUG.msg)
-  .action((args) => {
-    const lol = setDebugMode(args)
+  .action(devCommand)
 
-    console.log(colors.magenta('DEV command'), lol)
-    return lol
+CLI.command('deploy')
+  .describe('Deploy data app to production')
+  .action((_args) => {
+    console.log(colors.red('Not implemented yet'))
   })
 
-CLI.command('build')
-  .option(DEBUG.flag, DEBUG.msg)
-  .describe('build production outputs')
-  .action((args) => {
-    const lol = setDebugMode(args)
-    console.log(colors.red('Not implemented yet'), lol)
-  })
+const parsedArgs = CLI.parse(process.argv, { lazy: true })
 
-CLI.parse(process.argv)
+config.debug = parsedArgs?.args
+config.dev = process.env.NODE_ENV === 'development'
+
+parsedArgs?.handler.apply(null, parsedArgs?.args)
