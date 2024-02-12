@@ -2,11 +2,11 @@ import { compile } from "./compile"
 
 export enum DataType {
   Boolean = 'boolean',
-  Integer = 'integer',
-  Float = 'float',
-  String = 'string',
   Datetime = 'datetime',
+  Float = 'float',
+  Integer = 'integer',
   Null = 'null',
+  String = 'string',
   Unknown = 'unknown',
 }
 
