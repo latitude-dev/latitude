@@ -13,8 +13,10 @@ export default {
       sourcemap: true,
     },
   ],
-  plugins: [typescript({
-    exclude: ["**/__tests__", "**/*.test.ts"]
-  })],
+  plugins: [
+    typescript({
+      exclude: ['**/__tests__', '**/*.test.ts'],
+    }),
+  ],
   external: ['@latitude-dev/base-connector', 'pg'],
 }

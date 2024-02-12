@@ -13,7 +13,7 @@ const readdir = util.promisify(fs.readdir)
 import { CommonProps } from './index.js'
 import { LATITUDE_FOLDER } from '../constants.js'
 
-export const REPO_FOLDER = 'apps/views-display'
+export const REPO_FOLDER = 'apps/server'
 export const APP_REPO_SLUG = `latitude-dev/latitude-sdk/${REPO_FOLDER}`
 const CWD = process.cwd()
 
