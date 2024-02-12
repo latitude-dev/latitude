@@ -1,0 +1,19 @@
+{
+  "name": "@latitude-dev/base-connector",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "devDependencies": {
+    "@latitude-dev/typescript": "workspace:*",
+    "@latitude-dev/eslint-config": "workspace:*",
+    "typescript": "^5.2.2"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
