@@ -1,14 +1,16 @@
-import { Node, Identifier, BaseNodeWithoutComments } from 'estree'
 import { TemplateNode } from 'svelte/types/compiler/interfaces'
+import { Node, Identifier, BaseNodeWithoutComments } from 'estree'
 import { parse } from 'svelte/compiler'
+import path from 'path'
+import fs from 'fs'
 
 export enum DataType {
   Boolean = 'boolean',
-  Datetime = 'datetime',
-  Float = 'float',
   Integer = 'integer',
-  Null = 'null',
+  Float = 'float',
   String = 'string',
+  Datetime = 'datetime',
+  Null = 'null',
   Unknown = 'unknown',
 }
 
@@ -22,7 +24,7 @@ export type QueryParams = {
 }
 
 export type QueryRequest = {
-  sql: string
+  queryPath: string
   params?: QueryParams
 }
 
@@ -41,6 +43,12 @@ export type CompiledQuery = {
 }
 
 export abstract class BaseConnector {
+  private rootPath: string
+
+  constructor(rootPath: string) {
+    this.rootPath = rootPath
+  }
+
   /**
    * Results from operations calculated while compiling the query will be added as
    * additional parameters, instead of interpolations. These new parameters are called
@@ -72,22 +80,38 @@ export abstract class BaseConnector {
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
 
   async query(request: QueryRequest): Promise<QueryResult> {
-    const compiledSql = this.compile(request.sql, request.params)
+    const compiledSql = this.compile(
+      this.fullQueryPath(request.queryPath),
+      request.params,
+    )
     const compiledParams = this.popParams()
-
     return this.runQuery({ sql: compiledSql, params: compiledParams })
   }
 
-  protected compile(sql: string, params?: QueryParams): string {
+  private fullQueryPath(queryPath: string): string {
+    const queryPathWithExtension = queryPath.endsWith('.sql')
+      ? queryPath
+      : `${queryPath}.sql`
+    return path.join(this.rootPath, queryPathWithExtension)
+  }
+
+  protected compile(
+    fullQueryPath: string,
+    params?: QueryParams,
+    compiledQueryPaths: string[] = [],
+  ): string {
+    compiledQueryPaths.push(fullQueryPath)
+    const sql = fs.readFileSync(fullQueryPath, 'utf8')
+
     if (
       params &&
       Object.keys(params).some((key) =>
-        key.startsWith(this.PHANTOM_PARAM_PREFIX)
+        key.startsWith(this.PHANTOM_PARAM_PREFIX),
       )
     ) {
       throw new SyntaxError(
         `Parameter keys cannot start with ${this.PHANTOM_PARAM_PREFIX}`,
-        { query: sql }
+        { query: sql },
       )
     }
     const phantomParams: QueryParams = {}
@@ -159,7 +183,7 @@ export abstract class BaseConnector {
               throw newSyntaxError(
                 sql,
                 node,
-                'Object definition can only contain properties'
+                'Object definition can only contain properties',
               )
 
             const key = prop.key as Identifier
@@ -186,7 +210,7 @@ export abstract class BaseConnector {
 
           if (methodName === 'param') {
             const args = node.arguments.map((arg) =>
-              resolveNodeExpression(arg, localScope)
+              resolveNodeExpression(arg, localScope),
             )
             if (
               !params?.hasOwnProperty(args[0] as string) &&
@@ -196,18 +220,25 @@ export abstract class BaseConnector {
             }
             return getVarValue(args[0] as string, args[1])
           }
+          if (methodName === 'ref') {
+            throw newSyntaxError(
+              sql,
+              node,
+              `Unable to reference a query inside a logic block`,
+            )
+          }
           throw newSyntaxError(sql, node, `Unsupported function: ${methodName}`)
 
         default:
           throw newSyntaxError(
             sql,
             node,
-            `Unsupported expression type: ${node.type}`
+            `Unsupported expression type: ${node.type}`,
           )
       }
     }
 
-    function parseNode(node: TemplateNode, localScope: Scope = {}): string {
+    const parseNode = (node: TemplateNode, localScope: Scope = {}): string => {
       if (!node) return ''
 
       switch (node.type) {
@@ -234,13 +265,13 @@ export abstract class BaseConnector {
         case 'EachBlock':
           const iterableElement = resolveNodeExpression(
             node.expression,
-            localScope
+            localScope,
           )
           if (!Array.isArray(iterableElement))
             throw newSyntaxError(
               sql,
               node.expression,
-              'Element in #each block must be an array'
+              'Element in #each block must be an array',
             )
           if (!iterableElement.length) return parseNode(node.else, localScope)
 
@@ -268,7 +299,7 @@ export abstract class BaseConnector {
           throw newSyntaxError(
             sql,
             node,
-            'Object definitions are not allowed for interpolation'
+            'Object definitions are not allowed for interpolation',
           )
 
         case 'CallExpression':
@@ -281,10 +312,39 @@ export abstract class BaseConnector {
             }
             return parameteriseValue(args[0] as string, args[1])
           }
+          if (methodName === 'ref') {
+            const args = node.arguments.map(resolveNodeExpression)
+            if (args.length !== 1)
+              throw newSyntaxError(
+                sql,
+                node,
+                `ref function must have exactly one argument`,
+              )
+            const fullRefQueryPath = this.fullQueryPath(args[0] as string)
+            if (compiledQueryPaths.includes(fullRefQueryPath)) {
+              throw newSyntaxError(
+                sql,
+                node,
+                'Query reference to a parent, resulting in cyclic references.',
+              )
+            }
+            if (!fs.existsSync(fullRefQueryPath)) {
+              throw newSyntaxError(
+                sql,
+                node,
+                `Referenced query not found: '${args[0]}'`,
+              )
+            }
+            return (
+              '(' +
+              this.compile(fullRefQueryPath, params, compiledQueryPaths) +
+              ')'
+            )
+          }
           throw newSyntaxError(
             sql,
             node.callee,
-            `Unsupported function: ${methodName}`
+            `Unsupported function: ${methodName}`,
           )
 
         default:
@@ -294,7 +354,7 @@ export abstract class BaseConnector {
 
     function parseChildrenNodes(
       children: TemplateNode[] | undefined,
-      localScope: Scope = {}
+      localScope: Scope = {},
     ): string {
       return (
         children
@@ -305,25 +365,25 @@ export abstract class BaseConnector {
                 throw newSyntaxError(
                   sql,
                   child.expression,
-                  'Constant definitions must assign a value'
+                  'Constant definitions must assign a value',
                 )
               if (child.expression.operator !== '=')
                 throw newSyntaxError(
                   sql,
                   child.expression,
-                  'Constant definitions must use the = operator'
+                  'Constant definitions must use the = operator',
                 )
               if (child.expression.left.type !== 'Identifier')
                 throw newSyntaxError(
                   sql,
                   child.expression,
-                  'Constant definitions must have an identifier on the left side'
+                  'Constant definitions must have an identifier on the left side',
                 )
 
               const varName = child.expression.left.name
               const varValue = resolveNodeExpression(
                 child.expression.right,
-                localScope
+                localScope,
               )
 
               localScope[varName] = varValue
@@ -350,7 +410,7 @@ type Scope = { [key: string]: unknown }
 const newSyntaxError = (
   sql: string,
   node: BaseNodeWithoutComments,
-  message: string
+  message: string,
 ) => {
   return new SyntaxError(message, {
     query: sql,
@@ -387,7 +447,7 @@ export class QueryError extends ConnectorError {}
 export class SyntaxError extends Error {
   constructor(
     message: string,
-    public context: QueryCompileErrorContext
+    public context: QueryCompileErrorContext,
   ) {
     super(message)
   }

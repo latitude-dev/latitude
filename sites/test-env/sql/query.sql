@@ -1,1 +1,0 @@
-SELECT 'test' AS {param('foo')}

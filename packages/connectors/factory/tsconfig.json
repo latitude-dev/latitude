@@ -1,0 +1,11 @@
+{
+  "extends": "@latitude-dev/typescript/base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
