@@ -3,12 +3,15 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
     "@latitude-dev/typescript": "workspace:*",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
+    "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {

@@ -14,8 +14,7 @@ export default {
     }
   ],
   plugins: [typescript({
-
     exclude: ["**/__tests__", "**/*.test.ts"]
   })],
-  external: ['svelte/compiler', 'fs', 'path'],
+  external: ['svelte/compiler', '@latitude-dev/postgresql-connector', 'yaml', 'fs', 'path'],
 }

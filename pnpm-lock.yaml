@@ -195,9 +195,15 @@ importers:
       '@latitude-dev/typescript':
         specifier: workspace:*
         version: link:../../../tools/typescript
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
       '@types/node':
         specifier: ^20.10.6
         version: 20.10.6
+      rollup:
+        specifier: ^4.10.0
+        version: 4.10.0
       typescript:
         specifier: ^5.2.2
         version: 5.3.3
