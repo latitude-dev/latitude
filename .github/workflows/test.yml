@@ -25,7 +25,9 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install
+        # the (--no-frozen-lockfile) flag is here for fixing:
+        # ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY  Broken lockfile
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run tests
         run: pnpm run test

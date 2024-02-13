@@ -1,11 +1,12 @@
 import colors from 'picocolors'
-import { Handler } from 'sade'
 import path from 'path'
-import { getLatitudeBanner, setDebugMode } from '../../utils.js'
+import { Handler } from 'sade'
+import { getLatitudeBanner } from '../../utils.js'
 import cloneTemplate from './cloneTemplate.js'
-import setupLatitudeApp from './setupLatitudeApp.js'
+import setupApp from './setupApp.js'
 import { installAppDependencies, runDevServer } from '../dev/runDev.js'
 import { APP_FOLDER } from '../constants.js'
+import config from '../../config.js'
 
 type ErrorColor = 'red' | 'yellow'
 type OnErrorProps = { error: Error; message: string; color?: ErrorColor }
@@ -23,30 +24,45 @@ async function displayMessage(dataAppDir: string) {
   console.log(colors.green(banner))
   console.log(
     colors.white(`
-    Welcome to Latitude SDK 🎉
+    ${config.dev
+        ? '👋 Hi dev, thanks for contributing'
+        : 'Welcome to Latitude SDK 🎉'
+      }
+
     You can start your project by running:
-    $ cd ${dataAppDir}
+    --------------------------------------
+
+    $ cd ./${dataAppDir}
     $ latitude dev
-  `),
+    `),
   )
 }
 
-const startDataProject: Handler = async (args) => {
-  setDebugMode(args)
+function cdToAppFolder(destinationPath: string) {
+  const dataAppDirPath = path.resolve(destinationPath)
+  process.chdir(dataAppDirPath)
+  return `${process.cwd()} / ${APP_FOLDER}`
+}
+
+const startDataProject: Handler = async (_args) => {
+  // Clone template
   const dataAppDir = (await cloneTemplate({ onError })) as string
-  await setupLatitudeApp({
+
+  // Setup application server for running queries
+  await setupApp({
     onError,
     destinationPath: dataAppDir,
   })
 
-  // Move user to Data App folder
-  const dataAppDirPath = path.resolve(dataAppDir)
-  process.chdir(dataAppDirPath)
-
-  const tmpAppFolder = `${process.cwd()}/${APP_FOLDER}`
-  await installAppDependencies(tmpAppFolder)
   displayMessage(dataAppDir)
-  runDevServer({ appFolder: tmpAppFolder, open: true })
+
+  // In development we go manually to the app folder
+  // in the monorepo and install the dependencies
+  if (config.dev) return
+
+  const appFolder = cdToAppFolder(dataAppDir)
+  await installAppDependencies()
+  runDevServer({ appFolder, open: true })
 }
 
 export default startDataProject

@@ -1,6 +1,6 @@
 import path from 'path'
+import fsExtra from 'fs-extra'
 import fs from 'fs'
-import { Handler } from 'sade'
 
 /**
  * This ASCII log is generated using the following website:
@@ -19,11 +19,25 @@ export async function getLatitudeBanner(): Promise<string | null> {
   })
 }
 
-export const setDebugMode: Handler = (args) => {
-  if (!args.debug) return
+export async function forceSymlink(
+  source: string,
+  target: string,
+): Promise<void> {
+  await fsExtra.ensureDir(path.dirname(target))
+  const targetStats = fs.lstatSync(target)
 
-  // FIXME: Implement a config system and put debug mode there
-  delete args.debug
+  if (targetStats.isDirectory()) {
+    fs.rmSync(target, { recursive: true })
+  } else {
+    fs.unlinkSync(target)
+  }
 
-  return args
+  return new Promise((resolve, reject) => {
+    fs.symlink(source, target, (err) => {
+      if (err) {
+        reject(err)
+      }
+      resolve()
+    })
+  })
 }

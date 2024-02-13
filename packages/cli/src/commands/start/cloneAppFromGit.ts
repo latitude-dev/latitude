@@ -3,26 +3,24 @@ import path from 'path'
 import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import { rimraf } from 'rimraf'
-
 import fs from 'fs'
 import util from 'util'
-
 const rename = util.promisify(fs.rename)
 const readdir = util.promisify(fs.readdir)
 
-import { CommonProps } from './index.js'
-import { LATITUDE_FOLDER } from '../constants.js'
+import { LATITUDE_FOLDER, REPO_FOLDER } from '../constants'
+import { CommonProps } from './index'
+import { Props } from './setupApp'
 
-export const REPO_FOLDER = 'apps/server'
 export const APP_REPO_SLUG = `latitude-dev/latitude-sdk/${REPO_FOLDER}`
-const CWD = process.cwd()
 
-type Props = CommonProps & { destinationPath: string }
-type TarProps = CommonProps & { latitudeFolder: string; appFolderTmp: string }
-
-async function moveAppFromMonorepo({ latitudeFolder, appFolderTmp }: TarProps) {
+type RepoProps = CommonProps & { latitudeFolder: string; appFolderTmp: string }
+async function moveAppFromMonorepo({
+  latitudeFolder,
+  appFolderTmp,
+}: RepoProps) {
   const appDir = `${latitudeFolder}/app`
-  fsExtra.emptyDirSync(`${CWD}/${appDir}`)
+  fsExtra.emptyDirSync(`${process.cwd()}/${appDir}`)
   const tmpDir = `${latitudeFolder}/${appFolderTmp}`
   const repoDir = path.join(tmpDir, REPO_FOLDER)
   const files = await readdir(repoDir)
@@ -36,12 +34,23 @@ async function moveAppFromMonorepo({ latitudeFolder, appFolderTmp }: TarProps) {
   await rimraf(tmpDir)
 }
 
-export default async function setupLatitudeApp({
+/**
+ * FIXME: THIS IS NOT WORKING
+ * =========================================================
+ * We need to copy the apps/server folder but replace
+ * somehow the dependencies from the monorepo to the new app
+ * because for example:
+ *
+ *    "@latitude-sdk/connector": "workspace:*"
+ *
+ * Is not valid outside the monorepo.
+ */
+export default async function cloneAppFromGit({
   onError,
   destinationPath,
 }: Props) {
   // TODO: Mode: git is required to clone the repo while is private.
-  // With 'mode: tar' is easier to download only the apps/views-display folder
+  // With 'mode: tar' is easier to download only the apps/server folder
   // Remove this when we're Open Source
   const latitudeFolder = `${destinationPath}/${LATITUDE_FOLDER}`
   const appTemplate = degit(APP_REPO_SLUG, { force: true, mode: 'git' })
