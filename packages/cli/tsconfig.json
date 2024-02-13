@@ -1,7 +1,8 @@
 {
   "extends": "@latitude-dev/typescript/base.json",
   "compilerOptions": {
-    "rootDir": "src"
+    "rootDir": "src",
+    "outDir": "dist"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

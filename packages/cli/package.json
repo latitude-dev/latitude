@@ -2,33 +2,32 @@
   "name": "@latitude-dev/cli",
   "description": "CLI for Latitude",
   "version": "0.0.1",
-  "type": "module",
   "bin": {
-    "latitude": "dist/cli.js"
+    "latitude": "dist/cli.cjs.js"
   },
+  "main": "dist/cli.cjs.js",
+  "types": "dist/cli.d.ts",
   "scripts": {
-    "base-tsc": "tsc --outDir dist",
-    "tsc": "npm run base-tsc",
-    "dev": "npm run base-tsc -- --watch",
-    "build": "pnpm run tsc && vite build",
-    "prettier": "prettier --write .",
-    "lint": "eslint . --max-warnings 0"
+    "build": "rollup -c",
+    "dev": "pnpm run build --watch",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
+    "prettier": "prettier --write ."
   },
   "devDependencies": {
     "@latitude-dev/eslint-config": "workspace:*",
     "@latitude-dev/typescript": "workspace:*",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/degit": "^2.8.6",
     "@types/eslint": "^8.56.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.10.6",
-    "picocolors": "^1.0.0",
     "prettier": "^3.1.1",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "rollup": "^4.10.0"
   },
-  "files": [
-    "dist/cli.js"
-  ],
   "author": "",
   "license": "BSL-1.0",
   "keywords": [
@@ -48,8 +47,8 @@
     "degit": "^2.8.4",
     "enquirer": "^2.4.1",
     "fs-extra": "^11.2.0",
-    "node-banner": "^1.4.0",
     "rimraf": "^5.0.5",
+    "picocolors": "^1.0.0",
     "sade": "^1.8.1"
   }
 }

@@ -2,10 +2,7 @@
   "extends": "@latitude-dev/typescript/base.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
-    "module": "es2022",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true
+    "outDir": "dist"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

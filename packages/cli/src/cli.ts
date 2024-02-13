@@ -1,12 +1,14 @@
-import colors from 'picocolors'
+#!/usr/bin/env node
+
 import sade from 'sade'
-import { getPackageVersion, setDebugMode } from './utils.js'
-import startDataProject from './commands/start/index.js'
+import colors from 'picocolors'
+import { setDebugMode } from './utils'
+import startDataProject from './commands/start/index'
 
 const DEBUG = { flag: '--debug', msg: 'Enables verbose console logs' }
 const CLI = sade('latitude')
 
-CLI.version(await getPackageVersion())
+CLI.version('0.0.0')
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')

@@ -1,9 +1,0 @@
-{
-  "extends": "@latitude-dev/typescript/base.json",
-  "include": [".eslintrc.cjs", "vite.config.ts"],
-  "compilerOptions": {
-    "types": ["@types/node"],
-    "noEmit": true,
-    "allowJs": true
-  }
-}
