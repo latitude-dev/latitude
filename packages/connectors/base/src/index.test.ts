@@ -1,13 +1,20 @@
 import { describe, it, expect } from 'vitest'
-import { BaseConnector, CompiledQuery, KeyBasedCompiledParams, QueryParams, QueryRequest, QueryResult, SequentialCompiledParams, SyntaxError } from '.'
+import {
+  BaseConnector,
+  CompiledQuery,
+  KeyBasedCompiledParams,
+  QueryParams,
+  QueryResult,
+  SyntaxError,
+} from './index.js'
 
 class MockConnector extends BaseConnector {
   private resolvedParams: KeyBasedCompiledParams = {}
 
   popParams = (): QueryParams => {
-    const pop = {...this.resolvedParams}
+    const pop = { ...this.resolvedParams }
     this.resolvedParams = {}
-    return pop;
+    return pop
   }
 
   resolve(varName: string, value: unknown): string {
@@ -16,13 +23,14 @@ class MockConnector extends BaseConnector {
     return `$[[${value}]]`
   }
 
-  runQuery(request: CompiledQuery): Promise<QueryResult> {
+  runQuery(_: CompiledQuery): Promise<QueryResult> {
     return new Promise((resolve) => {
       resolve({ rowCount: 0, fields: [], rows: [] })
     })
   }
 
   compileQuery(sql: string, params?: QueryParams): CompiledQuery {
+    // @ts-ignore
     const compiledSql = this.compile(sql, params)
     const compiledParams = this.popParams()
     return { sql: compiledSql, params: compiledParams }
@@ -49,7 +57,8 @@ describe('compile function', () => {
 
   it('compiles SQL with simple parameters correctly', () => {
     const connector = new MockConnector()
-    const sql = 'SELECT * FROM table WHERE column = {param("column", "default")}'
+    const sql =
+      'SELECT * FROM table WHERE column = {param("column", "default")}'
     const params = { column: 'value' }
     const result = connector.compileQuery(sql, params)
 
@@ -65,17 +74,19 @@ describe('compile function', () => {
       [5, '/', 2, 2.5],
       [5, '%', 2, 1],
     ]
-    
+
     operations.forEach(([left, operator, right, expected]) => {
       const sql = `SELECT * FROM table WHERE column = {param("column") ${operator} ${right}}`
       const params = { column: left }
       const result = connector.compileQuery(sql, params)
 
-      expect(result.sql).toBe(`SELECT * FROM table WHERE column = $[[${expected}]]`)
+      expect(result.sql).toBe(
+        `SELECT * FROM table WHERE column = $[[${expected}]]`,
+      )
     })
   })
 
-  it ('allows for simple logical operations', () => {
+  it('allows for simple logical operations', () => {
     const connector = new MockConnector()
     const operations = [
       [true, '&&', true, true],
@@ -93,14 +104,16 @@ describe('compile function', () => {
       const params = { column: left }
       const result = connector.compileQuery(sql, params)
 
-      expect(result.sql).toBe(`SELECT * FROM table WHERE column = $[[${expected}]]`)
+      expect(result.sql).toBe(
+        `SELECT * FROM table WHERE column = $[[${expected}]]`,
+      )
     })
   })
 
-  it ('allows for simple comparison operations', () => {
+  it('allows for simple comparison operations', () => {
     const connector = new MockConnector()
     const operations = [
-      [5, '>', 1, true], 
+      [5, '>', 1, true],
       [5, '>=', 5, true],
       [5, '<', 10, true],
       [5, '<=', 5, true],
@@ -113,11 +126,13 @@ describe('compile function', () => {
       const params = { column: left }
       const result = connector.compileQuery(sql, params)
 
-      expect(result.sql).toBe(`SELECT * FROM table WHERE column = $[[${expected}]]`)
+      expect(result.sql).toBe(
+        `SELECT * FROM table WHERE column = $[[${expected}]]`,
+      )
     })
   })
 
-  it ('allows for simple nullish coalescing operations', () => {
+  it('allows for simple nullish coalescing operations', () => {
     const connector = new MockConnector()
     const operations = [
       [5, '??', 1, 5],
@@ -130,7 +145,9 @@ describe('compile function', () => {
       const params = { column: left }
       const result = connector.compileQuery(sql, params)
 
-      expect(result.sql).toBe(`SELECT * FROM table WHERE column = $[[${expected}]]`)
+      expect(result.sql).toBe(
+        `SELECT * FROM table WHERE column = $[[${expected}]]`,
+      )
     })
   })
 
@@ -174,16 +191,26 @@ describe('compile function', () => {
     const params = { columns: ['column_1', 'column_2', 'column_3'] }
     const result = connector.compileQuery(sql, params)
 
-    expect(result.sql).toBe('SELECT ' + params['columns'].map((column_name, index) => `$[[${index}]] AS $[[${column_name}]], `).join('').trim())
+    expect(result.sql).toBe(
+      'SELECT ' +
+        params['columns']
+          .map((column_name, index) => `$[[${index}]] AS $[[${column_name}]], `)
+          .join('')
+          .trim(),
+    )
   })
 
   it('allows each else statements', () => {
     const connector = new MockConnector()
     const sql = `SELECT {#each param("columns") as column_name, index} {index} AS {column_name}, {:else} * {/each}`
-    const result1 = connector.compileQuery(sql, { columns: ['column_1', 'column_2', 'column_3'] })
+    const result1 = connector.compileQuery(sql, {
+      columns: ['column_1', 'column_2', 'column_3'],
+    })
     const result2 = connector.compileQuery(sql, { columns: [] })
 
-    expect(result1.sql).toBe('SELECT $[[0]] AS $[[column_1]], $[[1]] AS $[[column_2]], $[[2]] AS $[[column_3]],')
+    expect(result1.sql).toBe(
+      'SELECT $[[0]] AS $[[column_1]], $[[1]] AS $[[column_2]], $[[2]] AS $[[column_3]],',
+    )
     expect(result2.sql).toBe('SELECT *')
   })
 

@@ -1,5 +1,13 @@
-import { BaseConnector, QueryResult, DataType, ConnectionError, QueryError, SequentialCompiledParams, CompiledQuery } from '@latitude-dev/base-connector'
-import { Pool, types, DatabaseError } from 'pg'
+import {
+  BaseConnector,
+  QueryResult,
+  DataType,
+  ConnectionError,
+  QueryError,
+  SequentialCompiledParams,
+  CompiledQuery,
+} from '@latitude-dev/base-connector'
+import pg, { DatabaseError } from 'pg'
 
 export type ConnectionParams = {
   database: string
@@ -11,13 +19,13 @@ export type ConnectionParams = {
 }
 
 export class PostgresConnector extends BaseConnector {
-  private pool: Pool
+  private pool
 
   constructor(connectionParams: ConnectionParams) {
     super()
-    this.pool = new Pool(connectionParams)
+    this.pool = new pg.Pool(connectionParams)
     if (connectionParams.schema) {
-      this.pool.on('connect', client => {
+      this.pool.on('connect', (client) => {
         client.query(`SET search_path TO ${connectionParams.schema}`)
       })
     }
@@ -28,14 +36,16 @@ export class PostgresConnector extends BaseConnector {
    * return a SequentialCompiledParams. But in order to reuse the same resolved string
    * for the same parameter, we must save the varName while resolving them.
    */
-  private resolvedParams: { varName: string, value: unknown }[] = []
+  private resolvedParams: { varName: string; value: unknown }[] = []
 
   /**
    * The pg library parameterises variables as $i where i is an increasing number starting
    * from 1, for regular variables, and $i::text for strings.
    */
   resolve(varName: string, value: unknown): string {
-    let index = this.resolvedParams.findIndex(param => param.varName === varName)
+    let index = this.resolvedParams.findIndex(
+      (param) => param.varName === varName
+    )
     if (index === -1) {
       this.resolvedParams.push({
         varName,
@@ -51,12 +61,12 @@ export class PostgresConnector extends BaseConnector {
   popParams(): SequentialCompiledParams {
     const pop = this.resolvedParams
     this.resolvedParams = []
-    return pop.map(param => param.value)
+    return pop.map((param) => param.value)
   }
 
   async runQuery(request: CompiledQuery): Promise<QueryResult> {
     const client = await this.createClient()
-    
+
     try {
       const result = await client.query({
         text: request.sql,
@@ -65,13 +75,13 @@ export class PostgresConnector extends BaseConnector {
 
       return {
         rowCount: result.rowCount,
-        fields: result.fields.map(field => ({
+        fields: result.fields.map((field) => ({
           name: field.name,
           type: this.convertDataType(field.dataTypeID),
         })),
-        rows: result.rows.map(row => Object.values(row)),
+        rows: result.rows.map((row) => Object.values(row)),
       }
-    } catch (error: unknown) {
+    } catch (error) {
       const errorObj = error as DatabaseError
       throw new QueryError(errorObj.message, errorObj)
     } finally {
@@ -88,34 +98,37 @@ export class PostgresConnector extends BaseConnector {
     }
   }
 
-  private convertDataType(dataTypeID: number, fallbackType = DataType.Unknown): DataType {
+  private convertDataType(
+    dataTypeID: number,
+    fallbackType = DataType.Unknown
+  ): DataType {
     switch (dataTypeID) {
-      case types.builtins.BOOL:
+      case pg.types.builtins.BOOL:
         return DataType.Boolean
-        
-      case types.builtins.NUMERIC:
-      case types.builtins.MONEY:
-      case types.builtins.INT2:
-      case types.builtins.INT4:
-      case types.builtins.INT8:
+
+      case pg.types.builtins.NUMERIC:
+      case pg.types.builtins.MONEY:
+      case pg.types.builtins.INT2:
+      case pg.types.builtins.INT4:
+      case pg.types.builtins.INT8:
         return DataType.Integer
 
-      case types.builtins.FLOAT4:
-      case types.builtins.FLOAT8:
+      case pg.types.builtins.FLOAT4:
+      case pg.types.builtins.FLOAT8:
         return DataType.Float
 
-      case types.builtins.VARCHAR:
-      case types.builtins.TEXT:
-      case types.builtins.CHAR:
-      case types.builtins.JSON:
-      case types.builtins.XML:
+      case pg.types.builtins.VARCHAR:
+      case pg.types.builtins.TEXT:
+      case pg.types.builtins.CHAR:
+      case pg.types.builtins.JSON:
+      case pg.types.builtins.XML:
         return DataType.String
 
-      case types.builtins.DATE:
-      case types.builtins.TIME:
-      case types.builtins.TIMETZ:
-      case types.builtins.TIMESTAMP:
-      case types.builtins.TIMESTAMPTZ:
+      case pg.types.builtins.DATE:
+      case pg.types.builtins.TIME:
+      case pg.types.builtins.TIMETZ:
+      case pg.types.builtins.TIMESTAMP:
+      case pg.types.builtins.TIMESTAMPTZ:
         return DataType.Datetime
 
       default:
