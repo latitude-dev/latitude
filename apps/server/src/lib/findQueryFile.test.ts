@@ -38,7 +38,7 @@ describe("findQueryFile", () => {
     vi.mocked(fs.access).mockRejectedValue(new Error("File not found"));
 
     await expect(findQueryFile(mockFilePath)).rejects.toThrow(
-      QueryNotFoundError
+      QueryNotFoundError,
     );
   });
 
@@ -48,7 +48,7 @@ describe("findQueryFile", () => {
     vi.mocked(fs.readdir).mockResolvedValue(["anotherfile.txt"]); // Pretending there's no YML file
 
     await expect(findQueryFile(mockFilePath)).rejects.toThrow(
-      SourceFileNotFoundError
+      SourceFileNotFoundError,
     );
   });
 });

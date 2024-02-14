@@ -11,8 +11,8 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/query_result": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-sdk/query_result": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/estree": "^1.0.1",
     "@types/mock-fs": "^4.13.4",

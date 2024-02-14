@@ -157,13 +157,13 @@ importers:
 
   packages/connectors/base:
     dependencies:
+      '@latitude-sdk/query_result':
+        specifier: workspace:*
+        version: link:../../query_result
       svelte:
         specifier: ^4.2.10
         version: 4.2.10
     devDependencies:
-      '@latitude-sdk/query_result':
-        specifier: workspace:*
-        version: link:../../query_result
       '@latitude-sdk/typescript':
         specifier: workspace:*
         version: link:../../../tools/typescript
@@ -204,6 +204,9 @@ importers:
       '@latitude-sdk/typescript':
         specifier: workspace:*
         version: link:../../../tools/typescript
+      '@rollup/plugin-commonjs':
+        specifier: ^25.0.7
+        version: 25.0.7(rollup@4.10.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
@@ -222,6 +225,9 @@ importers:
       '@latitude-sdk/base-connector':
         specifier: workspace:*
         version: link:../base
+      '@latitude-sdk/query_result':
+        specifier: workspace:*
+        version: link:../../query_result
       pg:
         specifier: ^8.11.3
         version: 8.11.3
@@ -348,9 +354,18 @@ importers:
       '@latitude-sdk/typescript':
         specifier: workspace:*
         version: link:../../tools/typescript
+      '@rollup/plugin-commonjs':
+        specifier: ^25.0.7
+        version: 25.0.7(rollup@4.10.0)
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
       '@types/node':
         specifier: ^20.10.6
         version: 20.10.6
+      rollup:
+        specifier: ^4.10.0
+        version: 4.10.0
       typescript:
         specifier: ^5.3.3
         version: 5.3.3

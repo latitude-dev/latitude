@@ -1,3 +1,4 @@
-SELECT id, first_name, last_name, email, staff, company_name, job_position
-FROM users
-WHERE email = {ref('email')}
+{@const authenticated = run_query('user_auth').rows.length}
+{#if cast(authenticated, 'boolean')}
+    {ref('user_data')}
+{/if}

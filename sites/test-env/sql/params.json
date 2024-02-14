@@ -1,4 +1,6 @@
 {
     "foo": "var",
-    "user_id": 3
+    "user_id": 3,
+    "email": "jon@latitude.so",
+    "auth_token": "$2a$11$d8fN3djhSoBdJ8pMG7QLSOLabUuy.P7ep6r9fQQCqn8wHbqfaWjGy"
 }

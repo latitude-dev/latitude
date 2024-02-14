@@ -1,13 +1,12 @@
 import {
   BaseConnector,
-  DataType,
   ConnectionError,
   QueryError,
-  SequentialCompiledParams,
   CompiledQuery,
-  QueryResult,
+  ResolvedParam,
 } from '@latitude-sdk/base-connector'
-import pg, { DatabaseError } from 'pg'
+import QueryResult, { DataType } from '@latitude-sdk/query_result'
+import pg from 'pg'
 
 type ConnectionParams = {
   database: string
@@ -33,37 +32,37 @@ export class PostgresConnector extends BaseConnector {
     }
   }
 
-  /**
-   * Postgres parameterises variables sequentially, so this popParams() method must
-   * return a SequentialCompiledParams. But in order to reuse the same resolved string
-   * for the same parameter, we must save the varName while resolving them.
-   */
-  private resolvedParams: { varName: string; value: unknown }[] = []
+  resolve(
+    name: string | undefined,
+    value: unknown,
+    resolvedParams: ResolvedParam[],
+  ): ResolvedParam {
+    /**
+     * The pg library parameterises variables as $i where i is an increasing number starting
+     * from 1, for regular variables, and $i::text for strings.
+     */
+    const isText = typeof value === 'string'
+    const suffix = isText ? '::text' : ''
 
-  /**
-   * The pg library parameterises variables as $i where i is an increasing number starting
-   * from 1, for regular variables, and $i::text for strings.
-   */
-  resolve(varName: string, value: unknown): string {
-    let index = this.resolvedParams.findIndex(
-      (param) => param.varName === varName
-    )
-    if (index === -1) {
-      this.resolvedParams.push({
-        varName,
+    if (name === undefined) {
+      return {
         value,
-      })
-      index = this.resolvedParams.length - 1
+        resolvedAs: `$${resolvedParams.length + 1}${suffix}`,
+      }
     }
 
-    const isText = typeof value === 'string'
-    return `$${index + 1}${isText ? '::text' : ''}`
-  }
+    const foundParam = resolvedParams.find(
+      (param) => param.name === name && param.value === value,
+    )
+    if (foundParam) {
+      return foundParam
+    }
 
-  popParams(): SequentialCompiledParams {
-    const pop = this.resolvedParams
-    this.resolvedParams = []
-    return pop.map((param) => param.value)
+    return {
+      name,
+      value,
+      resolvedAs: `$${resolvedParams.length + 1}${suffix}`,
+    }
   }
 
   async runQuery(request: CompiledQuery): Promise<QueryResult> {
@@ -72,7 +71,7 @@ export class PostgresConnector extends BaseConnector {
     try {
       const result = await client.query({
         text: request.sql,
-        values: Object.values(request.params || {}),
+        values: request.params.map((param) => param.value),
       })
 
       return new QueryResult({
@@ -84,7 +83,7 @@ export class PostgresConnector extends BaseConnector {
         rows: result.rows.map((row) => Object.values(row)),
       })
     } catch (error) {
-      const errorObj = error as DatabaseError
+      const errorObj = error as pg.DatabaseError
       throw new QueryError(errorObj.message, errorObj)
     } finally {
       client.release()
@@ -102,7 +101,7 @@ export class PostgresConnector extends BaseConnector {
 
   private convertDataType(
     dataTypeID: number,
-    fallbackType = DataType.Unknown
+    fallbackType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
       case pg.types.builtins.BOOL:
