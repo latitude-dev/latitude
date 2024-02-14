@@ -29,5 +29,8 @@ jobs:
         # ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY  Broken lockfile
         run: pnpm install --no-frozen-lockfile
 
+      - name: Build latitude packages
+        run: pnpm run build
+
       - name: Run tests
         run: pnpm run test

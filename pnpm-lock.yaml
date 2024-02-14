@@ -157,13 +157,13 @@ importers:
 
   packages/connectors/base:
     dependencies:
-      '@latitude-sdk/query_result':
-        specifier: workspace:*
-        version: link:../../query_result
       svelte:
         specifier: ^4.2.10
         version: 4.2.10
     devDependencies:
+      '@latitude-sdk/query_result':
+        specifier: workspace:*
+        version: link:../../query_result
       '@latitude-sdk/typescript':
         specifier: workspace:*
         version: link:../../../tools/typescript
@@ -191,9 +191,6 @@ importers:
 
   packages/connectors/factory:
     dependencies:
-      '@latitude-sdk/base-connector':
-        specifier: workspace:*
-        version: link:../base
       '@latitude-sdk/postgresql-connector':
         specifier: workspace:*
         version: link:../postgresql
@@ -201,6 +198,9 @@ importers:
         specifier: ^2.3.4
         version: 2.3.4
     devDependencies:
+      '@latitude-sdk/base-connector':
+        specifier: workspace:*
+        version: link:../base
       '@latitude-sdk/typescript':
         specifier: workspace:*
         version: link:../../../tools/typescript
