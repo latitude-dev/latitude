@@ -1,0 +1,28 @@
+{
+  "name": "@latitude-sdk/svelte",
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "peerDependencies": {
+    "svelte": "^4.2.10"
+  },
+  "devDependencies": {
+    "@latitude-sdk/typescript": "workspace:*",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.10.0",
+    "rollup-plugin-svelte": "^7.1.6",
+    "svelte-preprocess": "^5.1.3"
+  },
+  "exports": {
+    "./Button": {
+      "import": "./dist/Button/index.js",
+      "types": "./dist/components/Button/index.d.ts"
+    }
+  },
+  "sideEffects": false
+}
