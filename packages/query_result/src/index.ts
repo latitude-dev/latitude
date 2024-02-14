@@ -17,10 +17,18 @@ type Field = {
 
 export default class QueryResult {
   fields: Field[] = []
-  rowCount: number | null = 0
+  rowCount: number = 0
   rows: unknown[][] = []
 
-  constructor(fields: Field[], rows: unknown[][], rowCount = rows.length) {
+  constructor({
+    fields = [],
+    rowCount = 0,
+    rows = [],
+  }: {
+    fields?: Field[]
+    rowCount?: number
+    rows?: unknown[][]
+  }) {
     this.fields = fields
     this.rows = rows
     this.rowCount = rowCount
@@ -33,13 +41,13 @@ export default class QueryResult {
           acc[field.name] = this.rows.map((row) => row[i])
           return acc
         },
-        {} as { [key: string]: unknown[] },
-      ),
+        {} as { [key: string]: unknown[] }
+      )
     )
   }
 
   toJSON() {
-    JSON.stringify({
+    return JSON.stringify({
       fields: this.fields,
       rows: this.rows,
       rowCount: this.rowCount,

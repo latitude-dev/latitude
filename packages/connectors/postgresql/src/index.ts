@@ -1,11 +1,11 @@
 import {
   BaseConnector,
-  QueryResult,
   DataType,
   ConnectionError,
   QueryError,
   SequentialCompiledParams,
   CompiledQuery,
+  QueryResult,
 } from '@latitude-sdk/base-connector'
 import pg, { DatabaseError } from 'pg'
 
@@ -75,14 +75,14 @@ export class PostgresConnector extends BaseConnector {
         values: Object.values(request.params || {}),
       })
 
-      return {
-        rowCount: result.rowCount,
+      return new QueryResult({
+        rowCount: result.rowCount || 0,
         fields: result.fields.map((field) => ({
           name: field.name,
           type: this.convertDataType(field.dataTypeID),
         })),
         rows: result.rows.map((row) => Object.values(row)),
-      }
+      })
     } catch (error) {
       const errorObj = error as DatabaseError
       throw new QueryError(errorObj.message, errorObj)

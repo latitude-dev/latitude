@@ -17,5 +17,5 @@ export default {
 
     exclude: ["**/__tests__", "**/*.test.ts"]
   })],
-  external: ['svelte/compiler', 'fs', 'path'],
+  external: ['svelte/compiler', '@latitude-sdk/query_result', 'fs', 'path'],
 }
