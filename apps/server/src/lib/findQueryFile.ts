@@ -40,7 +40,7 @@ export default async function findQueryFile(filePath: string): Promise<Result> {
     // Try to find a .yml file in the current directory
     const files = await fs.readdir(currentDir);
     const ymlFile = files.find(
-      (file) => file.endsWith(".yml") || file.endsWith(".yaml")
+      (file) => file.endsWith(".yml") || file.endsWith(".yaml"),
     );
 
     if (ymlFile) {

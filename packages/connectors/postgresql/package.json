@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@latitude-sdk/base-connector": "workspace:*",
+    "@latitude-sdk/query_result": "workspace:*",
     "pg": "^8.11.3"
   },
   "main": "dist/index.js",

@@ -2,25 +2,27 @@
   "name": "@latitude-sdk/connector-factory",
   "version": "0.0.1",
   "description": "Factory to create connectors",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
+    "@latitude-sdk/base-connector": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
+    "@rollup/plugin-commonjs": "^25.0.7",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@latitude-sdk/base-connector": "workspace:*",
     "@latitude-sdk/postgresql-connector": "workspace:*",
     "yaml": "^2.3.4"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "keywords": [],
   "author": "",
   "license": "ISC"

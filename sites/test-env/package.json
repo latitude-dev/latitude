@@ -2,10 +2,13 @@
   "name": "latitude-test-environment",
   "version": "0.0.1",
   "private": true,
-  "module": "dist/index.js",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "prettier": "prettier --write src/**/*.ts"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +20,9 @@
     "@latitude-sdk/connector-factory": "workspace:^",
     "@types/node": "^20.10.6",
     "typescript": "^5.3.3",
-    "vitest": "^1.2.2"
+    "vitest": "^1.2.2",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.10.0"
   }
 }
