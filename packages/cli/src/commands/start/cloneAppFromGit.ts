@@ -8,11 +8,15 @@ import util from 'util'
 const rename = util.promisify(fs.rename)
 const readdir = util.promisify(fs.readdir)
 
-import { LATITUDE_FOLDER, REPO_FOLDER } from '../constants'
+import {
+  LATITUDE_FOLDER,
+  LATITUDE_GITHUB_SLUG,
+  APP_SERVER_FOLDER,
+} from '../constants'
 import { CommonProps } from './index'
 import { Props } from './setupApp'
 
-export const APP_REPO_SLUG = `latitude-dev/latitude-sdk/${REPO_FOLDER}`
+export const APP_REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/latitude-sdk/${APP_SERVER_FOLDER}`
 
 type RepoProps = CommonProps & { latitudeFolder: string; appFolderTmp: string }
 async function moveAppFromMonorepo({
@@ -22,7 +26,7 @@ async function moveAppFromMonorepo({
   const appDir = `${latitudeFolder}/app`
   fsExtra.emptyDirSync(`${process.cwd()}/${appDir}`)
   const tmpDir = `${latitudeFolder}/${appFolderTmp}`
-  const repoDir = path.join(tmpDir, REPO_FOLDER)
+  const repoDir = path.join(tmpDir, APP_SERVER_FOLDER)
   const files = await readdir(repoDir)
 
   for (const file of files) {

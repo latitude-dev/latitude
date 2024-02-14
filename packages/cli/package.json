@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/cli",
+  "name": "@latitude-sdk/cli",
   "description": "CLI for Latitude",
   "version": "0.0.1",
   "bin": {
@@ -16,8 +16,8 @@
     "prettier": "prettier --write ."
   },
   "devDependencies": {
-    "@latitude-dev/eslint-config": "workspace:*",
-    "@latitude-dev/typescript": "workspace:*",
+    "@latitude-sdk/eslint-config": "workspace:*",
+    "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",

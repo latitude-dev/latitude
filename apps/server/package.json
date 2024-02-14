@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/server",
+  "name": "@latitude-sdk/server",
   "version": "0.0.1",
   "type": "module",
   "scripts": {
@@ -30,9 +30,9 @@
     "vite": "^5.0.3"
   },
   "dependencies": {
-    "@latitude-dev/base-connector": "workspace:*",
-    "@latitude-dev/postgresql-connector": "workspace:*",
-    "@latitude-dev/query_result": "workspace:*",
+    "@latitude-sdk/base-connector": "workspace:*",
+    "@latitude-sdk/postgresql-connector": "workspace:*",
+    "@latitude-sdk/query_result": "workspace:*",
     "css-tree": "^2.3.1",
     "pg": "^8.11.3"
   }

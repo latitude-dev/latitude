@@ -1,6 +1,6 @@
 import findQueryFile from "../../lib/findQueryFile";
 import { json } from "@sveltejs/kit";
-import { PostgresConnector } from '@latitude-dev/postgresql-connector'
+import { PostgresConnector } from '@latitude-sdk/postgresql-connector'
 
 export async function GET({ params }: { params: { query: string } }) {
   const { query } = params;

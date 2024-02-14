@@ -3,8 +3,9 @@ import colors from 'picocolors'
 import enquirer from 'enquirer'
 import degit from 'degit'
 import { CommonProps } from './index.js'
+import { LATITUDE_GITHUB_SLUG } from '../constants.js'
 
-const REPO_SLUG = 'latitude-dev/template'
+const REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/template`
 type Options = { dest: string | null }
 export default async function cloneTemplate({ onError }: CommonProps) {
   let options: Options = { dest: null }

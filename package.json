@@ -10,7 +10,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@latitude-dev/typescript": "workspace:*",
+    "@latitude-sdk/typescript": "workspace:*",
     "prettier": "^3.1.1",
     "turbo": "latest"
   },

@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/postgresql-connector",
+  "name": "@latitude-sdk/postgresql-connector",
   "version": "0.0.1",
   "description": "PostgreSQL connector for Latitude",
   "type": "module",
@@ -9,7 +9,7 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-dev/typescript": "workspace:*",
+    "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/pg": "^8.11.0",
@@ -17,7 +17,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@latitude-dev/base-connector": "workspace:*",
+    "@latitude-sdk/base-connector": "workspace:*",
     "pg": "^8.11.3"
   },
   "main": "dist/index.js",

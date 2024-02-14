@@ -1,8 +1,8 @@
 import yaml from 'yaml';
 import fs from 'fs';
 import path from 'path';
-import { type BaseConnector } from '@latitude-dev/base-connector';
-import { PostgresConnector } from '@latitude-dev/postgresql-connector';
+import { type BaseConnector } from '@latitude-sdk/base-connector';
+import { PostgresConnector } from '@latitude-sdk/postgresql-connector';
 
 export enum ConnectorType {
   Postgres = 'postgres',

@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/tailwind",
+  "name": "@latitude-sdk/tailwind",
   "version": "0.0.1",
   "type": "module",
   "main": "dist/index.umd.cjs",

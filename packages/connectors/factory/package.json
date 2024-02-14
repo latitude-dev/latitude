@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/connector-factory",
+  "name": "@latitude-sdk/connector-factory",
   "version": "0.0.1",
   "description": "",
   "scripts": {
@@ -8,15 +8,15 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-dev/typescript": "workspace:*",
+    "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@latitude-dev/base-connector": "workspace:*",
-    "@latitude-dev/postgresql-connector": "workspace:*",
+    "@latitude-sdk/base-connector": "workspace:*",
+    "@latitude-sdk/postgresql-connector": "workspace:*",
     "yaml": "^2.3.4"
   },
   "main": "dist/index.js",

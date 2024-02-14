@@ -6,7 +6,7 @@ import {
   QueryError,
   SequentialCompiledParams,
   CompiledQuery,
-} from '@latitude-dev/base-connector'
+} from '@latitude-sdk/base-connector'
 import pg, { DatabaseError } from 'pg'
 
 type ConnectionParams = {
