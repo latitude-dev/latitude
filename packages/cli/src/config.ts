@@ -5,6 +5,7 @@ class CLIConfig {
   private _pro: boolean = true
 
   private constructor() {}
+
   public static getInstance(): CLIConfig {
     if (CLIConfig.instance) return this.instance
 
