@@ -1,7 +1,6 @@
-import { spawn } from 'child_process'
-import path from 'path'
 import colors from 'picocolors'
-import { APP_FOLDER } from '../constants.js'
+import { APP_FOLDER } from '../constants'
+import { spawn } from 'child_process'
 
 export async function installAppDependencies() {
   console.log(colors.yellow('Installing dependencies...'))
@@ -22,7 +21,9 @@ export async function installAppDependencies() {
 
 const COMMAND = 'npx'
 const BASE_ARGS = ['vite', 'dev', '--port', '3000']
+
 type DevServerProps = { appFolder?: string; open?: boolean }
+
 export function runDevServer({
   appFolder = APP_FOLDER,
   open = false,
