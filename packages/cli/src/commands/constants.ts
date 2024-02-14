@@ -1,4 +1,4 @@
-export const LATITUDE_GITHUB_SLUG = 'latitude-dev
+export const LATITUDE_GITHUB_SLUG = 'latitude-dev'
 export const LATITUDE_FOLDER = '.latitude'
 export const APP_FOLDER = `${LATITUDE_FOLDER}/app`
 export const APP_SERVER_FOLDER = 'apps/server'
