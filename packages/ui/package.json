@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/ui",
+  "name": "@latitude-sdk/ui",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite dev",
@@ -72,7 +72,7 @@
   "types": "./dist/index.d.ts",
   "type": "module",
   "dependencies": {
-    "@latitude-dev/tailwind": "workspace:*",
+    "@latitude-sdk/tailwind": "workspace:*",
     "autoprefixer": "^10.4.17",
     "classnames": "^2.5.1",
     "postcss": "^8.4.34",

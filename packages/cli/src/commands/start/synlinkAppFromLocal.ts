@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
-import { APP_FOLDER, REPO_FOLDER } from '../constants'
+import { APP_FOLDER, APP_SERVER_FOLDER } from '../constants'
 import { Props } from './setupApp'
 import { forceSymlink } from '../../utils'
 
@@ -17,7 +17,7 @@ export default async function synlinkAppFromLocal({
 }: Props) {
   const serverFolderInMonorepo = path.resolve(
     process.cwd(),
-    `../../${REPO_FOLDER}`,
+    `../../${APP_SERVER_FOLDER}`,
   )
   const dataApp = createAppFolder(destinationPath)
 

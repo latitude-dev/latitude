@@ -1,5 +1,5 @@
-import { createConnector } from '@latitude-dev/connector-factory'
-import { ConnectionError, QueryError, ConnectorError, SyntaxError } from '@latitude-dev/base-connector'
+import { createConnector } from '@latitude-sdk/connector-factory'
+import { ConnectionError, QueryError, ConnectorError, SyntaxError } from '@latitude-sdk/base-connector'
 import fs from 'fs';
 
 async function main() {

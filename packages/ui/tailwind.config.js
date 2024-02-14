@@ -1,4 +1,4 @@
-import latitudeTheme from '@latitude-dev/tailwind';
+import latitudeTheme from '@latitude-sdk/tailwind';
 
 /** @type {import('tailwindcss').Config} */
 export default {

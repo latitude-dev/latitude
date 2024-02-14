@@ -1,5 +1,5 @@
 {
-  "name": "@latitude-dev/eslint-config",
+  "name": "@latitude-sdk/eslint-config",
   "version": "0.0.0",
   "files": [
     "library.js"
