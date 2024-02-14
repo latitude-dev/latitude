@@ -2,6 +2,8 @@
   "name": "@latitude-sdk/query_result",
   "version": "0.0.0",
   "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",

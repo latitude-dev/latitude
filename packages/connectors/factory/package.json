@@ -1,7 +1,7 @@
 {
   "name": "@latitude-sdk/connector-factory",
   "version": "0.0.1",
-  "description": "",
+  "description": "Factory to create connectors",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",

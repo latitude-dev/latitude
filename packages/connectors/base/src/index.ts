@@ -1,8 +1,10 @@
 import { TemplateNode } from 'svelte/types/compiler/interfaces'
 import { Node, Identifier, BaseNodeWithoutComments } from 'estree'
 import { parse } from 'svelte/compiler'
-import path from 'path'
 import fs from 'fs'
+import path from 'path'
+
+import QueryResult from '@latitude-sdk/query_result'
 
 export enum DataType {
   Boolean = 'boolean',
@@ -28,12 +30,6 @@ export type QueryRequest = {
   params?: QueryParams
 }
 
-export type QueryResult = {
-  rowCount: number | null
-  fields: Field[]
-  rows: unknown[][]
-}
-
 export type SequentialCompiledParams = unknown[]
 export type KeyBasedCompiledParams = { [key: string]: unknown }
 
@@ -42,7 +38,7 @@ export type CompiledQuery = {
   params: SequentialCompiledParams | KeyBasedCompiledParams
 }
 
-export abstract class BaseConnector {
+abstract class BaseConnector {
   private rootPath: string
 
   constructor(rootPath: string) {
@@ -82,7 +78,7 @@ export abstract class BaseConnector {
   async query(request: QueryRequest): Promise<QueryResult> {
     const compiledSql = this.compile(
       this.fullQueryPath(request.queryPath),
-      request.params,
+      request.params
     )
     const compiledParams = this.popParams()
     return this.runQuery({ sql: compiledSql, params: compiledParams })
@@ -98,7 +94,7 @@ export abstract class BaseConnector {
   protected compile(
     fullQueryPath: string,
     params?: QueryParams,
-    compiledQueryPaths: string[] = [],
+    compiledQueryPaths: string[] = []
   ): string {
     compiledQueryPaths.push(fullQueryPath)
     const sql = fs.readFileSync(fullQueryPath, 'utf8')
@@ -106,12 +102,12 @@ export abstract class BaseConnector {
     if (
       params &&
       Object.keys(params).some((key) =>
-        key.startsWith(this.PHANTOM_PARAM_PREFIX),
+        key.startsWith(this.PHANTOM_PARAM_PREFIX)
       )
     ) {
       throw new SyntaxError(
         `Parameter keys cannot start with ${this.PHANTOM_PARAM_PREFIX}`,
-        { query: sql },
+        { query: sql }
       )
     }
     const phantomParams: QueryParams = {}
@@ -183,7 +179,7 @@ export abstract class BaseConnector {
               throw newSyntaxError(
                 sql,
                 node,
-                'Object definition can only contain properties',
+                'Object definition can only contain properties'
               )
 
             const key = prop.key as Identifier
@@ -210,7 +206,7 @@ export abstract class BaseConnector {
 
           if (methodName === 'param') {
             const args = node.arguments.map((arg) =>
-              resolveNodeExpression(arg, localScope),
+              resolveNodeExpression(arg, localScope)
             )
             if (
               !params?.hasOwnProperty(args[0] as string) &&
@@ -224,7 +220,7 @@ export abstract class BaseConnector {
             throw newSyntaxError(
               sql,
               node,
-              `Unable to reference a query inside a logic block`,
+              `Unable to reference a query inside a logic block`
             )
           }
           throw newSyntaxError(sql, node, `Unsupported function: ${methodName}`)
@@ -233,7 +229,7 @@ export abstract class BaseConnector {
           throw newSyntaxError(
             sql,
             node,
-            `Unsupported expression type: ${node.type}`,
+            `Unsupported expression type: ${node.type}`
           )
       }
     }
@@ -265,13 +261,13 @@ export abstract class BaseConnector {
         case 'EachBlock':
           const iterableElement = resolveNodeExpression(
             node.expression,
-            localScope,
+            localScope
           )
           if (!Array.isArray(iterableElement))
             throw newSyntaxError(
               sql,
               node.expression,
-              'Element in #each block must be an array',
+              'Element in #each block must be an array'
             )
           if (!iterableElement.length) return parseNode(node.else, localScope)
 
@@ -299,7 +295,7 @@ export abstract class BaseConnector {
           throw newSyntaxError(
             sql,
             node,
-            'Object definitions are not allowed for interpolation',
+            'Object definitions are not allowed for interpolation'
           )
 
         case 'CallExpression':
@@ -318,21 +314,21 @@ export abstract class BaseConnector {
               throw newSyntaxError(
                 sql,
                 node,
-                `ref function must have exactly one argument`,
+                `ref function must have exactly one argument`
               )
             const fullRefQueryPath = this.fullQueryPath(args[0] as string)
             if (compiledQueryPaths.includes(fullRefQueryPath)) {
               throw newSyntaxError(
                 sql,
                 node,
-                'Query reference to a parent, resulting in cyclic references.',
+                'Query reference to a parent, resulting in cyclic references.'
               )
             }
             if (!fs.existsSync(fullRefQueryPath)) {
               throw newSyntaxError(
                 sql,
                 node,
-                `Referenced query not found: '${args[0]}'`,
+                `Referenced query not found: '${args[0]}'`
               )
             }
             return (
@@ -344,7 +340,7 @@ export abstract class BaseConnector {
           throw newSyntaxError(
             sql,
             node.callee,
-            `Unsupported function: ${methodName}`,
+            `Unsupported function: ${methodName}`
           )
 
         default:
@@ -354,7 +350,7 @@ export abstract class BaseConnector {
 
     function parseChildrenNodes(
       children: TemplateNode[] | undefined,
-      localScope: Scope = {},
+      localScope: Scope = {}
     ): string {
       return (
         children
@@ -365,25 +361,25 @@ export abstract class BaseConnector {
                 throw newSyntaxError(
                   sql,
                   child.expression,
-                  'Constant definitions must assign a value',
+                  'Constant definitions must assign a value'
                 )
               if (child.expression.operator !== '=')
                 throw newSyntaxError(
                   sql,
                   child.expression,
-                  'Constant definitions must use the = operator',
+                  'Constant definitions must use the = operator'
                 )
               if (child.expression.left.type !== 'Identifier')
                 throw newSyntaxError(
                   sql,
                   child.expression,
-                  'Constant definitions must have an identifier on the left side',
+                  'Constant definitions must have an identifier on the left side'
                 )
 
               const varName = child.expression.left.name
               const varValue = resolveNodeExpression(
                 child.expression.right,
-                localScope,
+                localScope
               )
 
               localScope[varName] = varValue
@@ -410,7 +406,7 @@ type Scope = { [key: string]: unknown }
 const newSyntaxError = (
   sql: string,
   node: BaseNodeWithoutComments,
-  message: string,
+  message: string
 ) => {
   return new SyntaxError(message, {
     query: sql,
@@ -441,14 +437,23 @@ type QueryCompileErrorContext = {
   }
 }
 
-export class ConnectorError extends Error {}
-export class ConnectionError extends ConnectorError {}
-export class QueryError extends ConnectorError {}
-export class SyntaxError extends Error {
+class ConnectorError extends Error {}
+class ConnectionError extends ConnectorError {}
+class QueryError extends ConnectorError {}
+class SyntaxError extends Error {
   constructor(
     message: string,
-    public context: QueryCompileErrorContext,
+    public context: QueryCompileErrorContext
   ) {
     super(message)
   }
+}
+
+export {
+  BaseConnector,
+  QueryResult,
+  ConnectorError,
+  ConnectionError,
+  QueryError,
+  SyntaxError,
 }

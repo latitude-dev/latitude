@@ -1,52 +1,54 @@
-import mockFs from "mock-fs";
-import findQueryFile from "./findQueryFile";
+import { describe, it, expect, beforeAll, afterEach } from "vitest";
+import * as fs from "fs/promises";
+import { vi } from "vitest";
+import findQueryFile, {
+  ROOT_FOLDER,
+  QueryNotFoundError,
+  SourceFileNotFoundError,
+} from "./findQueryFile"; // Replace with the actual path to your module
+
+// Mocks fs module
+vi.mock("fs/promises", () => ({
+  access: vi.fn(),
+  readdir: vi.fn(),
+}));
 
 describe("findQueryFile", () => {
-  beforeAll(() => {
-    // Setup the mock file system before all tests
-    mockFs({
-      "path/to/dir": {
-        "test.sql": "SELECT * FROM table;",
-        nested: {
-          "test.sql": "SELECT * FROM table;",
-        },
-        "source.yml": "source: true",
-      },
-    });
+  const mockFilePath = "subfolder/query";
+  const mockSourcePath = `${ROOT_FOLDER}/subfolder/source.yml`;
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
-  afterAll(() => {
-    // Restore the file system after all tests
-    mockFs.restore();
-  });
+  it("should return the correct paths if the query file and source file exist", async () => {
+    vi.mocked(fs.access).mockResolvedValue(); // Pretend the file exists
+    // @ts-ignore
+    vi.mocked(fs.readdir).mockResolvedValue(["source.yml", "anotherfile.txt"]);
 
-  it("should find an SQL file in the given directory", async () => {
-    const result = await findQueryFile({
-      dirPath: "path/to/dir",
-      query: "test",
-    });
+    const result = await findQueryFile(mockFilePath);
+
     expect(result).toEqual({
-      queryPath: "path/to/dir/test.sql",
-      sourcePath: "path/to/dir",
+      queryPath: "query.sql",
+      sourcePath: mockSourcePath,
     });
   });
 
-  it("should find an SQL file in a nested directory", async () => {
-    const result = await findQueryFile({
-      dirPath: "path/to/dir/nested",
-      query: "test",
-    });
-    expect(result).toEqual({
-      queryPath: "path/to/dir/nested/test.sql",
-      sourcePath: undefined,
-    });
+  it("should throw a QueryNotFoundError if the .sql file does not exist", async () => {
+    vi.mocked(fs.access).mockRejectedValue(new Error("File not found"));
+
+    await expect(findQueryFile(mockFilePath)).rejects.toThrow(
+      QueryNotFoundError
+    );
   });
 
-  it("should return undefined when the SQL file is not found", async () => {
-    const result = await findQueryFile({
-      dirPath: "path/to/dir",
-      query: "nonexistent",
-    });
-    expect(result).toBeUndefined();
+  it("should throw a SourceFileNotFoundError if the .yml file does not exist", async () => {
+    vi.mocked(fs.access).mockResolvedValue(); // Pretend the SQL file exists
+    // @ts-ignore
+    vi.mocked(fs.readdir).mockResolvedValue(["anotherfile.txt"]); // Pretending there's no YML file
+
+    await expect(findQueryFile(mockFilePath)).rejects.toThrow(
+      SourceFileNotFoundError
+    );
   });
 });

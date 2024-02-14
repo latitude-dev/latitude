@@ -1,53 +1,62 @@
-import { readdir } from "node:fs/promises";
+import * as fs from "fs/promises";
 import * as path from "path";
+
+export const ROOT_FOLDER = "static/latitude/queries";
 
 type Result = {
   queryPath: string;
-  sourcePath?: string;
+  sourcePath: string;
 };
 
-export default async function findQueryFile({
-  sourcePath,
-  dirPath,
-  query,
-}: {
-  sourcePath?: string;
-  dirPath: string;
-  query: string;
-}): Promise<Result | undefined> {
+export class QueryNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "QueryNotFoundError";
+  }
+}
+
+export class SourceFileNotFoundError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "SourceFileNotFoundError";
+  }
+}
+
+export default async function findQueryFile(filePath: string): Promise<Result> {
+  let sourcePath;
+  let queryPath = path.join(ROOT_FOLDER, filePath) + ".sql";
+
   try {
-    const dirents = await readdir(dirPath, { withFileTypes: true });
-    const hasSource = dirents.find(
-      (dirent) => dirent.isFile() && dirent.name.includes(".yml"),
-    );
-    const currentSourcePath = hasSource ? dirPath : sourcePath;
-    const folders = [];
-
-    for (const dirent of dirents) {
-      const fullPath = path.join(dirPath, dirent.name);
-
-      if (dirent.isFile() && dirent.name === `${query}.sql`) {
-        // SQL file found
-        return { queryPath: fullPath, sourcePath: currentSourcePath };
-      } else if (dirent.isDirectory()) {
-        folders.push(fullPath);
-      }
-    }
-
-    // Recursively search through all subdirectories
-    for (const folder of folders) {
-      const result = await findQueryFile({
-        sourcePath: currentSourcePath,
-        dirPath: folder,
-        query,
-      });
-
-      if (result) return result;
-    }
-
-    // If no file found after checking all entries
-    return;
+    await fs.access(queryPath);
   } catch (err) {
-    throw err; // Re-throw the error to be handled by the caller
+    throw new QueryNotFoundError(`Query file not found at ${filePath}`);
+  }
+
+  // Start from the directory of the .sql file and iterate upwards.
+  let currentDir = path.dirname(queryPath);
+
+  while (currentDir.includes(ROOT_FOLDER)) {
+    // Stop if the root directory is reached
+    // Try to find a .yml file in the current directory
+    const files = await fs.readdir(currentDir);
+    const ymlFile = files.find(
+      (file) => file.endsWith(".yml") || file.endsWith(".yaml")
+    );
+
+    if (ymlFile) {
+      sourcePath = path.join(currentDir, ymlFile);
+      break; // YML file found, break out of the loop
+    }
+
+    currentDir = path.dirname(currentDir);
+  }
+
+  if (sourcePath) {
+    return {
+      queryPath: path.relative(path.dirname(sourcePath), queryPath),
+      sourcePath,
+    };
+  } else {
+    throw new SourceFileNotFoundError("Source file not found");
   }
 }
