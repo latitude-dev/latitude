@@ -2,9 +2,9 @@ import {
   type ResolvedParam,
   type CompiledQuery,
   type QueryParams,
-  type QueryResult,
-  DataType,
 } from './types'
+import QueryResult from '@latitude-sdk/query_result'
+import { DataType } from '@latitude-sdk/query_result'
 import { compile, SyntaxError } from './compiler'
 import { describe, it, expect, afterEach } from 'vitest'
 
@@ -19,11 +19,23 @@ const clearFakeQueries = () => {
   Object.keys(fakeQueries).forEach((key) => delete fakeQueries[key])
 }
 
+const expectedQueryResult = new QueryResult({
+  rowCount: 0,
+  fields: [],
+  rows: [],
+})
+
+const expectQueryResult = (queryResult: QueryResult): void => {
+  expectedQueryResult.rowCount = queryResult.rowCount
+  expectedQueryResult.fields = queryResult.fields
+  expectedQueryResult.rows = queryResult.rows
+}
+
 const compilerFns = {
   resolveFn: (
     name: string | undefined,
     value: unknown,
-    resolvedParams: ResolvedParam[],
+    _: ResolvedParam[],
   ): ResolvedParam => {
     return { name, value, resolvedAs: `$[[${value}]]` }
   },
@@ -31,7 +43,7 @@ const compilerFns = {
     return fakeQueries[queryPath]
   },
   runQueryFn: async (_: CompiledQuery): Promise<QueryResult> => {
-    return {
+    return new QueryResult({
       rowCount: 1,
       fields: [
         {
@@ -40,7 +52,7 @@ const compilerFns = {
         },
       ],
       rows: [['foo']],
-    }
+    })
   },
 }
 
@@ -51,235 +63,484 @@ const compileQuery = (queryPath: string, params: QueryParams = {}) => {
   })
 }
 
-describe('compile function', async () => {
-  afterEach(() => {
-    clearFakeQueries()
+describe('parameterisation of interpolated values', async () => {
+  afterEach(clearFakeQueries)
+
+  it('resolves simple values', async () => {
+    const sql = '{5} {"foo"}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[5]] $[[foo]]')
   })
 
-  it('returns SQL without parameters as is', async () => {
-    const sql = 'SELECT * FROM table'
+  it('resolves results of expressions', async () => {
+    const sql = '{5 + 5} {"foo" + "var"}'
     const queryPath = addFakeQuery(sql)
-    const result = await compile({
-      queryRequest: { queryPath },
-      ...compilerFns,
-    })
+    const result = await compileQuery(queryPath, { column: 5 })
 
-    expect(result.sql).toBe(sql)
+    expect(result.sql).toBe('$[[10]] $[[foovar]]')
   })
 
-  it('fails when a parameter is not provided', async () => {
-    const sql = 'SELECT * FROM table WHERE column = {param("column")}'
+  it('resolves results of function calls', async () => {
+    const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    const params: QueryParams = {}
-    const action = () => compileQuery(queryPath, params)
+    const result = await compileQuery(queryPath, { foo: 'var' })
+
+    expect(result.sql).toBe('$[[var]]')
+  })
+})
+
+describe('variable assignment', async () => {
+  it('can define variables', async () => {
+    const sql = '{foo = 5} {foo}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[5]]')
+  })
+
+  it('can define constants', async () => {
+    const sql = '{@const foo = 5} {foo}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[5]]')
+  })
+
+  it('can update variables', async () => {
+    const sql = '{foo = 5} {foo += 2} {foo}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[7]]')
+  })
+
+  it('cannot update constants', async () => {
+    const sql = '{@const foo = 5} {foo += 2}'
+    const queryPath = addFakeQuery(sql)
+    const action = () => compileQuery(queryPath)
 
     await expect(action()).rejects.toThrow(SyntaxError)
   })
 
-  it('compiles SQL with simple parameters correctly', async () => {
-    const sql =
-      'SELECT * FROM table WHERE column = {param("column", "default")}'
+  it('cannot update variables that are not defined', async () => {
+    const sql = '{foo += 2}'
     const queryPath = addFakeQuery(sql)
-    const params = { column: 'value' }
-    const result = await compileQuery(queryPath, params)
+    const action = () => compileQuery(queryPath)
 
-    expect(result.sql).toBe('SELECT * FROM table WHERE column = $[[value]]')
+    await expect(action()).rejects.toThrow(SyntaxError)
   })
 
-  it('allows for simple arithmetic operations', async () => {
-    const operations = [
-      [5, '+', 1, 6],
-      [5, '-', 1, 4],
-      [5, '*', 2, 10],
-      [5, '/', 2, 2.5],
-      [5, '%', 2, 1],
-    ]
-
-    for (const [left, operator, right, expected] of operations) {
-      const sql = `SELECT * FROM table WHERE column = {param("column") ${operator} ${right}}`
-      const queryPath = addFakeQuery(sql)
-      const params = { column: left }
-      const result = await compileQuery(queryPath, params)
-
-      expect(result.sql).toBe(
-        `SELECT * FROM table WHERE column = $[[${expected}]]`,
-      )
-    }
-  })
-
-  it('allows for simple logical operations', async () => {
-    const operations = [
-      [true, '&&', true, true],
-      [true, '&&', false, false],
-      [false, '&&', true, false],
-      [false, '&&', false, false],
-      [true, '||', true, true],
-      [true, '||', false, true],
-      [false, '||', true, true],
-      [false, '||', false, false],
-    ]
-
-    for (const [left, operator, right, expected] of operations) {
-      const sql = `SELECT * FROM table WHERE column = {param("column") ${operator} ${right}}`
-      const queryPath = addFakeQuery(sql)
-      const params = { column: left }
-      const result = await compileQuery(queryPath, params)
-
-      expect(result.sql).toBe(
-        `SELECT * FROM table WHERE column = $[[${expected}]]`,
-      )
-    }
-  })
-
-  it('allows for simple comparison operations', async () => {
-    const operations = [
-      [5, '>', 1, true],
-      [5, '>=', 5, true],
-      [5, '<', 10, true],
-      [5, '<=', 5, true],
-      [5, '==', 5, true],
-      [5, '!=', 5, false],
-    ]
-
-    for (const [left, operator, right, expected] of operations) {
-      const sql = `SELECT * FROM table WHERE column = {param("column") ${operator} ${right}}`
-      const queryPath = addFakeQuery(sql)
-      const params = { column: left }
-      const result = await compileQuery(queryPath, params)
-
-      expect(result.sql).toBe(
-        `SELECT * FROM table WHERE column = $[[${expected}]]`,
-      )
-    }
-  })
-
-  it('allows for simple nullish coalescing operations', async () => {
-    const operations = [
-      [5, '??', 1, 5],
-      [null, '??', 1, 1],
-      [undefined, '??', 1, 1],
-    ]
-
-    for (const [left, operator, right, expected] of operations) {
-      const sql = `SELECT * FROM table WHERE column = {param("column") ${operator} ${right}}`
-      const queryPath = addFakeQuery(sql)
-      const params = { column: left }
-      const result = await compileQuery(queryPath, params)
-
-      expect(result.sql).toBe(
-        `SELECT * FROM table WHERE column = $[[${expected}]]`,
-      )
-    }
-  })
-
-  it('allows conditional expressions', async () => {
-    const sql = `SELECT * FROM table {#if param("limit")} LIMIT {param("limit")} {/if}`
+  it('variables defined in an inner scope are not available in the outer scope', async () => {
+    const sql = '{#if true} {foo = 5} {/if} {foo}'
     const queryPath = addFakeQuery(sql)
-    const result1 = await compileQuery(queryPath, { limit: 5 })
-    const result2 = await compileQuery(queryPath, { limit: 0 })
-    const result3 = await compileQuery(queryPath, { limit: undefined })
+    const action = () => compileQuery(queryPath)
 
-    expect(result1.sql).toBe('SELECT * FROM table LIMIT $[[5]]')
-    expect(result2.sql).toBe('SELECT * FROM table')
-    expect(result3.sql).toBe('SELECT * FROM table')
+    await expect(action()).rejects.toThrow(SyntaxError)
   })
 
-  it('allows else statements', async () => {
-    const sql = `SELECT * FROM table {#if param("limit", 0)} LIMIT {param("limit")} {:else} OFFSET {param("offset")} {/if}`
+  it('variables can be modified from an inner scope', async () => {
+    const sql = '{foo = 5} {#if true} {foo += 2} {/if} {foo}'
     const queryPath = addFakeQuery(sql)
-    const result1 = await compileQuery(queryPath, { limit: 5 })
-    const result2 = await compileQuery(queryPath, { offset: 10 })
+    const result = await compileQuery(queryPath)
 
-    expect(result1.sql).toBe('SELECT * FROM table LIMIT $[[5]]')
-    expect(result2.sql).toBe('SELECT * FROM table OFFSET $[[10]]')
+    expect(result.sql).toBe('$[[7]]')
   })
+})
 
-  it('allows nested conditional expressions', async () => {
-    const sql = `SELECT * FROM table {#if param("limit")} LIMIT {param("limit")} {#if param("offset")} OFFSET {param("offset")} {/if} {/if}`
+describe('conditional expressions', async () => {
+  afterEach(clearFakeQueries)
+
+  it('prints if content only when true', async () => {
+    const sql = '{#if param("foo")} var {/if}'
     const queryPath = addFakeQuery(sql)
-    const result1 = await compileQuery(queryPath, { limit: 5, offset: 10 })
-    const result2 = await compileQuery(queryPath, { limit: 5, offset: 0 })
-    const result3 = await compileQuery(queryPath, { limit: 0, offset: 10 })
+    const result1 = await compileQuery(queryPath, { foo: true })
+    const result2 = await compileQuery(queryPath, { foo: false })
 
-    expect(result1.sql).toBe('SELECT * FROM table LIMIT $[[5]] OFFSET $[[10]]')
-    expect(result2.sql).toBe('SELECT * FROM table LIMIT $[[5]]')
-    expect(result3.sql).toBe('SELECT * FROM table')
+    expect(result1.sql).toBe('var')
+    expect(result2.sql).toBe('')
   })
 
-  it('allows each loops', async () => {
-    const sql = `SELECT {#each param("columns") as column_name, index} {index} AS {column_name}, {/each}`
+  it('prints else content when false', async () => {
+    const sql = '{#if param("foo")} lorem {:else} impsum {/if}'
     const queryPath = addFakeQuery(sql)
-    const params = { columns: ['column_1', 'column_2', 'column_3'] }
-    const result = await compileQuery(queryPath, params)
+    const result1 = await compileQuery(queryPath, { foo: true })
+    const result2 = await compileQuery(queryPath, { foo: false })
 
-    expect(result.sql).toBe(
-      'SELECT ' +
-        params['columns']
-          .map((column_name, index) => `$[[${index}]] AS $[[${column_name}]], `)
-          .join('')
-          .trim(),
-    )
+    expect(result1.sql).toBe('lorem')
+    expect(result2.sql).toBe('impsum')
   })
 
-  it('allows each else statements', async () => {
-    const sql = `SELECT {#each param("columns") as column_name, index} {index} AS {column_name}, {:else} * {/each}`
+  it('can define multiple branches', async () => {
+    const sql = '{#if param("branch") == 1} 1 {:else if param("branch") == 2} 2 {:else} 3 {/if}'
     const queryPath = addFakeQuery(sql)
-    const result1 = await compileQuery(queryPath, {
-      columns: ['column_1', 'column_2', 'column_3'],
-    })
-    const result2 = await compileQuery(queryPath, { columns: [] })
+    const result1 = await compileQuery(queryPath, { branch: 1 })
+    const result2 = await compileQuery(queryPath, { branch: 2 })
+    const result3 = await compileQuery(queryPath, { branch: 3 })
 
-    expect(result1.sql).toBe(
-      'SELECT $[[0]] AS $[[column_1]], $[[1]] AS $[[column_2]], $[[2]] AS $[[column_3]],',
-    )
-    expect(result2.sql).toBe('SELECT *')
+    expect(result1.sql).toBe('1')
+    expect(result2.sql).toBe('2')
+    expect(result3.sql).toBe('3')
   })
 
-  it('allows defining constants', async () => {
-    const sql1 = `SELECT * FROM table LIMIT {limit}`
-    const sql2 = `{@const limit = 5} SELECT * FROM table LIMIT {limit}`
+  it('does not update any variables in an unused branch', async () => {
+    const sql = '{foo = 5} {#if param("var")} {foo += 2} {:else} {foo += 3} {/if} {foo}'
+    const queryPath = addFakeQuery(sql)
+    const result1 = await compileQuery(queryPath, { var: true })
+    const result2 = await compileQuery(queryPath, { var: false })
+
+    expect(result1.sql).toBe('$[[7]]')
+    expect(result2.sql).toBe('$[[8]]')
+  })
+
+  it('respects variable scope', async () => {
+    const sql1 = '{#if true} {foo = 5} {/if} {foo}'
+    const sql2 = '{foo = 5} {#if true} {foo += 1} {/if} {foo}'
+    const sql3 = '{foo = 5} {#if true} {foo = 7} {/if} {foo}'
     const queryPath1 = addFakeQuery(sql1)
     const queryPath2 = addFakeQuery(sql2)
-
+    const queryPath3 = addFakeQuery(sql3)
     const action1 = () => compileQuery(queryPath1)
-    await expect(action1()).rejects.toThrow(SyntaxError)
-
     const result2 = await compileQuery(queryPath2)
-    expect(result2.sql).toBe(`SELECT * FROM table LIMIT $[[5]]`)
+    const result3 = await compileQuery(queryPath3)
+
+    await expect(action1()).rejects.toThrow(SyntaxError)
+    expect(result2.sql).toBe('$[[6]]')
+    expect(result3.sql).toBe('$[[7]]')
+  })
+})
+
+describe('each loops', async () => {
+  afterEach(clearFakeQueries)
+
+  it('prints each content for each element in the array', async () => {
+    const sql = "{#each ['a', 'b', 'c'] as element} {element} {/each}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[a]]$[[b]]$[[c]]')
   })
 
-  it('can interpolate different queries', async () => {
-    const mainQuery = `SELECT id FROM {ref("referenced_query")}`
-    const refQuery = `SELECT * FROM column`
+  it('gives access to the index of the element', async () => {
+    const sql = "{#each ['a', 'b', 'c'] as element, index} {index} {/each}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[0]]$[[1]]$[[2]]')
+  })
+
+  it('replaces a variable with the value of the element', async () => {
+    const sql = "{#each ['a', 'b', 'c'] as element} {element} {/each}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[a]]$[[b]]$[[c]]')
+  })
+
+  it('prints else content when the array is empty', async () => {
+    const sql = "{#each [] as element} {element} {:else} var {/each}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('var')
+  })
+
+  it('prints else content when the element is not an array', async () => {
+    const sql = "{#each 5 as element} {element} {:else} var {/each}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('var')
+  })
+
+  it('does not update any variables in an unused branch', async () => {
+    const sql = "{foo = 5} {#each ['a', 'b', 'c'] as element} {:else} {foo += 2} {/each} {foo}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath, { columns: ['a', 'b', 'c'] })
+
+    expect(result.sql).toBe('$[[5]]')
+  })
+
+  it('respects variable scope', async () => {
+    const sql1 = "{#each ['a', 'b', 'c'] as element} {foo = 5} {/each} {foo}"
+    const sql2 = "{foo = 5} {#each ['a', 'b', 'c'] as element} {foo = 7} {/each} {foo}"
+    const sql3 = "{foo = 5} {#each [1, 2, 3] as element} {foo += element} {/each} {foo}"
+    const queryPath1 = addFakeQuery(sql1)
+    const queryPath2 = addFakeQuery(sql2)
+    const queryPath3 = addFakeQuery(sql3)
+    const action1 = () => compileQuery(queryPath1)
+    const result2 = await compileQuery(queryPath2)
+    const result3 = await compileQuery(queryPath3)
+
+    await expect(action1()).rejects.toThrow(SyntaxError)
+    expect(result2.sql).toBe('$[[7]]')
+    expect(result3.sql).toBe('$[[11]]')
+  })
+})
+
+describe('operators', async () => {
+  afterEach(clearFakeQueries)
+
+  it('correctly evaluates binary expressions', async () => {
+    const expressions: [string, any][] = [
+      ["2 == 2", true],
+      ["2 == 3", false],
+      ["2 == 'cat'", false],
+      ["2 == '2'", true],
+      ["2 != 2", false],
+      ["2 != 3", true],
+      ["2 === 2", true],
+      ["2 === '2'", false],
+      ["2 !== 2", false],
+      ["2 !== '2'", true],
+      // ["2 < 2", false],
+      // ["2 < 3", true],
+      // ["2 < 1", false],
+      // ["2 <= 2", true],
+      // ["2 <= 3", true],
+      // ["2 <= 1", false],
+      ["2 > 2", false],
+      ["2 > 3", false],
+      ["2 > 1", true],
+      ["2 >= 2", true],
+      ["2 >= 3", false],
+      ["2 >= 1", true],
+      // ["2 << 2", 8],
+      ["2 >> 2", 0],
+      ["2 >>> 2", 0],
+      ["2 + 3", 5],
+      ["2 - 3", -1],
+      ["2 * 3", 6],
+      ["2 / 3", 2 / 3],
+      ["2 % 3", 2],
+      ["2 | 3", 3],
+      ["2 ^ 3", 1],
+      ["2 & 3", 2],
+      ["'cat' in {cat: 1, dog: 2}", true],
+      ["'cat' in {dog: 1, hamster: 2}", false],
+    ]
+    for (const [expression, expected] of expressions) {
+      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')');
+      const sql = `${cleanExpression} = {${expression}}`
+      const queryPath = addFakeQuery(sql)
+      const result = await compileQuery(queryPath)
+
+      expect(result.sql).toBe(`${cleanExpression} = $[[${expected}]]`)
+    }
+  })
+
+  it('correctly evaluates logical expressions', async () => {
+    const expressions = [
+      ["true && true", true],
+      ["true && false", false],
+      ["false && true", false],
+      ["false && false", false],
+      ["true || true", true],
+      ["true || false", true],
+      ["false || true", true],
+      ["false || false", false],
+      ["false ?? true", false],
+      ["null ?? true", true]
+    ]
+    for (const [expression, expected] of expressions) {
+      const sql = `${expression} = {${expression}}`
+      const queryPath = addFakeQuery(sql)
+      const result = await compileQuery(queryPath)
+
+      expect(result.sql).toBe(`${expression} = $[[${expected}]]`)
+    }
+  })
+
+  it('correctly evaluates unary expressions', async () => {
+    const expressions = [
+      ["-2", -2],
+      ["+2", 2],
+      ["!true", false],
+      ["~2", ~2],
+      ["typeof 2", 'number'],
+      ["void 2", undefined]
+    ]
+    for (const [expression, expected] of expressions) {
+      const sql = `${expression} = {${expression}}`
+      const queryPath = addFakeQuery(sql)
+      const result = await compileQuery(queryPath)
+
+      expect(result.sql).toBe(`${expression} = $[[${expected}]]`)
+    }
+  })
+
+  it('correctly evaluates member expressions', async () => {
+    const sql = "{param('foo').bar}"
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath, { foo: { bar: 'var' } })
+
+    expect(result.sql).toBe('$[[var]]')
+  })
+
+  it('correctly evaluates assignment expressions', async () => {
+    const expressions: [string, any, any][] = [
+      ["foo += 2", 3, 5],
+      ["foo -= 2", 3, 1],
+      ["foo *= 2", 3, 6],
+      ["foo /= 2", 3, 1.5],
+      ["foo %= 2", 3, 1],
+      // ["foo <<= 2", 3, 12],
+      ["foo >>= 2", 3, 0],
+      ["foo >>>= 2", 3, 0],
+      ["foo |= 2", 3, 3],
+      ["foo ^= 2", 3, 1],
+      ["foo &= 2", 3, 2]
+    ]
+    for (const [expression, initial, expected] of expressions) {
+      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')');
+      const sql = `{foo = ${initial}} {${expression}} ${cleanExpression} -> {foo}`
+      const queryPath = addFakeQuery(sql)
+      const result = await compileQuery(queryPath)
+
+      expect(result.sql).toBe(`${cleanExpression} -> $[[${expected}]]`)
+    }
+  })
+
+  it('can evaluate complex expressions respecting operator precedence', async () => {
+    const expressions: [string, any][] = [
+      ["2 + 3 * 4", 14],
+      ["2 * 3 + 4", 10],
+      ["2 * (3 + 4)", 14],
+      ["2 + 3 * 4 / 2", 8],
+      ["2 + 3 * 4 % 2", 2],
+      ["2 + 3 * 4 | 2", 14],
+      ["2 + 3 * 4 ^ 2", 12],
+      ["2 + 3 * 4 & 2", 2],
+      ["2 + 3 * 4 === 14", true],
+      ["2 + 3 * 4 !== 14", false],
+      ["2 + 3 * 4 == 14", true],
+      ["2 + 3 * 4 != 14", false],
+      ["'a' + 'b' in {ab: 1, bc: 2}", true],
+      ["'a' + 'b' in {bc: 1, cd: 2}", false],
+      ["'a' + 'b' in {ab: 1, bc: 2} && 'a' + 'b' in {bc: 1, cd: 2}", false],
+      ["'a' + 'b' in {ab: 1, bc: 2} || 'a' + 'b' in {bc: 1, cd: 2}", true],
+    ]
+    for (const [expression, expected] of expressions) {
+      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')');
+      const sql = `${cleanExpression} = {${expression}}`
+      const queryPath = addFakeQuery(sql)
+      const result = await compileQuery(queryPath)
+
+      expect(result.sql).toBe(`${cleanExpression} = $[[${expected}]]`)
+    }
+  })
+})
+
+describe('params function', async () => {
+  afterEach(clearFakeQueries)
+
+  it('returns the value of a parameter', async () => {
+    const sql = '{param("foo")}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath, { foo: 'var' })
+
+    expect(result.sql).toBe('$[[var]]')
+  })
+
+  it('returns the default value when the parameter is not provided', async () => {
+    const sql = '{param("foo", "default")}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe('$[[default]]')
+  })
+
+  it('returns the given value even if it is null', async () => {
+    const sql = '{param("foo", "default")}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath, { foo: null })
+
+    expect(result.sql).toBe('$[[null]]')
+  })
+
+  it('throws an error when the parameter is not provided and there is no default value', async () => {
+    const sql = '{param("foo")}'
+    const queryPath = addFakeQuery(sql)
+    const action = () => compileQuery(queryPath)
+
+    await expect(action()).rejects.toThrow(SyntaxError)
+  })
+
+  it('parametrises the value when called as interpolation', async () => {
+    const sql = '{param("foo")}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath, { foo: 'var' })
+
+    expect(result.sql).toBe('$[[var]]')
+  })
+
+  it('returns the actual value when called inside a logical expression', async () => {
+    const sql = '{param("foo") + 3}'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath, { foo: 2 })
+
+    expect(result.sql).toBe('$[[5]]')
+  })
+})
+
+describe('ref function', async () => {
+  afterEach(clearFakeQueries)
+
+  it('interpolates a subquery into the main query and wraps it in parentheses', async () => {
+    const mainQuery = 'main {ref("referenced_query")} end'
+    const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
     const result = await compileQuery(mainQueryPath)
-    expect(result.sql).toBe(`SELECT id FROM (SELECT * FROM column)`)
+    expect(result.sql).toBe('main (ref) end')
   })
 
-  it('can interpolate queries from different subdirectories', async () => {
-    const parentQuery = `SELECT id FROM {ref("child/query")}`
-    const childQuery = `SELECT * FROM column`
-    const parentQueryPath = addFakeQuery(parentQuery, 'parent/query')
-    addFakeQuery(childQuery, 'child/query')
-
-    const result = await compileQuery(parentQueryPath)
-    expect(result.sql).toBe(`SELECT id FROM (SELECT * FROM column)`)
-  })
-
-  it('fails when referencing a non-existing query', async () => {
-    const mainQuery = `SELECT id FROM {ref("referenced_query")}`
+  it('fails if query does not exist', async () => {
+    const mainQuery = 'main {ref("referenced_query")} end'
     const mainQueryPath = addFakeQuery(mainQuery)
 
     const action = () => compileQuery(mainQueryPath)
     await expect(action()).rejects.toThrow(SyntaxError)
   })
 
-  it('fails when there are cyclic references', async () => {
-    const mainQuery = `SELECT id FROM {ref("referenced_query")}`
-    const refQuery = `SELECT * FROM {ref("main_query")}`
-    const mainQueryPath = addFakeQuery(mainQuery, 'main_query')
+  it('fails if called inside a logical expression', async () => {
+    const mainQuery = "{result = {ref('referenced_query')}} {result}"
+    const mainQueryPath = addFakeQuery(mainQuery)
+
+    const action = () => compileQuery(mainQueryPath)
+    await expect(action()).rejects.toThrow(SyntaxError)
+  })
+})
+
+describe('run_query function', async () => {
+  afterEach(clearFakeQueries)
+
+  it('runs a subquery and returns it as a value', async () => {
+    expectQueryResult(new QueryResult({ rowCount: 1, fields: [], rows: [] }))
+    const mainQuery = "{result = run_query('referenced_query')} {result.rowCount}"
+    const refQuery = 'ref'
+    const mainQueryPath = addFakeQuery(mainQuery)
+    addFakeQuery(refQuery, 'referenced_query')
+
+    const result = await compileQuery(mainQueryPath)
+    expect(result.sql).toBe('$[[1]]')
+  })
+
+  it('fails if query does not exist', async () => {
+    const mainQuery = "{result = {run_query('referenced_query')}} {result.rowCount}"
+    const mainQueryPath = addFakeQuery(mainQuery)
+
+    const action = () => compileQuery(mainQueryPath)
+    await expect(action()).rejects.toThrow(SyntaxError)
+  })
+
+  it('fails if called as interpolation', async () => {
+    expectQueryResult(new QueryResult({ rowCount: 1, fields: [], rows: [] }))
+    const mainQuery = "{run_query('referenced_query')}"
+    const refQuery = 'ref'
+    const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
     const action = () => compileQuery(mainQueryPath)
