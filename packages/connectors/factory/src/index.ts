@@ -1,5 +1,5 @@
 import yaml from 'yaml'
-import fs from 'fs'
+import * as fs from 'fs'
 import path from 'path'
 import { type BaseConnector } from '@latitude-sdk/base-connector'
 import { PostgresConnector } from '@latitude-sdk/postgresql-connector'
@@ -14,7 +14,14 @@ export function createConnector(sourcePath: string): BaseConnector {
   }
 
   const file = fs.readFileSync(sourcePath, 'utf8')
-  const config = yaml.parse(file)
+  const config = yaml.parse(file, (key, value) => {
+    // if key starts with 'LATITUDE__
+    if (typeof value === 'string' && value.startsWith('LATITUDE__')) {
+      return process.env[value] || value
+    } else {
+      return value
+    }
+  })
 
   if (!config?.type) throw new Error(`Missing 'type' in configuration`)
   if (!config?.details) throw new Error(`Missing 'details' in configuration`)
@@ -27,7 +34,7 @@ export function createConnector(sourcePath: string): BaseConnector {
   const details = config.details
 
   if (!Object.values(ConnectorType).includes(type)) {
-    throw new Error('Unsupported connector type: ${config.type}')
+    throw new Error(`Unsupported connector type: ${config.type}`)
   }
 
   switch (type) {
