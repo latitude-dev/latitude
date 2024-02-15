@@ -9,6 +9,7 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
+    "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
@@ -16,9 +17,11 @@
     "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@latitude-sdk/base-connector": "workspace:*",
-    "@latitude-sdk/query_result": "workspace:*",
+    "@latitude-sdk/query_result": "workspace:*"
+  },
+  "dependencies": {
     "pg": "^8.11.3"
   },
   "main": "dist/index.js",

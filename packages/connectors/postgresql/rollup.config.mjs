@@ -18,5 +18,9 @@ export default {
       exclude: ['**/__tests__', '**/*.test.ts'],
     }),
   ],
-  external: ['@latitude-sdk/base-connector', 'pg'],
+  external: [
+    '@latitude-sdk/base-connector',
+    '@latitude-sdk/query_result',
+    'pg'
+  ],
 }

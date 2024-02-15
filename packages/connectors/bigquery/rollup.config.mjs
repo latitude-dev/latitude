@@ -19,11 +19,9 @@ export default {
     }),
   ],
   external: [
-    'svelte/compiler',
-    '@latitude-sdk/postgresql-connector',
-    '@latitude-sdk/bigquery-connector',
-    'yaml',
-    'fs',
-    'path',
+    '@latitude-sdk/base-connector',
+    '@latitude-sdk/query_result',
+    'google-auth-library',
+    '@google-cloud/bigquery',
   ],
 }

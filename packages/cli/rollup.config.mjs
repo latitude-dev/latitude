@@ -25,7 +25,9 @@ export default {
   plugins: [
     typescript(),
     commonjs(),
-    resolve(),
+    // The preferBuiltins option is required to resolve the built-in modules in
+    // Node.js over any installed packages in node_modules directory
+    resolve({ preferBuiltins: true }),
     replace({
       'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),

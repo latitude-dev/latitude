@@ -13,7 +13,7 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/base-connector": "workspace:*",
+    "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
@@ -22,6 +22,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@latitude-sdk/base-connector": "workspace:*",
+    "@latitude-sdk/bigquery-connector": "workspace:^",
     "@latitude-sdk/postgresql-connector": "workspace:*",
     "vitest": "^1.2.2",
     "yaml": "^2.3.4"
