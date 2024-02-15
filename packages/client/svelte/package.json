@@ -1,28 +1,68 @@
 {
   "name": "@latitude-sdk/svelte",
   "version": "0.0.1",
-  "type": "module",
   "scripts": {
-    "build": "rollup -c"
+    "dev": "vite dev",
+    "prepare": "svelte-kit sync",
+    "build": "vite build && pnpm run package",
+    "preview": "vite preview",
+    "package": "pnpm run prepare && svelte-package && publint",
+    "prepublishOnly": "pnpm run package",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "test": "vitest",
+    "lint": "eslint .",
+    "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
-  "peerDependencies": {
-    "svelte": "^4.2.10"
-  },
-  "devDependencies": {
-    "@latitude-sdk/typescript": "workspace:*",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "rollup": "^4.10.0",
-    "rollup-plugin-svelte": "^7.1.6",
-    "svelte-preprocess": "^5.1.3"
-  },
+  "type": "module",
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    "./Button": {
-      "import": "./dist/Button/index.js",
-      "types": "./dist/components/Button/index.d.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./dist/index.js"
     }
   },
-  "sideEffects": false
+  "files": [
+    "dist",
+    "!dist/**/*.test.*"
+  ],
+  "peerDependencies": {
+    "svelte": "^4.0.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.15",
+    "@storybook/addon-interactions": "^7.6.15",
+    "@storybook/addon-links": "^7.6.15",
+    "@storybook/addon-svelte-csf": "^4.1.1",
+    "@storybook/blocks": "^7.6.15",
+    "@storybook/svelte": "^7.6.15",
+    "@storybook/sveltekit": "^7.6.15",
+    "@storybook/test": "^7.6.15",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/package": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@types/eslint": "8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-storybook": "^0.6.15",
+    "eslint-plugin-svelte": "^2.35.1",
+    "prettier": "^3.1.1",
+    "prettier-plugin-svelte": "^3.1.2",
+    "publint": "^0.1.9",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "^7.6.15",
+    "svelte": "^4.2.7",
+    "svelte-check": "^3.6.0",
+    "svelte-preprocess": "^5.1.3",
+    "tslib": "^2.4.1",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.11",
+    "vitest": "^1.2.0"
+  }
 }
