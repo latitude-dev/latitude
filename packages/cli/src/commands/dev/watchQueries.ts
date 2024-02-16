@@ -9,7 +9,7 @@ const INTERNAL_QUERIES_FOLDER = path.join(
   APP_FOLDER,
   'static',
   'latitude',
-  'queries'
+  'queries',
 )
 
 export default function watchQueries(dir: string) {
@@ -33,8 +33,8 @@ export default function watchQueries(dir: string) {
         if (err) {
           return console.error(
             colors.red(
-              `File ${relativePath} could not be copied to ${destPath}: ${err}`
-            )
+              `File ${relativePath} could not be copied to ${destPath}: ${err}`,
+            ),
           )
         } else {
           console.log(colors.gray(`\n File ${relativePath} synced`))
@@ -44,7 +44,7 @@ export default function watchQueries(dir: string) {
       fs.unlink(destPath, (err) => {
         if (err) {
           console.error(
-            colors.red(`File ${destPath} could not be deleted: ${err}`)
+            colors.red(`File ${destPath} could not be deleted: ${err}`),
           )
         }
       })
@@ -65,8 +65,8 @@ export default function watchQueries(dir: string) {
     .on('error', (error: Error) => console.error(`Watcher error: ${error}`))
     .on('ready', () =>
       console.log(
-        colors.gray('Initial scan completed. Watching queries for changes...')
-      )
+        colors.gray('Initial scan completed. Watching queries for changes...'),
+      ),
     )
 
   // On exit remove contents in APP_FOLDER and close watcher

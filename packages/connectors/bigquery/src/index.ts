@@ -30,7 +30,7 @@ export class BigQueryConnector extends BaseConnector {
   resolve(
     name: string | undefined,
     value: unknown,
-    resolvedParams: ResolvedParam[]
+    resolvedParams: ResolvedParam[],
   ): ResolvedParam {
     if (name === undefined) {
       // Generate a random string for the name
@@ -43,7 +43,7 @@ export class BigQueryConnector extends BaseConnector {
     }
 
     const foundParam = resolvedParams.find(
-      (param) => param.name === name && param.value === value
+      (param) => param.name === name && param.value === value,
     )
 
     if (foundParam) return foundParam
@@ -73,7 +73,7 @@ export class BigQueryConnector extends BaseConnector {
             ({
               name: field.name,
               type: this.convertDataType(field.type),
-            }) as Field
+            }) as Field,
         ) || []
 
       return new QueryResult({
@@ -113,14 +113,14 @@ export class BigQueryConnector extends BaseConnector {
       (acc, param) => {
         if (param.name === undefined) {
           throw new InvalidParamError(
-            `Encountered a param without a name: ${param}`
+            `Encountered a param without a name: ${param}`,
           )
         }
 
         acc[param.name] = param.value
         return acc
       },
-      {} as Record<string, unknown>
+      {} as Record<string, unknown>,
     )
   }
 
@@ -135,7 +135,7 @@ export class BigQueryConnector extends BaseConnector {
 
   private convertDataType(
     dataTypeID: string | undefined,
-    fallbackType = DataType.Unknown
+    fallbackType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
       case 'BOOL':

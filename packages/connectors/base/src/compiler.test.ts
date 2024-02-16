@@ -173,7 +173,8 @@ describe('conditional expressions', async () => {
   })
 
   it('can define multiple branches', async () => {
-    const sql = '{#if param("branch") == 1} 1 {:else if param("branch") == 2} 2 {:else} 3 {/if}'
+    const sql =
+      '{#if param("branch") == 1} 1 {:else if param("branch") == 2} 2 {:else} 3 {/if}'
     const queryPath = addFakeQuery(sql)
     const result1 = await compileQuery(queryPath, { branch: 1 })
     const result2 = await compileQuery(queryPath, { branch: 2 })
@@ -185,7 +186,8 @@ describe('conditional expressions', async () => {
   })
 
   it('does not update any variables in an unused branch', async () => {
-    const sql = '{foo = 5} {#if param("var")} {foo += 2} {:else} {foo += 3} {/if} {foo}'
+    const sql =
+      '{foo = 5} {#if param("var")} {foo += 2} {:else} {foo += 3} {/if} {foo}'
     const queryPath = addFakeQuery(sql)
     const result1 = await compileQuery(queryPath, { var: true })
     const result2 = await compileQuery(queryPath, { var: false })
@@ -239,7 +241,7 @@ describe('each loops', async () => {
   })
 
   it('prints else content when the array is empty', async () => {
-    const sql = "{#each [] as element} {element} {:else} var {/each}"
+    const sql = '{#each [] as element} {element} {:else} var {/each}'
     const queryPath = addFakeQuery(sql)
     const result = await compileQuery(queryPath)
 
@@ -247,7 +249,7 @@ describe('each loops', async () => {
   })
 
   it('prints else content when the element is not an array', async () => {
-    const sql = "{#each 5 as element} {element} {:else} var {/each}"
+    const sql = '{#each 5 as element} {element} {:else} var {/each}'
     const queryPath = addFakeQuery(sql)
     const result = await compileQuery(queryPath)
 
@@ -255,7 +257,8 @@ describe('each loops', async () => {
   })
 
   it('does not update any variables in an unused branch', async () => {
-    const sql = "{foo = 5} {#each ['a', 'b', 'c'] as element} {:else} {foo += 2} {/each} {foo}"
+    const sql =
+      "{foo = 5} {#each ['a', 'b', 'c'] as element} {:else} {foo += 2} {/each} {foo}"
     const queryPath = addFakeQuery(sql)
     const result = await compileQuery(queryPath, { columns: ['a', 'b', 'c'] })
 
@@ -264,8 +267,10 @@ describe('each loops', async () => {
 
   it('respects variable scope', async () => {
     const sql1 = "{#each ['a', 'b', 'c'] as element} {foo = 5} {/each} {foo}"
-    const sql2 = "{foo = 5} {#each ['a', 'b', 'c'] as element} {foo = 7} {/each} {foo}"
-    const sql3 = "{foo = 5} {#each [1, 2, 3] as element} {foo += element} {/each} {foo}"
+    const sql2 =
+      "{foo = 5} {#each ['a', 'b', 'c'] as element} {foo = 7} {/each} {foo}"
+    const sql3 =
+      '{foo = 5} {#each [1, 2, 3] as element} {foo += element} {/each} {foo}'
     const queryPath1 = addFakeQuery(sql1)
     const queryPath2 = addFakeQuery(sql2)
     const queryPath3 = addFakeQuery(sql3)
@@ -284,15 +289,15 @@ describe('operators', async () => {
 
   it('correctly evaluates binary expressions', async () => {
     const expressions: [string, any][] = [
-      ["2 == 2", true],
-      ["2 == 3", false],
+      ['2 == 2', true],
+      ['2 == 3', false],
       ["2 == 'cat'", false],
       ["2 == '2'", true],
-      ["2 != 2", false],
-      ["2 != 3", true],
-      ["2 === 2", true],
+      ['2 != 2', false],
+      ['2 != 3', true],
+      ['2 === 2', true],
       ["2 === '2'", false],
-      ["2 !== 2", false],
+      ['2 !== 2', false],
       ["2 !== '2'", true],
       // ["2 < 2", false],
       // ["2 < 3", true],
@@ -300,28 +305,28 @@ describe('operators', async () => {
       // ["2 <= 2", true],
       // ["2 <= 3", true],
       // ["2 <= 1", false],
-      ["2 > 2", false],
-      ["2 > 3", false],
-      ["2 > 1", true],
-      ["2 >= 2", true],
-      ["2 >= 3", false],
-      ["2 >= 1", true],
+      ['2 > 2', false],
+      ['2 > 3', false],
+      ['2 > 1', true],
+      ['2 >= 2', true],
+      ['2 >= 3', false],
+      ['2 >= 1', true],
       // ["2 << 2", 8],
-      ["2 >> 2", 0],
-      ["2 >>> 2", 0],
-      ["2 + 3", 5],
-      ["2 - 3", -1],
-      ["2 * 3", 6],
-      ["2 / 3", 2 / 3],
-      ["2 % 3", 2],
-      ["2 | 3", 3],
-      ["2 ^ 3", 1],
-      ["2 & 3", 2],
+      ['2 >> 2', 0],
+      ['2 >>> 2', 0],
+      ['2 + 3', 5],
+      ['2 - 3', -1],
+      ['2 * 3', 6],
+      ['2 / 3', 2 / 3],
+      ['2 % 3', 2],
+      ['2 | 3', 3],
+      ['2 ^ 3', 1],
+      ['2 & 3', 2],
       ["'cat' in {cat: 1, dog: 2}", true],
       ["'cat' in {dog: 1, hamster: 2}", false],
     ]
     for (const [expression, expected] of expressions) {
-      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')');
+      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')')
       const sql = `${cleanExpression} = {${expression}}`
       const queryPath = addFakeQuery(sql)
       const result = await compileQuery(queryPath)
@@ -332,16 +337,16 @@ describe('operators', async () => {
 
   it('correctly evaluates logical expressions', async () => {
     const expressions = [
-      ["true && true", true],
-      ["true && false", false],
-      ["false && true", false],
-      ["false && false", false],
-      ["true || true", true],
-      ["true || false", true],
-      ["false || true", true],
-      ["false || false", false],
-      ["false ?? true", false],
-      ["null ?? true", true]
+      ['true && true', true],
+      ['true && false', false],
+      ['false && true', false],
+      ['false && false', false],
+      ['true || true', true],
+      ['true || false', true],
+      ['false || true', true],
+      ['false || false', false],
+      ['false ?? true', false],
+      ['null ?? true', true],
     ]
     for (const [expression, expected] of expressions) {
       const sql = `${expression} = {${expression}}`
@@ -354,12 +359,12 @@ describe('operators', async () => {
 
   it('correctly evaluates unary expressions', async () => {
     const expressions = [
-      ["-2", -2],
-      ["+2", 2],
-      ["!true", false],
-      ["~2", ~2],
-      ["typeof 2", 'number'],
-      ["void 2", undefined]
+      ['-2', -2],
+      ['+2', 2],
+      ['!true', false],
+      ['~2', ~2],
+      ['typeof 2', 'number'],
+      ['void 2', undefined],
     ]
     for (const [expression, expected] of expressions) {
       const sql = `${expression} = {${expression}}`
@@ -380,20 +385,20 @@ describe('operators', async () => {
 
   it('correctly evaluates assignment expressions', async () => {
     const expressions: [string, any, any][] = [
-      ["foo += 2", 3, 5],
-      ["foo -= 2", 3, 1],
-      ["foo *= 2", 3, 6],
-      ["foo /= 2", 3, 1.5],
-      ["foo %= 2", 3, 1],
+      ['foo += 2', 3, 5],
+      ['foo -= 2', 3, 1],
+      ['foo *= 2', 3, 6],
+      ['foo /= 2', 3, 1.5],
+      ['foo %= 2', 3, 1],
       // ["foo <<= 2", 3, 12],
-      ["foo >>= 2", 3, 0],
-      ["foo >>>= 2", 3, 0],
-      ["foo |= 2", 3, 3],
-      ["foo ^= 2", 3, 1],
-      ["foo &= 2", 3, 2]
+      ['foo >>= 2', 3, 0],
+      ['foo >>>= 2', 3, 0],
+      ['foo |= 2', 3, 3],
+      ['foo ^= 2', 3, 1],
+      ['foo &= 2', 3, 2],
     ]
     for (const [expression, initial, expected] of expressions) {
-      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')');
+      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')')
       const sql = `{foo = ${initial}} {${expression}} ${cleanExpression} -> {foo}`
       const queryPath = addFakeQuery(sql)
       const result = await compileQuery(queryPath)
@@ -404,25 +409,25 @@ describe('operators', async () => {
 
   it('can evaluate complex expressions respecting operator precedence', async () => {
     const expressions: [string, any][] = [
-      ["2 + 3 * 4", 14],
-      ["2 * 3 + 4", 10],
-      ["2 * (3 + 4)", 14],
-      ["2 + 3 * 4 / 2", 8],
-      ["2 + 3 * 4 % 2", 2],
-      ["2 + 3 * 4 | 2", 14],
-      ["2 + 3 * 4 ^ 2", 12],
-      ["2 + 3 * 4 & 2", 2],
-      ["2 + 3 * 4 === 14", true],
-      ["2 + 3 * 4 !== 14", false],
-      ["2 + 3 * 4 == 14", true],
-      ["2 + 3 * 4 != 14", false],
+      ['2 + 3 * 4', 14],
+      ['2 * 3 + 4', 10],
+      ['2 * (3 + 4)', 14],
+      ['2 + 3 * 4 / 2', 8],
+      ['2 + 3 * 4 % 2', 2],
+      ['2 + 3 * 4 | 2', 14],
+      ['2 + 3 * 4 ^ 2', 12],
+      ['2 + 3 * 4 & 2', 2],
+      ['2 + 3 * 4 === 14', true],
+      ['2 + 3 * 4 !== 14', false],
+      ['2 + 3 * 4 == 14', true],
+      ['2 + 3 * 4 != 14', false],
       ["'a' + 'b' in {ab: 1, bc: 2}", true],
       ["'a' + 'b' in {bc: 1, cd: 2}", false],
       ["'a' + 'b' in {ab: 1, bc: 2} && 'a' + 'b' in {bc: 1, cd: 2}", false],
       ["'a' + 'b' in {ab: 1, bc: 2} || 'a' + 'b' in {bc: 1, cd: 2}", true],
     ]
     for (const [expression, expected] of expressions) {
-      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')');
+      const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')')
       const sql = `${cleanExpression} = {${expression}}`
       const queryPath = addFakeQuery(sql)
       const result = await compileQuery(queryPath)
@@ -519,7 +524,8 @@ describe('run_query function', async () => {
 
   it('runs a subquery and returns it as a value', async () => {
     expectQueryResult(new QueryResult({ rowCount: 1, fields: [], rows: [] }))
-    const mainQuery = "{result = run_query('referenced_query')} {result.rowCount}"
+    const mainQuery =
+      "{result = run_query('referenced_query')} {result.rowCount}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
@@ -529,7 +535,8 @@ describe('run_query function', async () => {
   })
 
   it('fails if query does not exist', async () => {
-    const mainQuery = "{result = {run_query('referenced_query')}} {result.rowCount}"
+    const mainQuery =
+      "{result = {run_query('referenced_query')}} {result.rowCount}"
     const mainQueryPath = addFakeQuery(mainQuery)
 
     const action = () => compileQuery(mainQueryPath)
