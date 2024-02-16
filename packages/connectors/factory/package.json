@@ -24,6 +24,7 @@
   "dependencies": {
     "@latitude-sdk/base-connector": "workspace:*",
     "@latitude-sdk/bigquery-connector": "workspace:^",
+    "@latitude-sdk/mysql-connector": "workspace:^",
     "@latitude-sdk/postgresql-connector": "workspace:*",
     "vitest": "^1.2.2",
     "yaml": "^2.3.4"

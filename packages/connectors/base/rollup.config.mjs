@@ -7,15 +7,11 @@ export default {
       file: 'dist/index.js',
       sourcemap: true,
     },
-    {
-      file: 'dist/index.cjs',
-      format: 'cjs',
-      sourcemap: true,
-    }
   ],
-  plugins: [typescript({
-
-    exclude: ["**/__tests__", "**/*.test.ts"]
-  })],
+  plugins: [
+    typescript({
+      exclude: ['**/__tests__', '**/*.test.ts'],
+    }),
+  ],
   external: ['svelte/compiler', '@latitude-sdk/query_result', 'fs', 'path'],
 }
