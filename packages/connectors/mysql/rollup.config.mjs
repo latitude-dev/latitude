@@ -14,12 +14,9 @@ export default {
     }),
   ],
   external: [
-    'svelte/compiler',
-    '@latitude-sdk/postgresql-connector',
-    '@latitude-sdk/bigquery-connector',
-    '@latitude-sdk/mysql-connector',
-    'yaml',
+    '@latitude-sdk/base-connector',
+    '@latitude-sdk/query_result',
+    'mysql',
     'fs',
-    'path',
   ],
 }

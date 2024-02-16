@@ -165,6 +165,7 @@ class Compiler {
 
   resolve(value: unknown, name?: string): string {
     const resolvedParam = this.resolveFn(name, value, this.resolvedParams)
+
     if (
       !this.resolvedParams.some(
         (param) =>
@@ -175,6 +176,7 @@ class Compiler {
     ) {
       this.resolvedParams.push(resolvedParam)
     }
+
     return resolvedParam.resolvedAs
   }
 

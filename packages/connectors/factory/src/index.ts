@@ -4,10 +4,12 @@ import path from 'path'
 import { type BaseConnector } from '@latitude-sdk/base-connector'
 import { PostgresConnector } from '@latitude-sdk/postgresql-connector'
 import { BigQueryConnector } from '@latitude-sdk/bigquery-connector'
+import { MysqlConnector } from '@latitude-sdk/mysql-connector'
 
 export enum ConnectorType {
   Postgres = 'postgres',
   Bigquery = 'bigquery',
+  Mysql = 'mysql',
 }
 
 export function createConnector(sourcePath: string): BaseConnector {
@@ -44,6 +46,8 @@ export function createConnector(sourcePath: string): BaseConnector {
       return new PostgresConnector(path.dirname(sourcePath), details)
     case ConnectorType.Bigquery:
       return new BigQueryConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Mysql:
+      return new MysqlConnector(path.dirname(sourcePath), details)
   }
 
   throw new Error()
