@@ -3,9 +3,11 @@ import * as fs from 'fs'
 import path from 'path'
 import { type BaseConnector } from '@latitude-sdk/base-connector'
 import { PostgresConnector } from '@latitude-sdk/postgresql-connector'
+import { BigQueryConnector } from '@latitude-sdk/bigquery-connector'
 
 export enum ConnectorType {
   Postgres = 'postgres',
+  Bigquery = 'bigquery',
 }
 
 export function createConnector(sourcePath: string): BaseConnector {
@@ -14,8 +16,8 @@ export function createConnector(sourcePath: string): BaseConnector {
   }
 
   const file = fs.readFileSync(sourcePath, 'utf8')
-  const config = yaml.parse(file, (key, value) => {
-    // if key starts with 'LATITUDE__
+  const config = yaml.parse(file, (_, value) => {
+    // if key starts with 'LATITUDE__', replace it with the environment variable
     if (typeof value === 'string' && value.startsWith('LATITUDE__')) {
       return process.env[value] || value
     } else {
@@ -40,6 +42,8 @@ export function createConnector(sourcePath: string): BaseConnector {
   switch (type) {
     case ConnectorType.Postgres:
       return new PostgresConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Bigquery:
+      return new BigQueryConnector(path.dirname(sourcePath), details)
   }
 
   throw new Error()

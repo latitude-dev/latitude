@@ -1,8 +1,0 @@
-type: postgres
-details:
-  ssl: true
-  username: latitude
-  password: {% env('postgres_password') %}
-  host: localhost
-  post: 5432
-  database: latitude_development

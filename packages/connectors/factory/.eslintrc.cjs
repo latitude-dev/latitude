@@ -1,7 +1,9 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  extends: ["@latitude-dev/eslint-config/library.js"],
+  root: true,
+  extends: ['@latitude-sdk/sdk/eslint-config'],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     project: true,
   },
-};
+}
