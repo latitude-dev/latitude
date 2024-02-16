@@ -24,7 +24,7 @@ export class SourceFileNotFoundError extends Error {
 
 export default async function findQueryFile(filePath: string): Promise<Result> {
   let sourcePath
-  let queryPath = path.join(ROOT_FOLDER, filePath) + '.sql'
+  const queryPath = path.join(ROOT_FOLDER, filePath) + '.sql'
 
   try {
     await fs.access(queryPath)

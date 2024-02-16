@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeAll, afterEach } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
+import { Dirent } from 'fs'
 import * as fs from 'fs/promises'
 import { vi } from 'vitest'
 import findQueryFile, {
@@ -23,8 +24,10 @@ describe('findQueryFile', () => {
 
   it('should return the correct paths if the query file and source file exist', async () => {
     vi.mocked(fs.access).mockResolvedValue() // Pretend the file exists
-    // @ts-ignore
-    vi.mocked(fs.readdir).mockResolvedValue(['source.yml', 'anotherfile.txt'])
+    vi.mocked(fs.readdir).mockResolvedValue([
+      'source.yml' as unknown as Dirent,
+      'anotherfile.txt' as unknown as Dirent,
+    ])
 
     const result = await findQueryFile(mockFilePath)
 
@@ -44,8 +47,9 @@ describe('findQueryFile', () => {
 
   it('should throw a SourceFileNotFoundError if the .yml file does not exist', async () => {
     vi.mocked(fs.access).mockResolvedValue() // Pretend the SQL file exists
-    // @ts-ignore
-    vi.mocked(fs.readdir).mockResolvedValue(['anotherfile.txt']) // Pretending there's no YML file
+    vi.mocked(fs.readdir).mockResolvedValue([
+      'anotherfile.txt' as unknown as Dirent,
+    ]) // Pretending there's no YML file
 
     await expect(findQueryFile(mockFilePath)).rejects.toThrow(
       SourceFileNotFoundError,

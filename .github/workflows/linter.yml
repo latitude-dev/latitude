@@ -1,0 +1,36 @@
+name: Linter
+
+on:
+  pull_request:
+    branches: ['main']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x] # Specify node versions you want to test against
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        # the (--no-frozen-lockfile) flag is here for fixing:
+        # ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY  Broken lockfile
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Prettier
+        run: pnpm prettier
+
+      - name: Lint
+        run: pnpm lint
