@@ -5,7 +5,7 @@ export default {
   presets: [preset],
   content: [
     './src/**/*.{html,js,svelte,ts}',
-    './node_modules/@latitude-sdk/svelte/src/lib/components/ui/**/*.ts',
+    './node_modules/@latitude-sdk/svelte/src/lib/ui/**/*.ts',
   ],
   theme: {
     extend: {},

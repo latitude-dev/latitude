@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '@latitude-sdk/svelte/ui/button'
+  import Button from '@latitude-sdk/svelte/button'
 </script>
 
 <div class="h-full w-full flex items-center justify-center">

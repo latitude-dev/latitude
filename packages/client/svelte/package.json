@@ -2,30 +2,32 @@
   "name": "@latitude-sdk/svelte",
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite dev",
-    "build:vite": "vite build",
-    "build": "pnpm run build:vite && pnpm run package",
-    "preview": "vite preview",
-    "package": "pnpm run prepare && svelte-package && publint",
-    "prepublishOnly": "pnpm run package",
-    "prepare": "svelte-kit sync",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "dev:dummyApp": "vite dev",
     "test": "vitest",
     "lint": "eslint .",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "prepare": "svelte-kit sync",
+    "package": "pnpm run prepare && svelte-package && publint",
+    "build-storybook": "storybook build",
+    "build:vite": "vite build",
+    "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
+    "buildAndPackage": "pnpm run build:vite && pnpm run package",
+    "build": "pnpm run prebuild && pnpm run buildAndPackage",
+    "prepublishOnly": "pnpm run package"
   },
   "type": "module",
-  "main": "dist/index.js",
   "exports": {
-    "./theme/preset": "./tailwind.config.js",
     "./latitude.css": "./src/assets/latitude.css",
-    "./ui/*": {
-      "types": "./dist/components/ui/*/index.d.ts",
-      "import": "./dist/components/ui/*/index.js",
-      "svelte": "./dist/components/ui/*/index.svelte"
+    "./theme/preset": "./tailwind.config.js",
+    ".": {
+      "types": "./src/lib/index.ts",
+      "import": "./src/lib/index.ts"
+    },
+    "./*": {
+      "types": "./src/lib/ui/*/index.ts",
+      "import": "./src/lib/ui/*/index.ts",
+      "svelte": "./src/lib/ui/*/index.svelte"
     }
   },
   "files": [
@@ -39,6 +41,7 @@
     "svelte": "^4.0.0"
   },
   "devDependencies": {
+    "@latitude-sdk/eslint-config": "workspace:*",
     "@storybook/addon-essentials": "^7.6.16",
     "@storybook/addon-interactions": "^7.6.16",
     "@storybook/addon-links": "^7.6.16",
@@ -57,6 +60,8 @@
     "@typescript-eslint/parser": "^6.0.0",
     "autoprefixer": "^10.4.16",
     "eslint": "^8.56.0",
+    "eslint-plugin-jsonc": "^2.13.0",
+    "eslint-plugin-local-rules": "^2.0.1",
     "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-svelte": "^2.35.1",
     "postcss": "^8.4.32",
@@ -64,7 +69,6 @@
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
     "prettier-plugin-tailwindcss": "^0.5.9",
-    "@latitude-sdk/eslint-config": "workspace:*",
     "publint": "^0.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

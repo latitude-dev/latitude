@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Button from '$lib/components/ui/button'
+  import Button from '$lib/ui/button'
   import Cute from '$lib/components/cute/index.svelte'
 </script>
 
