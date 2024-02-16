@@ -7,6 +7,11 @@ export default {
       file: 'dist/index.js',
       sourcemap: true,
     },
+    {
+      file: 'dist/index.cjs',
+      format: 'cjs',
+      sourcemap: true,
+    },
   ],
   plugins: [
     typescript({
@@ -14,13 +19,8 @@ export default {
     }),
   ],
   external: [
-    'svelte/compiler',
-    '@latitude-sdk/postgresql-connector',
-    '@latitude-sdk/bigquery-connector',
-    '@latitude-sdk/mysql-connector',
-    '@latitude-sdk/snowflake-connector',
-    'yaml',
-    'fs',
-    'path',
+    '@latitude-sdk/base-connector',
+    '@latitude-sdk/query_result',
+    'snowflake-sdk',
   ],
 }
