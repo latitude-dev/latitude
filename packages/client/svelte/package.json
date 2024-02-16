@@ -4,7 +4,8 @@
   "scripts": {
     "dev:dummyApp": "vite dev",
     "test": "vitest",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
     "prepare": "svelte-kit sync",
@@ -18,8 +19,7 @@
   },
   "type": "module",
   "exports": {
-    "./latitude.css": "./src/assets/latitude.css",
-    "./theme/preset": "./tailwind.config.js",
+    "./tailwind.preset": "./tailwind.config.js",
     ".": {
       "types": "./src/lib/index.ts",
       "import": "./src/lib/index.ts"
@@ -31,12 +31,16 @@
     }
   },
   "files": [
-    "src/assets/latitude.css",
     "tailwind.config.js",
     "dist",
     "!dist/**/*.test.*",
     "!dist/**/*.stories.svelte"
   ],
+  "dependencies": {
+    "bits-ui": "^0.18.1",
+    "lucide-svelte": "^0.330.0",
+    "@latitude-sdk/client": "workspace:*"
+  },
   "peerDependencies": {
     "svelte": "^4.0.0"
   },
@@ -56,37 +60,22 @@
     "@sveltejs/package": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/eslint": "8.56.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "autoprefixer": "^10.4.16",
-    "eslint": "^8.56.0",
     "eslint-plugin-jsonc": "^2.13.0",
     "eslint-plugin-local-rules": "^2.0.1",
-    "eslint-plugin-storybook": "^0.6.15",
-    "eslint-plugin-svelte": "^2.35.1",
-    "postcss": "^8.4.32",
-    "postcss-load-config": "^5.0.2",
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
-    "prettier-plugin-tailwindcss": "^0.5.9",
     "publint": "^0.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.6.16",
     "svelte": "^4.2.7",
+    "tailwindcss": "^3.3.6",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "svelte-check": "^3.6.0",
     "svelte-preprocess": "^5.1.3",
-    "tailwindcss": "^3.3.6",
     "tslib": "^2.4.1",
     "typescript": "^5.0.0",
     "vite": "^5.0.11",
     "vitest": "^1.2.0"
-  },
-  "dependencies": {
-    "bits-ui": "^0.18.1",
-    "clsx": "^2.1.0",
-    "lucide-svelte": "^0.330.0",
-    "tailwind-merge": "^2.2.1",
-    "tailwind-variants": "^0.2.0"
   }
 }

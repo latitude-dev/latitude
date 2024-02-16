@@ -11,7 +11,6 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",
     "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/query_result": "workspace:*",

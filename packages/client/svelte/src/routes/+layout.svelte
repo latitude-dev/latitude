@@ -1,5 +1,5 @@
 <script>
-  import '../assets/latitude.css'
+  import '../assets/app.css'
 </script>
 
 <slot />

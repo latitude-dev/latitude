@@ -2,7 +2,7 @@
   import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
   import Cute from '$lib/components/cute/index.svelte'
   import Button from './index.svelte';
-  import { BUTTON_VARIANTS, BUTTON_SIZES } from './index'
+  import { theme } from '@latitude-sdk/client'
 
   export const meta: Meta = {
     title: 'Button',
@@ -10,11 +10,11 @@
     tags: ['autodocs'],
     argTypes: {
       variant: {
-        options: BUTTON_VARIANTS,
+        options: theme.ui.button.BUTTON_VARIANTS,
         control: { type: 'select' }
       },
       size: {
-        options: BUTTON_SIZES,
+        options: theme.ui.button.BUTTON_SIZES,
         control: { type: 'select' }
       }
     },
