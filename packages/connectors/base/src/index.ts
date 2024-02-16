@@ -1,7 +1,8 @@
 import path from 'path'
 import fs from 'fs'
-import { compile } from './compiler'
+import compile from './compile'
 import type QueryResult from '@latitude-sdk/query_result'
+import CompileError from './compile/error/error'
 
 import {
   type QueryRequest,
@@ -65,4 +66,4 @@ export abstract class BaseConnector {
 }
 
 export * from './types'
-export { SyntaxError } from './compiler'
+export { CompileError }

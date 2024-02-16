@@ -13,10 +13,11 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/typescript": "workspace:*",
     "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/query_result": "workspace:*",
+    "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/acorn": "^6.0.0",
     "@types/estree": "^1.0.1",
     "@types/mock-fs": "^4.13.4",
     "mock-fs": "^5.2.0",
@@ -25,6 +26,9 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
+    "acorn": "^8.9.0",
+    "code-red": "^1.0.3",
+    "locate-character": "^3.0.0",
     "svelte": "^4.2.10"
   },
   "main": "dist/index.js",

@@ -2,10 +2,11 @@ import {
   type ResolvedParam,
   type CompiledQuery,
   type QueryParams,
-} from './types'
+} from '../../types'
 import QueryResult from '@latitude-sdk/query_result'
 import { DataType } from '@latitude-sdk/query_result'
-import { compile, SyntaxError } from './compiler'
+import compile from '..'
+import CompileError from '../error/error'
 import { describe, it, expect, afterEach } from 'vitest'
 
 const fakeQueries: Record<string, string> = {}
@@ -62,6 +63,36 @@ const compileQuery = (queryPath: string, params: QueryParams = {}) => {
     ...compilerFns,
   })
 }
+
+const getExpectedError = async <T>(action: (() => Promise<unknown>), errorClass: new () => T): Promise<T> => {
+  try {
+    await action()
+  } catch (err) {
+    expect(err).toBeInstanceOf(errorClass)
+    return err as T
+  }
+  throw new Error('Expected an error to be thrown')
+}
+
+describe('compilation of comments', async () => {
+  afterEach(clearFakeQueries)
+
+  it('keeps line comments in the output', async () => {
+    const sql = 'foo\n-- comment\nbar'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe(sql)
+  })
+
+  it('keeps block comments in the output', async () => {
+    const sql = 'foo\n/* comment1\ncomment2\ncomment3 */\nbar'
+    const queryPath = addFakeQuery(sql)
+    const result = await compileQuery(queryPath)
+
+    expect(result.sql).toBe(sql)
+  })
+})
 
 describe('parameterisation of interpolated values', async () => {
   afterEach(clearFakeQueries)
@@ -120,24 +151,24 @@ describe('variable assignment', async () => {
     const sql = '{@const foo = 5} {foo += 2}'
     const queryPath = addFakeQuery(sql)
     const action = () => compileQuery(queryPath)
-
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('constant-reassignment')
   })
 
   it('cannot update variables that are not defined', async () => {
     const sql = '{foo += 2}'
     const queryPath = addFakeQuery(sql)
     const action = () => compileQuery(queryPath)
-
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('variable-not-declared')
   })
 
   it('variables defined in an inner scope are not available in the outer scope', async () => {
     const sql = '{#if true} {foo = 5} {/if} {foo}'
     const queryPath = addFakeQuery(sql)
     const action = () => compileQuery(queryPath)
-
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('variable-not-declared')
   })
 
   it('variables can be modified from an inner scope', async () => {
@@ -204,10 +235,11 @@ describe('conditional expressions', async () => {
     const queryPath2 = addFakeQuery(sql2)
     const queryPath3 = addFakeQuery(sql3)
     const action1 = () => compileQuery(queryPath1)
+    const error1 = await getExpectedError(action1, CompileError)
     const result2 = await compileQuery(queryPath2)
     const result3 = await compileQuery(queryPath3)
 
-    await expect(action1()).rejects.toThrow(SyntaxError)
+    expect(error1.code).toBe('variable-not-declared')
     expect(result2.sql).toBe('$[[6]]')
     expect(result3.sql).toBe('$[[7]]')
   })
@@ -275,10 +307,11 @@ describe('each loops', async () => {
     const queryPath2 = addFakeQuery(sql2)
     const queryPath3 = addFakeQuery(sql3)
     const action1 = () => compileQuery(queryPath1)
+    const error1 = await getExpectedError(action1, CompileError)
     const result2 = await compileQuery(queryPath2)
     const result3 = await compileQuery(queryPath3)
 
-    await expect(action1()).rejects.toThrow(SyntaxError)
+    expect(error1.code).toBe('variable-not-declared')
     expect(result2.sql).toBe('$[[7]]')
     expect(result3.sql).toBe('$[[11]]')
   })
@@ -299,19 +332,19 @@ describe('operators', async () => {
       ["2 === '2'", false],
       ['2 !== 2', false],
       ["2 !== '2'", true],
-      // ["2 < 2", false],
-      // ["2 < 3", true],
-      // ["2 < 1", false],
-      // ["2 <= 2", true],
-      // ["2 <= 3", true],
-      // ["2 <= 1", false],
+      ["2 < 2", false],
+      ["2 < 3", true],
+      ["2 < 1", false],
+      ["2 <= 2", true],
+      ["2 <= 3", true],
+      ["2 <= 1", false],
       ['2 > 2', false],
       ['2 > 3', false],
       ['2 > 1', true],
       ['2 >= 2', true],
       ['2 >= 3', false],
       ['2 >= 1', true],
-      // ["2 << 2", 8],
+      ["2 << 2", 8],
       ['2 >> 2', 0],
       ['2 >>> 2', 0],
       ['2 + 3', 5],
@@ -390,7 +423,7 @@ describe('operators', async () => {
       ['foo *= 2', 3, 6],
       ['foo /= 2', 3, 1.5],
       ['foo %= 2', 3, 1],
-      // ["foo <<= 2", 3, 12],
+      ["foo <<= 2", 3, 12],
       ['foo >>= 2', 3, 0],
       ['foo >>>= 2', 3, 0],
       ['foo |= 2', 3, 3],
@@ -468,8 +501,8 @@ describe('params function', async () => {
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
     const action = () => compileQuery(queryPath)
-
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('function-call-error')
   })
 
   it('parametrises the value when called as interpolation', async () => {
@@ -507,7 +540,8 @@ describe('ref function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
 
     const action = () => compileQuery(mainQueryPath)
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('function-call-error')
   })
 
   it('fails if called inside a logical expression', async () => {
@@ -515,7 +549,8 @@ describe('ref function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
 
     const action = () => compileQuery(mainQueryPath)
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('parse-error')
   })
 })
 
@@ -540,7 +575,8 @@ describe('run_query function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
 
     const action = () => compileQuery(mainQueryPath)
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('parse-error')
   })
 
   it('fails if called as interpolation', async () => {
@@ -551,6 +587,7 @@ describe('run_query function', async () => {
     addFakeQuery(refQuery, 'referenced_query')
 
     const action = () => compileQuery(mainQueryPath)
-    await expect(action()).rejects.toThrow(SyntaxError)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('function-call-error')
   })
 })

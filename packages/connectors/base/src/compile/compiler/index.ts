@@ -8,23 +8,23 @@ import {
   type QueryParams,
   type CompiledQuery,
   type ResolvedParam,
-  ConnectorError,
-} from './types'
-import { type Ast, type TemplateNode } from 'svelte/types/compiler/interfaces'
+} from '../../types'
+import { BaseNode, type TemplateNode } from '../parser/interfaces'
 import {
   type Node,
   type Identifier,
-  type BaseNodeWithoutComments,
   type SimpleCallExpression,
 } from 'estree'
-import { parse } from 'svelte/compiler'
+import parse from '../parser/index'
 import {
   ASSIGNMENT_OPERATOR_METHODS,
   BINARY_OPERATOR_METHODS,
   MEMBER_EXPRESSION_METHOD,
   UNARY_OPERATOR_METHODS,
   CAST_METHODS,
-} from './operators'
+} from '../../operators'
+import CompileError, { error } from '../error/error'
+import errors from '../error/errors'
 
 type ResolveFn = (
   name: string | undefined,
@@ -40,7 +40,7 @@ type ConnectorFns = {
   runQueryFn: RunQueryFn
 }
 
-type CompileParams = ConnectorFns & {
+export type CompileParams = ConnectorFns & {
   queryRequest: QueryRequest
 }
 
@@ -49,25 +49,6 @@ type CompilerAttrs = ConnectorFns & {
   compiledQueryNames: string[]
   resolvedParams: ResolvedParam[]
   varStash: unknown[]
-}
-
-export function compile({
-  queryRequest,
-  resolveFn,
-  readQueryFn,
-  runQueryFn,
-}: CompileParams): Promise<CompiledQuery> {
-  const { queryPath, params } = queryRequest
-  const compiler = new Compiler({
-    params: params ?? {},
-    resolveFn,
-    readQueryFn,
-    runQueryFn,
-    compiledQueryNames: [],
-    resolvedParams: [],
-    varStash: [],
-  })
-  return compiler.compile(queryPath)
 }
 
 class Scope {
@@ -121,7 +102,7 @@ class Scope {
   }
 }
 
-class Compiler {
+export class Compiler {
   private sql?: string
   private params: QueryParams
 
@@ -194,145 +175,90 @@ class Compiler {
     this.compiledQueryNames.push(fullQueryName)
     const query = this.readQueryFn(fullQueryName)
     if (!query) {
-      throw new SyntaxError(`Query ${fullQueryName} does not exist`, {
-        query: '',
+      error(`Query '${fullQueryName}' not found`, {
+        name: 'ParseError',
+        code: 'query-not-found',
+        source: '',
+        start: 0,
+        end: undefined
       })
     }
     this.sql = query!
 
-    const ast = this.parseQuery(this.sql)
+    const fragment = parse(this.sql)
     const localScope = new Scope(
       this.readFromStash.bind(this),
       this.addToStash.bind(this),
       this.modifyStash.bind(this),
     )
-    const compiledSql = (await this.parseNode(ast!.html, localScope))
-      .replace(/\n/g, ' ') // Compile into a single line
-      .replace(/\s+/g, ' ') // Remove extra spaces
+    const compiledSql = (await this.parseBaseNode(fragment, localScope))
+      .replace(/ +/g, ' ') // Remove extra spaces
       .trim() // Remove leading and trailing spaces
 
     return { sql: compiledSql, params: this.resolvedParams }
   }
 
-  private parseQuery = (query: string): Ast => {
-    try {
-      return parse(query)
-    } catch (error: unknown) {
-      const compileError = error as ICompileError
-      if (compileError.code === 'parse-error') {
-        throw new SyntaxError(compileError.message, {
-          query,
-          pos: {
-            start: {
-              line: compileError.start?.line ?? 0,
-              column: compileError.start?.column ?? 0,
-            },
-            end: {
-              line: compileError.end?.line ?? 0,
-              column: compileError.end?.column ?? 0,
-            },
-          },
-        })
-      }
-      throw error
-    }
-  }
-
-  private syntaxError = (node: BaseNodeWithoutComments, message: string) => {
-    return new SyntaxError(message, {
-      query: this.sql ?? '',
-      pos: {
-        start: {
-          line: node.loc?.start.line ?? 0,
-          column: node.loc?.start.column ?? 0,
-        },
-        end: {
-          line: node.loc?.end.line ?? 0,
-          column: node.loc?.end.column ?? 0,
-        },
-      },
-    })
-  }
-
-  private parseNode = async (
-    node: TemplateNode | Node,
+  private parseBaseNode = async (
+    node: BaseNode,
     localScope: Scope,
   ): Promise<string> => {
     if (!node) return ''
 
     switch (node.type) {
       case 'Fragment':
-        return this.parseNodeChildren(node.children, localScope)
+        return this.parseBaseNodeChildren(node.children, localScope)
 
       case 'Comment':
-        return ''
+        return node.raw
 
       case 'Text':
         return node.raw
 
       case 'MustacheTag':
-        return await this.parseNode(node.expression, localScope)
+        return await this.parseLogicNode(node.expression, localScope)
 
       case 'ConstTag':
         // Only allow equal expressions to define constants
-        if (node.expression.type !== 'AssignmentExpression')
-          throw this.syntaxError(
-            node.expression,
-            'Constant definitions must assign a value',
-          )
-        if (node.expression.operator !== '=')
-          throw this.syntaxError(
-            node.expression,
-            'Constant definitions must use the = operator',
-          )
-        if (node.expression.left.type !== 'Identifier')
-          throw this.syntaxError(
-            node.expression,
-            'Constant definitions must have an identifier on the left side',
-          )
-        const constName = (node.expression.left as Identifier).name
-        const constValue = await this.resolveNodeExpression(
-          node.expression.right,
+        const expression = node.expression
+        if (expression.type !== 'AssignmentExpression' || expression.operator !== '=' || expression.left.type !== 'Identifier') {
+          this.baseNodeError(errors.invalidConstantDefinition, node)
+        }
+        
+        const constName = (expression.left as Identifier).name
+        const constValue = await this.resolveLogicNodeExpression(
+          expression.right,
           localScope,
         )
-        if (localScope.exists(constName))
-          throw this.syntaxError(
-            node.expression,
-            `Variable '${constName}' already exists`,
-          )
+        if (localScope.exists(constName)) {
+          this.baseNodeError(errors.variableAlreadyDeclared(constName), node)
+        }
         localScope.defineConst(constName, constValue)
         return ''
 
       case 'IfBlock':
-        return (await this.resolveNodeExpression(node.expression, localScope))
-          ? this.parseNodeChildren(node.children, localScope)
-          : await this.parseNode(node.else, localScope)
+        return (await this.resolveLogicNodeExpression(node.expression, localScope))
+          ? this.parseBaseNodeChildren(node.children, localScope)
+          : await this.parseBaseNode(node.else, localScope)
 
       case 'ElseBlock':
-        return this.parseNodeChildren(node.children, localScope)
+        return this.parseBaseNodeChildren(node.children, localScope)
 
       case 'EachBlock':
-        const iterableElement = await this.resolveNodeExpression(
+        const iterableElement = await this.resolveLogicNodeExpression(
           node.expression,
           localScope,
         )
         if (!Array.isArray(iterableElement) || !iterableElement.length) {
-          return await this.parseNode(node.else, localScope)
+          return await this.parseBaseNode(node.else, localScope)
         }
 
         const contextVar = node.context.name
         const indexVar = node.index
         if (localScope.exists(contextVar)) {
-          throw this.syntaxError(
-            node.context,
-            `Variable '${contextVar}' already exists`,
-          )
+          this.baseNodeError(errors.variableAlreadyDeclared(contextVar), node)
         }
         if (indexVar && localScope.exists(indexVar)) {
-          throw this.syntaxError(
-            node.index,
-            `Variable '${indexVar}' already exists`,
-          )
+          this.baseNodeError(errors.variableAlreadyDeclared(indexVar), node)
         }
 
         const parsedChildren: string[] = []
@@ -341,43 +267,38 @@ class Compiler {
           if (indexVar) localScope.set(indexVar, i)
           localScope.set(contextVar, element)
           parsedChildren.push(
-            await this.parseNodeChildren(node.children, localScope),
+            await this.parseBaseNodeChildren(node.children, localScope),
           )
         }
         return parsedChildren.join('') || ''
 
-      case 'CallExpression':
-        return (await this.handleFunction(
-          node as SimpleCallExpression,
-          true,
-          localScope,
-        )) as string
-
-      case 'AssignmentExpression':
-        await this.resolveNodeExpression(node as Node, localScope)
-        return ''
-
-      case 'Literal':
-      case 'Identifier':
-      case 'BinaryExpression':
-      case 'LogicalExpression':
-      case 'UnaryExpression':
-      case 'UpdateExpression':
-      case 'MemberExpression':
-      case 'ArrayExpression':
-      case 'ObjectExpression':
-      case 'ConditionalExpression':
-      case 'NewExpression':
-      case 'SequenceExpression':
-        const value = await this.resolveNodeExpression(node as Node, localScope)
-        return this.resolve(value)
-
       default:
-        throw this.syntaxError(node, `Unsupported node type: ${node.type}`)
+        throw this.baseNodeError(errors.unsupportedBaseNodeType(node.type), node)
     }
   }
 
-  private resolveNodeExpression = async (
+  private parseLogicNode = async (
+    node: Node,
+    localScope: Scope,
+  ): Promise<string> => {
+    if (node.type === 'AssignmentExpression') {
+      await this.resolveLogicNodeExpression(node, localScope)
+      return ''
+    }
+
+    if (node.type === 'CallExpression') {
+      return (await this.handleFunction(
+        node as SimpleCallExpression,
+        true,
+        localScope,
+      )) as string
+    }
+
+    const value = await this.resolveLogicNodeExpression(node, localScope)
+    return this.resolve(value)
+  }
+
+  private resolveLogicNodeExpression = async (
     node: Node,
     localScope: Scope,
   ): Promise<unknown> => {
@@ -387,7 +308,7 @@ class Compiler {
 
       case 'Identifier':
         if (!localScope.exists(node.name)) {
-          throw this.syntaxError(node, `Undefined variable: ${node.name}`)
+          this.expressionError(errors.variableNotDeclared(node.name), node)
         }
         return localScope.get(node.name)
 
@@ -395,13 +316,10 @@ class Compiler {
         const resolvedObject: { [key: string]: any } = {}
         for (const prop of node.properties) {
           if (prop.type !== 'Property') {
-            throw this.syntaxError(
-              node,
-              'Object definition can only contain properties',
-            )
+            throw this.expressionError(errors.invalidObjectKey, node)
           }
           const key = prop.key as Identifier
-          const value = await this.resolveNodeExpression(prop.value, localScope)
+          const value = await this.resolveLogicNodeExpression(prop.value, localScope)
           resolvedObject[key.name] = value
         }
         return resolvedObject
@@ -409,31 +327,28 @@ class Compiler {
       case 'ArrayExpression':
         return await Promise.all(
           node.elements.map((element) =>
-            element ? this.resolveNodeExpression(element, localScope) : null,
+            element ? this.resolveLogicNodeExpression(element, localScope) : null,
           ),
         )
 
       case 'SequenceExpression':
         return await Promise.all(
           node.expressions.map((expression) =>
-            this.resolveNodeExpression(expression, localScope),
+            this.resolveLogicNodeExpression(expression, localScope),
           ),
         )
 
       case 'BinaryExpression':
       case 'LogicalExpression':
         const binaryOperator = node.operator
-        if (!BINARY_OPERATOR_METHODS.hasOwnProperty(binaryOperator))
-          throw this.syntaxError(
-            node,
-            `Unsupported operator: ${binaryOperator}`,
-          )
-
-        const leftOperand = await this.resolveNodeExpression(
+        if (!BINARY_OPERATOR_METHODS.hasOwnProperty(binaryOperator)) {
+          this.expressionError (errors.unsupportedOperator(binaryOperator), node)
+        }
+        const leftOperand = await this.resolveLogicNodeExpression(
           node.left,
           localScope,
         )
-        const rightOperand = await this.resolveNodeExpression(
+        const rightOperand = await this.resolveLogicNodeExpression(
           node.right,
           localScope,
         )
@@ -445,10 +360,10 @@ class Compiler {
       case 'UnaryExpression':
         const unaryOperator = node.operator
         if (!UNARY_OPERATOR_METHODS.hasOwnProperty(unaryOperator)) {
-          throw this.syntaxError(node, `Unsupported operator: ${unaryOperator}`)
+          this.expressionError(errors.unsupportedOperator(unaryOperator), node)
         }
 
-        const unaryArgument = await this.resolveNodeExpression(
+        const unaryArgument = await this.resolveLogicNodeExpression(
           node.argument,
           localScope,
         )
@@ -460,7 +375,7 @@ class Compiler {
 
       case 'AssignmentExpression':
         const assignedVariableName = (node.left as Identifier).name
-        let assignedValue = await this.resolveNodeExpression(
+        let assignedValue = await this.resolveLogicNodeExpression(
           node.right,
           localScope,
         )
@@ -468,16 +383,10 @@ class Compiler {
 
         if (assignmentOperator != '=') {
           if (!ASSIGNMENT_OPERATOR_METHODS.hasOwnProperty(assignmentOperator)) {
-            throw this.syntaxError(
-              node,
-              `Unsupported operator: ${assignmentOperator}`,
-            )
+            this.expressionError(errors.unsupportedOperator(assignmentOperator), node)
           }
           if (!localScope.exists(assignedVariableName)) {
-            throw this.syntaxError(
-              node,
-              `Undefined variable: ${assignedVariableName}`,
-            )
+            this.expressionError(errors.variableNotDeclared(assignedVariableName), node)
           }
           assignedValue = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]?.(
             localScope.get(assignedVariableName),
@@ -485,10 +394,7 @@ class Compiler {
           )
         }
         if (localScope.isConst(assignedVariableName)) {
-          throw this.syntaxError(
-            node,
-            `Cannot reassign constant: ${assignedVariableName}`,
-          )
+          this.expressionError(errors.constantReassignment, node)
         }
         localScope.set(assignedVariableName, assignedValue)
         return assignedValue
@@ -496,23 +402,14 @@ class Compiler {
       case 'UpdateExpression':
         const updateOperator = node.operator
         if (!['++', '--'].includes(updateOperator)) {
-          throw this.syntaxError(
-            node,
-            `Unsupported operator: ${updateOperator}`,
-          )
+          this.expressionError(errors.unsupportedOperator(updateOperator), node)
         }
         const updatedVariableName = (node.argument as Identifier).name
         if (!localScope.exists(updatedVariableName)) {
-          throw this.syntaxError(
-            node,
-            `Undefined variable: ${updatedVariableName}`,
-          )
+          this.expressionError(errors.variableNotDeclared(updatedVariableName), node)
         }
         if (localScope.isConst(updatedVariableName)) {
-          throw this.syntaxError(
-            node,
-            `Cannot update constant: ${updatedVariableName}`,
-          )
+          this.expressionError(errors.constantReassignment, node)
         }
         const originalValue = localScope.get(updatedVariableName)
         const updatedValue =
@@ -523,24 +420,24 @@ class Compiler {
         return node.prefix ? updatedValue : originalValue
 
       case 'MemberExpression':
-        const object = (await this.resolveNodeExpression(
+        const object = (await this.resolveLogicNodeExpression(
           node.object,
           localScope,
         )) as {
           [key: string]: any
         }
         const property = node.computed
-          ? await this.resolveNodeExpression(node.property, localScope)
+          ? await this.resolveLogicNodeExpression(node.property, localScope)
           : (node.property as Identifier).name
         return MEMBER_EXPRESSION_METHOD(object, property)
 
       case 'ConditionalExpression':
-        const test = await this.resolveNodeExpression(node.test, localScope)
-        const consequent = await this.resolveNodeExpression(
+        const test = await this.resolveLogicNodeExpression(node.test, localScope)
+        const consequent = await this.resolveLogicNodeExpression(
           node.consequent,
           localScope,
         )
-        const alternate = await this.resolveNodeExpression(
+        const alternate = await this.resolveLogicNodeExpression(
           node.alternate,
           localScope,
         )
@@ -550,27 +447,57 @@ class Compiler {
         return await this.handleFunction(node, false, localScope)
 
       case 'NewExpression':
-        throw this.syntaxError(node, `New expressions are not supported`)
+        throw this.expressionError(
+          errors.unsupportedOperator('new'),
+          node,
+        )
 
       default:
-        throw this.syntaxError(
+        throw this.expressionError(
+          errors.unsupportedExpressionType(node.type),
           node,
-          `Unsupported expression type: ${node.type}`,
         )
     }
   }
 
-  private parseNodeChildren = async (
+  private parseBaseNodeChildren = async (
     children: TemplateNode[] | undefined,
     localScope: Scope,
   ): Promise<string> => {
     const parsedChildren: string[] = []
     const childrenScope = localScope.copy()
     for (const child of children || []) {
-      const parsedChild = await this.parseNode(child, childrenScope)
+      const parsedChild = await this.parseBaseNode(child, childrenScope)
       parsedChildren.push(parsedChild)
     }
     return parsedChildren.join('') || ''
+  }
+
+  private baseNodeError({ code, message }: { code: string, message: string }, node: BaseNode): never {
+    error(message, {
+      name: 'CompileError',
+      code,
+      source: this.sql || '',
+      start: node.start || 0,
+      end: node.end || undefined
+    });
+  }
+
+  private expressionError({ code, message }: { code: string, message: string }, node: Node): never {
+    
+    const source = (node.loc?.source ?? this.sql)!.split('\n')
+
+    // sum the length of all lines before the error + the length of the error line until the error column
+    const start = source.slice(0, node.loc?.start.line! - 1).reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.start.column!
+    const end = source.slice(0, node.loc?.end.line! - 1).reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.end.column!
+    
+    error(message, {
+      name: 'CompileError',
+      code,
+      source: this.sql || '',
+      start,
+      end
+    })
   }
 
   private AVAILABLE_METHODS: Record<string, Function> = {
@@ -657,50 +584,18 @@ class Compiler {
   ): Promise<string | unknown> => {
     const methodName = (node.callee as Identifier).name
     if (!this.AVAILABLE_METHODS.hasOwnProperty(methodName)) {
-      throw this.syntaxError(node.callee, `Unsupported function: ${methodName}`)
+      this.expressionError(errors.unknownFunction(methodName), node)
     }
     const method = this.AVAILABLE_METHODS[methodName]!
     const args: unknown[] = []
     for (const arg of node.arguments) {
-      args.push(await this.resolveNodeExpression(arg, localScope))
+      args.push(await this.resolveLogicNodeExpression(arg, localScope))
     }
     try {
       return await method(interpolation, ...args)
     } catch (error: unknown) {
-      if (error instanceof SyntaxError) throw error
-      throw this.syntaxError(node, (error as Error).message)
+      if (error instanceof CompileError) throw error
+      this.expressionError(errors.functionCallError(methodName, (error as Error).message), node)
     }
-  }
-}
-
-interface ICompileError {
-  code: string
-  message: string
-  start?: { line: number; column: number; character: number }
-  end?: { line: number; column: number; character: number }
-  frame?: string
-  pos?: number
-}
-
-type QueryCompileErrorContext = {
-  query: string
-  pos?: {
-    start: {
-      line: number
-      column: number
-    }
-    end: {
-      line: number
-      column: number
-    }
-  }
-}
-
-export class SyntaxError extends ConnectorError {
-  constructor(
-    message: string,
-    public context: QueryCompileErrorContext,
-  ) {
-    super(message)
   }
 }
