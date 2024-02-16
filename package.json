@@ -2,11 +2,11 @@
   "name": "latitude-sdk",
   "private": true,
   "scripts": {
-    "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "test": "turbo test",
     "prettier": "turbo prettier",
+    "build": "turbo build",
+    "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {

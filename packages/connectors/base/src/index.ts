@@ -37,8 +37,8 @@ export abstract class BaseConnector {
    * and return the result.
    */
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
-  protected async connect(): Promise<void> {}
-  protected async disconnect(): Promise<void> {}
+  protected async connect(): Promise<void> { }
+  protected async disconnect(): Promise<void> { }
 
   private readQuery(queryPath: string): string {
     const fullQueryPath = path.join(
