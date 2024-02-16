@@ -8,7 +8,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@latitude-sdk/connector-factory']
-    }
-  }
-});
+      external: ['@latitude-sdk/connector-factory'],
+    },
+  },
+})

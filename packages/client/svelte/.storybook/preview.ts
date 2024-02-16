@@ -1,7 +1,9 @@
 import type { Preview } from '@storybook/svelte'
+import ThemeWrapper from '../src/lib/ui/theme-wrapper/index.svelte'
 
 import '@latitude-sdk/client/latitude.css'
 
+/** @type { import('@storybook/svelte').Preview } */
 const preview: Preview = {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
@@ -12,6 +14,14 @@ const preview: Preview = {
       },
     },
   },
+  decorators: [
+    () => ({
+      Component: ThemeWrapper,
+      props: {
+        isStorybook: true,
+      },
+    }),
+  ],
 }
 
 export default preview

@@ -188,9 +188,6 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
-      '@types/tailwindcss':
-        specifier: ^3.1.0
-        version: 3.1.0
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.17(postcss@8.4.35)
@@ -215,6 +212,9 @@ importers:
       tailwindcss:
         specifier: ^3.3.6
         version: 3.4.1
+      vitest:
+        specifier: ^1.2.2
+        version: 1.2.2(jsdom@24.0.0)
 
   packages/client/svelte:
     dependencies:
@@ -224,9 +224,15 @@ importers:
       bits-ui:
         specifier: ^0.18.1
         version: 0.18.1(svelte@4.2.10)
-      lucide-svelte:
-        specifier: ^0.330.0
-        version: 0.330.0(svelte@4.2.10)
+      mode-watcher:
+        specifier: ^0.2.1
+        version: 0.2.1(svelte@4.2.10)
+      radix-icons-svelte:
+        specifier: ^1.2.1
+        version: 1.2.1
+      svelte-persisted-store:
+        specifier: ^0.9.1
+        version: 0.9.1(svelte@4.2.10)
     devDependencies:
       '@latitude-sdk/eslint-config':
         specifier: workspace:*
@@ -243,9 +249,6 @@ importers:
       '@storybook/addon-svelte-csf':
         specifier: ^4.1.1
         version: 4.1.1(@storybook/svelte@7.6.16)(@storybook/theming@7.6.16)(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.10)(vite@5.0.12)
-      '@storybook/addon-themes':
-        specifier: ^7.6.16
-        version: 7.6.16
       '@storybook/blocks':
         specifier: ^7.6.16
         version: 7.6.16(react-dom@18.2.0)(react@18.2.0)
@@ -3123,7 +3126,6 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
-    dev: false
 
   /@babel/template@7.22.15:
     resolution: {integrity: sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==}
@@ -3777,7 +3779,7 @@ packages:
       duplexify: 4.1.2
       ent: 2.2.0
       extend: 3.0.2
-      fast-xml-parser: 4.2.5
+      fast-xml-parser: 4.3.4
       gaxios: 5.1.3
       google-auth-library: 8.9.0
       mime: 3.0.0
@@ -3826,8 +3828,8 @@ packages:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
     dev: true
 
-  /@internationalized/date@3.5.2:
-    resolution: {integrity: sha512-vo1yOMUt2hzp63IutEaTUxROdvQg1qlMRsbCvbay2AK2Gai7wIgCyK5weEX3nHkiLgo4qCXHijFNC/ILhlRpOQ==}
+  /@internationalized/date@3.5.1:
+    resolution: {integrity: sha512-LUQIfwU9e+Fmutc/DpRTGXSdgYZLBegi4wygCWDSVmUdLTaMHsQyASDiJtREwanwKuQLq0hY76fCJ9J/9I2xOQ==}
     dependencies:
       '@swc/helpers': 0.5.6
     dev: false
@@ -3986,7 +3988,7 @@ packages:
     dependencies:
       '@floating-ui/core': 1.6.0
       '@floating-ui/dom': 1.6.3
-      '@internationalized/date': 3.5.2
+      '@internationalized/date': 3.5.1
       dequal: 2.0.3
       focus-trap: 7.5.4
       nanoid: 5.0.5
@@ -4135,13 +4137,13 @@ packages:
   /@radix-ui/number@1.0.1:
     resolution: {integrity: sha512-T5gIdVO2mmPW3NNhjNgEP3cqMXjXL9UbO0BzWcXfvdBs+BohbQxvd/K5hSVKmn9/lbTdsQVKbUcP5WLCwvUbBg==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
     dev: true
 
   /@radix-ui/primitive@1.0.1:
     resolution: {integrity: sha512-yQ8oGX2GVsEYMWGxcovu1uGWPCxV5BFfeeYxqPmuAzUyLT9qmaMXSAhXpb0WrspIeqYzdJpkh2vHModJPgRIaw==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
     dev: true
 
   /@radix-ui/react-arrow@1.0.3(react-dom@18.2.0)(react@18.2.0):
@@ -4157,7 +4159,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -4176,7 +4178,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-compose-refs': 1.0.1(react@18.2.0)
       '@radix-ui/react-context': 1.0.1(react@18.2.0)
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
@@ -4194,7 +4196,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4207,7 +4209,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4220,7 +4222,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4237,7 +4239,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-compose-refs': 1.0.1(react@18.2.0)
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
@@ -4256,7 +4258,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4273,7 +4275,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-compose-refs': 1.0.1(react@18.2.0)
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-use-callback-ref': 1.0.1(react@18.2.0)
@@ -4290,7 +4292,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-use-layout-effect': 1.0.1(react@18.2.0)
       react: 18.2.0
     dev: true
@@ -4308,7 +4310,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@floating-ui/react-dom': 2.0.8(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-arrow': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-compose-refs': 1.0.1(react@18.2.0)
@@ -4336,7 +4338,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -4355,7 +4357,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-slot': 1.0.2(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -4374,7 +4376,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-collection': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-compose-refs': 1.0.1(react@18.2.0)
@@ -4401,7 +4403,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/number': 1.0.1
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-collection': 1.0.3(react-dom@18.2.0)(react@18.2.0)
@@ -4440,7 +4442,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -4455,7 +4457,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-compose-refs': 1.0.1(react@18.2.0)
       react: 18.2.0
     dev: true
@@ -4473,7 +4475,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-context': 1.0.1(react@18.2.0)
       '@radix-ui/react-direction': 1.0.1(react@18.2.0)
@@ -4498,7 +4500,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       '@radix-ui/react-use-controllable-state': 1.0.1(react@18.2.0)
@@ -4519,7 +4521,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/primitive': 1.0.1
       '@radix-ui/react-context': 1.0.1(react@18.2.0)
       '@radix-ui/react-direction': 1.0.1(react@18.2.0)
@@ -4540,7 +4542,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4553,7 +4555,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-use-callback-ref': 1.0.1(react@18.2.0)
       react: 18.2.0
     dev: true
@@ -4567,7 +4569,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-use-callback-ref': 1.0.1(react@18.2.0)
       react: 18.2.0
     dev: true
@@ -4581,7 +4583,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4594,7 +4596,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       react: 18.2.0
     dev: true
 
@@ -4607,7 +4609,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/rect': 1.0.1
       react: 18.2.0
     dev: true
@@ -4621,7 +4623,7 @@ packages:
       '@types/react':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-use-layout-effect': 1.0.1(react@18.2.0)
       react: 18.2.0
     dev: true
@@ -4639,7 +4641,7 @@ packages:
       '@types/react-dom':
         optional: true
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@radix-ui/react-primitive': 1.0.3(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
@@ -4648,7 +4650,7 @@ packages:
   /@radix-ui/rect@1.0.1:
     resolution: {integrity: sha512-fyrgCaedtvMg9NK3en0pnOYJdtfwxUcNolezkNPUsoX57X8oQk+NkqcvzHXD2uKNij6GXmWU9NDru2IWjrO4BQ==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
     dev: true
 
   /@rollup/plugin-commonjs@25.0.7(rollup@4.10.0):
@@ -4726,7 +4728,7 @@ packages:
       rollup: 4.10.0
       serialize-javascript: 6.0.2
       smob: 1.4.1
-      terser: 5.27.2
+      terser: 5.27.1
     dev: true
 
   /@rollup/plugin-typescript@11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3):
@@ -5521,12 +5523,6 @@ packages:
       - babel-plugin-macros
     dev: true
 
-  /@storybook/addon-themes@7.6.16:
-    resolution: {integrity: sha512-Mb6HLW6/zKTGRkfOhaLKnfLDVik3az5q9SlfLlDdn3m5BktAksRYlGsNQaLWp46ViuQAgGFCdBerlqm/P8AiDQ==}
-    dependencies:
-      ts-dedent: 2.2.0
-    dev: true
-
   /@storybook/addon-toolbars@7.6.16:
     resolution: {integrity: sha512-6wSNXe50auEVwHCcupYPrJkpzQFugumEBfgYuQ6ICW9k2xJtGtahy7TyM9sZbYgnDkoTm2ba7UhML6Noy3JuUg==}
     dev: true
@@ -6157,7 +6153,7 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
     dependencies:
-      '@sveltejs/kit': 2.5.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.10)(vite@5.0.12)
+      '@sveltejs/kit': 2.5.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.12)
       import-meta-resolve: 4.0.0
     dev: true
 
@@ -6403,7 +6399,7 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       '@babel/code-frame': 7.22.13
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       '@types/aria-query': 5.0.4
       aria-query: 5.1.3
       chalk: 4.1.2
@@ -6434,7 +6430,7 @@ packages:
         optional: true
     dependencies:
       '@adobe/css-tools': 4.3.3
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
       aria-query: 5.3.0
       chalk: 3.0.0
       css.escape: 1.5.1
@@ -6835,15 +6831,6 @@ packages:
       '@types/node': 20.10.6
       generic-pool: 3.9.0
     dev: false
-
-  /@types/tailwindcss@3.1.0:
-    resolution: {integrity: sha512-JxPzrm609hzvF4nmOI3StLjbBEP3WWQxDDJESqR1nh94h7gyyy3XSl0hn5RBMJ9mPudlLjtaXs5YEBtLw7CnPA==}
-    deprecated: This is a stub types definition. tailwindcss provides its own type definitions, so you do not need this installed.
-    dependencies:
-      tailwindcss: 3.4.1
-    transitivePeerDependencies:
-      - ts-node
-    dev: true
 
   /@types/tedious@4.0.14:
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
@@ -7455,7 +7442,6 @@ packages:
   /are-we-there-yet@3.0.1:
     resolution: {integrity: sha512-QZW4EDmGwlYur0Yyf/b2uGucHQMa8aFUP7eu9ddR73vvhFyt4V0Vl3QHPcTNJ8l6qYOBdxgXdnBXQrHilfRQBg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    requiresBuild: true
     dependencies:
       delegates: 1.0.0
       readable-stream: 3.6.2
@@ -7844,7 +7830,7 @@ packages:
     peerDependencies:
       svelte: ^4.0.0
     dependencies:
-      '@internationalized/date': 3.5.2
+      '@internationalized/date': 3.5.1
       '@melt-ui/svelte': 0.71.2(svelte@4.2.10)
       nanoid: 5.0.5
       svelte: 4.2.10
@@ -9083,7 +9069,6 @@ packages:
 
   /err-code@2.0.3:
     resolution: {integrity: sha512-2bmlRpNKBxT/CRmPOlyISQpNj+qSeYvcym/uT0Jx2bMOlKLtSy1ZmLuVxSEKKyor/N5yhvp/ZiG1oE3DEYMSFA==}
-    requiresBuild: true
     dev: false
 
   /error-ex@1.3.2:
@@ -10057,6 +10042,13 @@ packages:
       strnum: 1.0.5
     dev: false
 
+  /fast-xml-parser@4.3.4:
+    resolution: {integrity: sha512-utnwm92SyozgA3hhH2I8qldf2lBqm6qHOICawRNRFu1qMe3+oqr+GcXjGqTmXTMGE5T4eC03kr/rlh5C1IRdZA==}
+    hasBin: true
+    dependencies:
+      strnum: 1.0.5
+    dev: false
+
   /fastest-levenshtein@1.0.16:
     resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
     engines: {node: '>= 4.9.1'}
@@ -10347,7 +10339,6 @@ packages:
   /gauge@4.0.4:
     resolution: {integrity: sha512-f9m+BEN5jkg6a0fZjleidjN51VE1X+mPFQ2DJ0uv1V39oCLCbsGe6yjbBnp7eK7z/+GAon99a3nHuqbuuthyPg==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
-    requiresBuild: true
     dependencies:
       aproba: 2.0.0
       color-support: 1.1.3
@@ -10892,7 +10883,6 @@ packages:
 
   /humanize-ms@1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
-    requiresBuild: true
     dependencies:
       ms: 2.1.3
     dev: false
@@ -11016,7 +11006,6 @@ packages:
   /ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
-    requiresBuild: true
     dependencies:
       jsbn: 1.1.0
       sprintf-js: 1.1.3
@@ -11472,7 +11461,6 @@ packages:
 
   /jsbn@1.1.0:
     resolution: {integrity: sha512-4bYVV3aAMtDTTu4+xsDYa6sy9GyJ69/amsu9sYF2zqjiEoZA5xJi3BrfX3uY+/IekIu7MwdObdbDWpoZdBv3/A==}
-    requiresBuild: true
     dev: false
 
   /jscodeshift@0.15.1(@babel/preset-env@7.23.9):
@@ -11913,14 +11901,6 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /lucide-svelte@0.330.0(svelte@4.2.10):
-    resolution: {integrity: sha512-HDsc2a+MhCEtBUU6JTQMlqk2liukjR/bHS61EtYjP2dPx0fywP5rmr6y592MFx/o4xXzFM93ANrHDayxQKzSvQ==}
-    peerDependencies:
-      svelte: ^3 || ^4 || ^5.0.0-next.42
-    dependencies:
-      svelte: 4.2.10
-    dev: false
-
   /lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
@@ -12262,6 +12242,14 @@ packages:
     resolution: {integrity: sha512-2dF2R6YMSZbpip1V1WHKGLNjr/k48uQClqMVb5H3MOvwc9qhYis3/IWbj02qIg/Y8MDXKFF4c5v0rxx2o6xTZw==}
     engines: {node: '>=12.0.0'}
     dev: true
+
+  /mode-watcher@0.2.1(svelte@4.2.10):
+    resolution: {integrity: sha512-HLmJgG5kmJCFR/+rcG2te54HjIxqk7BTAsFnsygZR5hcOYlhLEJQ0V8rh1axv2JQIbOAZs1yPlUBSpVATRFtUw==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      svelte: 4.2.10
+    dev: false
 
   /moment-timezone@0.5.45:
     resolution: {integrity: sha512-HIWmqA86KcmCAhnMAN0wuDOARV/525R2+lOLotuGFzn4HO+FH+/645z2wx0Dt3iDv6/p61SIvKnDstISainhLQ==}
@@ -13139,7 +13127,7 @@ packages:
     resolution: {integrity: sha512-OBatVyC/N7SCW/FaDHrSd+vn0o5cS855TOmYi4OkdWUMSJCET/xip//ch8xGUvtr3i44X9LVyWwQlRMTN3pwSA==}
     engines: {node: '>=10'}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
     dev: true
 
   /postcss-calc@8.2.4(postcss@8.4.35):
@@ -13969,6 +13957,10 @@ packages:
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
+  /radix-icons-svelte@1.2.1:
+    resolution: {integrity: sha512-svmiMd0ocpdTm9cvAz0klcZpnh639lVctj6psQiawd4pYalVzOG4cX+JizAgRckyTAsRVdzObP7D2EBrSfdghA==}
+    dev: false
+
   /ramda@0.29.0:
     resolution: {integrity: sha512-BBea6L67bYLtdbOqfp8f58fPMqEwx0doL+pAi8TZyp2YWz8R9G8z9x75CZI8W+ftqhFHCpEX2cRnUUXK130iKA==}
     dev: true
@@ -14212,7 +14204,7 @@ packages:
   /regenerator-transform@0.15.2:
     resolution: {integrity: sha512-hfMp2BoF0qOk3uc5V20ALGDS2ddjQaLrdl7xrGXvAIow7qeWRM2VA2HuCHkUKk9slq3VwEwLNK3DFBqDfPGYtg==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.23.9
     dev: true
 
   /regexp-tree@0.1.27:
@@ -14362,7 +14354,6 @@ packages:
   /retry@0.12.0:
     resolution: {integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow==}
     engines: {node: '>= 4'}
-    requiresBuild: true
     dev: false
 
   /retry@0.13.1:
@@ -14713,7 +14704,6 @@ packages:
   /smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
-    requiresBuild: true
     dev: false
 
   /smob@1.4.1:
@@ -14742,7 +14732,7 @@ packages:
       debug: 3.2.7
       expand-tilde: 2.0.2
       extend: 3.0.2
-      fast-xml-parser: 4.2.5
+      fast-xml-parser: 4.3.4
       fastest-levenshtein: 1.0.16
       generic-pool: 3.9.0
       glob: 9.3.5
@@ -14885,15 +14875,11 @@ packages:
 
   /sprintf-js@1.1.3:
     resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
-    requiresBuild: true
     dev: false
 
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
-    peerDependenciesMeta:
-      node-gyp:
-        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0
@@ -15283,6 +15269,15 @@ packages:
     dependencies:
       svelte: 4.2.7
     dev: true
+
+  /svelte-persisted-store@0.9.1(svelte@4.2.10):
+    resolution: {integrity: sha512-l00I8Dy5GKjdjnE9ZcMeXLLMhvgV0+Iuru0Mue7eU3tB+pHBwBB2RVVqw2uC2Hbrf7cyZtsV/lnPKhjTHIWphQ==}
+    engines: {node: '>=0.14'}
+    peerDependencies:
+      svelte: ^3.48.0 || ^4.0.0 || ^5.0.0-next.0
+    dependencies:
+      svelte: 4.2.10
+    dev: false
 
   /svelte-preprocess@5.1.3(@babel/core@7.23.3)(postcss@8.4.35)(svelte@4.2.10)(typescript@5.3.3):
     resolution: {integrity: sha512-xxAkmxGHT+J/GourS5mVJeOXZzne1FR5ljeOUAMXUkfEhkLEllRreXpbl3dIYJlcJRfL1LO1uIAPpBpBfiqGPw==}
@@ -15705,8 +15700,8 @@ packages:
       unique-string: 2.0.0
     dev: true
 
-  /terser@5.27.2:
-    resolution: {integrity: sha512-sHXmLSkImesJ4p5apTeT63DsV4Obe1s37qT8qvwHRmVxKTBH7Rv9Wr26VcAMmLbmk9UliiwK8z+657NyJHHy/w==}
+  /terser@5.27.1:
+    resolution: {integrity: sha512-29wAr6UU/oQpnTw5HoadwjUZnFQXGdOfj0LjZ4sVxzqwHh/QVkvr7m8y9WoR4iN3FRitVduTc6KdjcW38Npsug==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:

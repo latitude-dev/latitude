@@ -1,8 +1,14 @@
-<div class='h-full flex items-center mx-auto max-w-96'>
-  <div class='p-4 rounded-lg flex flex-col gap-y-4 border border-gray-100 shadow'>
-    <h1 class='font-sans font-semibold text-2xl text-primary'>Latitude UI</h1>
-    <p class='text-base text-primary/60'>Svelte components for Latitude</p>
+<script context="module" lang="ts">
+  import * as Card  from '$lib/ui/card'
+</script>
+
+<Card.Root>
+  <Card.Header>
+    <Card.Title>Latitude UI</Card.Title>
+    <Card.Description>Svelte components for Latitude</Card.Description>
+  </Card.Header>
+  <Card.Content>
     <slot/>
-  </div>
-</div>
+  </Card.Content>
+</Card.Root>
 

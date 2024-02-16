@@ -12,7 +12,7 @@ export default {
   },
   external: EXTERNAL_DEPENDENCIES,
   plugins: [
-    typescript(),
+    typescript({ exclude: ['**/*.test.ts'] }),
     terser(), // Minify JS
   ],
 }

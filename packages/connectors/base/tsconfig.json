@@ -2,7 +2,11 @@
   "extends": "@latitude-sdk/typescript/base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "dist"
+    "outDir": "dist",
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@latitude-sdk/typescript/types"
+    ]
   },
   "include": ["src/**/*", "vitest.config.ts"],
   "exclude": ["node_modules", "dist"]
