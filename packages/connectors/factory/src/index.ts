@@ -10,6 +10,7 @@ export enum ConnectorType {
   Postgres = 'postgres',
   Bigquery = 'bigquery',
   Mysql = 'mysql',
+  Redshift = 'redshift',
 }
 
 export function createConnector(sourcePath: string): BaseConnector {
@@ -43,6 +44,7 @@ export function createConnector(sourcePath: string): BaseConnector {
 
   switch (type) {
     case ConnectorType.Postgres:
+    case ConnectorType.Redshift:
       return new PostgresConnector(path.dirname(sourcePath), details)
     case ConnectorType.Bigquery:
       return new BigQueryConnector(path.dirname(sourcePath), details)
