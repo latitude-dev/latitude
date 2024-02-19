@@ -1,4 +1,4 @@
-name: Linter
+name: Linter & Types
 
 on:
   pull_request:
@@ -21,16 +21,36 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        # the (--no-frozen-lockfile) flag is here for fixing:
-        # ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY  Broken lockfile
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
+
+      - name: Build latitude packages
+        run: pnpm run build
 
       - name: Prettier
         run: pnpm prettier
 
       - name: Lint
         run: pnpm lint
+
+      - name: TypeScript
+        run: pnpm tc

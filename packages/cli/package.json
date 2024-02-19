@@ -13,7 +13,7 @@
     "dev": "pnpm run rollup --watch",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
-    "prettier": "prettier --write ."
+    "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
     "@latitude-sdk/eslint-config": "workspace:*",

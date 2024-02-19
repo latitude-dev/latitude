@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
     "build": "rollup -c",
     "prettier": "prettier --write src/**/*.ts"
   },

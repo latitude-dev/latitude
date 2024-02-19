@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
     "build": "rollup -c",
     "prettier": "prettier --write src/**/*.ts"
   },
@@ -15,6 +17,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/pg": "^8.11.0",
     "rollup": "^4.10.0",
+    "prettier": "^3.1.1",
     "typescript": "^5.2.2"
   },
   "peerDependencies": {

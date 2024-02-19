@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {

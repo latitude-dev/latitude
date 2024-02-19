@@ -1,3 +1,7 @@
+/* eslint no-case-declarations: 0 */
+/* eslint no-prototype-builtins: 0 */
+
+// TODO: Carlos is changing all of this so this Lint rules will not be necessary
 import type QueryResult from '@latitude-sdk/query_result'
 import {
   type QueryRequest,

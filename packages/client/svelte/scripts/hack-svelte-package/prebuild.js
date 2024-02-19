@@ -4,6 +4,7 @@ const packageJsonPath = './package.json'
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
 
 const buildExports = {
+  './tailwind.preset': './tailwind.config.js',
   '.': {
     types: './dist/index.d.ts',
     import: './dist/index.js',
