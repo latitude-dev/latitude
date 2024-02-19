@@ -8,7 +8,7 @@ import {
 import QueryResult, { DataType } from '@latitude-sdk/query_result'
 import pg from 'pg'
 
-type ConnectionParams = {
+export type ConnectionParams = {
   database: string
   user: string
   password: string
