@@ -7,10 +7,13 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
     "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-sdk/eslint-config": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "prettier": "^3.1.1",
     "rollup": "^4.10.0"

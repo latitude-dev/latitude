@@ -6,7 +6,7 @@ export default {
     {
       file: 'dist/index.js',
       sourcemap: true,
-    }
+    },
   ],
   plugins: [
     typescript({
@@ -16,6 +16,6 @@ export default {
   external: [
     '@latitude-sdk/base-connector',
     '@latitude-sdk/query_result',
-    'pg'
+    'pg',
   ],
 }

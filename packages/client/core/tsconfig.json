@@ -1,9 +1,9 @@
 {
   "extends": "@latitude-sdk/typescript/base.json",
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["src/**/*", "rollup.config.mjs"],
+  "include": ["src/**/*", "rollup.config.mjs", "tailwind.config.js"],
   "exclude": ["node_modules", "dist"]
 }

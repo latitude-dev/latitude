@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/svelte'
 
-import '../src/assets/latitude.css'
+import '@latitude-sdk/client/latitude.css'
 
 const preview: Preview = {
   parameters: {

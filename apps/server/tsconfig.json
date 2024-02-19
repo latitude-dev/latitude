@@ -10,7 +10,7 @@
     "sourceMap": true,
     "strict": true,
     "module": "es2022",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "verbatimModuleSyntax": false
   }
   // Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

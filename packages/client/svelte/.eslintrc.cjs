@@ -8,6 +8,6 @@ module.exports = {
     {
       files: ['*.json'],
       parser: 'eslint-plugin-jsonc',
-    }
-  ]
+    },
+  ],
 }

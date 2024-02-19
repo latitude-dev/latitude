@@ -18,6 +18,7 @@
     "@sveltejs/adapter-node": "^4.0.1",
     "@sveltejs/kit": "^2.4.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@latitude-sdk/client": "workspace:*",
     "@testing-library/svelte": "^4.1.0",
     "@latitude-sdk/eslint-config": "workspace:*",
     "@types/mock-fs": "^4.13.4",
@@ -37,6 +38,7 @@
   },
   "dependencies": {
     "@latitude-sdk/connector-factory": "workspace:^",
+    "@latitude-sdk/client": "workspace:*",
     "@latitude-sdk/svelte": "workspace:*",
     "css-tree": "^2.3.1",
     "pg": "^8.11.3"

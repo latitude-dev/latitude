@@ -28,7 +28,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - uses: actions/checkout@v4
         with:
           fetch-depth: 2 # Checkout HEAD^
 
@@ -65,9 +64,10 @@ jobs:
             ${{ runner.os }}-turbo-
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          pnpm install
 
-        # tells Turbo to only run the script (build or test in this case) for the packages
+          # tells Turbo to only run the script (build or test in this case) for the packages
       - name: Use Turbo to build affected packages
         run: pnpm turbo run build --cache-dir=.turbo --filter=@latitude-sdk/*{./packages/*}[HEAD^1] --filter=@latitude-sdk/*{./apps/*}[HEAD^1]
 

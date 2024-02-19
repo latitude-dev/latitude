@@ -1,0 +1,52 @@
+{
+  "name": "@latitude-sdk/client",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "scripts": {
+    "build:css": "node ./scripts/buildCss.mjs",
+    "build:rollup": "rollup -c",
+    "dev": "pnpm run build:rollup -w",
+    "build": "npm run build:css && npm run build:rollup",
+    "prettier": "prettier --write src/**/*.ts",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit"
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./css/all.css": "./dist/css/all.css",
+    "./css/components/*.css": "./dist/css/components/*.css",
+    "./latitude.css": "./src/theme/assets/latitude.css",
+    "./theme/preset": "./tailwind.config.js"
+  },
+  "files": [
+    "tailwind.config.js",
+    "src",
+    "dist",
+    "!dist/**/*.test.*"
+  ],
+  "dependencies": {
+    "clsx": "^2.1.0",
+    "tailwind-merge": "^2.2.1",
+    "tailwind-variants": "^0.2.0"
+  },
+  "devDependencies": {
+    "@latitude-sdk/eslint-config": "workspace:*",
+    "@latitude-sdk/typescript": "workspace:*",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/tailwindcss": "^3.1.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "postcss-load-config": "^5.0.2",
+    "prettier-plugin-tailwindcss": "^0.5.9",
+    "prettier": "^3.1.1",
+    "rollup": "^4.10.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "tailwindcss": "^3.3.6"
+  }
+}

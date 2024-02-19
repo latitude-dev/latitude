@@ -1,3 +1,4 @@
+// TODO: Remove this. Tailwind is on @latitude-sdk/client/theme
 import latitudeTheme from '@latitude-sdk/tailwind';
 
 /** @type {import('tailwindcss').Config} */
