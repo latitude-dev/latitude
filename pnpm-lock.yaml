@@ -325,6 +325,37 @@ importers:
         specifier: ^1.2.0
         version: 1.2.2(jsdom@24.0.0)
 
+  packages/connectors/athena:
+    dependencies:
+      '@aws-sdk/client-athena':
+        specifier: ^3.515.0
+        version: 3.515.0
+      '@latitude-sdk/base-connector':
+        specifier: workspace:^
+        version: link:../base
+      '@latitude-sdk/query_result':
+        specifier: workspace:^
+        version: link:../../query_result
+    devDependencies:
+      '@latitude-sdk/eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@latitude-sdk/typescript':
+        specifier: workspace:*
+        version: link:../../../tools/typescript
+      '@rollup/plugin-commonjs':
+        specifier: ^25.0.7
+        version: 25.0.7(rollup@4.10.0)
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.10.6
+      rollup:
+        specifier: ^4.10.0
+        version: 4.10.0
+
   packages/connectors/base:
     dependencies:
       svelte:
@@ -395,6 +426,9 @@ importers:
 
   packages/connectors/factory:
     dependencies:
+      '@latitude-sdk/athena-connector':
+        specifier: workspace:^
+        version: link:../athena
       '@latitude-sdk/base-connector':
         specifier: workspace:*
         version: link:../base
@@ -821,6 +855,55 @@ packages:
       '@aws-sdk/types': 3.515.0
       '@aws-sdk/util-utf8-browser': 3.259.0
       tslib: 1.14.1
+    dev: false
+
+  /@aws-sdk/client-athena@3.515.0:
+    resolution: {integrity: sha512-6ISuiUKPrA252+IM2Bd7YtEYTEE6blhm61o2z+mIytVozXlId26ubHkVhf+3dtKkgW/6Ktx37UicrrocLareCQ==}
+    engines: {node: '>=14.0.0'}
+    dependencies:
+      '@aws-crypto/sha256-browser': 3.0.0
+      '@aws-crypto/sha256-js': 3.0.0
+      '@aws-sdk/client-sts': 3.515.0(@aws-sdk/credential-provider-node@3.515.0)
+      '@aws-sdk/core': 3.513.0
+      '@aws-sdk/credential-provider-node': 3.515.0
+      '@aws-sdk/middleware-host-header': 3.515.0
+      '@aws-sdk/middleware-logger': 3.515.0
+      '@aws-sdk/middleware-recursion-detection': 3.515.0
+      '@aws-sdk/middleware-user-agent': 3.515.0
+      '@aws-sdk/region-config-resolver': 3.515.0
+      '@aws-sdk/types': 3.515.0
+      '@aws-sdk/util-endpoints': 3.515.0
+      '@aws-sdk/util-user-agent-browser': 3.515.0
+      '@aws-sdk/util-user-agent-node': 3.515.0
+      '@smithy/config-resolver': 2.1.1
+      '@smithy/core': 1.3.2
+      '@smithy/fetch-http-handler': 2.4.1
+      '@smithy/hash-node': 2.1.1
+      '@smithy/invalid-dependency': 2.1.1
+      '@smithy/middleware-content-length': 2.1.1
+      '@smithy/middleware-endpoint': 2.4.1
+      '@smithy/middleware-retry': 2.1.1
+      '@smithy/middleware-serde': 2.1.1
+      '@smithy/middleware-stack': 2.1.1
+      '@smithy/node-config-provider': 2.2.1
+      '@smithy/node-http-handler': 2.3.1
+      '@smithy/protocol-http': 3.1.1
+      '@smithy/smithy-client': 2.3.1
+      '@smithy/types': 2.9.1
+      '@smithy/url-parser': 2.1.1
+      '@smithy/util-base64': 2.1.1
+      '@smithy/util-body-length-browser': 2.1.1
+      '@smithy/util-body-length-node': 2.2.1
+      '@smithy/util-defaults-mode-browser': 2.1.1
+      '@smithy/util-defaults-mode-node': 2.2.0
+      '@smithy/util-endpoints': 1.1.1
+      '@smithy/util-middleware': 2.1.1
+      '@smithy/util-retry': 2.1.1
+      '@smithy/util-utf8': 2.1.1
+      tslib: 2.6.2
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - aws-crt
     dev: false
 
   /@aws-sdk/client-s3@3.515.0:
@@ -3377,7 +3460,7 @@ packages:
       duplexify: 4.1.2
       ent: 2.2.0
       extend: 3.0.2
-      fast-xml-parser: 4.3.4
+      fast-xml-parser: 4.2.5
       gaxios: 5.1.3
       google-auth-library: 8.9.0
       mime: 3.0.0
@@ -9278,13 +9361,6 @@ packages:
       strnum: 1.0.5
     dev: false
 
-  /fast-xml-parser@4.3.4:
-    resolution: {integrity: sha512-utnwm92SyozgA3hhH2I8qldf2lBqm6qHOICawRNRFu1qMe3+oqr+GcXjGqTmXTMGE5T4eC03kr/rlh5C1IRdZA==}
-    hasBin: true
-    dependencies:
-      strnum: 1.0.5
-    dev: false
-
   /fastest-levenshtein@1.0.16:
     resolution: {integrity: sha512-eRnCtTTtGZFpQCwhJiUOuxPQWRXVKYDn0b2PeHfXL6/Zi53SLAzAHfVhVWK2AryC/WH05kGfxhFIPvTF0SXQzg==}
     engines: {node: '>= 4.9.1'}
@@ -13492,7 +13568,7 @@ packages:
       debug: 3.2.7
       expand-tilde: 2.0.2
       extend: 3.0.2
-      fast-xml-parser: 4.3.4
+      fast-xml-parser: 4.2.5
       fastest-levenshtein: 1.0.16
       generic-pool: 3.9.0
       glob: 9.3.5

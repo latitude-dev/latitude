@@ -9,7 +9,7 @@
     "prepublishOnly": "npm run package",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --check . && eslint .",
+    "lint": "prettier --check . && eslint ./src",
     "prettier": "prettier --write ."
   },
   "exports": {

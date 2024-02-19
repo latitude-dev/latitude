@@ -21,13 +21,12 @@
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
     ".": {
-      "types": "./src/lib/index.ts",
-      "import": "./src/lib/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./*": {
-      "types": "./src/lib/ui/*/index.ts",
-      "import": "./src/lib/ui/*/index.ts",
-      "svelte": "./src/lib/ui/*/index.svelte"
+      "types": "./dist/ui/*/index.d.ts",
+      "svelte": "./dist/ui/*/index.js"
     }
   },
   "files": [

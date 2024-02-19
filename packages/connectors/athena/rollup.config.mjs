@@ -13,5 +13,10 @@ export default {
       exclude: ['**/__tests__', '**/*.test.ts'],
     }),
   ],
-  external: ['@latitude-dev/base-connector', '@latitude-dev/connector-factory'],
+  external: [
+    '@latitude-sdk/base-connector',
+    '@latitude-sdk/query_result',
+    '@aws-sdk/client-athena',
+    'crypto',
+  ],
 }
