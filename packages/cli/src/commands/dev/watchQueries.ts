@@ -17,7 +17,7 @@ export default function watchQueries(dir: string) {
 
   // Initialize watcher.
   const watcher = chokidar.watch(dir, {
-    ignored: /(^|[\/\\])\../, // ignore dotfiles
+    ignored: /(^|[/\\])\../, // ignore dotfiles
     persistent: true,
   })
 

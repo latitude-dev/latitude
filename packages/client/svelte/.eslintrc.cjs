@@ -1,31 +1,13 @@
-/** @type { import("eslint").Linter.Config } */
 module.exports = {
-  root: true,
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:svelte/recommended',
-    'plugin:storybook/recommended',
-  ],
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  parserOptions: {
-    sourceType: 'module',
-    ecmaVersion: 2020,
-    extraFileExtensions: ['.svelte'],
-  },
-  env: {
-    browser: true,
-    es2017: true,
-    node: true,
+  extends: ['@latitude-sdk/eslint-config/svelte.js'],
+  plugins: ['eslint-plugin-local-rules'],
+  rules: {
+    'local-rules/check-packagejson-exports': 'error',
   },
   overrides: [
     {
-      files: ['*.svelte'],
-      parser: 'svelte-eslint-parser',
-      parserOptions: {
-        parser: '@typescript-eslint/parser',
-      },
-    },
-  ],
+      files: ['*.json'],
+      parser: 'eslint-plugin-jsonc',
+    }
+  ]
 }

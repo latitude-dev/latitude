@@ -25,7 +25,7 @@ export default async function synlinkAppFromLocal({
     forceSymlink(serverFolderInMonorepo, dataApp)
     console.log(
       colors.green(
-        `✅ Latitup app linked to ${serverFolderInMonorepo} in ${dataApp}`,
+        `✅ Latitude app linked to ${serverFolderInMonorepo} in ${dataApp}`,
       ),
     )
   } catch (err) {

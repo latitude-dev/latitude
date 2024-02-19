@@ -24,6 +24,7 @@ export async function GET({
 
       return json(queryResult.toJSON())
     } catch (e) {
+      // eslint-disable-next-line
       // @ts-ignore
       return new Response(e.message, { status: 500 })
     }

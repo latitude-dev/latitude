@@ -3,6 +3,7 @@ const config = {
   addons: [
     '@storybook/addon-svelte-csf',
     '@storybook/addon-links',
+    '@storybook/addon-themes',
     '@storybook/addon-essentials',
   ],
   framework: {
@@ -10,7 +11,8 @@ const config = {
     options: {},
   },
   docs: {
-    autodocs: true,
+    autodocs: 'tag',
+    defaultName: 'Documentation',
   },
 }
 
