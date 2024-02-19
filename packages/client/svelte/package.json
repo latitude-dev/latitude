@@ -4,7 +4,7 @@
   "scripts": {
     "dev:dummyApp": "vite dev",
     "test": "vitest",
-    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "lint": "eslint . --max-warnings 0",
     "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
@@ -21,12 +21,13 @@
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/lib/index.ts",
+      "import": "./src/lib/index.ts"
     },
     "./*": {
-      "types": "./dist/ui/*/index.d.ts",
-      "svelte": "./dist/ui/*/index.js"
+      "types": "./src/lib/ui/*/index.ts",
+      "import": "./src/lib/ui/*/index.ts",
+      "svelte": "./src/lib/ui/*/index.svelte"
     }
   },
   "files": [
