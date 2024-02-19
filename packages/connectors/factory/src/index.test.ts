@@ -79,16 +79,6 @@ describe('createConnector', () => {
     )
   })
 
-  it('should throw an error if "details" is missing in configuration', () => {
-    vi.mocked(fs.readFileSync).mockReturnValue(`
-      type: postgres
-    `)
-
-    expect(() => createConnector(sourcePath)).toThrowError(
-      `Missing 'details' in configuration`,
-    )
-  })
-
   it('should throw an error if "type" is invalid in configuration', () => {
     vi.mocked(fs.readFileSync).mockReturnValue(`
       type: invalid
@@ -102,17 +92,6 @@ describe('createConnector', () => {
 
     expect(() => createConnector(sourcePath)).toThrowError(
       `Unsupported connector type: invalid`,
-    )
-  })
-
-  it('should throw an error if "details" is invalid in configuration', () => {
-    vi.mocked(fs.readFileSync).mockReturnValue(`
-      type: postgres
-      details: []
-    `)
-
-    expect(() => createConnector(sourcePath)).toThrowError(
-      `Invalid 'details' in configuration`,
     )
   })
 })

@@ -41,16 +41,25 @@ export default class QueryResult {
           acc[field.name] = this.rows.map((row) => row[i])
           return acc
         },
-        {} as { [key: string]: unknown[] },
-      ),
+        {} as { [key: string]: unknown[] }
+      )
     )
   }
 
   toJSON() {
-    return JSON.stringify({
-      fields: this.fields,
-      rows: this.rows,
-      rowCount: this.rowCount,
-    })
+    return JSON.stringify(
+      {
+        fields: this.fields,
+        rows: this.rows,
+        rowCount: this.rowCount,
+      },
+      (_, value) => {
+        if (typeof value === 'bigint') {
+          return value.toString()
+        } else {
+          return value
+        }
+      }
+    )
   }
 }
