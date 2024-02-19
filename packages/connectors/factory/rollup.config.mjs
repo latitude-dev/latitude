@@ -15,6 +15,7 @@ export default {
   ],
   external: [
     'svelte/compiler',
+    '@latitude-sdk/athena-connector',
     '@latitude-sdk/postgresql-connector',
     '@latitude-sdk/bigquery-connector',
     '@latitude-sdk/mysql-connector',

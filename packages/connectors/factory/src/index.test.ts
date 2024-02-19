@@ -38,7 +38,8 @@ describe('createConnector', () => {
   })
 
   it('should correctly parse env vars', () => {
-    process.env['LATITUDE__DB_PASSWORD'] = 'mypassword'
+    process.env['LATITUDE__DB_PASSWORD'] = 'mypassword' // eslint-disable-line
+
     const spy = vi
       .spyOn(postgresConnector, 'PostgresConnector')
       // @ts-ignore

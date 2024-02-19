@@ -6,8 +6,10 @@ import { PostgresConnector } from '@latitude-sdk/postgresql-connector'
 import { BigQueryConnector } from '@latitude-sdk/bigquery-connector'
 import { MysqlConnector } from '@latitude-sdk/mysql-connector'
 import { SnowflakeConnector } from '@latitude-sdk/snowflake-connector'
+import { AthenaConnector } from '@latitude-sdk/athena-connector'
 
 export enum ConnectorType {
+  Athena = 'athena',
   Postgres = 'postgres',
   Bigquery = 'bigquery',
   Mysql = 'mysql',
@@ -54,6 +56,8 @@ export function createConnector(sourcePath: string): BaseConnector {
       return new MysqlConnector(path.dirname(sourcePath), details)
     case ConnectorType.Snowflake:
       return new SnowflakeConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Athena:
+      return new AthenaConnector(path.dirname(sourcePath), details)
   }
 
   throw new Error()

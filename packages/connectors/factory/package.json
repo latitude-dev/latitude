@@ -24,6 +24,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@latitude-sdk/athena-connector": "workspace:^",
     "@latitude-sdk/base-connector": "workspace:*",
     "@latitude-sdk/bigquery-connector": "workspace:^",
     "@latitude-sdk/mysql-connector": "workspace:^",
