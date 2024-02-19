@@ -12,13 +12,13 @@
     "tc": "tsc --noEmit"
   },
   "type": "module",
-  "types": "dist/index.js",
+  "types": "src/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
     },
-    "./css/all.css": "./dis/css/all.css",
+    "./css/all.css": "./dist/css/all.css",
     "./css/components/*.css": "./dist/css/components/*.css",
     "./latitude.css": "./src/theme/assets/latitude.css",
     "./theme/preset": "./tailwind.config.js"

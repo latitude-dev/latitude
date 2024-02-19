@@ -3,6 +3,9 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [sveltekit()],
+  ssr: {
+    noExternal: ['@latitude-sdk/client'],
+  },
   build: {
     rollupOptions: {
       external: ['child_process'],

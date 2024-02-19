@@ -1,11 +1,24 @@
 name: Linter & Types
 
 on:
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/server/src/**/*.ts'
+      - 'apps/server/src/**/*.svelte'
+      - 'packages/client/svelte/src/*.svelte'
+      - 'packages/**/*.ts'
+
   pull_request:
     branches: ['main']
+    paths:
+      - 'apps/server/src/**/*.ts'
+      - 'apps/server/src/**/*.svelte'
+      - 'packages/client/svelte/src/*.svelte'
+      - 'packages/**/*.ts'
 
 jobs:
-  test:
+  linter:
     runs-on: ubuntu-latest
 
     strategy:
@@ -15,6 +28,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 2 # Checkout HEAD^
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -40,11 +55,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build latitude packages
-        run: pnpm run build
+      - name: Use Turbo to build affected packages
+        run: pnpm turbo run build --cache-dir=.turbo --filter=@latitude-sdk/*{./packages/*}[HEAD^1] --filter=@latitude-sdk/*{./apps/*}[HEAD^1]
 
       - name: Prettier
         run: pnpm prettier
