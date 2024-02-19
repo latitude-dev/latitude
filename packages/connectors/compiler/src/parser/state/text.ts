@@ -25,10 +25,7 @@ export function text(parser: Parser) {
   while (parser.index < parser.template.length) {
     const isEscaping = ENDS_WITH_ESCAPE_REGEX.test(data);
 
-    console.log('Checking for coincident delimiters in text', parser.template.slice(parser.index, parser.index + 5));
-    const areThereCoincidentDelimiters = RESERVED_DELIMITERS.some(sample => parser.match(sample));
-    console.log('Are there coincident delimiters in text?', areThereCoincidentDelimiters);
-    if (areThereCoincidentDelimiters) {
+    if (RESERVED_DELIMITERS.some(sample => parser.match(sample))) {
       if (!isEscaping) break
       data = data.slice(0, -1);
     }

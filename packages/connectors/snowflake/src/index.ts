@@ -33,28 +33,12 @@ export class SnowflakeConnector extends BaseConnector {
   }
 
   resolve(
-    name: string | undefined,
     value: unknown,
-    resolvedParams: ResolvedParam[]
+    index: number,
   ): ResolvedParam {
-    if (name === undefined) {
-      return {
-        value,
-        name: crypto.randomUUID(),
-        resolvedAs: `$${name}`,
-      }
-    }
-
-    const foundParam = resolvedParams.find(
-      (param) => param.name === name && param.value === value
-    )
-
-    if (foundParam) return foundParam
-
     return {
-      name,
       value,
-      resolvedAs: `$${name}`,
+      resolvedAs: `$${index + 1}`,
     }
   }
 

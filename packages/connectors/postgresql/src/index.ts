@@ -33,9 +33,8 @@ export class PostgresConnector extends BaseConnector {
   }
 
   resolve(
-    name: string | undefined,
     value: unknown,
-    resolvedParams: ResolvedParam[],
+    index: number,
   ): ResolvedParam {
     /**
      * The pg library parameterises variables as $i where i is an increasing number starting
@@ -43,25 +42,9 @@ export class PostgresConnector extends BaseConnector {
      */
     const isText = typeof value === 'string'
     const suffix = isText ? '::text' : ''
-
-    if (name === undefined) {
-      return {
-        value,
-        resolvedAs: `$${resolvedParams.length + 1}${suffix}`,
-      }
-    }
-
-    const foundParam = resolvedParams.find(
-      (param) => param.name === name && param.value === value,
-    )
-    if (foundParam) {
-      return foundParam
-    }
-
     return {
-      name,
       value,
-      resolvedAs: `$${resolvedParams.length + 1}${suffix}`,
+      resolvedAs: `$${index + 1}${suffix}`,
     }
   }
 

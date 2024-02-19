@@ -358,18 +358,9 @@ importers:
 
   packages/connectors/base:
     dependencies:
-      acorn:
-        specifier: ^8.9.0
-        version: 8.11.3
-      code-red:
-        specifier: ^1.0.3
-        version: 1.0.4
-      locate-character:
-        specifier: ^3.0.0
-        version: 3.0.0
-      svelte:
-        specifier: ^4.2.10
-        version: 4.2.10
+      '@latitude-sdk/sql-compiler':
+        specifier: workspace:*
+        version: link:../compiler
     devDependencies:
       '@latitude-sdk/eslint-config':
         specifier: workspace:*
@@ -383,12 +374,6 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
-      '@types/acorn':
-        specifier: ^6.0.0
-        version: 6.0.0
-      '@types/estree':
-        specifier: ^1.0.1
-        version: 1.0.5
       '@types/mock-fs':
         specifier: ^4.13.4
         version: 4.13.4
@@ -435,6 +420,43 @@ importers:
       rollup:
         specifier: ^4.10.0
         version: 4.10.0
+
+  packages/connectors/compiler:
+    dependencies:
+      acorn:
+        specifier: ^8.9.0
+        version: 8.11.3
+      code-red:
+        specifier: ^1.0.3
+        version: 1.0.4
+      locate-character:
+        specifier: ^3.0.0
+        version: 3.0.0
+    devDependencies:
+      '@latitude-sdk/eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@latitude-sdk/typescript':
+        specifier: workspace:*
+        version: link:../../../tools/typescript
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
+      '@types/acorn':
+        specifier: ^6.0.0
+        version: 6.0.0
+      '@types/estree':
+        specifier: ^1.0.1
+        version: 1.0.5
+      rollup:
+        specifier: ^4.10.0
+        version: 4.10.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.3.3
+      vitest:
+        specifier: ^1.2.2
+        version: 1.2.2(jsdom@24.0.0)
 
   packages/connectors/factory:
     dependencies:

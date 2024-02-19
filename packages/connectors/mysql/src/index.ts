@@ -31,10 +31,8 @@ export class MysqlConnector extends BaseConnector {
     })
   }
 
-  resolve(_: string | undefined, value: unknown): ResolvedParam {
-    const nname = Math.random().toString(36).substring(7)
+  resolve(value: unknown, _: number): ResolvedParam {
     return {
-      name: nname,
       value,
       resolvedAs: '?',
     }

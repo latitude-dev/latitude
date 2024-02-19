@@ -8,7 +8,6 @@ export type QueryRequest = {
 }
 
 export type ResolvedParam = {
-  name?: string
   value: unknown
   resolvedAs: string
 }

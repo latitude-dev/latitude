@@ -16,8 +16,6 @@ type ConnectionParams = {
   token?: string
 }
 
-class InvalidParamError extends ConnectorError {}
-
 export class BigQueryConnector extends BaseConnector {
   private params: ConnectionParams
 
@@ -28,30 +26,12 @@ export class BigQueryConnector extends BaseConnector {
   }
 
   resolve(
-    name: string | undefined,
     value: unknown,
-    resolvedParams: ResolvedParam[]
+    index: number,
   ): ResolvedParam {
-    if (name === undefined) {
-      // Generate a random string for the name
-      const name = Math.random().toString(36).substring(7)
-      return {
-        value,
-        name,
-        resolvedAs: `@${name}`,
-      }
-    }
-
-    const foundParam = resolvedParams.find(
-      (param) => param.name === name && param.value === value
-    )
-
-    if (foundParam) return foundParam
-
     return {
-      name,
       value,
-      resolvedAs: `@${name}`,
+      resolvedAs: `@var${index + 1}`,
     }
   }
 
@@ -112,14 +92,8 @@ export class BigQueryConnector extends BaseConnector {
 
   private buildQueryParams(params: ResolvedParam[]): Record<string, unknown> {
     return params.reduce(
-      (acc, param) => {
-        if (param.name === undefined) {
-          throw new InvalidParamError(
-            `Encountered a param without a name: ${param}`
-          )
-        }
-
-        acc[param.name] = param.value
+      (acc, param, index) => {
+        acc[`var${index + 1}`] = param.value
         return acc
       },
       {} as Record<string, unknown>
