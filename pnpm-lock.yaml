@@ -358,6 +358,15 @@ importers:
 
   packages/connectors/base:
     dependencies:
+      acorn:
+        specifier: ^8.9.0
+        version: 8.11.3
+      code-red:
+        specifier: ^1.0.3
+        version: 1.0.4
+      locate-character:
+        specifier: ^3.0.0
+        version: 3.0.0
       svelte:
         specifier: ^4.2.10
         version: 4.2.10
@@ -374,6 +383,9 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.10.0)(typescript@5.3.3)
+      '@types/acorn':
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/estree':
         specifier: ^1.0.1
         version: 1.0.5
@@ -6057,6 +6069,13 @@ packages:
   /@trysound/sax@0.2.0:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
+    dev: true
+
+  /@types/acorn@6.0.0:
+    resolution: {integrity: sha512-8tSIZoick397hAZIZkiq6R09qNgLjx0CBvmxix3gWyCi6UvXNFjN56xh4e1wTwyYlnTEy32tgo9cooxt6J4lhA==}
+    deprecated: This is a stub types definition. acorn provides its own type definitions, so you do not need this installed.
+    dependencies:
+      acorn: 8.11.3
     dev: true
 
   /@types/argparse@1.0.38:
