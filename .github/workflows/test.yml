@@ -1,8 +1,21 @@
 name: Tests suite
 
 on:
+  push:
+    branches: ['main']
+    paths:
+      - 'apps/server/src/**/*.ts'
+      - 'apps/server/src/**/*.svelte'
+      - 'packages/client/svelte/src/*.svelte'
+      - 'packages/**/*.ts'
+
   pull_request:
     branches: ['main']
+    paths:
+      - 'apps/server/src/**/*.ts'
+      - 'apps/server/src/**/*.svelte'
+      - 'packages/client/svelte/src/*.svelte'
+      - 'packages/**/*.ts'
 
 jobs:
   test:
@@ -15,22 +28,48 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # Checkout HEAD^
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
 
       - name: Install dependencies
-        # the (--no-frozen-lockfile) flag is here for fixing:
-        # ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY  Broken lockfile
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install
 
-      - name: Build latitude packages
-        run: pnpm run build
+        # tells Turbo to only run the script (build or test in this case) for the packages
+      - name: Use Turbo to build affected packages
+        run: pnpm turbo run build --cache-dir=.turbo --filter=@latitude-sdk/*{./packages/*}[HEAD^1] --filter=@latitude-sdk/*{./apps/*}[HEAD^1]
 
       - name: Run tests
-        run: pnpm run test
+        run: pnpm turbo run test --filter=@latitude-sdk/*{./packages/*}[HEAD^1] --filter=@latitude-sdk/*{./apps/*}[HEAD^1]
