@@ -1,0 +1,82 @@
+---
+title: 'Basic example'
+description: 'Creating a simple data app'
+---
+
+## Introduction
+
+This guide will walk you through creating a simple data app using Latitude. You'll learn how to:
+
+1. [Create a new data app](#1-create-a-new-data-app)
+2. [Add a data source](#2-add-a-data-source)
+3. [Write your queries](#3-write-your-queries)
+4. [Define the layout and visualizations](#4-define-the-layout-and-visualizations)
+
+## Prerequisites
+
+Before you begin, make sure you followed the [installation guide](/guides/getting-started/installation) to install Latitude.
+
+## 1. Create a new data app
+
+To create a new data app, run the following command in your terminal:
+
+```bash
+latitude start
+```
+
+Type in the name of your app and press enter. This will create a new directory with the name of your app and a basic structure for your app.
+
+After the app is created, navigate to the app's directory and start the development server by running the following commands:
+
+```bash
+cd my-app
+latitude dev
+```
+
+This will start the development server and open your app in your default browser.
+
+## 2. Add a data source
+
+To add a data source to your app, you'll need to create a new file in the `sources` directory.
+
+For this guide, we'll use the CSV that comes with the sample project, but you can replace that with any other CSV or even connect to a live database following [these instructions](/sources).
+
+## 3. Write your queries
+
+Now that you have a data source, you can write your first query. Create a new file named `sample.sql` in the `queries` directory and write the following query:
+
+```sql sample.sql
+SELECT *
+FROM { csv('source.csv') }
+```
+
+This query will select all the rows from the `source.csv` data source.
+
+Next, let's create a secondary query to aggregate some data. Create a new file named `sample_agg.sql` in the `queries` directory and write the following query:
+
+```sql sample_agg.sql
+SELECT
+  release_year,
+  COUNT(*) AS total_titles,
+FROM { ref('sample') }
+GROUP BY 1
+ORDER BY 1 ASC
+```
+
+This query will count the number of titles released each year. The `ref` function is used to interpolate the `sample.sql` query, and use its results as the input for this query. Latitude allows you to chain queries together very easily, find out more about this in the [queries reference](/queries).
+
+{/* TODO: add missing details about running queries locally */}
+
+## 4. Define the layout and visualizations
+
+Now that you have your queries, you can define the layout and visualizations for your app. The sample project comes with a basic layout and visualization, but you can customize it to fit your needs. You can find it in the `views` folder, named `index.html`.
+
+Open the `index.html` file in your text editor and replace the content with the following:
+
+{/* TODO: add the actual sample layout here */}
+
+Once you're done, save the file and go to your browser to see the changes reflected in your app in real-time.
+
+## Next steps
+
+You've successfully created a simple data app using Latitude. You've learned how to create a new app, add a data source, write queries, and define the layout and visualizations. You can now build on this knowledge to create more complex data apps and explore the full capabilities of Latitude.
