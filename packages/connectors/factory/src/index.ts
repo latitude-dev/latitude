@@ -7,10 +7,12 @@ import { BigQueryConnector } from '@latitude-sdk/bigquery-connector'
 import { MysqlConnector } from '@latitude-sdk/mysql-connector'
 import { SnowflakeConnector } from '@latitude-sdk/snowflake-connector'
 import { AthenaConnector } from '@latitude-sdk/athena-connector'
+import { DuckdbConnector } from '@latitude-sdk/duckdb-connector'
 
 export enum ConnectorType {
   Athena = 'athena',
   Clickhouse = 'clickhouse',
+  Duckdb = 'duckdb',
   Postgres = 'postgres',
   Bigquery = 'bigquery',
   Mysql = 'mysql',
@@ -34,14 +36,11 @@ export function createConnector(sourcePath: string): BaseConnector {
   })
 
   if (!config?.type) throw new Error(`Missing 'type' in configuration`)
-  if (!config?.details) throw new Error(`Missing 'details' in configuration`)
   if (typeof config.type !== 'string')
     throw new Error(`Invalid 'type' in configuration`)
-  if (typeof config.details !== 'object' || Array.isArray(config.details))
-    throw new Error(`Invalid 'details' in configuration`)
 
   const type = config.type
-  const details = config.details
+  const details = config.details || {}
 
   if (!Object.values(ConnectorType).includes(type)) {
     throw new Error(`Unsupported connector type: ${config.type}`)
@@ -60,6 +59,8 @@ export function createConnector(sourcePath: string): BaseConnector {
       return new SnowflakeConnector(path.dirname(sourcePath), details)
     case ConnectorType.Athena:
       return new AthenaConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Duckdb:
+      return new DuckdbConnector(path.dirname(sourcePath), details)
   }
 
   throw new Error()

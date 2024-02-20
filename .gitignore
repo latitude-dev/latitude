@@ -36,4 +36,4 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
-sites/test-env/dev-*
+sites

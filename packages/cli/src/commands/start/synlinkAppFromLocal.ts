@@ -17,7 +17,7 @@ export default async function synlinkAppFromLocal({
 }: Props) {
   const serverFolderInMonorepo = path.resolve(
     process.cwd(),
-    `../../${APP_SERVER_FOLDER}`,
+    `../${APP_SERVER_FOLDER}`
   )
   const dataApp = createAppFolder(destinationPath)
 
@@ -25,8 +25,8 @@ export default async function synlinkAppFromLocal({
     forceSymlink(serverFolderInMonorepo, dataApp)
     console.log(
       colors.green(
-        `✅ Latitude app linked to ${serverFolderInMonorepo} in ${dataApp}`,
-      ),
+        `✅ Latitude app linked to ${serverFolderInMonorepo} in ${dataApp}`
+      )
     )
   } catch (err) {
     onError({ error: err as Error, message: `💥 Error linking server folder` })
