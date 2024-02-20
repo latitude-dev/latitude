@@ -1,14 +1,3 @@
-/* eslint no-case-declarations: 0 */
-/* eslint no-prototype-builtins: 0 */
-
-// TODO: Carlos is changing all of this so this Lint rules will not be necessary
-import type QueryResult from '@latitude-sdk/query_result'
-import {
-  type QueryRequest,
-  type QueryParams,
-  type CompiledQuery,
-  type ResolvedParam,
-} from '../../types'
 import { BaseNode, type TemplateNode } from '../parser/interfaces'
 import {
   type Node,
@@ -21,98 +10,24 @@ import {
   BINARY_OPERATOR_METHODS,
   MEMBER_EXPRESSION_METHOD,
   UNARY_OPERATOR_METHODS,
-  CAST_METHODS,
-} from '../../operators'
+} from './operators'
 import CompileError, { error } from '../error/error'
 import errors from '../error/errors'
+import Scope from './scope'
 
-type ResolveFn = (
-  name: string | undefined,
-  value: unknown,
-  resolvedParam: ResolvedParam[],
-) => ResolvedParam
-type ReadQueryFn = (queryPath: string) => string | undefined
-type RunQueryFn = (compiledQuery: CompiledQuery) => Promise<QueryResult>
-
-type ConnectorFns = {
-  resolveFn: ResolveFn
-  readQueryFn: ReadQueryFn
-  runQueryFn: RunQueryFn
+type CompilerAttrs = {
+  query: string,
+  resolveFn: ResolveFn,
+  supportedMethods?: Record<string, SupportedMethod>
 }
-
-export type CompileParams = ConnectorFns & {
-  queryRequest: QueryRequest
-}
-
-type CompilerAttrs = ConnectorFns & {
-  params: QueryParams
-  compiledQueryNames: string[]
-  resolvedParams: ResolvedParam[]
-  varStash: unknown[]
-}
-
-class Scope {
-  private consts: Record<string, number> = {}
-  private vars: Record<string, number> = {}
-
-  constructor(
-    private readFromStash: (index: number) => unknown,
-    private addToStash: (value: unknown) => number,
-    private modifyStash: (index: number, value: unknown) => void,
-  ) {}
-
-  exists(name: string): boolean {
-    return name in this.consts || name in this.vars
-  }
-
-  isConst(name: string): boolean {
-    return name in this.consts
-  }
-
-  get(name: string): unknown {
-    const index = this.consts[name] ?? this.vars[name] ?? undefined
-    if (index === undefined) throw new Error(`Variable ${name} does not exist`)
-    return this.readFromStash(index)
-  }
-
-  defineConst(name: string, value: unknown): void {
-    if (this.exists(name)) throw new Error(`Variable ${name} already exists`)
-    this.consts[name] = this.addToStash(value)
-  }
-
-  set(name: string, value: unknown): void {
-    if (this.isConst(name)) throw new Error(`Variable ${name} is a constant`)
-    if (!this.exists(name)) {
-      this.vars[name] = this.addToStash(value)
-      return
-    }
-    const index = this.vars[name]!
-    this.modifyStash(index, value)
-  }
-
-  copy(): Scope {
-    const scope = new Scope(
-      this.readFromStash,
-      this.addToStash,
-      this.modifyStash,
-    )
-    scope.consts = { ...this.consts }
-    scope.vars = { ...this.vars }
-    return scope
-  }
-}
+export type SupportedMethod = <T extends boolean>(interpolation: T, ...args: unknown[]) => Promise<T extends true ? string : unknown>
+export type ResolveFn = (value: unknown) => Promise<string>
 
 export class Compiler {
-  private sql?: string
-  private params: QueryParams
-
+  private sql: string
+  private supportedMethods: Record<string, SupportedMethod>
   private resolveFn: ResolveFn
-  private readQueryFn: ReadQueryFn
-  private runQueryFn: RunQueryFn
-
-  private resolvedParams: ResolvedParam[]
-  private compiledQueryNames: string[]
-
+  
   private varStash: unknown[]
 
   private readFromStash(index: number): unknown {
@@ -129,62 +44,18 @@ export class Compiler {
   }
 
   constructor({
-    params,
+    query,
     resolveFn,
-    readQueryFn,
-    runQueryFn,
-    compiledQueryNames,
-    resolvedParams,
-    varStash,
+    supportedMethods = {},
   }: CompilerAttrs) {
-    this.params = params
+    this.sql = query
     this.resolveFn = resolveFn
-    this.readQueryFn = readQueryFn
-    this.runQueryFn = runQueryFn
+    this.supportedMethods = supportedMethods
 
-    this.resolvedParams = resolvedParams
-    this.compiledQueryNames = compiledQueryNames
-
-    this.varStash = varStash
+    this.varStash = []
   }
 
-  resolve(value: unknown, name?: string): string {
-    const resolvedParam = this.resolveFn(name, value, this.resolvedParams)
-
-    if (
-      !this.resolvedParams.some(
-        (param) =>
-          param.name === resolvedParam.name &&
-          param.value === resolvedParam.value &&
-          param.resolvedAs === resolvedParam.resolvedAs,
-      )
-    ) {
-      this.resolvedParams.push(resolvedParam)
-    }
-
-    return resolvedParam.resolvedAs
-  }
-
-  async compile(queryName: string): Promise<CompiledQuery> {
-    const fullQueryName = queryName.endsWith('.sql')
-      ? queryName
-      : `${queryName}.sql`
-    if (this.compiledQueryNames.includes(fullQueryName)) {
-      throw new Error(`Query ${fullQueryName} has already been compiled`)
-    }
-    this.compiledQueryNames.push(fullQueryName)
-    const query = this.readQueryFn(fullQueryName)
-    if (!query) {
-      error(`Query '${fullQueryName}' not found`, {
-        name: 'ParseError',
-        code: 'query-not-found',
-        source: '',
-        start: 0,
-        end: undefined
-      })
-    }
-    this.sql = query!
-
+  async compile(): Promise<string> {
     const fragment = parse(this.sql)
     const localScope = new Scope(
       this.readFromStash.bind(this),
@@ -195,7 +66,7 @@ export class Compiler {
       .replace(/ +/g, ' ') // Remove extra spaces
       .trim() // Remove leading and trailing spaces
 
-    return { sql: compiledSql, params: this.resolvedParams }
+    return compiledSql
   }
 
   private parseBaseNode = async (
@@ -287,15 +158,17 @@ export class Compiler {
     }
 
     if (node.type === 'CallExpression') {
-      return (await this.handleFunction(
+      return await this.handleFunction(
         node as SimpleCallExpression,
         true,
         localScope,
-      )) as string
+      )
     }
 
     const value = await this.resolveLogicNodeExpression(node, localScope)
-    return this.resolve(value)
+    const resolvedValue = await this.resolveFn(value)
+
+    return resolvedValue
   }
 
   private resolveLogicNodeExpression = async (
@@ -484,10 +357,7 @@ export class Compiler {
   }
 
   private expressionError({ code, message }: { code: string, message: string }, node: Node): never {
-    
     const source = (node.loc?.source ?? this.sql)!.split('\n')
-
-    // sum the length of all lines before the error + the length of the error line until the error column
     const start = source.slice(0, node.loc?.start.line! - 1).reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.start.column!
     const end = source.slice(0, node.loc?.end.line! - 1).reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.end.column!
     
@@ -500,99 +370,26 @@ export class Compiler {
     })
   }
 
-  private AVAILABLE_METHODS: Record<string, Function> = {
-    param: async (
-      interpolation: boolean,
-      name: string,
-      defaultValue?: unknown,
-    ) => {
-      if (this.params.hasOwnProperty(name))
-        return interpolation
-          ? this.resolve(this.params[name], name)
-          : this.params[name]
-      if (defaultValue === undefined)
-        throw new Error(`Missing parameter: ${name}`)
-      return interpolation ? this.resolve(defaultValue, name) : defaultValue
-    },
-    cast: async (interpolation: boolean, value: unknown, type: string) => {
-      if (!CAST_METHODS.hasOwnProperty(type))
-        throw new Error(`Unsupported cast type: '${type}'`)
-      const castMethod = CAST_METHODS[type]!
-      const parsedValue = castMethod(value)
-      return interpolation ? this.resolve(parsedValue) : parsedValue
-    },
-    ref: async (interpolation: boolean, queryName: string) => {
-      if (!interpolation)
-        throw new Error('ref function cannot be used inside a logic block')
-      const fullQueryName = queryName.endsWith('.sql')
-        ? queryName
-        : `${queryName}.sql`
-      if (this.compiledQueryNames.includes(fullQueryName)) {
-        throw new Error(
-          'Query reference to a parent, resulting in cyclic references.',
-        )
-      }
-      const query = this.readQueryFn(fullQueryName)
-      if (query === undefined)
-        throw new Error(`Referenced query not found: '${fullQueryName}'`)
-      const compiler = new Compiler({
-        params: this.params,
-        resolveFn: this.resolveFn.bind(this),
-        readQueryFn: this.readQueryFn.bind(this),
-        runQueryFn: this.runQueryFn.bind(this),
-        compiledQueryNames: this.compiledQueryNames,
-        resolvedParams: this.resolvedParams,
-        varStash: [],
-      })
-      const compiledQuery = await compiler.compile(queryName)
-      return `(${compiledQuery.sql})`
-    },
-    run_query: async (interpolation: boolean, queryName: string) => {
-      if (interpolation)
-        throw new Error(
-          'run_query function cannot be directly interpolated into the query',
-        )
-      const fullQueryName = queryName.endsWith('.sql')
-        ? queryName
-        : `${queryName}.sql`
-      if (this.compiledQueryNames.includes(fullQueryName)) {
-        throw new Error(
-          'Query reference to a parent, resulting in cyclic references.',
-        )
-      }
-      const query = this.readQueryFn(fullQueryName)
-      if (query === undefined)
-        throw new Error(`Referenced query not found: '${fullQueryName}'`)
-      const compiler = new Compiler({
-        params: this.params,
-        resolveFn: this.resolveFn.bind(this),
-        readQueryFn: this.readQueryFn.bind(this),
-        runQueryFn: this.runQueryFn.bind(this),
-        compiledQueryNames: this.compiledQueryNames,
-        resolvedParams: [],
-        varStash: [],
-      })
-      const compiledQuery = await compiler.compile(queryName)
-      return this.runQueryFn(compiledQuery)
-    },
-  }
-
-  private handleFunction = async (
+  private handleFunction = async <T extends boolean>(
     node: SimpleCallExpression,
-    interpolation: boolean,
+    interpolation: T,
     localScope: Scope,
-  ): Promise<string | unknown> => {
+  ): Promise<T extends true ? string : unknown> => {
     const methodName = (node.callee as Identifier).name
-    if (!this.AVAILABLE_METHODS.hasOwnProperty(methodName)) {
+    if (!this.supportedMethods.hasOwnProperty(methodName)) {
       this.expressionError(errors.unknownFunction(methodName), node)
     }
-    const method = this.AVAILABLE_METHODS[methodName]!
+    const method = this.supportedMethods[methodName]! as SupportedMethod
     const args: unknown[] = []
     for (const arg of node.arguments) {
       args.push(await this.resolveLogicNodeExpression(arg, localScope))
     }
     try {
-      return await method(interpolation, ...args)
+      const returnedValue = await method(interpolation, ...args) as T extends true ? string : unknown
+      if (interpolation && typeof returnedValue !== 'string') {
+        this.expressionError(errors.invalidFunctionResultInterpolation, node)
+      }
+      return returnedValue
     } catch (error: unknown) {
       if (error instanceof CompileError) throw error
       this.expressionError(errors.functionCallError(methodName, (error as Error).message), node)

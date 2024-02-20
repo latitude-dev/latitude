@@ -101,4 +101,8 @@ export default {
     code: 'function-call-error',
     message: `Error calling function '${name}': ${message}`
   }),
+  invalidFunctionResultInterpolation: {
+    code: 'invalid-function-result-interpolation',
+    message: 'Functions called for interpolation must return a string'
+  },
 };

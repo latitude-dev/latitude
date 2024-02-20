@@ -14,7 +14,6 @@ import {
   ResolvedParam,
 } from '@latitude-sdk/base-connector'
 import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
-import { randomUUID } from 'crypto'
 
 interface AthenaQueryClientConfig {
   client: AthenaClientConfig
@@ -53,9 +52,8 @@ export class AthenaConnector extends BaseConnector {
       connectionParams.resultReuseConfiguration || this.resultReuseConfiguration
   }
 
-  resolve(_: string | undefined, value: unknown): ResolvedParam {
+  resolve(value: unknown, _: number): ResolvedParam {
     return {
-      name: randomUUID(),
       value,
       resolvedAs: '?',
     }

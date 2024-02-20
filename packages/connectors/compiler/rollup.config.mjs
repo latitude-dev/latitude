@@ -13,5 +13,4 @@ export default {
       exclude: ['**/__tests__', '**/*.test.ts'],
     }),
   ],
-  external: ['@latitude-sdk/query_result', 'fs', 'path'],
 }

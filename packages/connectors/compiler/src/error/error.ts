@@ -1,5 +1,4 @@
 import { locate } from 'locate-character';
-import { ConnectorError } from '../../types';
 
 export interface Position {
   line: number;
@@ -14,7 +13,7 @@ type CompileErrorProps = {
   end?: number
 }
 
-export default class CompileError extends ConnectorError {
+export default class CompileError extends Error {
   code?: string
   start?: Position
   end?: Position
