@@ -1,4 +1,36 @@
 ---
 title: 'Create an API'
-description: 'description'
+description: 'Learn how to create an API to your data with the Latitude SDK'
 ---
+
+## Introduction
+
+The Latitude SDK automatically creates an API for you based on the queries you have defined in your project. This means that you can easily expose your data to any other app or service.
+
+In this tutorial, we will learn to:
+
+1. Create a new data app in API-only mode
+2. 
+
+## Prerequisites
+
+Before you begin, make sure you followed the [installation guide](/guides/getting-started/installation) to install Latitude.
+
+## 1. Create a new data app in API-only mode
+
+To create a new data app in API-only mode, run the following command in your terminal:
+
+```bash
+latitude start --api
+```
+
+This will create a new project folder with a structure similar to a regular data app. Regular data apps also expose an API by default but since in this case we are only interested in the API, the `--api` flag skips the creation of the `views` folder.
+
+After the app is created, navigate to the app's directory and start the development server by running the following commands:
+
+```bash
+cd my-app
+latitude dev
+```
+
+This will start the development server and open your app in your default browser.
