@@ -374,12 +374,6 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
-      '@types/mock-fs':
-        specifier: ^4.13.4
-        version: 4.13.4
-      mock-fs:
-        specifier: ^5.2.0
-        version: 5.2.0
       rollup:
         specifier: ^4.10.0
         version: 4.10.0

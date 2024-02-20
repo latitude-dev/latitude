@@ -1,5 +1,5 @@
 import path from 'path'
-import fs from 'fs'
+import * as fs from 'fs'
 import compile, {
   type CompileError,
   type SupportedMethod,
@@ -11,6 +11,7 @@ import {
   type ResolvedParam,
   type CompiledQuery,
   ConnectorError,
+  QueryParams,
 } from './types'
 
 export abstract class BaseConnector {
@@ -33,18 +34,21 @@ export abstract class BaseConnector {
 
   async query(request: QueryRequest): Promise<QueryResult> {
     await this.connect()
+
     const resolvedParams: ResolvedParam[] = []
     const ranQueries: Record<string, QueryResult> = {}
     const queriesBeingCompiled: string[] = []
 
-    const queryResult = await this._query({
-      request,
-      resolvedParams,
-      ranQueries,
-      queriesBeingCompiled,
-    })
-    await this.disconnect()
-    return queryResult
+    try {
+      return await this._query({
+        request,
+        resolvedParams,
+        ranQueries,
+        queriesBeingCompiled,
+      })
+    } finally {
+      await this.disconnect()
+    }
   }
 
   private async _query({
@@ -63,108 +67,25 @@ export abstract class BaseConnector {
 
     const query = this.readQuery(fullQueryName)
     const params = request.params || {}
-
     const resolveFn = async (value: unknown): Promise<string> => {
       const resolved = this.resolve(value, resolvedParams.length)
       resolvedParams.push(resolved)
       return resolved.resolvedAs
     }
-
-    const supportedMethods: Record<string, SupportedMethod> = {}
-    supportedMethods['param'] = async <T extends boolean>(
-      interpolation: T,
-      name: unknown,
-      defaultValue?: unknown,
-    ): Promise<T extends true ? string : unknown> => {
-      if (typeof name !== 'string') throw new Error('Invalid parameter name')
-      if (!(name in params) && defaultValue === undefined)
-        throw new Error(`Missing parameter '${name}' in request`)
-      const value = name in params ? params[name] : defaultValue
-
-      const resolvedValue = interpolation ? await resolveFn(value) : value
-      return resolvedValue as T extends true ? string : unknown
-    }
-    supportedMethods['cast'] = async <T extends boolean>(
-      interpolation: T,
-      value: unknown,
-      type: unknown,
-    ): Promise<T extends true ? string : unknown> => {
-      if (typeof type !== 'string') throw new Error('Invalid cast type')
-      if (!(type in CAST_METHODS)) {
-        throw new Error(`Unsupported cast type: '${type}'`)
-      }
-      const parsedValue = CAST_METHODS[type]!(value)
-
-      const resolvedValue = interpolation
-        ? await resolveFn(parsedValue)
-        : parsedValue
-      return resolvedValue as T extends true ? string : unknown
-    }
-    supportedMethods['ref'] = async <T extends boolean>(
-      interpolation: T,
-      queryName: unknown,
-    ): Promise<T extends true ? string : unknown> => {
-      if (typeof queryName !== 'string') throw new Error('Invalid query name')
-      if (!interpolation) {
-        throw new Error('ref function cannot be used inside a logic block')
-      }
-      const fullSubQueryPath = this.fullQueryPath(queryName)
-      if (queriesBeingCompiled.includes(fullSubQueryPath)) {
-        throw new Error(
-          'Query reference to a parent, resulting in cyclic references.',
-        )
-      }
-
-      queriesBeingCompiled.push(fullSubQueryPath)
-      const subQuery = this.readQuery(fullSubQueryPath)
-
-      const compiledSubQuery = await compile({
-        query: subQuery,
-        resolveFn,
-        supportedMethods,
-      })
-      queriesBeingCompiled.pop()
-
-      return `(${compiledSubQuery})`
-    }
-    supportedMethods['run_query'] = async <T extends boolean>(
-      interpolation: T,
-      queryName: unknown,
-    ): Promise<T extends true ? string : QueryResult> => {
-      if (typeof queryName !== 'string') throw new Error('Invalid query name')
-      if (interpolation) {
-        throw new Error(
-          'run_query function cannot be directly interpolated into the query',
-        )
-      }
-      const fullSubQueryPath = this.fullQueryPath(queryName)
-      if (fullSubQueryPath in ranQueries) {
-        return ranQueries[fullSubQueryPath] as T extends true
-          ? string
-          : QueryResult
-      }
-      if (queriesBeingCompiled.includes(fullSubQueryPath)) {
-        throw new Error(
-          'Query reference to a parent, resulting in cyclic references.',
-        )
-      }
-
-      const subQueryResults = await this._query({
-        request: { queryPath: queryName, params },
-        resolvedParams: [],
-        ranQueries,
-        queriesBeingCompiled,
-      })
-      ranQueries[fullSubQueryPath] = subQueryResults
-      return subQueryResults as T extends true ? string : QueryResult
-    }
-
+    const supportedMethods = this.buildSupportedMethods({
+      params,
+      resolveFn,
+      ranQueries,
+      queriesBeingCompiled,
+    })
     const compiledQuery = await compile({
       query,
       resolveFn,
       supportedMethods,
     })
+
     queriesBeingCompiled.pop()
+
     return await this.runQuery({
       sql: compiledQuery,
       params: resolvedParams,
@@ -182,6 +103,123 @@ export abstract class BaseConnector {
     if (!fs.existsSync(fullQueryPath))
       throw new ConnectorError(`Query file not found: ${fullQueryPath}`)
     return fs.readFileSync(fullQueryPath, 'utf8')
+  }
+
+  private buildSupportedMethods({
+    params,
+    resolveFn,
+    ranQueries,
+    queriesBeingCompiled,
+  }: {
+    params: QueryParams
+    resolveFn: (value: unknown) => Promise<string>
+    ranQueries: Record<string, QueryResult>
+    queriesBeingCompiled: string[]
+  }): Record<string, SupportedMethod> {
+    const supportedMethods = {
+      unsafeParam: async <T extends boolean>(
+        _: T,
+        name: unknown,
+        defaultValue?: unknown,
+      ): Promise<T extends true ? string : unknown> => {
+        if (typeof name !== 'string') {
+          throw new Error('Invalid parameter name')
+        }
+        if (!(name in params) && defaultValue === undefined)
+          throw new Error(`Missing parameter '${name}' in request`)
+
+        return (params[name] || defaultValue) as string
+      },
+      param: async <T extends boolean>(
+        interpolation: T,
+        name: unknown,
+        defaultValue?: unknown,
+      ): Promise<T extends true ? string : unknown> => {
+        if (typeof name !== 'string') throw new Error('Invalid parameter name')
+        if (!(name in params) && defaultValue === undefined)
+          throw new Error(`Missing parameter '${name}' in request`)
+        const value = name in params ? params[name] : defaultValue
+
+        const resolvedValue = interpolation ? await resolveFn(value) : value
+        return resolvedValue as T extends true ? string : unknown
+      },
+      cast: async <T extends boolean>(
+        interpolation: T,
+        value: unknown,
+        type: unknown,
+      ): Promise<T extends true ? string : unknown> => {
+        if (typeof type !== 'string') throw new Error('Invalid cast type')
+        if (!(type in CAST_METHODS)) {
+          throw new Error(`Unsupported cast type: '${type}'`)
+        }
+        const parsedValue = CAST_METHODS[type]!(value)
+
+        const resolvedValue = interpolation
+          ? await resolveFn(parsedValue)
+          : parsedValue
+        return resolvedValue as T extends true ? string : unknown
+      },
+      ref: async <T extends boolean>(
+        interpolation: T,
+        queryName: unknown,
+      ): Promise<T extends true ? string : unknown> => {
+        if (typeof queryName !== 'string') throw new Error('Invalid query name')
+        if (!interpolation) {
+          throw new Error('ref function cannot be used inside a logic block')
+        }
+        const fullSubQueryPath = this.fullQueryPath(queryName)
+        if (queriesBeingCompiled.includes(fullSubQueryPath)) {
+          throw new Error(
+            'Query reference to a parent, resulting in cyclic references.',
+          )
+        }
+
+        queriesBeingCompiled.push(fullSubQueryPath)
+        const subQuery = this.readQuery(fullSubQueryPath)
+
+        const compiledSubQuery = await compile({
+          query: subQuery,
+          resolveFn,
+          supportedMethods,
+        })
+        queriesBeingCompiled.pop()
+
+        return `(${compiledSubQuery})`
+      },
+      run_query: async <T extends boolean>(
+        interpolation: T,
+        queryName: unknown,
+      ): Promise<T extends true ? string : QueryResult> => {
+        if (typeof queryName !== 'string') throw new Error('Invalid query name')
+        if (interpolation) {
+          throw new Error(
+            'run_query function cannot be directly interpolated into the query',
+          )
+        }
+        const fullSubQueryPath = this.fullQueryPath(queryName)
+        if (fullSubQueryPath in ranQueries) {
+          return ranQueries[fullSubQueryPath] as T extends true
+            ? string
+            : QueryResult
+        }
+        if (queriesBeingCompiled.includes(fullSubQueryPath)) {
+          throw new Error(
+            'Query reference to a parent, resulting in cyclic references.',
+          )
+        }
+
+        const subQueryResults = await this._query({
+          request: { queryPath: queryName, params },
+          resolvedParams: [],
+          ranQueries,
+          queriesBeingCompiled,
+        })
+        ranQueries[fullSubQueryPath] = subQueryResults
+        return subQueryResults as T extends true ? string : QueryResult
+      },
+    }
+
+    return supportedMethods
   }
 }
 
