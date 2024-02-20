@@ -44,13 +44,25 @@ This will run the `/queries/sample.sql` query once and display the results in yo
 If your query is in a sub-folder within the `/queries` folder, make sure to include the sub-folder name in the command. For example:
 
 ```bash
-latitude run sub-folder/sample_agg
+latitude run sub-folder/sample
 ```
 
-If, instead, you want to run the query in watch mode, you can add the `-w` or `--watch` flag to the command. For example:
+### Watch mode
+
+If you want to run the query in watch mode, you can add the `-w` or `--watch` flag to the command. For example:
 
 ```bash
-latitude run sample_agg --watch
+latitude run sample --watch
 ```
 
-Now, every time you save the file, the query will be re-run and the results will be displayed in your terminal.
+With this, every time you save the file, the query will be re-run and the results will be displayed in your terminal.
+
+### Passing parameters
+
+If you're using parameters in your query, you can pass them to the `run` command like this:
+
+```bash
+latitude run sample --param1 value1 --param2 value2
+```
+
+Now, when building the query with the parameters, the values `value1` and `value2` will be used.
