@@ -24,6 +24,7 @@ export default {
     '@latitude-sdk/duckdb-connector',
     '@latitude-sdk/sqlite-connector',
     '@latitude-sdk/mssql-connector',
+    '@latitude-sdk/databricks-connector',
     'yaml',
     'fs',
     'path',

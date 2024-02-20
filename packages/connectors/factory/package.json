@@ -34,6 +34,7 @@
     "@latitude-sdk/duckdb-connector": "workspace:^",
     "@latitude-sdk/sqlite-connector": "workspace:^",
     "@latitude-sdk/mssql-connector": "workspace:^",
+    "@latitude-sdk/databricks-connector": "workspace:^",
     "vitest": "^1.2.2",
     "yaml": "^2.3.4"
   },

@@ -11,6 +11,7 @@ import { TrinoConnector } from '@latitude-sdk/trino-connector'
 import { DuckdbConnector } from '@latitude-sdk/duckdb-connector'
 import { SqliteConnector } from '@latitude-sdk/sqlite-connector'
 import { MssqlConnector } from '@latitude-sdk/mssql-connector'
+import { DatabricksConnector } from '@latitude-sdk/databricks-connector'
 
 export enum ConnectorType {
   Athena = 'athena',
@@ -24,6 +25,7 @@ export enum ConnectorType {
   Trino = 'trino',
   Sqlite = 'sqlite',
   Mssql = 'mssql',
+  Databricks = 'databricks',
 }
 
 export function createConnector(sourcePath: string): BaseConnector {
@@ -73,6 +75,8 @@ export function createConnector(sourcePath: string): BaseConnector {
       return new SqliteConnector(path.dirname(sourcePath), details)
     case ConnectorType.Mssql:
       return new MssqlConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Databricks:
+      return new DatabricksConnector(path.dirname(sourcePath), details)
   }
 
   throw new Error()
