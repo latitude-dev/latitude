@@ -64,6 +64,7 @@ export class AthenaConnector extends BaseConnector {
   async runQuery(query: CompiledQuery): Promise<QueryResult> {
     const queryExecutionInput = {
       QueryString: query.sql,
+      ExecutionParameters: this.buildQueryParams(query.params),
       QueryExecutionContext: {
         Database: this.database,
         Catalog: this.catalog,
@@ -85,6 +86,10 @@ export class AthenaConnector extends BaseConnector {
     } catch (error) {
       throw new ConnectorError(`Query execution failed: ${error}`)
     }
+  }
+
+  private buildQueryParams(params: ResolvedParam[]) {
+    return params.map((param) => String(param.value))
   }
 
   private async checkQueryExequtionStateAndGetData(
