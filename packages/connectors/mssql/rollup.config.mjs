@@ -16,6 +16,7 @@ export default {
   external: [
     '@latitude-sdk/base-connector',
     '@latitude-sdk/query_result',
-    'trino-client',
+    'mssql',
+    'crypto',
   ],
 }

@@ -5,7 +5,6 @@ import {
   ResolvedParam,
 } from '@latitude-sdk/base-connector'
 import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
-import { randomUUID } from 'crypto'
 import pkg from 'sqlite3'
 
 const { Database, OPEN_READONLY, OPEN_READWRITE } = pkg
@@ -23,12 +22,10 @@ export class SqliteConnector extends BaseConnector {
     this.url = connectionParams.url || ':memory:'
   }
 
-  resolve(_: string | undefined, value: unknown): ResolvedParam {
-    const nname = randomUUID()
+  resolve(value: unknown): ResolvedParam {
     return {
-      name: nname,
       value,
-      resolvedAs: `$${nname}`,
+      resolvedAs: '?',
     }
   }
 

@@ -33,6 +33,7 @@
     "@latitude-sdk/trino-connector": "workspace:*",
     "@latitude-sdk/duckdb-connector": "workspace:^",
     "@latitude-sdk/sqlite-connector": "workspace:^",
+    "@latitude-sdk/mssql-connector": "workspace:^",
     "vitest": "^1.2.2",
     "yaml": "^2.3.4"
   },
