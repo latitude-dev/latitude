@@ -26,7 +26,7 @@
     "url": "https://github.com/latitude-dev/latitude-sdk"
   },
   "primaryTab": {
-      "name": "Development"
+      "name": "Guides"
   },
   "tabs": [
     {
@@ -57,23 +57,28 @@
     {
       "group": "Getting Started",
       "pages": [
-        "development/getting-started/introduction",
-        "development/getting-started/installation"
+        "guides/getting-started/introduction",
+        "guides/getting-started/installation"
       ]
     },
     {
       "group": "Development",
       "pages": [
-        "development/development/latitude-cli",
-        "development/development/project-structure"
+        "guides/development/latitude-cli",
+        "guides/development/project-structure"
+      ]
+    },
+    {
+      "group": "Use cases",
+      "pages": [
+        "guides/use-cases/api"
       ]
     },
     {
       "group": "Deploy",
       "pages": [
-        "development/deploy/api",
-        "development/deploy/self-hosted",
-        "development/deploy/latitude-cloud"
+        "guides/deploy/self-hosted",
+        "guides/deploy/latitude-cloud"
       ]
     },
     {
