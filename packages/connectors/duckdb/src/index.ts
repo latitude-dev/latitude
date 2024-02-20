@@ -20,10 +20,8 @@ export class DuckdbConnector extends BaseConnector {
     this.url = connectionParams.url || ':memory:'
   }
 
-  resolve(_: string | undefined, value: unknown): ResolvedParam {
-    const nname = Math.random().toString(36).substring(7)
+  resolve(value: unknown): ResolvedParam {
     return {
-      name: nname,
       value,
       resolvedAs: '?',
     }

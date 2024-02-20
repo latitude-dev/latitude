@@ -23,6 +23,7 @@ export default {
     '@latitude-sdk/trino-connector',
     '@latitude-sdk/duckdb-connector',
     '@latitude-sdk/sqlite-connector',
+    '@latitude-sdk/mssql-connector',
     'yaml',
     'fs',
     'path',
