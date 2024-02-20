@@ -1,9 +1,5 @@
 import { BaseNode, type TemplateNode } from '../parser/interfaces'
-import {
-  type Node,
-  type Identifier,
-  type SimpleCallExpression,
-} from 'estree'
+import { type Node, type Identifier, type SimpleCallExpression } from 'estree'
 import parse from '../parser/index'
 import {
   ASSIGNMENT_OPERATOR_METHODS,
@@ -16,18 +12,21 @@ import errors from '../error/errors'
 import Scope from './scope'
 
 type CompilerAttrs = {
-  query: string,
-  resolveFn: ResolveFn,
+  query: string
+  resolveFn: ResolveFn
   supportedMethods?: Record<string, SupportedMethod>
 }
-export type SupportedMethod = <T extends boolean>(interpolation: T, ...args: unknown[]) => Promise<T extends true ? string : unknown>
+export type SupportedMethod = <T extends boolean>(
+  interpolation: T,
+  ...args: unknown[]
+) => Promise<T extends true ? string : unknown>
 export type ResolveFn = (value: unknown) => Promise<string>
 
 export class Compiler {
   private sql: string
   private supportedMethods: Record<string, SupportedMethod>
   private resolveFn: ResolveFn
-  
+
   private varStash: unknown[]
 
   private readFromStash(index: number): unknown {
@@ -43,11 +42,7 @@ export class Compiler {
     this.varStash[index] = value
   }
 
-  constructor({
-    query,
-    resolveFn,
-    supportedMethods = {},
-  }: CompilerAttrs) {
+  constructor({ query, resolveFn, supportedMethods = {} }: CompilerAttrs) {
     this.sql = query
     this.resolveFn = resolveFn
     this.supportedMethods = supportedMethods
@@ -91,10 +86,14 @@ export class Compiler {
       case 'ConstTag':
         // Only allow equal expressions to define constants
         const expression = node.expression
-        if (expression.type !== 'AssignmentExpression' || expression.operator !== '=' || expression.left.type !== 'Identifier') {
+        if (
+          expression.type !== 'AssignmentExpression' ||
+          expression.operator !== '=' ||
+          expression.left.type !== 'Identifier'
+        ) {
           this.baseNodeError(errors.invalidConstantDefinition, node)
         }
-        
+
         const constName = (expression.left as Identifier).name
         const constValue = await this.resolveLogicNodeExpression(
           expression.right,
@@ -107,7 +106,10 @@ export class Compiler {
         return ''
 
       case 'IfBlock':
-        return (await this.resolveLogicNodeExpression(node.expression, localScope))
+        return (await this.resolveLogicNodeExpression(
+          node.expression,
+          localScope,
+        ))
           ? this.parseBaseNodeChildren(node.children, localScope)
           : await this.parseBaseNode(node.else, localScope)
 
@@ -144,7 +146,10 @@ export class Compiler {
         return parsedChildren.join('') || ''
 
       default:
-        throw this.baseNodeError(errors.unsupportedBaseNodeType(node.type), node)
+        throw this.baseNodeError(
+          errors.unsupportedBaseNodeType(node.type),
+          node,
+        )
     }
   }
 
@@ -192,7 +197,10 @@ export class Compiler {
             throw this.expressionError(errors.invalidObjectKey, node)
           }
           const key = prop.key as Identifier
-          const value = await this.resolveLogicNodeExpression(prop.value, localScope)
+          const value = await this.resolveLogicNodeExpression(
+            prop.value,
+            localScope,
+          )
           resolvedObject[key.name] = value
         }
         return resolvedObject
@@ -200,7 +208,9 @@ export class Compiler {
       case 'ArrayExpression':
         return await Promise.all(
           node.elements.map((element) =>
-            element ? this.resolveLogicNodeExpression(element, localScope) : null,
+            element
+              ? this.resolveLogicNodeExpression(element, localScope)
+              : null,
           ),
         )
 
@@ -215,7 +225,7 @@ export class Compiler {
       case 'LogicalExpression':
         const binaryOperator = node.operator
         if (!BINARY_OPERATOR_METHODS.hasOwnProperty(binaryOperator)) {
-          this.expressionError (errors.unsupportedOperator(binaryOperator), node)
+          this.expressionError(errors.unsupportedOperator(binaryOperator), node)
         }
         const leftOperand = await this.resolveLogicNodeExpression(
           node.left,
@@ -256,10 +266,16 @@ export class Compiler {
 
         if (assignmentOperator != '=') {
           if (!ASSIGNMENT_OPERATOR_METHODS.hasOwnProperty(assignmentOperator)) {
-            this.expressionError(errors.unsupportedOperator(assignmentOperator), node)
+            this.expressionError(
+              errors.unsupportedOperator(assignmentOperator),
+              node,
+            )
           }
           if (!localScope.exists(assignedVariableName)) {
-            this.expressionError(errors.variableNotDeclared(assignedVariableName), node)
+            this.expressionError(
+              errors.variableNotDeclared(assignedVariableName),
+              node,
+            )
           }
           assignedValue = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]?.(
             localScope.get(assignedVariableName),
@@ -279,7 +295,10 @@ export class Compiler {
         }
         const updatedVariableName = (node.argument as Identifier).name
         if (!localScope.exists(updatedVariableName)) {
-          this.expressionError(errors.variableNotDeclared(updatedVariableName), node)
+          this.expressionError(
+            errors.variableNotDeclared(updatedVariableName),
+            node,
+          )
         }
         if (localScope.isConst(updatedVariableName)) {
           this.expressionError(errors.constantReassignment, node)
@@ -305,7 +324,10 @@ export class Compiler {
         return MEMBER_EXPRESSION_METHOD(object, property)
 
       case 'ConditionalExpression':
-        const test = await this.resolveLogicNodeExpression(node.test, localScope)
+        const test = await this.resolveLogicNodeExpression(
+          node.test,
+          localScope,
+        )
         const consequent = await this.resolveLogicNodeExpression(
           node.consequent,
           localScope,
@@ -320,10 +342,7 @@ export class Compiler {
         return await this.handleFunction(node, false, localScope)
 
       case 'NewExpression':
-        throw this.expressionError(
-          errors.unsupportedOperator('new'),
-          node,
-        )
+        throw this.expressionError(errors.unsupportedOperator('new'), node)
 
       default:
         throw this.expressionError(
@@ -346,27 +365,40 @@ export class Compiler {
     return parsedChildren.join('') || ''
   }
 
-  private baseNodeError({ code, message }: { code: string, message: string }, node: BaseNode): never {
+  private baseNodeError(
+    { code, message }: { code: string; message: string },
+    node: BaseNode,
+  ): never {
     error(message, {
       name: 'CompileError',
       code,
       source: this.sql || '',
       start: node.start || 0,
-      end: node.end || undefined
-    });
+      end: node.end || undefined,
+    })
   }
 
-  private expressionError({ code, message }: { code: string, message: string }, node: Node): never {
+  private expressionError(
+    { code, message }: { code: string; message: string },
+    node: Node,
+  ): never {
     const source = (node.loc?.source ?? this.sql)!.split('\n')
-    const start = source.slice(0, node.loc?.start.line! - 1).reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.start.column!
-    const end = source.slice(0, node.loc?.end.line! - 1).reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.end.column!
-    
+    const start =
+      source
+        .slice(0, node.loc?.start.line! - 1)
+        .reduce((acc, line) => acc + line.length + 1, 0) +
+      node.loc?.start.column!
+    const end =
+      source
+        .slice(0, node.loc?.end.line! - 1)
+        .reduce((acc, line) => acc + line.length + 1, 0) + node.loc?.end.column!
+
     error(message, {
       name: 'CompileError',
       code,
       source: this.sql || '',
       start,
-      end
+      end,
     })
   }
 
@@ -385,14 +417,20 @@ export class Compiler {
       args.push(await this.resolveLogicNodeExpression(arg, localScope))
     }
     try {
-      const returnedValue = await method(interpolation, ...args) as T extends true ? string : unknown
+      const returnedValue = (await method(
+        interpolation,
+        ...args,
+      )) as T extends true ? string : unknown
       if (interpolation && typeof returnedValue !== 'string') {
         this.expressionError(errors.invalidFunctionResultInterpolation, node)
       }
       return returnedValue
     } catch (error: unknown) {
       if (error instanceof CompileError) throw error
-      this.expressionError(errors.functionCallError(methodName, (error as Error).message), node)
+      this.expressionError(
+        errors.functionCallError(methodName, (error as Error).message),
+        node,
+      )
     }
   }
 }

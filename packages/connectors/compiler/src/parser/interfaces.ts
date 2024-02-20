@@ -1,58 +1,53 @@
-import { type AssignmentExpression, type Node } from 'estree';
+import { type AssignmentExpression, type Node } from 'estree'
 
 export interface BaseNode {
-  start: number | null;
-  end: number | null;
-  type: string;
-  children?: TemplateNode[];
-  [propName: string]: any;
+  start: number | null
+  end: number | null
+  type: string
+  children?: TemplateNode[]
+  [propName: string]: any
 }
 
 export interface Fragment extends BaseNode {
-  type: 'Fragment';
-  children: TemplateNode[];
+  type: 'Fragment'
+  children: TemplateNode[]
 }
 
 export interface Text extends BaseNode {
-  type: 'Text';
-  data: string;
+  type: 'Text'
+  data: string
 }
 
 export interface MustacheTag extends BaseNode {
-  type: 'MustacheTag';
-  expression: Node;
+  type: 'MustacheTag'
+  expression: Node
 }
 
 export interface Comment extends BaseNode {
-  type: 'Comment';
-  data: string;
-  ignores: string[];
+  type: 'Comment'
+  data: string
+  ignores: string[]
 }
 
 export interface ConstTag extends BaseNode {
-  type: 'ConstTag';
-  expression: AssignmentExpression;
+  type: 'ConstTag'
+  expression: AssignmentExpression
 }
 
 export interface IfBlock extends BaseNode {
-  type: 'IfBlock';
-  condition: Node;
+  type: 'IfBlock'
+  condition: Node
 }
 
 export interface ElseBlock extends BaseNode {
-  type: 'ElseBlock';
+  type: 'ElseBlock'
 }
 
 export interface EachBlock extends BaseNode {
-  type: 'EachBlock';
-  expression: Node;
-  context: Node;
-  index: Node;
+  type: 'EachBlock'
+  expression: Node
+  context: Node
+  index: Node
 }
 
-export type TemplateNode =
-  | BaseNode
-  | Text
-  | ConstTag
-  | MustacheTag
-  | Comment
+export type TemplateNode = BaseNode | Text | ConstTag | MustacheTag | Comment

@@ -46,5 +46,5 @@ export const reserved = new Set([
   'void',
   'while',
   'with',
-  'yield'
+  'yield',
 ])

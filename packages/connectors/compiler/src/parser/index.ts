@@ -24,7 +24,7 @@ export class Parser {
       start: 0,
       end: this.template.length,
       type: 'Fragment',
-      children: []
+      children: [],
     }
     this.stack.push(template)
 
@@ -34,15 +34,18 @@ export class Parser {
     }
     if (this.stack.length > 1) {
       const current = this.current()
-      this.error({
-        code: `unclosed-block`,
-        message: `Block was left open`
-      }, current.start!)
+      this.error(
+        {
+          code: `unclosed-block`,
+          message: `Block was left open`,
+        },
+        current.start!,
+      )
     }
     if (state !== fragment) {
       this.error({
         code: `unexpected-eof`,
-        message: `Unexpected end of input`
+        message: `Unexpected end of input`,
       })
     }
     if (template.children.length) {
@@ -60,16 +63,19 @@ export class Parser {
   }
 
   current(): TemplateNode {
-    return this.stack[this.stack.length - 1]!;
+    return this.stack[this.stack.length - 1]!
   }
 
   match(str: string) {
-    return this.template.slice(this.index, this.index + str.length) === str;
+    return this.template.slice(this.index, this.index + str.length) === str
   }
 
   allowWhitespace() {
-    while (this.index < this.template.length && /\s/.test(this.template[this.index] || '')) {
-      this.index++;
+    while (
+      this.index < this.template.length &&
+      /\s/.test(this.template[this.index] || '')
+    ) {
+      this.index++
     }
   }
 
@@ -77,80 +83,87 @@ export class Parser {
     if (!/\s/.test(this.template[this.index]!)) {
       this.error({
         code: 'missing-whitespace',
-        message: 'Expected whitespace'
-      });
+        message: 'Expected whitespace',
+      })
     }
-    this.allowWhitespace();
+    this.allowWhitespace()
   }
 
-  eat(str: string, required: boolean = false, error?: { code: string, message: string }) {
+  eat(
+    str: string,
+    required: boolean = false,
+    error?: { code: string; message: string },
+  ) {
     if (this.match(str)) {
-      this.index += str.length;
-      return true;
+      this.index += str.length
+      return true
     }
     if (required) {
       this.error(
         error ||
           (this.index === this.template.length
             ? PARSER_ERRORS.unexpectedEofToken(str)
-            : PARSER_ERRORS.unexpectedToken(str))
-      );
+            : PARSER_ERRORS.unexpectedToken(str)),
+      )
     }
-    return false;
+    return false
   }
 
-  error({ code, message }: { code: string, message: string }, index = this.index) {
+  error(
+    { code, message }: { code: string; message: string },
+    index = this.index,
+  ) {
     error(message, {
       name: 'ParseError',
       code,
       source: this.template,
-      start: index - 1
-    });
+      start: index - 1,
+    })
   }
 
   acornError(err: CompileError) {
     this.error(
       {
         code: 'parse-error',
-        message: err.message.replace(/ \(\d+:\d+\)$/, '')
+        message: err.message.replace(/ \(\d+:\d+\)$/, ''),
       },
-      err.pos
-    );
+      err.pos,
+    )
   }
 
   matchRegex(pattern: RegExp) {
-    const match = pattern.exec(this.template.slice(this.index));
-    if (!match || match.index !== 0) return null;
-    return match[0];
+    const match = pattern.exec(this.template.slice(this.index))
+    if (!match || match.index !== 0) return null
+    return match[0]
   }
 
   read(pattern: RegExp) {
-    const result = this.matchRegex(pattern);
-    if (result) this.index += result.length;
-    return result;
+    const result = this.matchRegex(pattern)
+    if (result) this.index += result.length
+    return result
   }
-  
+
   readIdentifier(allowReserved: boolean = false) {
-    const start = this.index;
-    let i = this.index;
-    const code = fullCharCodeAt(this.template, i);
-    if (!isIdentifierStart(code, true)) return null;
-    i += code <= 0xffff ? 1 : 2;
+    const start = this.index
+    let i = this.index
+    const code = fullCharCodeAt(this.template, i)
+    if (!isIdentifierStart(code, true)) return null
+    i += code <= 0xffff ? 1 : 2
     while (i < this.template.length) {
-      const code = fullCharCodeAt(this.template, i);
-      if (!isIdentifierChar(code, true)) break;
-      i += code <= 0xffff ? 1 : 2;
+      const code = fullCharCodeAt(this.template, i)
+      if (!isIdentifierChar(code, true)) break
+      i += code <= 0xffff ? 1 : 2
     }
-    const identifier = this.template.slice(this.index, (this.index = i));
+    const identifier = this.template.slice(this.index, (this.index = i))
     if (!allowReserved && reserved.has(identifier)) {
       this.error(
         {
           code: 'unexpected-reserved-word',
-          message: `'${identifier}' is a reserved word in JavaScript and cannot be used here`
+          message: `'${identifier}' is a reserved word in JavaScript and cannot be used here`,
         },
-        start
-      );
+        start,
+      )
     }
-    return identifier;
+    return identifier
   }
 }

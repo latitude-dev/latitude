@@ -32,10 +32,7 @@ export class PostgresConnector extends BaseConnector {
     }
   }
 
-  resolve(
-    value: unknown,
-    index: number,
-  ): ResolvedParam {
+  resolve(value: unknown, index: number): ResolvedParam {
     /**
      * The pg library parameterises variables as $i where i is an increasing number starting
      * from 1, for regular variables, and $i::text for strings.

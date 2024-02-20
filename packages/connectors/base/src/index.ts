@@ -1,6 +1,9 @@
 import path from 'path'
 import fs from 'fs'
-import compile, { type CompileError, type SupportedMethod } from '@latitude-sdk/sql-compiler'
+import compile, {
+  type CompileError,
+  type SupportedMethod,
+} from '@latitude-sdk/sql-compiler'
 import type QueryResult from '@latitude-sdk/query_result'
 
 import {
@@ -22,18 +25,15 @@ export abstract class BaseConnector {
    * parameterised string for a variable. The index is the position of this variable
    * in the array of ResolvedParams that will be passed to the runQuery method.
    */
-  protected abstract resolve(
-    value: unknown,
-    index: number,
-  ): ResolvedParam
+  protected abstract resolve(value: unknown, index: number): ResolvedParam
 
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
-  protected async connect(): Promise<void> { }
-  protected async disconnect(): Promise<void> { }
+  protected async connect(): Promise<void> {}
+  protected async disconnect(): Promise<void> {}
 
   async query(request: QueryRequest): Promise<QueryResult> {
     await this.connect()
-    const resolvedParams:ResolvedParam[] = []
+    const resolvedParams: ResolvedParam[] = []
     const ranQueries: Record<string, QueryResult> = {}
     const queriesBeingCompiled: string[] = []
 
@@ -41,7 +41,7 @@ export abstract class BaseConnector {
       request,
       resolvedParams,
       ranQueries,
-      queriesBeingCompiled
+      queriesBeingCompiled,
     })
     await this.disconnect()
     return queryResult
@@ -51,11 +51,11 @@ export abstract class BaseConnector {
     request,
     resolvedParams,
     ranQueries,
-    queriesBeingCompiled
+    queriesBeingCompiled,
   }: {
-    request: QueryRequest,
-    resolvedParams: ResolvedParam[],
-    ranQueries: Record<string, QueryResult>, // Ran query results are cached to avoid re-running the same query
+    request: QueryRequest
+    resolvedParams: ResolvedParam[]
+    ranQueries: Record<string, QueryResult> // Ran query results are cached to avoid re-running the same query
     queriesBeingCompiled: string[] // Used to detect cyclic references
   }): Promise<QueryResult> {
     const fullQueryName = this.fullQueryPath(request.queryPath)
@@ -71,32 +71,48 @@ export abstract class BaseConnector {
     }
 
     const supportedMethods: Record<string, SupportedMethod> = {}
-    supportedMethods["param"] = async <T extends boolean>(interpolation: T, name: unknown, defaultValue?: unknown): Promise<T extends true ? string : unknown> => {
+    supportedMethods['param'] = async <T extends boolean>(
+      interpolation: T,
+      name: unknown,
+      defaultValue?: unknown,
+    ): Promise<T extends true ? string : unknown> => {
       if (typeof name !== 'string') throw new Error('Invalid parameter name')
-      if (!(name in params) && defaultValue === undefined) throw new Error(`Missing parameter '${name}' in request`)
-      const value = (name in params) ? params[name] : defaultValue
+      if (!(name in params) && defaultValue === undefined)
+        throw new Error(`Missing parameter '${name}' in request`)
+      const value = name in params ? params[name] : defaultValue
 
       const resolvedValue = interpolation ? await resolveFn(value) : value
       return resolvedValue as T extends true ? string : unknown
     }
-    supportedMethods["cast"] = async <T extends boolean>(interpolation: T, value: unknown, type: unknown): Promise<T extends true ? string : unknown> => {
+    supportedMethods['cast'] = async <T extends boolean>(
+      interpolation: T,
+      value: unknown,
+      type: unknown,
+    ): Promise<T extends true ? string : unknown> => {
       if (typeof type !== 'string') throw new Error('Invalid cast type')
       if (!(type in CAST_METHODS)) {
         throw new Error(`Unsupported cast type: '${type}'`)
       }
       const parsedValue = CAST_METHODS[type]!(value)
 
-      const resolvedValue = interpolation ? await resolveFn(parsedValue) : parsedValue
+      const resolvedValue = interpolation
+        ? await resolveFn(parsedValue)
+        : parsedValue
       return resolvedValue as T extends true ? string : unknown
     }
-    supportedMethods["ref"] = async <T extends boolean>(interpolation: T, queryName: unknown): Promise<T extends true ? string : unknown> => {
+    supportedMethods['ref'] = async <T extends boolean>(
+      interpolation: T,
+      queryName: unknown,
+    ): Promise<T extends true ? string : unknown> => {
       if (typeof queryName !== 'string') throw new Error('Invalid query name')
       if (!interpolation) {
         throw new Error('ref function cannot be used inside a logic block')
       }
       const fullSubQueryPath = this.fullQueryPath(queryName)
       if (queriesBeingCompiled.includes(fullSubQueryPath)) {
-        throw new Error('Query reference to a parent, resulting in cyclic references.')
+        throw new Error(
+          'Query reference to a parent, resulting in cyclic references.',
+        )
       }
 
       queriesBeingCompiled.push(fullSubQueryPath)
@@ -109,26 +125,35 @@ export abstract class BaseConnector {
       })
       queriesBeingCompiled.pop()
 
-      return `(${compiledSubQuery})` 
+      return `(${compiledSubQuery})`
     }
-    supportedMethods["run_query"] = async <T extends boolean>(interpolation: T, queryName: unknown): Promise<T extends true ? string : QueryResult> => {
+    supportedMethods['run_query'] = async <T extends boolean>(
+      interpolation: T,
+      queryName: unknown,
+    ): Promise<T extends true ? string : QueryResult> => {
       if (typeof queryName !== 'string') throw new Error('Invalid query name')
       if (interpolation) {
-        throw new Error('run_query function cannot be directly interpolated into the query')
+        throw new Error(
+          'run_query function cannot be directly interpolated into the query',
+        )
       }
       const fullSubQueryPath = this.fullQueryPath(queryName)
       if (fullSubQueryPath in ranQueries) {
-        return ranQueries[fullSubQueryPath] as T extends true ? string : QueryResult
+        return ranQueries[fullSubQueryPath] as T extends true
+          ? string
+          : QueryResult
       }
       if (queriesBeingCompiled.includes(fullSubQueryPath)) {
-        throw new Error('Query reference to a parent, resulting in cyclic references.')
+        throw new Error(
+          'Query reference to a parent, resulting in cyclic references.',
+        )
       }
 
       const subQueryResults = await this._query({
         request: { queryPath: queryName, params },
         resolvedParams: [],
         ranQueries,
-        queriesBeingCompiled
+        queriesBeingCompiled,
       })
       ranQueries[fullSubQueryPath] = subQueryResults
       return subQueryResults as T extends true ? string : QueryResult
@@ -142,7 +167,7 @@ export abstract class BaseConnector {
     queriesBeingCompiled.pop()
     return await this.runQuery({
       sql: compiledQuery,
-      params: resolvedParams
+      params: resolvedParams,
     })
   }
 

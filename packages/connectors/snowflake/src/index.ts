@@ -32,10 +32,7 @@ export class SnowflakeConnector extends BaseConnector {
     })
   }
 
-  resolve(
-    value: unknown,
-    index: number,
-  ): ResolvedParam {
+  resolve(value: unknown, index: number): ResolvedParam {
     return {
       value,
       resolvedAs: `$${index + 1}`,
@@ -116,7 +113,7 @@ export class SnowflakeConnector extends BaseConnector {
 
   private convertDataType(
     dataTypeID: string,
-    fallbackType = DataType.Unknown
+    fallbackType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
       case 'boolean':

@@ -25,10 +25,7 @@ export class BigQueryConnector extends BaseConnector {
     this.params = connectionParams
   }
 
-  resolve(
-    value: unknown,
-    index: number,
-  ): ResolvedParam {
+  resolve(value: unknown, index: number): ResolvedParam {
     return {
       value,
       resolvedAs: `@var${index + 1}`,
@@ -55,7 +52,7 @@ export class BigQueryConnector extends BaseConnector {
             ({
               name: field.name,
               type: this.convertDataType(field.type),
-            }) as Field
+            }) as Field,
         ) || []
 
       return new QueryResult({
@@ -96,7 +93,7 @@ export class BigQueryConnector extends BaseConnector {
         acc[`var${index + 1}`] = param.value
         return acc
       },
-      {} as Record<string, unknown>
+      {} as Record<string, unknown>,
     )
   }
 
@@ -111,7 +108,7 @@ export class BigQueryConnector extends BaseConnector {
 
   private convertDataType(
     dataTypeID: string | undefined,
-    fallbackType = DataType.Unknown
+    fallbackType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
       case 'BOOL':

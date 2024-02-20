@@ -10,7 +10,6 @@ on:
       - 'packages/**/*.ts'
 
   pull_request:
-    branches: ['main']
     paths:
       - 'apps/server/src/**/*.ts'
       - 'apps/server/src/**/*.svelte'

@@ -10,12 +10,11 @@ on:
       - 'packages/**/*.ts'
 
   pull_request:
-    branches: ['main']
     paths:
-      - 'apps/server/src/**/*.ts'
       - 'apps/server/src/**/*.svelte'
-      - 'packages/client/svelte/src/*.svelte'
+      - 'apps/server/src/**/*.ts'
       - 'packages/**/*.ts'
+      - 'packages/client/svelte/src/*.svelte'
 
 jobs:
   test:

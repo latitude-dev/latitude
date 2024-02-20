@@ -21,6 +21,7 @@ export default {
     '@latitude-sdk/mysql-connector',
     '@latitude-sdk/snowflake-connector',
     '@latitude-sdk/duckdb-connector',
+    '@latitude-sdk/sqlite-connector',
     'yaml',
     'fs',
     'path',
