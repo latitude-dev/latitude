@@ -2,7 +2,10 @@ import { describe, it, expect } from 'vitest'
 import parse from '.'
 import CompileError from '../error/error'
 
-const getExpectedError = <T>(action: () => void, errorClass: new () => T): T => {
+const getExpectedError = <T>(
+  action: () => void,
+  errorClass: new () => T,
+): T => {
   try {
     action()
   } catch (err) {
@@ -53,7 +56,7 @@ describe('Text Block', () => {
 
   it('ignores brackets within a string', () => {
     const stringCharacters = ['"', "'", '`']
-    stringCharacters.forEach(char => {
+    stringCharacters.forEach((char) => {
       const text = `hello ${char}{${char} world`
       const fragment = parse(text)
       expect(fragment.children.length).toBe(1)
@@ -218,7 +221,9 @@ describe('Else block', () => {
   })
 
   it('parses an else if block', () => {
-    const fragment = parse('{#if condition}then1{:else if condition}then2{:else}then3{/if}')
+    const fragment = parse(
+      '{#if condition}then1{:else if condition}then2{:else}then3{/if}',
+    )
     expect(fragment.children.length).toBe(1)
 
     const ifBlock = fragment.children[0]!

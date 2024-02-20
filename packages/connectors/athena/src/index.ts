@@ -73,11 +73,11 @@ export class AthenaConnector extends BaseConnector {
 
     try {
       const { QueryExecutionId } = await this.client.send(
-        new StartQueryExecutionCommand(queryExecutionInput)
+        new StartQueryExecutionCommand(queryExecutionInput),
       )
 
       const response = await this.checkQueryExequtionStateAndGetData(
-        QueryExecutionId as string
+        QueryExecutionId as string,
       )
 
       return response
@@ -91,7 +91,7 @@ export class AthenaConnector extends BaseConnector {
   }
 
   private async checkQueryExequtionStateAndGetData(
-    QueryExecutionId: string
+    QueryExecutionId: string,
   ): Promise<QueryResult> {
     const command = new GetQueryExecutionCommand({ QueryExecutionId })
     try {
@@ -100,25 +100,25 @@ export class AthenaConnector extends BaseConnector {
 
       if (state === 'SUCCEEDED') {
         const { ResultSet } = await this.client.send(
-          new GetQueryResultsCommand({ QueryExecutionId })
+          new GetQueryResultsCommand({ QueryExecutionId }),
         )
 
         const rowCount = ResultSet?.Rows?.length
         const rows = ResultSet?.Rows?.slice(1, -1).map(
-          (row: Row) => row?.Data?.map((value) => value.VarCharValue) || []
+          (row: Row) => row?.Data?.map((value) => value.VarCharValue) || [],
         )
         const fields = ResultSet?.ResultSetMetadata?.ColumnInfo?.map(
           (column: ColumnInfo) =>
             ({
               name: column.Name,
               type: this.convertDataType(column.Type),
-            }) as Field
+            }) as Field,
         )
 
         return new QueryResult({ fields, rows, rowCount })
       } else if (state === 'FAILED') {
         throw new ConnectorError(
-          `Query execution failed: ${response?.QueryExecution?.Status?.StateChangeReason}`
+          `Query execution failed: ${response?.QueryExecution?.Status?.StateChangeReason}`,
         )
       } else {
         // We wait for 1 second before checking the query execution state again...
@@ -133,7 +133,7 @@ export class AthenaConnector extends BaseConnector {
 
   private convertDataType(
     dataTypeID: string | undefined,
-    fallbackDataType = DataType.Unknown
+    fallbackDataType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
       case 'tinyint':

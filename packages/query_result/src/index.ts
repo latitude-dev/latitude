@@ -41,8 +41,8 @@ export default class QueryResult {
           acc[field.name] = this.rows.map((row) => row[i])
           return acc
         },
-        {} as { [key: string]: unknown[] }
-      )
+        {} as { [key: string]: unknown[] },
+      ),
     )
   }
 
@@ -59,7 +59,7 @@ export default class QueryResult {
         } else {
           return value
         }
-      }
+      },
     )
   }
 }

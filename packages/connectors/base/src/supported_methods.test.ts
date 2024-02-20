@@ -9,7 +9,9 @@ import mock from 'mock-fs'
 const fakeQueries: Record<string, string> = {}
 const addFakeQuery = (sql: string, queryPath?: string) => {
   queryPath = queryPath || `query_${Object.keys(fakeQueries).length}`
-  const fullQueryPath = queryPath.endsWith('.sql') ? queryPath : `${queryPath}.sql`
+  const fullQueryPath = queryPath.endsWith('.sql')
+    ? queryPath
+    : `${queryPath}.sql`
   fakeQueries[fullQueryPath] = sql
   mock({
     root: {
@@ -50,7 +52,10 @@ const clearQueries = () => {
   ranQueries.length = 0
 }
 
-const getExpectedError = async <T>(action: (() => Promise<unknown>), errorClass: new () => T): Promise<T> => {
+const getExpectedError = async <T>(
+  action: () => Promise<unknown>,
+  errorClass: new () => T,
+): Promise<T> => {
   try {
     await action()
   } catch (err) {
@@ -67,7 +72,7 @@ describe('params function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({queryPath, params: { foo: 'var' }})
+    await connector.query({ queryPath, params: { foo: 'var' } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[var]]')
@@ -106,7 +111,7 @@ describe('params function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' }})
+    await connector.query({ queryPath, params: { foo: 'var' } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[var]]')
@@ -116,7 +121,7 @@ describe('params function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo") + 3}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 2 }})
+    await connector.query({ queryPath, params: { foo: 2 } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[5]]')
@@ -176,7 +181,8 @@ describe('run_query function', async () => {
 
   it('runs a subquery and returns it as a value', async () => {
     const connector = new MockConnector()
-    const mainQuery = "{result = run_query('referenced_query')} {result.rowCount}"
+    const mainQuery =
+      "{result = run_query('referenced_query')} {result.rowCount}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
@@ -189,7 +195,8 @@ describe('run_query function', async () => {
 
   it('fails if query does not exist', async () => {
     const connector = new MockConnector()
-    const mainQuery = "{result = {run_query('referenced_query')}} {result.rowCount}"
+    const mainQuery =
+      "{result = {run_query('referenced_query')}} {result.rowCount}"
     const mainQueryPath = addFakeQuery(mainQuery)
 
     const action = () => connector.query({ queryPath: mainQueryPath })
@@ -224,7 +231,8 @@ describe('run_query function', async () => {
   it('does not run the same query twice', async () => {
     const connector = new MockConnector()
     const mainQuery = "{ref('child1')}{ref('child2')}{ref('child3')}"
-    const childQuery = "{@const result = run_query('referenced_query')}{result.rowCount}"
+    const childQuery =
+      "{@const result = run_query('referenced_query')}{result.rowCount}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(childQuery, 'child1')

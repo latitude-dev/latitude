@@ -8,6 +8,7 @@ import { MysqlConnector } from '@latitude-sdk/mysql-connector'
 import { SnowflakeConnector } from '@latitude-sdk/snowflake-connector'
 import { AthenaConnector } from '@latitude-sdk/athena-connector'
 import { DuckdbConnector } from '@latitude-sdk/duckdb-connector'
+import { SqliteConnector } from '@latitude-sdk/sqlite-connector'
 
 export enum ConnectorType {
   Athena = 'athena',
@@ -18,6 +19,7 @@ export enum ConnectorType {
   Mysql = 'mysql',
   Redshift = 'redshift',
   Snowflake = 'snowflake',
+  Sqlite = 'sqlite',
 }
 
 export function createConnector(sourcePath: string): BaseConnector {
@@ -61,6 +63,8 @@ export function createConnector(sourcePath: string): BaseConnector {
       return new AthenaConnector(path.dirname(sourcePath), details)
     case ConnectorType.Duckdb:
       return new DuckdbConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Sqlite:
+      return new SqliteConnector(path.dirname(sourcePath), details)
   }
 
   throw new Error()

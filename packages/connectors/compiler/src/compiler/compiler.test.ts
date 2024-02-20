@@ -6,11 +6,14 @@ const compileQuery = (query: string) => {
   return compile({
     query,
     resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-    supportedMethods: {}
+    supportedMethods: {},
   })
 }
 
-const getExpectedError = async <T>(action: (() => Promise<unknown>), errorClass: new () => T): Promise<T> => {
+const getExpectedError = async <T>(
+  action: () => Promise<unknown>,
+  errorClass: new () => T,
+): Promise<T> => {
   try {
     await action()
   } catch (err) {
@@ -65,7 +68,7 @@ describe('parameterisation of interpolated values', async () => {
     const result = await compile({
       query: sql,
       resolveFn,
-      supportedMethods: {}
+      supportedMethods: {},
     })
 
     const matches = result.match(/\[\d+\]/g) || [] // resolved values in order of appearance in the string
@@ -160,8 +163,10 @@ describe('conditional expressions', async () => {
   })
 
   it('does not update any variables in an unused branch', async () => {
-    const sql1 = '{foo = 5} {#if true} {foo += 2} {:else} {foo += 3} {/if} {foo}'
-    const sql2 = '{foo = 5} {#if false} {foo += 2} {:else} {foo += 3} {/if} {foo}'
+    const sql1 =
+      '{foo = 5} {#if true} {foo += 2} {:else} {foo += 3} {/if} {foo}'
+    const sql2 =
+      '{foo = 5} {#if false} {foo += 2} {:else} {foo += 3} {/if} {foo}'
     const result1 = await compileQuery(sql1)
     const result2 = await compileQuery(sql2)
 
@@ -221,7 +226,8 @@ describe('each loops', async () => {
   })
 
   it('does not update any variables in an unused branch', async () => {
-    const sql = "{foo = 5} {#each ['a', 'b', 'c'] as element} {:else} {foo += 2} {/each} {foo}"
+    const sql =
+      "{foo = 5} {#each ['a', 'b', 'c'] as element} {:else} {foo += 2} {/each} {foo}"
     const result = await compileQuery(sql)
 
     expect(result).toBe('$[[5]]')
@@ -257,19 +263,19 @@ describe('operators', async () => {
       ["2 === '2'", false],
       ['2 !== 2', false],
       ["2 !== '2'", true],
-      ["2 < 2", false],
-      ["2 < 3", true],
-      ["2 < 1", false],
-      ["2 <= 2", true],
-      ["2 <= 3", true],
-      ["2 <= 1", false],
+      ['2 < 2', false],
+      ['2 < 3', true],
+      ['2 < 1', false],
+      ['2 <= 2', true],
+      ['2 <= 3', true],
+      ['2 <= 1', false],
       ['2 > 2', false],
       ['2 > 3', false],
       ['2 > 1', true],
       ['2 >= 2', true],
       ['2 >= 3', false],
       ['2 >= 1', true],
-      ["2 << 2", 8],
+      ['2 << 2', 8],
       ['2 >> 2', 0],
       ['2 >>> 2', 0],
       ['2 + 3', 5],
@@ -344,7 +350,7 @@ describe('operators', async () => {
       ['foo *= 2', 3, 6],
       ['foo /= 2', 3, 1.5],
       ['foo %= 2', 3, 1],
-      ["foo <<= 2", 3, 12],
+      ['foo <<= 2', 3, 12],
       ['foo >>= 2', 3, 0],
       ['foo >>>= 2', 3, 0],
       ['foo |= 2', 3, 3],
@@ -403,8 +409,8 @@ describe('custom methods', async () => {
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
       supportedMethods: {
-        fooFn: async () => 'bar'
-      }
+        fooFn: async () => 'bar',
+      },
     })
 
     expect(result).toBe('bar')
@@ -412,16 +418,19 @@ describe('custom methods', async () => {
 
   it('fails if a method is trying to interpolate a non-string value', async () => {
     const sql = '{fooFn()}'
-    const action = () => compile({
-      query: sql,
-      resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      supportedMethods: {
-        fooFn: async <T extends boolean>(_: T): Promise<T extends true ? string : unknown> => {
-          const returnedValue = 5
-          return returnedValue as T extends true ? string : unknown
-        }
-      }
-    })
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: async <T extends boolean>(
+            _: T,
+          ): Promise<T extends true ? string : unknown> => {
+            const returnedValue = 5
+            return returnedValue as T extends true ? string : unknown
+          },
+        },
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('invalid-function-result-interpolation')
   })
@@ -432,11 +441,13 @@ describe('custom methods', async () => {
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
       supportedMethods: {
-        fooFn: async <T extends boolean>(_: T): Promise<T extends true ? string : unknown> => {
+        fooFn: async <T extends boolean>(
+          _: T,
+        ): Promise<T extends true ? string : unknown> => {
           const returnedValue = 5
           return returnedValue as T extends true ? string : unknown
-        }
-      }
+        },
+      },
     })
 
     expect(result).toBe('$[[5]]')
@@ -444,15 +455,16 @@ describe('custom methods', async () => {
 
   it('shows the correct error message when a method fails', async () => {
     const sql = '{fooFn()}'
-    const action = () => compile({
-      query: sql,
-      resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      supportedMethods: {
-        fooFn: async () => {
-          throw new Error('bar')
-        }
-      }
-    })
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: async () => {
+            throw new Error('bar')
+          },
+        },
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
     expect(error.message).toBe("Error calling function 'fooFn': bar")

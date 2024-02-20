@@ -33,7 +33,7 @@ export class DuckdbConnector extends BaseConnector {
     try {
       const client = await Database.create(
         this.url,
-        this.url === ':memory:' ? OPEN_READWRITE : OPEN_READONLY
+        this.url === ':memory:' ? OPEN_READWRITE : OPEN_READONLY,
       )
       const conn = await client.connect()
 
@@ -53,7 +53,7 @@ export class DuckdbConnector extends BaseConnector {
               ({
                 name: key,
                 type: DataType.String,
-              }) as Field
+              }) as Field,
           )
         : []
 

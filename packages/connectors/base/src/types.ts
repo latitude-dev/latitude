@@ -16,6 +16,6 @@ export type CompiledQuery = {
   params: ResolvedParam[]
 }
 
-export class ConnectorError extends Error { }
-export class ConnectionError extends ConnectorError { }
-export class QueryError extends ConnectorError { }
+export class ConnectorError extends Error {}
+export class ConnectionError extends ConnectorError {}
+export class QueryError extends ConnectorError {}
