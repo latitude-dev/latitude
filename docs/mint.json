@@ -1,0 +1,210 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Latitude SDK Docs",
+  "logo": {
+    "dark": "/logo/dark.svg",
+    "light": "/logo/light.svg"
+  },
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#0080ff",
+    "light": "#0080ff",
+    "dark": "#0080ff",
+    "anchors": {
+      "from": "#0080ff",
+      "to": "#0080ff"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "",
+      "url": " "
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get started",
+    "url": "https://github.com/latitude-dev/latitude-sdk"
+  },
+  "primaryTab": {
+      "name": "Development"
+  },
+  "tabs": [
+    {
+      "name": "Sources",
+      "url": "sources"
+    },
+    {
+      "name": "Queries",
+      "url": "queries"
+    },
+    {
+      "name": "Views",
+      "url": "views"
+    },
+    {
+      "name": "Components",
+      "url": "components"
+    },
+    {
+      "name": "Visualizations",
+      "url": "visualizations"
+    }
+  ],
+  "anchors": [
+
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "development/getting-started/introduction",
+        "development/getting-started/installation"
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        "development/development/latitude-cli",
+        "development/development/project-structure"
+      ]
+    },
+    {
+      "group": "Deploy",
+      "pages": [
+        "development/deploy/api",
+        "development/deploy/self-hosted",
+        "development/deploy/latitude-cloud"
+      ]
+    },
+    {
+      "group": "Sources",
+      "pages": [
+        "sources/postgresql",
+        "sources/mysql",
+        "sources/bigquery",
+        "sources/snowflake",
+        "sources/redshift",
+        "sources/athena",
+        "sources/databricks"
+      ]
+    },
+    {
+      "group": "Query Basics",
+      "pages": [
+        "queries/basics/sql-syntax-basics",
+        "queries/basics/reference-other-queries",
+        "queries/basics/interpolate-values",
+        "queries/basics/variables"
+      ]
+    },
+    {
+      "group": "Logic",
+      "pages": [
+        "queries/logic/if-else",
+        "queries/logic/conditions",
+        "queries/logic/loops",
+        "queries/logic/functions"
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        "queries/advanced/run-query",
+        "queries/advanced/cast-methods"
+      ]
+    },
+    {
+      "group": "Views Basics",
+      "pages": [
+        "views/basics/syntax",
+        "views/basics/layout"
+      ]
+    },
+    {
+      "group": "Logic",
+      "pages": [
+        "views/logic/if-else",
+        "views/logic/conditions",
+        "views/logic/loops"
+      ]
+    },
+    {
+      "group": "Content",
+      "pages": [
+        "components/content/text",
+        "components/content/image",
+        "components/content/list",
+        "components/content/quote",
+        "components/content/alert",
+        "components/content/card",
+        "components/content/accordion"
+      ]
+    },
+    {
+      "group": "Customization",
+      "pages": [
+        "views/customization/component-styles",
+        "views/customization/global-styles"
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        "views/advanced/svelte-syntax"
+      ]
+    },
+    {
+      "group": "Inputs",
+      "pages": [
+        "components/inputs/text",
+        "components/inputs/select",
+        "components/inputs/date",
+        "components/inputs/toggle",
+        "components/inputs/checkbox"
+      ]
+    },
+    {
+      "group": "Navigation",
+      "pages": [
+        "components/navigation/link",
+        "components/navigation/button",
+        "components/navigation/segmented-buttons",
+        "components/navigation/tabs"
+      ]
+    },
+    {
+      "group": "Two Axes Charts",
+      "pages": [
+        "visualizations/two-axes-charts/line-chart",
+        "visualizations/two-axes-charts/bar-chart",
+        "visualizations/two-axes-charts/area-chart",
+        "visualizations/two-axes-charts/scatter",
+        "visualizations/two-axes-charts/bubble-chart",
+        "visualizations/two-axes-charts/mixed-types-chart"
+      ]
+    },
+    {
+      "group": "Tables",
+      "pages": [
+        "visualizations/tables/table",
+        "visualizations/tables/pivot-table",
+        "visualizations/tables/heatmap"
+      ]
+    },
+    {
+      "group": "Others",
+      "pages": [
+        "visualizations/others/big-number",
+        "visualizations/others/pie-chart",
+        "visualizations/others/funnel-chart",
+        "visualizations/others/calendar-heatmap",
+        "visualizations/others/map"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "twitter": "https://twitter.com/trylatitude",
+    "github": "https://github.com/latitude-dev/latitude-sdk",
+    "linkedin": "https://www.linkedin.com/company/trylatitude/"
+  }
+}
