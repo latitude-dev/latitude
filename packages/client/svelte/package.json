@@ -14,7 +14,8 @@
     "build:vite": "vite build",
     "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
     "buildAndPackage": "pnpm run build:vite && pnpm run package",
-    "build": "pnpm run prebuild && pnpm run buildAndPackage",
+    "build:with-prebuild-not-used-yet": "pnpm run prebuild && pnpm run buildAndPackage",
+    "build": "pnpm run buildAndPackage",
     "prepublishOnly": "pnpm run package"
   },
   "type": "module",
