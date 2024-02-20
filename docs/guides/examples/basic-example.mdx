@@ -39,7 +39,7 @@ This will start the development server and open your app in your default browser
 
 To add a data source to your app, you'll need to create a new file in the `sources` directory.
 
-For this guide, we'll use the CSV that comes with the sample project, but you can replace that with any other CSV or even connect to a live database following [these instructions](/sources).
+For this guide, we'll use the CSV that comes with the sample project, but you can replace that with any other CSV or connect to a live database following [these instructions](/sources).
 
 ## 3. Write your queries
 
@@ -47,10 +47,10 @@ Now that you have a data source, you can write your first query. Create a new fi
 
 ```sql sample.sql
 SELECT *
-FROM { csv('source.csv') }
+FROM read_csv('source.csv')
 ```
 
-This query will select all the rows from the `source.csv` data source.
+This query will select all the rows from the `source.csv` file using our default DuckDB adapter (you don't need to configure anything else to get this working).
 
 Next, let's create a secondary query to aggregate some data. Create a new file named `sample_agg.sql` in the `queries` directory and write the following query:
 
