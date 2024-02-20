@@ -30,6 +30,7 @@
     "@latitude-sdk/mysql-connector": "workspace:^",
     "@latitude-sdk/postgresql-connector": "workspace:*",
     "@latitude-sdk/snowflake-connector": "workspace:^",
+    "@latitude-sdk/trino-connector": "workspace:*",
     "@latitude-sdk/duckdb-connector": "workspace:^",
     "@latitude-sdk/sqlite-connector": "workspace:^",
     "vitest": "^1.2.2",

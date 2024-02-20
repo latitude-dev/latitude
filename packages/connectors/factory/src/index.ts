@@ -7,6 +7,7 @@ import { BigQueryConnector } from '@latitude-sdk/bigquery-connector'
 import { MysqlConnector } from '@latitude-sdk/mysql-connector'
 import { SnowflakeConnector } from '@latitude-sdk/snowflake-connector'
 import { AthenaConnector } from '@latitude-sdk/athena-connector'
+import { TrinoConnector } from '@latitude-sdk/trino-connector'
 import { DuckdbConnector } from '@latitude-sdk/duckdb-connector'
 import { SqliteConnector } from '@latitude-sdk/sqlite-connector'
 
@@ -19,6 +20,7 @@ export enum ConnectorType {
   Mysql = 'mysql',
   Redshift = 'redshift',
   Snowflake = 'snowflake',
+  Trino = 'trino',
   Sqlite = 'sqlite',
 }
 
@@ -61,6 +63,8 @@ export function createConnector(sourcePath: string): BaseConnector {
       return new SnowflakeConnector(path.dirname(sourcePath), details)
     case ConnectorType.Athena:
       return new AthenaConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Trino:
+      return new TrinoConnector(path.dirname(sourcePath), details)
     case ConnectorType.Duckdb:
       return new DuckdbConnector(path.dirname(sourcePath), details)
     case ConnectorType.Sqlite:

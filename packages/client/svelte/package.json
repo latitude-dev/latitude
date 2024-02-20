@@ -22,7 +22,7 @@
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
     ".": {
-      "types": "./src/lib/index.d.ts",
+      "types": "./src/lib/index.ts",
       "import": "./src/lib/index.ts"
     },
     "./*": {
@@ -32,6 +32,7 @@
     }
   },
   "files": [
+    "src",
     "tailwind.config.js",
     "dist",
     "!dist/**/*.test.*",

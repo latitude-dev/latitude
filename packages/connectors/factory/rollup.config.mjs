@@ -20,6 +20,7 @@ export default {
     '@latitude-sdk/bigquery-connector',
     '@latitude-sdk/mysql-connector',
     '@latitude-sdk/snowflake-connector',
+    '@latitude-sdk/trino-connector',
     '@latitude-sdk/duckdb-connector',
     '@latitude-sdk/sqlite-connector',
     'yaml',
