@@ -1,8 +1,32 @@
 ---
 title: 'Latitude CLI'
-description: 'description'
+description: 'Learn how to use the Latitude CLI to manage your Latitude projects'
 ---
 
+## Introduction
+
+The Latitude CLI is a command-line tool that allows you to manage your Latitude projects. It provides a set of commands to help you create and serve your Latitude projects.
+
+To get a list of all available commands, you can run the following command:
+
+```bash
+latitude --help
 ```
+
+## Creating a new project
+
+To create a new Latitude project, you can use the `start` command. This command will create a new directory with the specified project name and initialize it with the necessary files and folders.
+
+```bash
 latitude start
+```
+
+The `start` command will prompt you to enter the name of your new project. Once you've entered the name, the command will create a new directory with the specified name and initialize it with the necessary files and folders.
+
+## Local development
+
+To serve your Latitude project locally, you can use the `dev` command. This command will start a local development server that will serve your project on `http://localhost:3000`.
+
+```bash
+latitude dev
 ```

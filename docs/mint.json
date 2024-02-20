@@ -55,7 +55,7 @@
   ],
   "navigation": [
     {
-      "group": "Getting Started",
+      "group": "Getting started",
       "pages": [
         "guides/getting-started/introduction",
         "guides/getting-started/installation"
@@ -69,9 +69,10 @@
       ]
     },
     {
-      "group": "Use cases",
+      "group": "Examples",
       "pages": [
-        "guides/use-cases/api"
+        "guides/examples/basic-example",
+        "guides/examples/api"
       ]
     },
     {

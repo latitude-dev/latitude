@@ -1,5 +1,32 @@
 ---
-title: Project Structure
-description: 'description'
+title: Project structure
+description: 'Learn about the structure of a Latitude project'
 ---
 
+## Folder structure
+
+A Latitude project is structured as follows:
+
+```plaintext
+data-app/
+├── queries/
+├── views/
+```
+
+As you can see, the project is divided into two main folders: `queries` and `views`.
+
+### Queries
+
+The `queries` folder contains all the SQL queries that are used in the project. Each query is saved in a separate file with the `.sql` extension.
+
+To find more about how to write queries, check the [Queries](/queries) section.
+
+In this folder is also where the database connections are set up. You can do so by creating a `source.yml` file next to your queries.
+
+Make sure to check the [Sources](/sources) section to learn more about how to set up connections.
+
+### Views
+
+The `views` folder contains all the views that are used in the project. Each view is saved in a separate file with the `.html` extension.
+
+Views use the [Svelte](https://svelte.dev/) framework to create interactive and reactive user interfaces. On top of that, we've developed a library of components that you can use to build your views. To find more about how to write views, check the [Views](/views) section.
