@@ -7,7 +7,6 @@
   export const meta = {
     title: 'Button',
     component: Button,
-    tags: ['autodocs'],
     argTypes: {
       variant: {
         options: theme.ui.button.BUTTON_VARIANTS,
