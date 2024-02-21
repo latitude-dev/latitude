@@ -9,8 +9,11 @@ The Latitude SDK automatically creates an API for you based on the queries you h
 
 In this tutorial, we will learn to:
 
-1. Create a new data app in API-only mode
-2. 
+1. [Create a new data app in API-only mode](#1-create-a-new-data-app-in-api-only-mode)
+2. [Add a data source](#2-add-a-data-source)
+3. [Write your queries](#3-write-your-queries)
+4. [Accessing the API endpoints](#4-accessing-the-api-endpoints)
+5. [Next steps](#5-next-steps)
 
 ## Prerequisites
 
@@ -34,3 +37,59 @@ latitude dev
 ```
 
 This will start the development server and open your app in your default browser.
+
+## 2. Add a data source
+
+To add a data source to your app, you'll need to create a new file in the `sources` directory.
+
+For this guide, we'll use the CSV that comes with the sample project, but you can replace that with any other CSV or connect to a live database following [these instructions](/sources).
+
+## 3. Write your queries
+
+Now that you have a data source, you can write your first query. Create a new file named `sample.sql` in the `queries` directory and write the following query:
+
+```sql sample.sql
+SELECT *
+FROM read_csv('source.csv')
+```
+
+This query will select all the rows from the `source.csv` file using our default DuckDB adapter (you don't need to configure anything else to get this working).
+
+Next, let's create a secondary query to aggregate some data. Create a new file named `sample_agg.sql` in the `queries` directory and write the following query:
+
+```sql sample_agg.sql
+SELECT
+  release_year,
+  COUNT(*) AS total_titles,
+FROM { ref('sample') }
+GROUP BY 1
+ORDER BY 1 ASC
+```
+
+This query will count the number of titles released each year. The `ref` function is used to interpolate the `sample.sql` query, and use its results as the input for this query. Latitude allows you to chain queries together very easily, find out more about this in the [queries reference](/queries).
+
+To check that your queries are working as expected, you can run them locally using the `latitude run` command. For example:
+
+```bash
+latitude run sample_agg
+```
+
+This will run the `/queries/sample_agg.sql` query once and display the results in your terminal.
+
+Learn more about `latitude run` in the [CLI reference](/guides/development/latitude-cli#running-queries).
+
+## 4. Accessing the API endpoints
+
+Now that you have your queries set up, you can access the API endpoints. The Latitude SDK automatically creates an API for you based on the file structure you have defined in your project.
+
+To access the API, you can use any HTTP client, such as `curl`, Postman, or even your browser. For example, to access the `/queries/sample_agg` endpoint, you can run the following command in your terminal:
+
+```bash
+curl http://localhost:3000/queries/sample_agg
+```
+
+This will return the results of the `sample_agg.sql` query in JSON format.
+
+## 5. Next steps
+
+Congratulations! You have successfully created an API to your data with the Latitude SDK. You can now use this API to access your data from any other app or service.
