@@ -9,7 +9,9 @@
     "build": "npm run build:css && npm run build:rollup",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
-    "tc": "tsc --noEmit"
+    "tc": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "type": "module",
   "types": "src/index.ts",
@@ -39,11 +41,11 @@
     "@latitude-sdk/typescript": "workspace:*",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/tailwindcss": "^3.1.0",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "postcss-load-config": "^5.0.2",
     "prettier-plugin-tailwindcss": "^0.5.9",
+    "vitest": "^1.2.2",
     "prettier": "^3.1.1",
     "rollup": "^4.10.0",
     "rollup-plugin-postcss": "^4.0.2",

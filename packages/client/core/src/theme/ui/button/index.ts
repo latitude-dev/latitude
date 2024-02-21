@@ -49,7 +49,11 @@ const buttonVariants = tv({
   },
 })
 
-type ClassProps = { variant: Variant; size: Size }
-export function cssClass({ variant, size }: ClassProps) {
-  return cn(buttonVariants({ variant, size }))
+type ClassProps = {
+  variant: Variant
+  size: Size
+  className?: string | null | undefined
+}
+export function cssClass({ variant, size, className }: ClassProps) {
+  return cn(buttonVariants({ variant, size, className }))
 }

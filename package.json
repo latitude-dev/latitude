@@ -5,9 +5,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "tc": "turbo tc",
+    "test": "turbo test",
     "prettier": "turbo prettier",
     "build": "turbo build",
-    "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {

@@ -4,6 +4,11 @@
     "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["src/**/*", "rollup.config.mjs", "tailwind.config.js"],
+  "include": [
+    "src/**/*",
+    "rollup.config.mjs",
+    "tailwind.config.js",
+    "vitest.config.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
