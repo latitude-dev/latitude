@@ -81,6 +81,9 @@ importers:
       svelte-check:
         specifier: ^3.6.0
         version: 3.6.0(postcss@8.4.35)(svelte@4.2.7)
+      sveltekit-autoimport:
+        specifier: ^1.7.1
+        version: 1.7.1(@sveltejs/kit@2.5.0)
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.1
@@ -876,6 +879,12 @@ importers:
       vite:
         specifier: ^5.0.11
         version: 5.0.12(@types/node@20.10.6)
+
+  sites/dev-gerard:
+    devDependencies:
+      vite:
+        specifier: ^5.1.4
+        version: 5.1.4
 
   tools/eslint-config:
     devDependencies:
@@ -4743,6 +4752,14 @@ packages:
       rollup: 4.10.0
       tslib: 2.6.2
       typescript: 5.3.3
+    dev: true
+
+  /@rollup/pluginutils@4.2.1:
+    resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      estree-walker: 2.0.2
+      picomatch: 2.3.1
     dev: true
 
   /@rollup/pluginutils@5.1.0(rollup@4.10.0):
@@ -11911,6 +11928,13 @@ packages:
       xxhashjs: 0.2.2
     dev: false
 
+  /magic-string@0.26.7:
+    resolution: {integrity: sha512-hX9XH3ziStPoPhJxLq1syWuZMxbDvGNbVchfrdCtanC7D13888bMFow61x8axrx+GfHLtVeAx2kxL7tTGRl+Ow==}
+    engines: {node: '>=12'}
+    dependencies:
+      sourcemap-codec: 1.4.8
+    dev: true
+
   /magic-string@0.30.6:
     resolution: {integrity: sha512-n62qCLbPjNjyo+owKtveQxZFZTBm+Ms6YoGD23Wew6Vw337PElFNifQpknPruVRQV57kVShPnLGo9vWxVhpPvA==}
     engines: {node: '>=12'}
@@ -14832,6 +14856,11 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
+  /sourcemap-codec@1.4.8:
+    resolution: {integrity: sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==}
+    deprecated: Please use @jridgewell/sourcemap-codec instead
+    dev: true
+
   /space-separated-tokens@1.1.5:
     resolution: {integrity: sha512-q/JSVd1Lptzhf5bkYm4ob4iWPjx0KiRe3sRFBNrVqbJkFaBm5vbbowy1mymoPNLRa52+oadOhJ+K49wsSeSjTA==}
     dev: true
@@ -14874,6 +14903,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0
@@ -15477,6 +15509,17 @@ packages:
       htmlparser2-svelte: 4.1.0
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /sveltekit-autoimport@1.7.1(@sveltejs/kit@2.5.0):
+    resolution: {integrity: sha512-cW0nVpyTxXIIvvCfe1HjKgOeoqO2vDR6GGkv1jIYRVTuKtOLipqVYOQ+FAZp2+Ydl0YKNogAeZBVN+twj7rNAQ==}
+    peerDependencies:
+      '@sveltejs/kit': ^1.0.0-next.0
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      '@sveltejs/kit': 2.5.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.12)
+      estree-walker: 2.0.2
+      magic-string: 0.26.7
     dev: true
 
   /svgo@2.8.0:
@@ -16377,6 +16420,41 @@ packages:
       rollup: 4.10.0
     optionalDependencies:
       fsevents: 2.3.3
+
+  /vite@5.1.4:
+    resolution: {integrity: sha512-n+MPqzq+d9nMVTKyewqw6kSt+R3CkvF9QAKY8obiQn8g1fwTscKxyfaYnC632HtBXAQGc1Yjomphwn1dtwGAHg==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+    dependencies:
+      esbuild: 0.19.12
+      postcss: 8.4.35
+      rollup: 4.10.0
+    optionalDependencies:
+      fsevents: 2.3.3
+    dev: true
 
   /vitefu@0.2.5(vite@5.0.12):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
