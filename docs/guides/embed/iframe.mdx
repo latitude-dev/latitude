@@ -1,0 +1,30 @@
+---
+title: 'Iframe embedding'
+description: 'Embedding a Latitude data app using an iframe'
+---
+
+## Introduction
+
+You can embed a Latitude data app in an iframe on your website or in a web application. This allows you to display the app in a specific location on your website and it's the most straightforward way to embed a Latitude data app.
+
+## Embedding
+
+To embed a Latitude data app in an iframe, you need to use the following HTML code:
+
+```html
+<iframe src="https://url-to-your-app.latitude.so/" width="100%" height="600" frameborder="0"></iframe>
+```
+
+Replace `https://url-to-your-app.latitude.so/` with the public URL where your Latitude data app is deployed. You can also adjust the `width` and `height` attributes to fit your website's layout.
+
+## Passing parameters
+
+You can pass parameters to the Latitude data app using the URL query string. For example, to pass a `country` parameter with the value `US`, you can use the following URL:
+
+```html
+<iframe src="https://url-to-your-app.latitude.so/?country=US" width="100%" height="600" frameborder="0"></iframe>
+```
+
+This will pass the `country` parameter with the value `US` to the underlying queries in the data app.
+
+Passing parameters is useful when you want to filter the data displayed in the app based on the context of the page where the app is embedded, for example you can scope the data to a specific user by passing a `user_token` parameter (or any other parameter that makes sense for your use case).

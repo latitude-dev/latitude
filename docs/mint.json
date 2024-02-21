@@ -78,8 +78,14 @@
     {
       "group": "Deploy",
       "pages": [
-        "guides/deploy/self-hosted",
-        "guides/deploy/latitude-cloud"
+        "guides/deploy/self-hosted"
+      ]
+    },
+    {
+      "group": "Embed",
+      "pages": [
+        "guides/embed/iframe",
+        "guides/embed/react-components"
       ]
     },
     {
