@@ -82,13 +82,37 @@ Learn more about `latitude run` in the [CLI reference](/guides/development/latit
 
 Now that you have your queries set up, you can access the API endpoints. The Latitude SDK automatically creates an API for you based on the file structure you have defined in your project.
 
-To access the API, you can use any HTTP client, such as `curl`, Postman, or even your browser. For example, to access the `/queries/sample_agg` endpoint, you can run the following command in your terminal:
+To access the API, you can use any HTTP client, such as `curl`, Postman, or even your browser. For example, to access the `/api/queries/sample_agg` endpoint, you can run the following command in your terminal:
 
 ```bash
-curl http://localhost:3000/queries/sample_agg
+curl http://localhost:3000/api/queries/sample_agg
 ```
 
 This will return the results of the `sample_agg.sql` query in JSON format.
+
+### 4.1 Passing parameters to your queries
+
+You can also pass parameters to your queries by adding them to the URL. Let's edit our `sample_agg.sql` file to support a `year` parameter. Replace the contents of the file with the following and save it:
+
+```plaintext sample_agg.sql
+SELECT
+  release_year,
+  COUNT(*) AS total_titles,
+FROM { ref('sample') }
+{#if param('year')}
+    WHERE release_year = {param('year')}
+{/if}
+GROUP BY 1
+ORDER BY 1 ASC
+```
+
+Now, you can pass the `year` parameter to the `/api/queries/sample_agg` endpoint. For example, to get the results for the year 2020, you can run the following command in your terminal:
+
+```bash
+curl http://localhost:3000/api/queries/sample_agg?year=2020
+```
+
+This will return the results of the `sample_agg.sql` query for the year 2020 in JSON format.
 
 ## 5. Next steps
 
