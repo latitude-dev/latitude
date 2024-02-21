@@ -1,10 +1,17 @@
 import QueryResult from '@latitude-sdk/query_result'
 import { DataType } from '@latitude-sdk/query_result'
 import { type ResolvedParam } from '..'
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { CompileError } from '@latitude-sdk/sql-compiler'
 import { BaseConnector, CompiledQuery } from '.'
-import mock from 'mock-fs'
+
+vi.mock('fs', (importOriginal) => ({
+  ...importOriginal(),
+  existsSync: () => true,
+  readFileSync: (path: unknown) => {
+    return fakeQueries[(path as string).split('/').pop()!]
+  },
+}))
 
 const fakeQueries: Record<string, string> = {}
 const addFakeQuery = (sql: string, queryPath?: string) => {
@@ -13,11 +20,7 @@ const addFakeQuery = (sql: string, queryPath?: string) => {
     ? queryPath
     : `${queryPath}.sql`
   fakeQueries[fullQueryPath] = sql
-  mock({
-    root: {
-      ...fakeQueries,
-    },
-  })
+
   return queryPath
 }
 
@@ -48,7 +51,7 @@ class MockConnector extends BaseConnector {
 
 const clearQueries = () => {
   Object.keys(fakeQueries).forEach((key) => delete fakeQueries[key])
-  mock.restore()
+  vi.clearAllMocks()
   ranQueries.length = 0
 }
 
@@ -64,6 +67,51 @@ const getExpectedError = async <T>(
   }
   throw new Error('Expected an error to be thrown')
 }
+
+describe('unsafeParam function', async () => {
+  afterEach(clearQueries)
+
+  it('returns the value interpolated into the query', async () => {
+    const connector = new MockConnector()
+    const sql = '{unsafeParam("foo")}'
+    const queryPath = addFakeQuery(sql)
+    await connector.query({ queryPath, params: { foo: 'var' } })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('var')
+  })
+
+  it('uses default value if provided and no param is given', async () => {
+    const connector = new MockConnector()
+    const sql = '{unsafeParam("foo", "bar")}'
+    const queryPath = addFakeQuery(sql)
+
+    await connector.query({ queryPath, params: {} })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('bar')
+  })
+
+  it('fails if param is not provided', async () => {
+    const connector = new MockConnector()
+    const sql = '{unsafeParam("foo")}'
+    const queryPath = addFakeQuery(sql)
+
+    await expect(() =>
+      connector.query({ queryPath, params: {} }),
+    ).rejects.toThrow()
+  })
+
+  it('fails if value is null', async () => {
+    const connector = new MockConnector()
+    const sql = '{unsafeParam("foo")}'
+    const queryPath = addFakeQuery(sql)
+
+    await expect(() =>
+      connector.query({ queryPath, params: { foo: null } }),
+    ).rejects.toThrow()
+  })
+})
 
 describe('params function', async () => {
   afterEach(clearQueries)
