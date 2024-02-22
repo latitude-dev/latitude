@@ -1,6 +1,11 @@
 import colors from 'picocolors'
 import { APP_FOLDER } from '../constants'
 import { spawn } from 'child_process'
+import { exit } from 'process'
+
+export const cleanTerminal = () => {
+  process.stdout.write('\x1bc');
+}
 
 export async function installAppDependencies() {
   console.log(colors.yellow('Installing dependencies...'))
@@ -20,31 +25,51 @@ export async function installAppDependencies() {
 }
 
 const COMMAND = 'npx'
-const BASE_ARGS = ['vite', 'dev', '--port', '3000']
+const BASE_ARGS = ['vite', 'dev']
 
-type DevServerProps = { appFolder?: string; open?: boolean }
+type DevServerProps = {
+  appFolder?: string
+  port?: number
+  host?: string
+  open?: boolean
+  verbose?: boolean
+}
 
 export function runDevServer({
   appFolder = APP_FOLDER,
+  port = 3000,
+  host = 'localhost',
   open = false,
+  verbose = false,
 }: DevServerProps) {
-  const args = open ? [...BASE_ARGS, '--open'] : BASE_ARGS
+  let init = true
+  const tmp_args = [...BASE_ARGS, `--port=${port}`, `--host=${host}`]
+  const args = open ? [...tmp_args, '--open'] : tmp_args
   const serverProccess = spawn(COMMAND, args, {
-    shell: true,
     detached: false,
     cwd: appFolder,
-    stdio: 'inherit',
+    stdio: 'pipe',
   })
 
   serverProccess.stdout?.on('data', (data) => {
-    console.log(`stdout: ${data}`)
+    if (init) {
+      cleanTerminal()
+
+      console.log(colors.green(`Latitude Dev Server running on port ${port}`))
+      init = false
+    }
+
+    if (verbose) {
+      console.log(colors.gray(data))
+    }
   })
 
   serverProccess.stderr?.on('data', (data) => {
-    console.error(colors.red(`💥 Error: ${data}`))
+    console.error(colors.yellow(data))
   })
 
   serverProccess.on('close', () => {
-    console.log(colors.yellow('Latitude Dev Server closed'))
+    console.log(colors.red('Latitude Dev Server unexpectedly closed...'))
+    exit()
   })
 }
