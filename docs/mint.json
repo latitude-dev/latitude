@@ -97,7 +97,8 @@
         "sources/snowflake",
         "sources/redshift",
         "sources/athena",
-        "sources/databricks"
+        "sources/databricks",
+        "sources/duckdb"
       ]
     },
     {

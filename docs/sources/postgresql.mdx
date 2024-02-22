@@ -1,4 +1,47 @@
 ---
 title: 'PostgreSQL'
-description: 'description'
+description: 'How to configure your PostgreSQL Database'
 ---
+
+## Configuration
+
+To configure the connection with your PostgreSQL database follow these steps:
+
+<Steps>
+    <Step title="Go to the sources file in your Latitude project">
+        ```
+            /sources/sources.yaml
+        ```
+    </Step>
+    <Step title="Add the following code for your PostgreSQL connection">
+        ``` yaml
+        type: postgres
+            details:
+                database: string
+                user: string
+                password: string
+                host: string
+                port: number
+                schema?: string
+        ```
+    </Step>
+    <Step title="Replace with your info and save">
+    </Step>
+    <Step title="Done, now you can test your connection">
+    </Step>
+</Steps>
+
+## Attributes
+
+- **User** → The user credentials to authenticate in your database.
+- **Password** → The password to authenticate in your database.
+- **Host** → The host for the database connection, which can be expressed as either an IP address like 127.0.0.1 or a domain like server.my.domain.org.
+- **Database** → The exact name of the database that contains the data you want to sync.
+- **Port** → The port number for the connection. In case you don’t have a port assigned the default port number of PostgreSQL is 5432.
+- **Schema** → (Optional) The schema within the database that you want to connect to. A PostgreSQL database can contain multiple schemas, each of which can hold tables and other database objects. If not specified, the default schema (usually "public") is used
+
+## Test connection
+
+To test the connection got to a file in `/queries/your_query_file.sql` and make a query using the new connection as source.
+
+You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.
