@@ -17,6 +17,8 @@ machine.
 
 ## Quick start
 
+---
+
 Here’s a quick getting started guide to get the sample app up and running:
 
 1. **Install Latitude SDK**
