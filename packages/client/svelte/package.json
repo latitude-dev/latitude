@@ -35,12 +35,14 @@
   ],
   "dependencies": {
     "@latitude-sdk/client": "workspace:*",
+    "@latitude-sdk/query_result": "workspace:^",
     "bits-ui": "^0.18.1",
     "echarts": "^5.5.0",
     "lodash": "^4.17.21",
     "mode-watcher": "^0.2.1",
     "radix-icons-svelte": "^1.2.1",
-    "svelte-persisted-store": "^0.9.1"
+    "svelte-persisted-store": "^0.9.1",
+    "zustand": "^4.5.1"
   },
   "peerDependencies": {
     "svelte": "^4.0.0"
