@@ -127,9 +127,9 @@
       ]
     },
     {
-      "group": "Views Basics",
+      "group": "Basics",
       "pages": [
-        "views/basics/syntax",
+        "views/basics/what-are-views",
         "views/basics/layout"
       ]
     },
