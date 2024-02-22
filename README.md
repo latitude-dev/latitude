@@ -16,7 +16,6 @@ You need to have [NodeJS >18.x](https://nodejs.org/en) installed in your
 machine.
 
 ## Quick start
-
 ---
 
 Here’s a quick getting started guide to get the sample app up and running:
