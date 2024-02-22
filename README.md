@@ -10,8 +10,7 @@ on top of your database or data warehouse using SQL and React/Svelte.
 
 ---
 
-Visit the [public docs](Visit https://latitude-21.mintlify.app/ to view the
-full documentation.) to view the full documentation.
+Visit the [public docs](https://latitude-21.mintlify.app/) to view the full documentation.
 
 ### Prerequisites
 
