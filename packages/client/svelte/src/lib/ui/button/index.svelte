@@ -1,18 +1,21 @@
+<script context="module" lang="ts">
+  export type Props = Omit<ButtonPrimitive.Props, 'class'> & {
+    variant?: theme.ui.button.Variant
+    size?: theme.ui.button.Size
+    class?: string | null | undefined
+  }
+</script>
+
 <script lang="ts">
-  import { Button as ButtonPrimitive } from "bits-ui";
+  import { Button as ButtonPrimitive } from 'bits-ui'
   import { theme } from '@latitude-sdk/client'
-  import { type Props, type Events } from "./types";
 
-  type $$Props = Props;
+  let className: Props['class'] = undefined
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  type $$Events = Events;
-
-  let className: $$Props["class"] = undefined;
-  export let variant: $$Props["variant"] = "default";
-  export let size: $$Props["size"] = "default";
-  export let builders: $$Props["builders"] = [];
-  export { className as class };
+  export let variant: Props['variant'] = 'default'
+  export let size: Props['size'] = 'default'
+  export let builders: Props['builders'] = []
+  export { className as class }
 </script>
 
 <ButtonPrimitive.Root

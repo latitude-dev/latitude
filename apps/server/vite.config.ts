@@ -5,9 +5,8 @@ import autoImport from 'sveltekit-autoimport'
 export default defineConfig({
   plugins: [
     autoImport({
-      mapping: {
-        Button: 'import Button from "@latitude-sdk/svelte/button"',
-        Card: 'import * as Card from "@latitude-sdk/svelte/card"',
+      module: {
+        '@latitude-sdk/client/svelte': ['Button', 'Card'],
       },
     }),
     sveltekit(),

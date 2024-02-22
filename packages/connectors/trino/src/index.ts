@@ -28,10 +28,7 @@ export class TrinoConnector extends BaseConnector {
     })
   }
 
-  resolve(
-    value: unknown,
-    _: number,
-  ): ResolvedParam {
+  resolve(value: unknown, _: number): ResolvedParam {
     return {
       value,
       resolvedAs: '?',
@@ -48,7 +45,9 @@ export class TrinoConnector extends BaseConnector {
           throw new QueryError(data.error.message)
         }
       }
-      query = `EXECUTE request_query USING ${request.params.map((param) => this.stringify(param.value)).join(', ')}`
+      query = `EXECUTE request_query USING ${request.params
+        .map((param) => this.stringify(param.value))
+        .join(', ')}`
     }
     const iter = await this.client.query(query)
 

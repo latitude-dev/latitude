@@ -1,11 +1,11 @@
-<script lang='ts'>
+<script lang="ts">
   import * as Tooltip from '../../tooltip'
   import DarkModeButton from '../../dark-mode-button'
-  import * as Card from '../../card'
-  import { themeConfig } from "../store"
-  import { mode } from "mode-watcher"
+  import { Card } from '$lib'
+  import { themeConfig } from '../store'
+  import { mode } from 'mode-watcher'
   import { theme as client } from '@latitude-sdk/client'
-  import { Check } from "radix-icons-svelte"
+  import { Check } from 'radix-icons-svelte'
   import { COLORS, COLOR_KEYS } from './colors'
 
   const { cn } = client.utils
@@ -13,7 +13,7 @@
 </script>
 
 <Card.Root>
-  <Card.Content class='pt-6 flex items-center justify-between'>
+  <Card.Content class="flex items-center justify-between pt-6">
     <div class="flex items-center space-x-0.5">
       {#each COLOR_KEYS as color (color)}
         {@const theme = themes.find((tm) => tm.name === color)}
@@ -24,16 +24,18 @@
               <button
                 {...builder}
                 use:builder.action
-                on:click={() => themeConfig.update(() => theme) }
+                on:click={() => themeConfig.update(() => theme)}
                 class={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs",
-                  isActive ? "border-[--theme-primary]" : "border-transparent"
+                  'flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs',
+                  isActive ? 'border-[--theme-primary]' : 'border-transparent'
                 )}
-                style="--theme-primary: hsl({COLORS[theme.name][$mode === 'dark' ? 'dark' : 'light']}"
+                style="--theme-primary: hsl({COLORS[theme.name][
+                  $mode === 'dark' ? 'dark' : 'light'
+                ]}"
               >
                 <span
                   class={cn(
-                    "flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]"
+                    'flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]'
                   )}
                 >
                   {#if isActive}

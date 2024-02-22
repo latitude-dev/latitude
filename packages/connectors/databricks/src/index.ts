@@ -29,8 +29,8 @@ export class DatabricksConnector extends BaseConnector {
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
     this.client = new DBSQLClient()
-    const { host, port, path } = connectionParams;
-    const connection = { host, port, path };
+    const { host, port, path } = connectionParams
+    const connection = { host, port, path }
 
     if (connectionParams.token) {
       this.connectionOptions = {
@@ -38,7 +38,10 @@ export class DatabricksConnector extends BaseConnector {
         authType: 'access-token',
         token: connectionParams.token,
       }
-    } else if (connectionParams.oauthClientId && connectionParams.oauthClientSecret) {
+    } else if (
+      connectionParams.oauthClientId &&
+      connectionParams.oauthClientSecret
+    ) {
       this.connectionOptions = {
         ...connection,
         authType: 'databricks-oauth',
@@ -46,7 +49,9 @@ export class DatabricksConnector extends BaseConnector {
         oauthClientSecret: connectionParams.oauthClientSecret,
       }
     } else {
-      throw new ConnectionError('Invalid connection parameters. Provide either a token or OAuth client ID and secret.')
+      throw new ConnectionError(
+        'Invalid connection parameters. Provide either a token or OAuth client ID and secret.',
+      )
     }
   }
 
@@ -60,16 +65,15 @@ export class DatabricksConnector extends BaseConnector {
     this.isConnected = false
   }
 
-  resolve(
-    value: unknown,
-    index: number,
-  ): ResolvedParam {
+  resolve(value: unknown, index: number): ResolvedParam {
     /**
      * Databricks parameterisation is done using {{ var_name }} for regular variables
      * and '{{ var_name }}' for date and timestamp values.
      * https://docs.databricks.com/en/sql/user/queries/query-parameters.html#date-and-time
      */
-    const isDate = value instanceof Date || (typeof value === 'string' && !isNaN(Date.parse(value)))
+    const isDate =
+      value instanceof Date ||
+      (typeof value === 'string' && !isNaN(Date.parse(value)))
     const resolvedValue = `{{ var_${index} }}`
     return {
       value,
@@ -84,7 +88,7 @@ export class DatabricksConnector extends BaseConnector {
     const queryOperation = await session.executeStatement(request.sql, {
       namedParameters: request.params.reduce((acc, param, index) => {
         return { ...acc, [`var_${index}`]: param.value }
-      })
+      }),
     })
     const result = await queryOperation.fetchAll()
     const schema = await queryOperation.getSchema()
@@ -98,7 +102,7 @@ export class DatabricksConnector extends BaseConnector {
       }
     })
     const rows: unknown[][] = result.map((row) => Object.values(row))
-    
+
     return new QueryResult({
       rowCount: rows.length,
       fields,

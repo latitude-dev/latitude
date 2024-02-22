@@ -1,11 +1,15 @@
+<script context="module" lang="ts">
+  import type { HTMLAttributes } from 'svelte/elements'
+
+  export type Props = HTMLAttributes<HTMLDivElement>
+</script>
+
 <script lang="ts">
-  import type { HTMLAttributes } from "svelte/elements";
   import { theme } from '@latitude-sdk/client'
 
-  type $$Props = HTMLAttributes<HTMLDivElement>;
+  let className: Props['class'] = undefined
 
-  let className: $$Props["class"] = undefined;
-  export { className as class };
+  export { className as class }
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->

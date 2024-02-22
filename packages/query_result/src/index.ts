@@ -1,5 +1,3 @@
-import { tableFromArrays } from 'apache-arrow'
-
 export enum DataType {
   Boolean = 'boolean',
   Datetime = 'datetime',
@@ -32,18 +30,6 @@ export default class QueryResult {
     this.fields = fields
     this.rows = rows
     this.rowCount = rowCount
-  }
-
-  toArrowTable() {
-    return tableFromArrays(
-      this.fields.reduce(
-        (acc, field, i) => {
-          acc[field.name] = this.rows.map((row) => row[i])
-          return acc
-        },
-        {} as { [key: string]: unknown[] },
-      ),
-    )
   }
 
   toJSON() {

@@ -1,5 +1,6 @@
-const LATITUDE_PREFIX = 'lat'
 import { Theme } from './types'
+
+const LATITUDE_PREFIX = 'lat'
 
 export function buildCssVariables(theme: Theme) {
   const light = theme.cssVars.light

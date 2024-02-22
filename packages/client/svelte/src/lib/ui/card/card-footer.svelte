@@ -1,11 +1,14 @@
+<script context="module" lang="ts">
+  import type { HTMLAttributes } from 'svelte/elements'
+
+  export type Props = HTMLAttributes<HTMLDivElement>
+</script>
+
 <script lang="ts">
-  import type { HTMLAttributes } from "svelte/elements";
   import { theme } from '@latitude-sdk/client'
 
-  type $$Props = HTMLAttributes<HTMLDivElement>;
-
-  let className: $$Props["class"] = undefined;
-  export { className as class };
+  let className: Props['class'] = undefined
+  export { className as class }
 </script>
 
 <div class={theme.ui.card.footerCssClass({ className })} {...$$restProps}>
