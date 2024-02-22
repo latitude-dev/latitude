@@ -8,20 +8,14 @@ on top of your database or data warehouse using SQL and React/Svelte.
 
 ### Documentation
 
----
-
 Visit the [public docs](https://latitude-21.mintlify.app/) to view the full documentation.
 
 ### Prerequisites
 
----
-
 You need to have [NodeJS >18.x](https://nodejs.org/en) installed in your
 machine.
 
-### Quick start
-
----
+## Quick start
 
 Here’s a quick getting started guide to get the sample app up and running:
 
@@ -48,9 +42,7 @@ directory with a sample app that you can run and customize.
 
 This will start the development server and open the sample app in your browser.
 
-### Install
-
----
+## Install
 
 To use the Latitude CLI, you need to have Node.js installed on your machine.
 You can download it from the [official website](https://nodejs.org/en).
@@ -59,18 +51,14 @@ Run the following command to install the Latitude CLI globally:
 
 `npm install -g @latitude-sdk/cli`
 
-### Community
-
----
+## Community
 
 The Latitude community can be found on
 [Slack](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
 where you can ask questions, voice ideas, and share your projects with other
 people.
 
-### Contributing
-
----
+## Contributing
 
 Contributions to Latitude are welcome and highly appreciated.
 
@@ -79,9 +67,7 @@ channel](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2Oor
 open an [issue](https://github.com/evidence-dev/evidence/issues/new), or
 contribute a pull request.
 
-### Contact
-
----
+## Contact
 
 If you want to share ideas or have questions, [say
 hello](https://www.notion.so/4086e35ef7c14a6da14c1c9ce1c6be32?pvs=21).
