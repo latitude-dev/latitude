@@ -87,22 +87,29 @@
         "guides/embed/iframe",
         "guides/embed/react-components"
       ]
+    }, {
+      "group": "Configuration",
+      "pages": [
+        "sources/how-to-configure-sources"
+      ]
     },
     {
       "group": "Sources",
       "pages": [
-        "sources/postgresql",
-        "sources/mysql",
-        "sources/bigquery",
-        "sources/snowflake",
-        "sources/redshift",
         "sources/athena",
+        "sources/bigquery",
         "sources/databricks",
-        "sources/duckdb"
+        "sources/duckdb",
+        "sources/mysql",
+        "sources/postgresql",
+        "sources/redshift",
+        "sources/snowflake",
+        "sources/sqlite",
+        "sources/trino"
       ]
     },
     {
-      "group": "Query Basics",
+      "group": "Basics",
       "pages": [
         "queries/basics/sql-syntax-basics",
         "queries/basics/reference-other-queries",

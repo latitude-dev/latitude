@@ -1,0 +1,57 @@
+---
+title: 'Create and Configure Sources'
+description: 'How to create and configure sources within your Latitude project'
+---
+
+## File format and location
+
+- To configure a source, the file must be a `.yaml` file. 
+- It must be located in the `/queries` folder on the first level.
+- It can also be located in subfolders, but always within `/queries`.
+- One file represents one connection. Don't put more than one connection in one file.
+- The filename is the one you must use in your queries.
+- Files for queries `.sql` and sources `.yaml` will live together in `queries/`.
+
+## Hierarchy
+
+### Subfolders
+
+The source file can be located in any folder within `/queries`. This means you can create subfolders within `queries/` and sources can be in those subfolders.
+
+```
+    queries/
+    ├── product/
+    ├── ├── active_users.sql
+    ├── ├── snowflake_product.yaml
+```
+
+### Source Proximity
+
+The query files will take the data from the nearest source. This means that it will try to find a source in the same level and if there is no source it will go to the previous folder level one and other time up to find a source.
+
+So in the following example the query `queries/aggregations/total_subscriptions_by_country.sql` will go to the previous level and take the data from `queries/postgresql.yaml` because in its level there is no source.
+```
+    queries/
+    ├── postgresql.yaml/
+    ├── subscriptions.sql
+    ├── aggregations/
+    ├── ├── total_subscriptions_by_country.sql
+```
+
+## Available sources and Configuration
+
+These are the supported connections, go to their specific section to know the specific configuration of each one.
+
+- [Athena](athena)
+- [BigQuery](bigquery)
+- [Clickhouse](clickhouse)
+- [Databricks](databricks)
+- [DuckDB](duckdb)
+- [Microsoft SQL](mssql)
+- [MySQL](mysql)
+- [PostgreSQL](postgresql)
+- [Redshift](redshift)
+- [Snowflake](snowflake)
+- [SQLite](sqlite)
+- [Trino](trino)
+
