@@ -10,7 +10,7 @@ on top of your database or data warehouse using SQL and React/Svelte.
 
 Visit the [public docs](https://latitude-21.mintlify.app/) to view the full documentation.
 
-### Prerequisites
+## Prerequisites
 
 You need to have [NodeJS >18.x](https://nodejs.org/en) installed in your
 machine.
