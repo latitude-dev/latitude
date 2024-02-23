@@ -16,5 +16,6 @@ export default {
   external: [
     '@latitude-sdk/base-connector',
     '@latitude-sdk/query_result',
+    '@databricks/sql',
   ],
 }
