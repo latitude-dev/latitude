@@ -19,7 +19,7 @@ If you have both a file and a directory with the same name, the framework will t
 
 You can pass parameters to a view via URL parameters. For example, if you have a file called `views/user.html`, you can access it at `/user?id=123`. The `id` parameter will be available in the view.
 
-To access the URL parameter in the view, you can use the `url_params()` function. For example, to retrieve the value of the `id` parameter, you can use `url_params('id')`. Here's an example of how you can pass this parameter to a query using a `Value` component:
+To access the URL parameter in the view, you can use the `url_param()` function. For example, to retrieve the value of the `id` parameter, you can use `url_param('id')`. Here's an example of how you can pass this parameter to a query using a `Value` component:
 
 ```html
 <Value
