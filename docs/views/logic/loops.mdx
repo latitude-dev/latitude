@@ -12,8 +12,8 @@ The `each` block helper is used to iterate over an array or object. It is simila
 To use the `each` block helper, you need to pass an array or object to it. The `each` block helper will then iterate over the array or object and execute the block for each item.
 
 ```html
-{#each [1, 2, 3] as |number|}
-  <p>{{number}}</p>
+{#each [1, 2, 3] as number}
+  <p>{number}</p>
 {/each}
 ```
 
@@ -27,8 +27,8 @@ The `each` block helper is often used to iterate over the results of a query. Fo
 {#await run_query('users') then users}
   {#each users as user}
     <Card>
-      <h2>{{user.name}}</h2>
-      <p>{{user.bio}}</p>
+      <h2>{user.name}</h2>
+      <p>{user.bio}</p>
     </Card>
   {/each}
 {/await}

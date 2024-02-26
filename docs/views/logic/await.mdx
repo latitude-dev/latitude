@@ -15,7 +15,7 @@ There are three possible states for the `await` block: `pending`, `fulfilled` an
 {#await run_query('sample')}
     <p>Waiting...</p>
 {:then data}
-    <p>The value is {data}</p>
+    <p>There are {data.length} elements</p>
 {:catch error}
     <p>{error.message}</p>
 {/await}
