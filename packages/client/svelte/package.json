@@ -74,6 +74,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "storybook": "^7.6.17",
+    "storybook-addon-deep-controls": "^0.6.0",
     "svelte": "^4.2.7",
     "svelte-check": "^3.6.0",
     "svelte-preprocess": "^5.1.3",

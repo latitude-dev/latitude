@@ -5,6 +5,7 @@ const config = {
     '@storybook/addon-links',
     '@storybook/addon-themes',
     '@storybook/addon-essentials',
+    'storybook-addon-deep-controls',
   ],
   framework: {
     name: '@storybook/sveltekit',

@@ -1,7 +1,6 @@
 {
   "name": "@latitude-sdk/client",
   "version": "0.0.1",
-  "main": "src/index.ts",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
     "build:rollup": "rollup -c",
@@ -13,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
+  "main": "src/index.ts",
   "type": "module",
   "types": "dist/index.d.ts",
   "exports": {

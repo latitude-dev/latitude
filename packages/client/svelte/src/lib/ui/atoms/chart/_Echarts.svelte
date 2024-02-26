@@ -2,7 +2,7 @@
   import debounce from 'lodash/debounce'
   import * as echarts from 'echarts/core'
   import { CanvasRenderer } from 'echarts/renderers'
-  import { theme as client } from '@latitude-sdk/client'
+  import type { ECBasicOption } from 'echarts/types/dist/shared'
 
   // Core components
   import {
@@ -24,6 +24,9 @@
     FunnelChart,
     GaugeChart,
   } from 'echarts/charts'
+
+  import { theme as client } from '@latitude-sdk/client'
+  const { cn } = client.utils
 
   echarts.use([
     // Charts
@@ -47,21 +50,43 @@
     CanvasRenderer,
   ])
 
-  import type { ChartableProps } from './types'
+  type EchartsOptions = ECBasicOption
+  type EchartsTheme = object
+  export type Props = {
+    options: EchartsOptions
+    width: number
+    height: number
+    theme?: EchartsTheme
+    isComputing?: boolean
+    locale?: string
+  }
+
+  type ChartableProps = {
+    options: EchartsOptions
+    theme: EchartsTheme
+    locale: 'en' | 'es'
+  }
+
+  type $$Props = Props;
 
   // PROPS
   export let options: $$Props['options']
+
+  // DO chart theming
   export let theme: $$Props['theme'] = client.ui.chart.THEMES.latitude
   export let width: $$Props['width']
   export let height: $$Props['height']
+  export let locale: $$Props['locale'] = 'en'
   export let isComputing: $$Props['isComputing'] = false
 
   export function chartable(
     element: HTMLElement,
-    { options, theme }: ChartableProps
+    { options, theme, locale }: ChartableProps
   ) {
-    let resizeObserver: ResizeObserver | null = null
-    const echartsInstance = echarts.init(element, theme, { renderer: 'canvas' })
+    let resizeObserver;
+    const echartsInstance = echarts.init(
+      element, theme, { renderer: 'canvas', locale }
+    )
     echartsInstance.setOption(options)
 
     const onWindowResize = debounce(() => {
@@ -90,15 +115,12 @@
       },
     }
   }
-  import { type Props } from './types'
-  type $$Props = Props
-  const { cn } = client.utils
 </script>
 
 <div class={cn('h-full w-full', { 'animate-pulse': isComputing })}>
   <div
-    use:chartable={{ theme, options }}
-    class="min-h-full min-w-full"
+    use:chartable={{ theme, options, locale }}
+    class="min-w-full min-h-full"
     style="width: {width}px; height: {height}px"
   />
 </div>

@@ -16,10 +16,6 @@ export type EChartsSupportedType =
   | ChartLayerType.funnel
   | ChartLayerType.pie
 
-// TODO: Uncomment when implemented
-/* | 'gauge' */
-/* | 'heatmap' */
-
 export type Dataset = { fields: string[]; source: DBSource }
 
 type OrdinalNumber = number

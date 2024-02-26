@@ -5,7 +5,7 @@ import type {
 } from 'echarts'
 
 import { type Dataset } from '../../types'
-import { AxisType } from '../types'
+import { AxisType, CartesianChartType } from '../types'
 import {
   FullColumn,
   type Column,
@@ -46,17 +46,25 @@ function swapAxisFn({
 
 type ColumnConfig = string | Column | Column[] | (string | Column)[]
 
-function completeStringColumn(column: string): FullColumn {
+function completeStringColumn(
+  column: string,
+  chartType: CartesianChartType,
+): FullColumn {
   return {
     name: column,
-    chartType: 'bar',
+    chartType,
     axisIndex: 0,
     displayName: column,
   }
 }
 
-function completeColumn(column: Column | string): FullColumn {
-  if (typeof column === 'string') return completeStringColumn(column)
+function completeColumn(
+  column: Column | string,
+  chartType: CartesianChartType,
+): FullColumn {
+  if (typeof column === 'string') {
+    return completeStringColumn(column, chartType)
+  }
 
   return {
     ...column,
@@ -78,11 +86,17 @@ function completeYAxis(axis: yAxisFormat) {
   }
 }
 
-function getColumns(column: ColumnConfig): FullColumn[] {
-  if (Array.isArray(column)) return column.map(completeColumn)
-  if (typeof column === 'string') return [completeStringColumn(column)]
+function getColumns(
+  column: ColumnConfig,
+  chartType: CartesianChartType,
+): FullColumn[] {
+  if (Array.isArray(column))
+    return column.map((c) => completeColumn(c, chartType))
 
-  return [completeColumn(column)]
+  if (typeof column === 'string')
+    return [completeStringColumn(column, chartType)]
+
+  return [completeColumn(column, chartType)]
 }
 
 const CONIFG_DEFAULTS: ConfigProps = {
@@ -128,9 +142,13 @@ export type Props = {
   // Copy from old latitude
   hiddenSeries?: string[]
 }
+type CartesianProps = Props & {
+  chartType?: CartesianChartType
+}
 
 // TODO: Pass theme object
 export default function generateConfig({
+  chartType = 'bar',
   animation = true,
   dataset,
   swapAxis = false,
@@ -142,7 +160,7 @@ export default function generateConfig({
   yFormat = Y_FORMAT_DEFAULT,
   hiddenSeries = [],
   config = CONIFG_DEFAULTS,
-}: Props): EChartsOption | null | undefined {
+}: CartesianProps): EChartsOption | null | undefined {
   const { showZoom = false, showLegend = false, showDecal = false } = config
   const yAxisList = Array.isArray(yFormat)
     ? yFormat.map(completeYAxis)
@@ -151,12 +169,12 @@ export default function generateConfig({
     ? xFormat.map(completeXAxis)
     : [completeXAxis(xFormat)]
   const usePercentage = yAxisList[0]?.stack === 'normalized'
-  const xColumns = getColumns(x)
-  const yColumns = getColumns(y)
+  const xColumns = getColumns(x, chartType)
+  const yColumns = getColumns(y, chartType)
   const generatedDataset = getDataset({
     dataset,
-    xColumnName: yColumns[0]?.name ?? '',
-    xAxisType: yAxisList[0]?.type ?? AxisType.value,
+    column: yColumns[0]?.name ?? '',
+    axisType: yAxisList[0]?.type ?? AxisType.value,
     usePercentage,
   })
   const dataZoom = setDataZoom({ swapAxis, showZoom })

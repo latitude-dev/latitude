@@ -13,7 +13,7 @@ const setGrid = ({
   return {
     containLabel: true,
     left: SPACES.s10,
-    right: showZoom && swapAxis ? SPACES.s16 : 0,
+    right: showZoom && swapAxis ? SPACES.s16 : SPACES.s2,
     top: showLegend ? SPACES.s14 : SPACES.s2,
     bottom: showZoom && !swapAxis ? SPACES.s20 : SPACES.s8,
   }
