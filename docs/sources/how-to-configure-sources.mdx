@@ -1,16 +1,16 @@
 ---
-title: 'Create and Configure Sources'
+title: 'Create and configure sources'
 description: 'How to create and configure sources within your Latitude project'
 ---
 
-## File Requirements and Directory Structure
+## File requirements and directory structure
 - **Source Files:** Must be `.yaml` or `.yml`.
 - **Location:** All source files should be placed in the `queries` directory. This includes being nested within any subdirectories under `queries`.
 - **One Connection Per File:** Each `.yaml` file represents a unique connection. Do not mix multiple connections in a single file.
 - **Naming:** Use the `.yaml` filename in your queries to reference the source.
 - **Co-location:** `.sql` query files and `.yaml` source files should all reside within the `queries` directory or its subdirectories.
 
-## Directory Hierarchy and Source Discovery
+## Directory hierarchy and source discovery
 
 #### Subdirectories
 - You may organize your source files in subfolders within the `queries` directory.
@@ -21,7 +21,7 @@ queries/
 ├── snowflake_product.yaml
 
 
-#### Source Resolution
+#### Source resolution
 - Queries will utilize the closest source file in their directory hierarchy. If a source file isn't found in the same directory, the query will search each parent directory until a source file is discovered.
 Example:
 queries/
@@ -32,7 +32,7 @@ queries/
 
 *In this scenario, `total_subscriptions_by_country.sql` will use `postgresql.yaml` as its source since it doesn't have a closer source file in its directory (`aggregations`).*
 
-## Available sources and Configuration
+## Available sources and configuration
 
 These are the supported connections, go to their specific section to know the specific configuration of each one.
 
