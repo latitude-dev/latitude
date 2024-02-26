@@ -1,4 +1,41 @@
 ---
-title: 'Global Styles'
+title: 'Global styles'
 description: 'description'
 ---
+
+{/* Add coming soon */}
+
+## Introduction
+
+Applying global styles to your views is easy. Latitude provides a default theme that you can use as a starting point. You can also create your own themes and apply them to your views.
+
+## Creating a theme
+
+To create a theme, you need to edit the `latitude.json` file in the root of your project. You'll find the current theme under the `themes` key. To create a new theme, simply add a new key to the `themes` object and define your theme.
+
+```json
+{
+  "themes": {
+    "default": {
+      "primaryColor": "#FF0000",
+      "secondaryColor": "#00FF00",
+      "textColor": "#000000"
+    },
+    "dark": {
+      "primaryColor": "#000000",
+      "secondaryColor": "#000000",
+      "textColor": "#FFFFFF"
+    }
+  }
+}
+```
+
+## Applying a theme
+
+To apply a theme to your views, you simply need to add the property `theme` to your `View` component. Here's an example:
+
+```html
+<View theme="dark">
+  <Text>Hello, world!</Text>
+</View>
+```

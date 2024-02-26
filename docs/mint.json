@@ -164,8 +164,7 @@
     {
       "group": "Customization",
       "pages": [
-        "views/customization/component-styles",
-        "views/customization/global-styles"
+        "views/customization/component-styles"
       ]
     },
     {
