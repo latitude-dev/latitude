@@ -5,7 +5,7 @@ type Props = {
   options: EchartsOptions
   width: number
   height: number
-  theme?: EchartsTheme
+  theme: EchartsTheme
   isComputing?: boolean
   locale?: string
 }
