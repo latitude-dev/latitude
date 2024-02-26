@@ -144,8 +144,9 @@
       "group": "Logic",
       "pages": [
         "views/logic/if-else",
-        "views/logic/conditions",
-        "views/logic/loops"
+        "views/logic/await",
+        "views/logic/loops",
+        "views/logic/constants"
       ]
     },
     {

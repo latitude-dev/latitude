@@ -1,0 +1,17 @@
+---
+title: '{@const ... }'
+description: 'Assign a value to a constant in the view'
+---
+
+## Introduction
+
+The `@const` tag is a special type of block that is used to assign a value to a constant, in order to reference it later in the view. This is useful if you have to repeat the same value in multiple places in the view, and you want to avoid hardcoding it.
+
+## Basic usage
+
+```html
+{@const num = 42}
+<View>
+    <Text>The answer is: {num}</Text>
+</View>
+```
