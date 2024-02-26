@@ -1,5 +1,5 @@
 ---
-title: 'If / Else'
+title: '{#if ... }'
 description: 'Learn how to use if / else statements in your views'
 ---
 
@@ -13,10 +13,32 @@ Here's an example of how to use `if` and `else` statements in your views to disp
 
 ```html
 <View>
-    {#if query('sample')}
+    {#if url_param('user_token')}
         <Chart data={...} />
     {:else}
         <Text>No data available</Text>
     {/if}
 </View>
 ```
+
+## Using query results as conditions
+
+You can also use any query result to conditionally render content. To do so, use the `await` syntax to wait for the query to resolve before using the result.
+
+```html
+<View>
+    {#await run_query('sample')}
+        <Text>Loading...</Text>
+    {:then data}
+        {#if data.length > 0}
+            <Chart data={...} />
+        {:else}
+            <Text>No data available</Text>
+        {/if}
+    {:catch error}
+        <Text>Error: {error.message}</Text>
+    {/await}
+</View>
+```
+
+Learn more about how to use await in the [Await documentation](/views/logic/await).

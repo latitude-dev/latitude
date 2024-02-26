@@ -1,4 +1,41 @@
 ---
-title: 'Loops'
-description: 'description'
+title: '{#each ... }'
+description: 'Learn how to use the `each` block helper to iterate over an array or object'
 ---
+
+## Introduction
+
+The `each` block helper is used to iterate over an array or object. It is similar to the `for` loop in other programming languages.
+
+## Basic usage
+
+To use the `each` block helper, you need to pass an array or object to it. The `each` block helper will then iterate over the array or object and execute the block for each item.
+
+```html
+{#each [1, 2, 3] as |number|}
+  <p>{{number}}</p>
+{/each}
+```
+
+In the example above, the `each` block helper iterates over the array `[1, 2, 3]` and executes the block for each item. The block is passed the current item as an argument, which is then used to render the paragraph element.
+
+## Iterating over query results
+
+The `each` block helper is often used to iterate over the results of a query. For example, you might want to display a list of blog posts, or a table of users. Since we have to run the query first, similar to the `if` block helper, we can use the `await` block helper to wait for the query to complete before rendering the results.
+
+```html
+{#await run_query('users') then users}
+  {#each users as user}
+    <Card>
+      <h2>{{user.name}}</h2>
+      <p>{{user.bio}}</p>
+    </Card>
+  {/each}
+{/await}
+```
+
+In the example above, we use the `await` block helper to wait for the `run_query` function to complete. Once the query is complete, the `users` variable will contain the results, and we can use the `each` block helper to iterate over the results and render a `Card` component for each user.
+
+## Learn more
+
+To learn more about the `each` block helper, check out the [official Svelte documentation](https://svelte.dev/docs/logic-blocks#each).
