@@ -7,6 +7,5 @@ export default {
   },
   plugins: [typescript({
     exclude: ["**/__tests__", "**/*.test.ts"]
-  })],
-  external: ['apache-arrow'],
+  })]
 }

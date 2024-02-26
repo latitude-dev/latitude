@@ -1,18 +1,19 @@
+import { dts } from 'rollup-plugin-dts'
 import typescript from '@rollup/plugin-typescript'
-import terser from '@rollup/plugin-terser'
 
 const EXTERNAL_DEPENDENCIES = ['clsx', 'tailwind-merge', 'tailwind-variants']
 
 /** @type {import('rollup').RollupOptions}*/
-export default {
-  input: 'src/index.ts',
-  output: {
-    dir: 'dist',
-    format: 'esm',
+export default [
+  {
+    input: 'src/index.ts',
+    output: [{ file: 'dist/index.js' }],
+    external: EXTERNAL_DEPENDENCIES,
+    plugins: [typescript()],
   },
-  external: EXTERNAL_DEPENDENCIES,
-  plugins: [
-    typescript({ exclude: ['**/*.test.ts'] }),
-    terser(), // Minify JS
-  ],
-}
+  {
+    input: 'src/index.ts',
+    output: [{ file: 'dist/index.d.ts', format: 'es' }],
+    plugins: [dts()],
+  },
+]

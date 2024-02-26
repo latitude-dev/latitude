@@ -1,4 +1,4 @@
-const gaps = {
+export const gaps = {
   4: 'gap-4',
   8: 'gap-8',
   12: 'gap-12',
@@ -7,8 +7,6 @@ const gaps = {
   24: 'gap-24',
   28: 'gap-28',
   32: 'gap-32',
-};
+}
 
-export type Gap = keyof typeof gaps;
-
-export default gaps;
+export type Gap = keyof typeof gaps

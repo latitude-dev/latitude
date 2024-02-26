@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { resetMode, setMode } from "mode-watcher";
-  import { Moon, Sun } from "radix-icons-svelte"
-  import * as DropdownMenu from "../dropdown-menu";
-  import Button from "../button";
+  import { resetMode, setMode } from 'mode-watcher'
+  import { Moon, Sun } from 'radix-icons-svelte'
+  import * as DropdownMenu from '../dropdown-menu'
+  import Button from '../button/index.svelte'
 </script>
 
 <DropdownMenu.Root>
@@ -18,8 +18,10 @@
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content align="end">
-    <DropdownMenu.Item on:click={() => setMode("light")}>Light</DropdownMenu.Item>
-    <DropdownMenu.Item on:click={() => setMode("dark")}>Dark</DropdownMenu.Item>
+    <DropdownMenu.Item on:click={() => setMode('light')}
+      >Light</DropdownMenu.Item
+    >
+    <DropdownMenu.Item on:click={() => setMode('dark')}>Dark</DropdownMenu.Item>
     <DropdownMenu.Item on:click={() => resetMode()}>System</DropdownMenu.Item>
   </DropdownMenu.Content>
 </DropdownMenu.Root>

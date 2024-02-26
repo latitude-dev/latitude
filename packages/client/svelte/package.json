@@ -2,33 +2,28 @@
   "name": "@latitude-sdk/svelte",
   "version": "0.0.1",
   "scripts": {
-    "dev:dummyApp": "vite dev",
-    "test": "vitest",
-    "lint": "eslint . --max-warnings 0",
-    "tc": "tsc --noEmit",
-    "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
-    "storybook": "storybook dev -p 6006",
-    "prepare": "svelte-kit sync",
-    "package": "pnpm run prepare && svelte-package && publint",
+    "build": "pnpm run buildAndPackage",
     "build-storybook": "storybook build",
     "build:vite": "vite build",
-    "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
-    "buildAndPackage": "pnpm run build:vite && pnpm run package",
     "build:with-prebuild-not-used-yet": "pnpm run prebuild && pnpm run buildAndPackage",
-    "build": "pnpm run buildAndPackage",
-    "prepublishOnly": "pnpm run package"
+    "buildAndPackage": "pnpm run build:vite && pnpm run package",
+    "dev": "vite dev",
+    "lint": "eslint . --max-warnings 0",
+    "package": "pnpm run prepare && svelte-package && publint",
+    "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
+    "prepare": "svelte-kit sync",
+    "prepublishOnly": "pnpm run package",
+    "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
+    "storybook": "storybook dev -p 6006",
+    "tc": "tsc --noEmit",
+    "test": "vitest --run"
   },
   "type": "module",
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
     ".": {
-      "types": "./src/lib/index.ts",
-      "import": "./src/lib/index.ts"
-    },
-    "./*": {
-      "types": "./src/lib/ui/*/index.ts",
-      "import": "./src/lib/ui/*/index.ts",
-      "svelte": "./src/lib/ui/*/index.svelte"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -50,14 +45,14 @@
   },
   "devDependencies": {
     "@latitude-sdk/eslint-config": "workspace:*",
-    "@storybook/addon-essentials": "^7.6.16",
-    "@storybook/addon-interactions": "^7.6.16",
-    "@storybook/addon-links": "^7.6.16",
+    "@storybook/addon-essentials": "^7.6.17",
+    "@storybook/addon-interactions": "^7.6.17",
+    "@storybook/addon-links": "^7.6.17",
     "@storybook/addon-svelte-csf": "^4.1.1",
-    "@storybook/blocks": "^7.6.16",
-    "@storybook/svelte": "^7.6.16",
-    "@storybook/sveltekit": "^7.6.16",
-    "@storybook/test": "^7.6.16",
+    "@storybook/blocks": "^7.6.17",
+    "@storybook/svelte": "^7.6.17",
+    "@storybook/sveltekit": "^7.6.17",
+    "@storybook/test": "^7.6.17",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/package": "^2.0.0",
@@ -71,7 +66,7 @@
     "publint": "^0.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "storybook": "^7.6.16",
+    "storybook": "^7.6.17",
     "svelte": "^4.2.7",
     "svelte-check": "^3.6.0",
     "svelte-preprocess": "^5.1.3",

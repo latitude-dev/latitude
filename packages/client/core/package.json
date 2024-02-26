@@ -14,11 +14,11 @@
     "test:watch": "vitest"
   },
   "type": "module",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./css/all.css": "./dist/css/all.css",
     "./css/components/*.css": "./dist/css/components/*.css",
@@ -26,9 +26,8 @@
     "./theme/preset": "./tailwind.config.js"
   },
   "files": [
-    "tailwind.config.js",
-    "src",
     "dist",
+    "tailwind.config.js",
     "!dist/**/*.test.*"
   ],
   "dependencies": {
@@ -39,16 +38,16 @@
   "devDependencies": {
     "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",
-    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "postcss-load-config": "^5.0.2",
-    "prettier-plugin-tailwindcss": "^0.5.9",
-    "vitest": "^1.2.2",
     "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "rollup": "^4.10.0",
+    "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-postcss": "^4.0.2",
-    "tailwindcss": "^3.3.6"
+    "tailwindcss": "^3.3.6",
+    "vitest": "^1.2.2"
   }
 }
