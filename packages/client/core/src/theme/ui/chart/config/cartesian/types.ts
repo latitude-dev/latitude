@@ -49,7 +49,7 @@ export type yAxisFormat = CommonAxisFormat & {
 
 export type xAxis = xAxisFormat | xAxisFormat[]
 export type yAxis = yAxisFormat | yAxisFormat[]
-type ScatterStyle = 'circle' | 'emptyCircle'
+export type ScatterStyle = 'circle' | 'emptyCircle'
 type ScatterConfig = {
   column?: string
   style?: ScatterStyle
@@ -67,9 +67,9 @@ export type ConfigProps = {
 export type EchartsCartesianSeriesOption<T extends ChartType> = T extends 'line'
   ? LineSeriesOption
   : T extends 'area'
-  ? LineSeriesOption
-  : T extends 'bar'
-  ? BarSeriesOption
-  : T extends 'scatter'
-  ? ScatterSeriesOption
-  : LineSeriesOption
+    ? LineSeriesOption
+    : T extends 'bar'
+      ? BarSeriesOption
+      : T extends 'scatter'
+        ? ScatterSeriesOption
+        : LineSeriesOption

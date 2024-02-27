@@ -141,5 +141,5 @@ export const testData = {
     axisPointer: { type: 'cross' },
   },
   legend: { type: 'scroll', show: false, align: 'left', left: 40 },
-  grid: { containLabel: true, left: 40, right: 0, top: 8, bottom: 32 },
+  grid: { containLabel: true, left: 40, right: 8, top: 8, bottom: 32 },
 }

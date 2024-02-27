@@ -4,6 +4,9 @@ export enum ChartTheme {
   latitude = 'latitude',
 }
 
-export const THEMES: Record<ChartTheme, object> = {
+type ThemeObject = object & {
+  visualMapColor: string[]
+}
+export const THEMES: Record<ChartTheme, ThemeObject> = {
   latitude,
 }

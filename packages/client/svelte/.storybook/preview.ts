@@ -7,6 +7,7 @@ import '@latitude-sdk/client/latitude.css'
 const preview: Preview = {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
+    deepControls: { enabled: true },
     controls: {
       matchers: {
         color: /(background|color)$/i,

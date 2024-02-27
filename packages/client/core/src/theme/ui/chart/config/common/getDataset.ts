@@ -21,19 +21,19 @@ function calculateRowInPercentage(row: DBSourceRow) {
 type Value = string | number
 type Props = {
   dataset: Dataset
-  xColumnName: string
-  xAxisType: AxisType
-  usePercentage: boolean
+  column?: string
+  axisType?: AxisType
+  usePercentage?: boolean
 }
 function calculateDatasetSource({
   dataset,
-  xColumnName,
-  xAxisType,
+  column,
+  axisType,
   usePercentage,
 }: Props) {
-  const forceSort = xAxisType === AxisType.time
+  const forceSort = axisType === AxisType.time
   const forceSortIndex = forceSort
-    ? dataset.fields.findIndex((field) => field === xColumnName)
+    ? dataset.fields.findIndex((field) => field === column)
     : undefined
 
   // Sort manually by date if axis scale is Temporal
