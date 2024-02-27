@@ -6,11 +6,13 @@ const EXTERNAL_DEPENDENCIES = [
   'tailwind-merge',
   'tailwind-variants',
   'zustand',
+  'zustand/vanilla',
   'lodash/flatten',
   'lodash/compact',
   'lodash/format',
   'lodash/isString',
   'date-fns/format',
+  '@latitude-sdk/query_result',
 ]
 
 /** @type {import('rollup').RollupOptions}*/
