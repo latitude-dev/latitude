@@ -2,3 +2,80 @@
 title: 'Text'
 description: 'description'
 ---
+
+## Introduction
+
+The `<Text>` component is used to render text in your data app. It lets you easily display and customize your text content.
+
+## Basic usage
+
+To use the `<Text>` component, you can just include it in your views and pass the text you want to display as a child of the component.
+
+```html
+<Text>
+  Hello, world!
+</Text>
+```
+
+You can use our scale of predefined styles to quickly customize your text. Here's an example:
+
+```html
+<Text.H1>
+  Hello, world!
+</Text>
+```
+
+This table shows the predefined styles available for the `<Text>` component, along with their corresponding font size and line height:
+
+| Style | Settings                               |
+|-------|----------------------------------------|
+| `H1`  | Font size 36px, Line height 48px       |
+| `H2`  | Font size 26px, Line height 40px       |
+| `H3`  | Font size 20px, Line height 32px       |
+| `H4`  | Font size 16px, Line height 24px       |
+| `H5`  | Font size 14px, Line height 20px       |
+| `H6`  | Font size 12px, Line height 16px       |
+
+## Advanced usage
+
+Apart from the predefined styles, you can also customize the text using the following properties:
+
+| Property | Options | Description |
+|----------|---------|-------------|
+| `color`  | `primary`, `secondary`, `destructive`, `accent`, `background`, `foreground`, `link`, `inherit` | Sets the color of the text. |
+| `size`   | `h1`, `h2`, `h3`, `h4`, `h5`, `h6` | Sets the size of the text. |
+| `family` | `sans`, `mono` | Sets the font family of the text. |
+| `weight` | `normal`, `medium`, `semibold`, `bold` | Sets the font weight of the text. |
+| `spacing` | `normal`, `wide` | Sets the letter spacing of the text. |
+| `align`  | `left`, `center`, `right` | Sets the text alignment. |
+| `wordBreak` | `normal`, `breakWord`, `breakAll` | Sets the word break behavior. |
+| `whiteSpace` | `normal`, `nowrap`, `pre`, `preLine`, `preWrap` | Sets the white space behavior. |
+
+Here's an example of how you can use these properties:
+
+```html
+<Text
+  color="primary"
+  size="h1"
+  family="sans"
+  weight="bold"
+  spacing="wide"
+  align="center"
+  wordBreak="breakAll"
+  whiteSpace="preWrap"
+>
+  Hello, world!
+</Text>
+```
+
+## Custom styles
+
+If you want to further customize the text, you can use the `class` property to pass your own styles using Tailwind. Here's an example:
+
+```html
+<Text class="text-4xl font-bold text-primary">
+  Hello, world!
+</Text>
+```
+
+For a guide on how to use custom styles with Tailwind, check out the [Component styles](/views/customization/component-styles) page.
