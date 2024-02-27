@@ -1,23 +1,29 @@
-import { writable } from 'svelte/store';
-import type { Readable, Writable } from 'svelte/store';
-import { useFetchQuery } from './queries';
-import { browser } from '$app/environment';
+import { writable } from 'svelte/store'
+import type { Readable, Writable } from 'svelte/store'
+import { useFetchQuery } from './queries'
+import { browser } from '$app/environment'
 
 type QueryResult = {
   [key: string]: unknown
 }[]
 
-export function runQuery(queryPath: string, params: Record<string, unknown> = {}): Readable<Promise<QueryResult>> {
-  const pendingPromise = () => new Promise<QueryResult>(() => { })
-  const resolvedPromise = (value: QueryResult) => new Promise<QueryResult>((resolve) => resolve(value));
-  const rejectedPromise = (reason?: Error) => new Promise<QueryResult>((_, reject) => reject(reason));
+export function runQuery(
+  queryPath: string,
+  params: Record<string, unknown> = {},
+): Readable<Promise<QueryResult>> {
+  const pendingPromise = () => new Promise<QueryResult>(() => {})
+  const resolvedPromise = (value: QueryResult) =>
+    new Promise<QueryResult>((resolve) => resolve(value))
+  const rejectedPromise = (reason?: Error) =>
+    new Promise<QueryResult>((_, reject) => reject(reason))
 
-  const promiseStore: Writable<Promise<QueryResult>> = writable(pendingPromise())
+  const promiseStore: Writable<Promise<QueryResult>> =
+    writable(pendingPromise())
 
   if (browser) {
     useFetchQuery(queryPath, params).subscribe(($queryState) => {
       if ($queryState.isLoading) {
-        return promiseStore.set(pendingPromise());
+        return promiseStore.set(pendingPromise())
       }
 
       if ($queryState.error) {
@@ -30,5 +36,5 @@ export function runQuery(queryPath: string, params: Record<string, unknown> = {}
 
   return {
     subscribe: promiseStore.subscribe,
-  };
+  }
 }
