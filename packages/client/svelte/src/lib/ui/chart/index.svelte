@@ -47,7 +47,7 @@
     CanvasRenderer,
   ])
 
-  import type { ChartableProps} from "./types";
+  import type { ChartableProps } from './types'
 
   // PROPS
   export let options: $$Props['options']
@@ -58,23 +58,21 @@
 
   export function chartable(
     element: HTMLElement,
-    { options, theme}: ChartableProps
+    { options, theme }: ChartableProps
   ) {
-    let resizeObserver;
-    const echartsInstance = echarts.init(
-      element, theme, { renderer: 'canvas' }
-    )
+    let resizeObserver: ResizeObserver | null = null
+    const echartsInstance = echarts.init(element, theme, { renderer: 'canvas' })
     echartsInstance.setOption(options)
 
     const onWindowResize = debounce(() => {
-      echartsInstance.resize({ animation: { duration: 400, } })
+      echartsInstance.resize({ animation: { duration: 400 } })
     }, 100)
 
     if (window.ResizeObserver && element) {
-      resizeObserver = new ResizeObserver(onWindowResize);
-      resizeObserver.observe(element);
+      resizeObserver = new ResizeObserver(onWindowResize)
+      resizeObserver.observe(element)
     } else {
-      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('resize', onWindowResize)
     }
 
     onWindowResize()
@@ -84,23 +82,23 @@
       },
       destroy() {
         if (resizeObserver) {
-          resizeObserver.unobserve(element);
+          resizeObserver.unobserve(element)
         } else {
-          window.removeEventListener('resize', onWindowResize);
+          window.removeEventListener('resize', onWindowResize)
         }
         echartsInstance.dispose()
       },
     }
   }
-  import { type Props  } from "./types";
-  type $$Props = Props;
+  import { type Props } from './types'
+  type $$Props = Props
   const { cn } = client.utils
 </script>
 
-<div class={cn('w-full h-full', { 'animate-pulse': isComputing })}>
+<div class={cn('h-full w-full', { 'animate-pulse': isComputing })}>
   <div
     use:chartable={{ theme, options }}
-    class="min-w-full min-h-full"
+    class="min-h-full min-w-full"
     style="width: {width}px; height: {height}px"
   />
 </div>

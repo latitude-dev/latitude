@@ -9,7 +9,7 @@ type QueryRequest = {
 
 export const createQueryKey = (
   queryPath: string,
-  params: Record<string, unknown>,
+  params: Record<string, unknown>
 ): string => {
   const hashedParams = Object.keys(params)
     .sort()
@@ -33,7 +33,7 @@ interface StoreState {
 export const store = createStore<StoreState>((set, get) => {
   const performQueryFetch = async (
     queryKey: string,
-    fetchFn: () => Promise<QueryResult>,
+    fetchFn: () => Promise<QueryResult>
   ) => {
     set((state) => ({
       queries: {
@@ -78,7 +78,7 @@ export const store = createStore<StoreState>((set, get) => {
       performQueryFetch(queryKey, async () => {
         const response = await api.get<string>(
           `api/queries/${queryPath}`,
-          params,
+          params
         )
         return QueryResult.fromJSON(response)
       })
@@ -88,7 +88,7 @@ export const store = createStore<StoreState>((set, get) => {
       performQueryFetch(queryKey, async () => {
         const response = await api.get<string>(
           `api/queries/${queryPath}`,
-          params,
+          params
         ) // TODO: Add force parameter or header when backend cache is implemented
         return QueryResult.fromJSON(response)
       })
@@ -98,7 +98,7 @@ export const store = createStore<StoreState>((set, get) => {
 
 export const useFetchQuery = (
   queryPath: string,
-  params: Record<string, unknown> = {},
+  params: Record<string, unknown> = {}
 ) => {
   const queryKey = createQueryKey(queryPath, params)
   const state = store.getState()
@@ -112,7 +112,7 @@ export const useFetchQuery = (
 
 export const useRunQuery = (
   queryPath: string,
-  params: Record<string, unknown>,
+  params: Record<string, unknown>
 ) => {
   store.getState().forceRefetch({ queryPath, params })
 }
