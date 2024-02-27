@@ -48,4 +48,9 @@ export default class QueryResult {
       },
     )
   }
+
+  static fromJSON(json: string) {
+    const { fields, rows, rowCount } = JSON.parse(json)
+    return new QueryResult({ fields, rows, rowCount })
+  }
 }
