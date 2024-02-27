@@ -49,6 +49,15 @@ export default class QueryResult {
     )
   }
 
+  toArray() {
+    return this.rows.map((row: unknown[]) =>
+      row.reduce((acc: Record<string, unknown>, value, i) => {
+        acc[this.fields[i]!.name] = value
+        return acc
+      }, {} as { [key: string]: unknown }),
+    )
+  }
+  
   static fromJSON(json: string) {
     const { fields, rows, rowCount } = JSON.parse(json)
     return new QueryResult({ fields, rows, rowCount })
