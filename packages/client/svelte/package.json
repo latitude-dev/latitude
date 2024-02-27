@@ -36,6 +36,8 @@
   "dependencies": {
     "@latitude-sdk/client": "workspace:*",
     "bits-ui": "^0.18.1",
+    "echarts": "^5.5.0",
+    "lodash": "^4.17.21",
     "mode-watcher": "^0.2.1",
     "radix-icons-svelte": "^1.2.1",
     "svelte-persisted-store": "^0.9.1"
@@ -57,9 +59,11 @@
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/package": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@types/echarts": "^4.9.22",
     "@types/eslint": "8.56.0",
     "eslint-plugin-jsonc": "^2.13.0",
     "eslint-plugin-local-rules": "^2.0.1",
+    "eslint-plugin-storybook": "^0.6.15",
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
     "prettier-plugin-tailwindcss": "^0.5.9",
