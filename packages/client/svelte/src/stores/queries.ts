@@ -18,9 +18,8 @@ export const useFetchQuery = (
 
   if (!store.getState().queries[queryKey]) {
     store.getState().fetch({ queryPath, params })
-  } else {
-    queryResult.set(store.getState().queries[queryKey])
   }
+  queryResult.set(store.getState().queries[queryKey])
 
   return {
     subscribe: queryResult.subscribe,
