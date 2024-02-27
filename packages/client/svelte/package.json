@@ -23,7 +23,7 @@
     "./tailwind.preset": "./tailwind.config.js",
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "svelte": "./dist/index.js"
     }
   },
   "files": [

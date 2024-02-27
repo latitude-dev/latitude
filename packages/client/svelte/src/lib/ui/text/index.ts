@@ -1,9 +1,25 @@
+import Text from './Text.svelte'
 import H1 from './H1.svelte'
 import H2 from './H2.svelte'
 import H3 from './H3.svelte'
 import H4 from './H4.svelte'
-import Mono from './Mono.svelte'
+import H5 from './H5.svelte'
+import H6 from './H6.svelte'
 
-export { default as Text } from './Text.svelte'
+type ComposedComponent = typeof Text & {
+  H1: typeof H1
+  H2: typeof H2
+  H3: typeof H3
+  H4: typeof H4
+  H5: typeof H5
+  H6: typeof H6
+}
 
-export default { H1, H2, H3, H4, Mono }
+;(Text as ComposedComponent).H1 = H1
+;(Text as ComposedComponent).H2 = H2
+;(Text as ComposedComponent).H3 = H3
+;(Text as ComposedComponent).H4 = H4
+;(Text as ComposedComponent).H5 = H5
+;(Text as ComposedComponent).H6 = H6
+
+export default Text as ComposedComponent

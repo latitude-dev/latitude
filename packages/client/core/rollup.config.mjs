@@ -11,6 +11,7 @@ const EXTERNAL_DEPENDENCIES = [
   'lodash/compact',
   'lodash/format',
   'lodash/isString',
+  'lodash/isNaN',
   'date-fns/format',
   '@latitude-sdk/query_result',
 ]

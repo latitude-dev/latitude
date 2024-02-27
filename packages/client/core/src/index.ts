@@ -11,3 +11,14 @@ export type CartesianChartProps = CartesianChartPropsOriginal
 export type PieChartProps = PieChartPropsOriginal
 export type FunnelChartProps = FunnelChartPropsOriginal
 export type ScatterChartProps = ScatterChartPropsOriginal
+export type {
+  FontSize,
+  FontWeight,
+  LetterSpacing,
+  TextAlign,
+  WordBreak,
+  WhiteSpace,
+  LineHeight,
+  FontFamily,
+  TextProps,
+} from './theme/ui/text'
