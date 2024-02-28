@@ -1,6 +1,8 @@
 import { createStore } from 'zustand/vanilla'
 import { api } from '../data/api'
-import QueryResult from '@latitude-sdk/query_result'
+import QueryResult, {
+  type QueryResultPayload,
+} from '@latitude-sdk/query_result'
 
 type QueryRequest = {
   queryPath: string
@@ -9,7 +11,7 @@ type QueryRequest = {
 
 export const createQueryKey = (
   queryPath: string,
-  params: Record<string, unknown>
+  params: Record<string, unknown>,
 ): string => {
   const hashedParams = Object.keys(params)
     .sort()
@@ -33,7 +35,7 @@ interface StoreState {
 export const store = createStore<StoreState>((set, get) => {
   const performQueryFetch = async (
     queryKey: string,
-    fetchFn: () => Promise<QueryResult>
+    fetchFn: () => Promise<QueryResult>,
   ) => {
     set((state) => ({
       queries: {
@@ -76,21 +78,23 @@ export const store = createStore<StoreState>((set, get) => {
       if (get().queries[queryKey]) return
 
       performQueryFetch(queryKey, async () => {
-        const response = await api.get<string>(
+        const response = await api.get<QueryResultPayload>(
           `api/queries/${queryPath}`,
-          params
+          params,
         )
-        return QueryResult.fromJSON(response)
+        return new QueryResult(response)
       })
     },
     forceRefetch: async ({ queryPath, params }) => {
       const queryKey = createQueryKey(queryPath, params || {})
       performQueryFetch(queryKey, async () => {
-        const response = await api.get<string>(
+        // TODO: Add force parameter or header when backend cache is implemented
+        const response = await api.get<QueryResultPayload>(
           `api/queries/${queryPath}`,
-          params
-        ) // TODO: Add force parameter or header when backend cache is implemented
-        return QueryResult.fromJSON(response)
+          params,
+        )
+
+        return new QueryResult(response)
       })
     },
   }
@@ -98,7 +102,7 @@ export const store = createStore<StoreState>((set, get) => {
 
 export const useFetchQuery = (
   queryPath: string,
-  params: Record<string, unknown> = {}
+  params: Record<string, unknown> = {},
 ) => {
   const queryKey = createQueryKey(queryPath, params)
   const state = store.getState()
@@ -112,7 +116,7 @@ export const useFetchQuery = (
 
 export const useRunQuery = (
   queryPath: string,
-  params: Record<string, unknown>
+  params: Record<string, unknown>,
 ) => {
   store.getState().forceRefetch({ queryPath, params })
 }

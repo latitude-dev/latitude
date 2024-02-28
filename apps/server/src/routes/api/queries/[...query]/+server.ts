@@ -22,7 +22,7 @@ export async function GET({
         params: queryParams,
       })
 
-      return json(queryResult.toJSON())
+      return json(queryResult.payload())
     } catch (e) {
       // eslint-disable-next-line
       // @ts-ignore

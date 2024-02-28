@@ -2,7 +2,6 @@
   "name": "@latitude-sdk/mysql-connector",
   "version": "0.0.1",
   "description": "MySQL connector for Latitude",
-  "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -10,6 +9,7 @@
     "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "keywords": [],

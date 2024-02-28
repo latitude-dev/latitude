@@ -58,7 +58,7 @@ export class MysqlConnector extends BaseConnector {
             resolve(
               new QueryResult({
                 rowCount: results.length,
-                fields: fields?.map(
+                fields: (fields ?? [])?.map(
                   (field) =>
                     ({
                       name: field.name,

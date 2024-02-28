@@ -12,45 +12,41 @@ export type Field = {
   name: string
   type: DataType
 }
+export type QueryResultPayload = {
+  fields: Field[]
+  rows: unknown[][]
+  rowCount: number
+}
 
 export type QueryResultArray = {
   [key: string]: unknown
 }[]
 
 export default class QueryResult {
-  fields: Field[] = []
-  rowCount: number = 0
-  rows: unknown[][] = []
+  fields: Field[]
+  rowCount: number
+  rows: unknown[][]
 
-  constructor({
-    fields = [],
-    rowCount = 0,
-    rows = [],
-  }: {
-    fields?: Field[]
-    rowCount?: number
-    rows?: unknown[][]
-  }) {
+  constructor({ fields = [], rowCount = 0, rows = [] }: QueryResultPayload) {
     this.fields = fields
     this.rows = rows
     this.rowCount = rowCount
   }
 
-  toJSON() {
-    return JSON.stringify(
-      {
-        fields: this.fields,
-        rows: this.rows,
-        rowCount: this.rowCount,
-      },
-      (_, value) => {
-        if (typeof value === 'bigint') {
-          return value.toString()
-        } else {
-          return value
-        }
-      },
-    )
+  payload() {
+    return {
+      fields: this.fields,
+      rows: this.rows.map((row) => {
+        return row.map((value) => {
+          if (typeof value === 'bigint') {
+            return value.toString()
+          } else {
+            return value
+          }
+        })
+      }),
+      rowCount: this.rowCount,
+    }
   }
 
   toArray() {
@@ -63,10 +59,5 @@ export default class QueryResult {
         {} as { [key: string]: unknown },
       ),
     )
-  }
-
-  static fromJSON(json: string) {
-    const { fields, rows, rowCount } = JSON.parse(json)
-    return new QueryResult({ fields, rows, rowCount })
   }
 }
