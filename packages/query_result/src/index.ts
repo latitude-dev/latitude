@@ -13,6 +13,10 @@ export type Field = {
   type: DataType
 }
 
+export type QueryResultArray = {
+  [key: string]: unknown
+}[]
+
 export default class QueryResult {
   fields: Field[] = []
   rowCount: number = 0
@@ -51,13 +55,16 @@ export default class QueryResult {
 
   toArray() {
     return this.rows.map((row: unknown[]) =>
-      row.reduce((acc: Record<string, unknown>, value, i) => {
-        acc[this.fields[i]!.name] = value
-        return acc
-      }, {} as { [key: string]: unknown }),
+      row.reduce(
+        (acc: Record<string, unknown>, value, i) => {
+          acc[this.fields[i]!.name] = value
+          return acc
+        },
+        {} as { [key: string]: unknown },
+      ),
     )
   }
-  
+
   static fromJSON(json: string) {
     const { fields, rows, rowCount } = JSON.parse(json)
     return new QueryResult({ fields, rows, rowCount })
