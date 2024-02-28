@@ -1,4 +1,4 @@
-import { generateCartesianConfig } from '..'
+import generateCartesianConfig from '../cartesian'
 import { type Props } from '../cartesian'
 import { ScatterStyle } from '../cartesian/types'
 

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Text from './Text.svelte';
-  import type { Props } from './props.ts';
+  import Text from './Text.svelte'
 
-  export let restProps = $$restProps as Omit<Props, 'size'>;
+  import type { theme } from '@latitude-sdk/client'
+
+  export let restProps = $$restProps as theme.ui.text.HeaderProps
 </script>
 
-<!-- @ts-ignore -->
-<Text size="h2" {...restProps}>
+<Text size="h2" leading="h2" as="h2" {...restProps}>
   <slot />
 </Text>
