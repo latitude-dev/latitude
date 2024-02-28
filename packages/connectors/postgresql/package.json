@@ -2,7 +2,6 @@
   "name": "@latitude-sdk/postgresql-connector",
   "version": "0.0.1",
   "description": "PostgreSQL connector for Latitude",
-  "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
@@ -10,6 +9,9 @@
     "build": "rollup -c",
     "prettier": "prettier --write src/**/*.ts"
   },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "@latitude-sdk/eslint-config": "workspace:*",
     "@latitude-sdk/typescript": "workspace:*",

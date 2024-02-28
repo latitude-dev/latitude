@@ -1,9 +1,9 @@
 import QueryResult from '@latitude-sdk/query_result'
 import { DataType } from '@latitude-sdk/query_result'
-import { type ResolvedParam } from '..'
+import { type ResolvedParam, type CompiledQuery } from './types'
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { CompileError } from '@latitude-sdk/sql-compiler'
-import { BaseConnector, CompiledQuery } from '.'
+import { BaseConnector } from './index'
 
 vi.mock('fs', (importOriginal) => ({
   ...importOriginal(),
@@ -293,8 +293,7 @@ describe('runQuery function', async () => {
 
   it('runs a subquery and returns it as a value', async () => {
     const connector = new MockConnector()
-    const mainQuery =
-      "{result = runQuery('referenced_query')} {result.length}"
+    const mainQuery = "{result = runQuery('referenced_query')} {result.length}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
