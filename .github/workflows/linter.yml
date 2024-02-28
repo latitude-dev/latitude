@@ -74,5 +74,5 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      # - name: TypeScript
-      # run: pnpm tc
+      - name: TypeScript
+        run: pnpm tc
