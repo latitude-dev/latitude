@@ -1,3 +1,18 @@
+<script context="module" lang="ts">
+  type EchartsTheme = object
+  type EchartsOptions = ECBasicOption
+  type Locale = 'en' | 'es'
+
+  export type Props = {
+    options: EchartsOptions
+    width: number
+    height: number
+    theme: EchartsTheme
+    isComputing?: boolean
+    locale: Locale
+  }
+</script>
+
 <script lang="ts">
   import debounce from 'lodash/debounce'
   import * as echarts from 'echarts/core'
@@ -50,24 +65,13 @@
     CanvasRenderer,
   ])
 
-  type EchartsOptions = ECBasicOption
-  type EchartsTheme = object
-  export type Props = {
-    options: EchartsOptions
-    width: number
-    height: number
-    theme?: EchartsTheme
-    isComputing?: boolean
-    locale?: string
-  }
-
   type ChartableProps = {
     options: EchartsOptions
     theme: EchartsTheme
     locale: 'en' | 'es'
   }
 
-  type $$Props = Props;
+  type $$Props = Props
 
   // PROPS
   export let options: $$Props['options']
@@ -83,10 +87,11 @@
     element: HTMLElement,
     { options, theme, locale }: ChartableProps
   ) {
-    let resizeObserver;
-    const echartsInstance = echarts.init(
-      element, theme, { renderer: 'canvas', locale }
-    )
+    let resizeObserver: ResizeObserver
+    const echartsInstance = echarts.init(element, theme, {
+      renderer: 'canvas',
+      locale,
+    })
     echartsInstance.setOption(options)
 
     const onWindowResize = debounce(() => {
@@ -120,7 +125,7 @@
 <div class={cn('h-full w-full', { 'animate-pulse': isComputing })}>
   <div
     use:chartable={{ theme, options, locale }}
-    class="min-w-full min-h-full"
+    class="min-h-full min-w-full"
     style="width: {width}px; height: {height}px"
   />
 </div>
