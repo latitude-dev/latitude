@@ -5,11 +5,12 @@ import { ScatterStyle } from '../cartesian/types'
 export type ScatterChartProps = Omit<Props, 'config'> & {
   config: Omit<Props['config'], 'scatterConfig'>
   sizeColumn: string
-  style: ScatterStyle
+  style?: ScatterStyle
 }
+
 export default function generateScatterChart({
   sizeColumn,
-  style,
+  style = 'circle',
   config,
   ...rest
 }: ScatterChartProps) {

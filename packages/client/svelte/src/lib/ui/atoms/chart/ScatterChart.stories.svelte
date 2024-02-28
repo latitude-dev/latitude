@@ -1,22 +1,26 @@
 <script context="module" lang="ts">
-  import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
-  import ScatterChart from './ScatterChart.svelte'
+  import type { Meta } from '@storybook/svelte'
+  import { Story, Template } from '@storybook/addon-svelte-csf'
+  import ScatterChart, { type Props } from './ScatterChart.svelte'
 
-  export const meta: Meta = {
+  type Args = Props & {
+    'config.showLegend': boolean
+  }
+  export const meta = {
     title: 'Charts/ScatterChart',
     component: ScatterChart,
     argTypes: {
       yTitle: { control: 'text' },
       xTitle: { control: 'text' },
+      style: { control: 'select', options: ['circle', 'emptyCircle'] },
       'config.showLegend': { control: 'boolean' },
     },
     args: {
       yTitle: 'Y Column',
-      xTitle: 'X Column',
-      'config.showLegend': false,
+      xTitle: 'X Column'
     },
     parameters: { layout: 'centered' }
-  }
+  } satisfies Meta<Args>
 </script>
 
 <Template id='scatter' let:args>

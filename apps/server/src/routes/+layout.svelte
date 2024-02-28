@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { theme } from '@latitude-sdk/client'
   import { ThemeProvider } from '@latitude-sdk/svelte'
   import { updateViewParamsFromUrl } from '$lib/stores/viewParams'
@@ -9,6 +9,6 @@
   import '../assets/app.css'
 </script>
 
-<ThemeProvider {defaultTheme} />
+<ThemeProvider theme={defaultTheme} />
 
 <slot />
