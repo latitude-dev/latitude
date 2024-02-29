@@ -1,4 +1,72 @@
 ---
 title: 'If / Else'
-description: 'description'
+description: 'Adjust your SQL code dynamically according to conditions'
 ---
+
+The Latitude logic supports conditional execution through the use of if and else, allowing SQL code to be included only when certain conditions are met.
+
+## Syntax
+
+The syntax of these conditions is as follows:
+
+### Simple Conditions
+Includes the content only if the condition is true, without an alternative.
+
+```
+{#if expression}
+    ...
+{/if}
+```
+
+### Conditions with Else
+Allow two content alternatives. If the condition is not true, the content defined after `{:else}` will be included.
+   
+```
+{#if expression}
+    ...
+{:else}
+    ...
+{/if}
+```
+
+### Multiple Conditions
+Allow unlimited content alternatives. It evaluates conditions cascading until one is met. If none is met, it returns the content defined after `{:else}`.
+
+```
+{#if expression}
+    ...
+{:else if expression}
+    ...
+{:else if expression}
+    ...
+{:else}
+    ...
+{/if}
+```
+
+## Expressions
+
+Expressions are crucial for determining the logic within if and else constructs. They can evaluate variables, constants, or any combination of the two using a variety of operators.
+
+### Values
+
+Values can be inside expressions:
+
+- **Literals:** Such as numeric values (`123`), strings (`'Hello'`), or boolean values (`true`, `false`).
+- **Variables/Parameters:** References to values passed to the template. For example, `userId` could be a variable representing a user's ID.
+
+### Operators
+
+Expressions are compared with operators, which include the following options:
+
+- **Equality and Inequality:**
+  - `==`: Equal to
+  - `!=`: Not equal to
+- **Greater Than or Less Than:**
+  - `>`: Greater than
+  - `<`: Less than
+  - `<=`: Less than or equal to
+  - `>=`: Greater than or equal to
+- **Multiple conditions:**
+  - `&&`: Logical AND to concatenate multiple conditions in the same expression. **They must all be true to continue**.
+  - `||`: Logical OR to concatenate multiple conditions in the same expression. **At least one of them must be true to continue**.

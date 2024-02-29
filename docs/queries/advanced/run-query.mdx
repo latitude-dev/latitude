@@ -1,4 +1,60 @@
 ---
 title: 'Run Query'
-description: 'description'
+description: 'Dynamically executes SQL queries, ideal for generating reports with runtime-known values.'
 ---
+
+
+The `runQuery` function allows you to dynamically execute SQL queries based on the results of a previous query. This functionality is particularly useful when you need to dynamically generate column names or perform operations based on values that are not known until runtime.
+
+## Syntax
+
+The syntax is `runQuery` + `('query_file_name_to_run')`. This would return the whole query.
+
+To access a specific column within the query, you can wrap it in a variable
+``` 
+{results = runQuery('payment_methods')}
+```
+Then you can access a specific row with:
+ ```
+{#each row in results}
+    {payment_type = row['payment_method']}
+{/each}
+```
+
+
+### Example
+
+Consider a scenario where you have a `payments` table and you want to generate a table that shows the total amount for each payment method, along with a column for the total amount. The steps would be as follows:
+
+1. **Identify Different Payment Methods:**
+
+```sql
+-- payment_methods.sql
+SELECT DISTINCT payment_method FROM payments
+ORDER BY 1
+```
+
+2. **Generate Report Based on Distinct Payment Methods:**
+
+Generate a report based on distinct payment methods:
+Using the results of the first query, `runQuery` is called to dynamically generate a second SQL query. This second query aggregates the payment amounts by each different payment method obtained from the first query.
+<Note>Remember to enclose any latitude logic in curly braces `{ }`</Note>
+
+```sql
+-- my_model.sql
+{results = runQuery('payment_methods')}   -- Here we put in a variable the results from the payment_methods query
+SELECT
+  order_id,
+  {#each row in results}    -- We create a loop to add the specfied SQL code for each row after run payment_methods
+    {payment_type = row['payment_method']}    -- We create a variable that contain the value from payment_method column
+    SUM(
+        CASE WHEN payment_method = {payment_type}    -- We compare the current value of the loop with the
+        THEN amount END
+    ) AS {payment_type}_amount,
+  {/each}
+  SUM(amount) AS total_amount
+FROM payments
+GROUP BY 1
+```
+
+This approach is essential for creating dynamic SQL queries that adapt based on actual database content, which is not directly possible with standard SQL due to its static nature.

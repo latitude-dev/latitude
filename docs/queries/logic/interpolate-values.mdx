@@ -1,0 +1,23 @@
+---
+title: 'Interpolate Values'
+description: 'Insert values dynamically into SQL queries'
+---
+
+Interpolating values allows you to reuse the same value or change it dynamically along the entire SQL query.
+
+## Syntax
+
+### Variable Interpolation
+
+```
+ WHERE company = '{'companyFiltered'}'
+ ---
+ WHERE company = 'latitude'
+ ```
+
+## Parametization
+To avoid SQL injections, queries are parametized. You can skip the parametization with `unsafeParam`.
+
+```
+SELECT {'latitude'} AS {unsafeParam('column_name')}
+```

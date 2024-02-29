@@ -1,4 +1,108 @@
 ---
 title: 'Loops'
-description: 'description'
+description: 'Learn how to use loops to repeat SQL code from a list of elements.'
+
 ---
+
+Loops allow you to iterate over items in a collection, executing a predefined code template for each item.
+
+## Syntax
+
+The general syntax for defining a loop is as follows:
+
+```
+{#each collection as alias}
+    Your SQL code template here
+{/each}
+```
+
+Consider the scenario where you need to aggregate amounts by categories such as fashion, technology, and food. Instead of writing repetitive code by hand, you can use a loop to automate the process:
+
+```
+sum(case when category = 'fashion' then amount end) as fashion_amount,
+sum(case when category = 'technology' then amount end) as technology_amount,
+sum(case when category = 'food' then amount end) as food_amount,
+```
+
+To automate this, a loop can be constructed as shown below:
+
+```
+{#each ["fashion", "technology", "food"] as category}
+    sum(case when category = '{category}' then amount end) as {category}_amount,
+{/each}
+```
+
+The three key concepts are **Collection**, **Alias** and **SQL Code Template**.
+
+## Collection
+
+A collection refers to the list of items that the loop iterates over. There are two main types of collections that are supported:
+
+### runQuery
+
+Executes a given query and uses the result set as the collection.
+
+```
+{#each runQuery('query_name') as alias}
+```
+
+To include values from the query in the code is as follows. You can see [SQL Code](#sql-code) section to know more.
+
+```
+{#each runQuery('users_filtered') as users}
+    name != users.first_name
+{/each}
+```
+
+### Manual Array
+
+You can define a list of items as a collection. These items can be strings, dates, numbers, or variables.
+
+```
+{#each ["fashion", "technology", "food"] as category}
+    sum(case when category = '{category}' then amount end) as {category}_amount,
+{/each}
+```
+
+Variables can be included within a manual list to introduce dynamic elements:
+
+```
+{#each [variable_manager, variable_ceo, variable_cto] as role_name}
+    name != role_name
+{/each}
+```
+
+## Alias
+
+The alias serves as a reference in the SQL code to each item within the collection. It is defined in the loop's opening tag: `{#each collection as alias}`.
+
+## SQL Code
+
+This is the template for the SQL code that will be executed for each item in the collection. It is enclosed between the `{#each}` and `{/each}` tags.
+
+### Dynamic Values
+
+Dynamic values from the current iteration's item can be included in the SQL code. For instance, to reference a column value from a query, use the syntax `alias.column_name`, e.g., `users.first_name`.
+
+Refer to [runQuery](#runquery) for examples.
+
+### Loop Conditions
+
+Conditions can be applied to modify the SQL code based on the iteration count, such as omitting a comma on the last item to prevent SQL errors.
+
+```
+{#each collection as list}
+    {list}
+    {#if list < 4},{/if}  # This avoids including a comma on the last item, preventing SQL errors.
+{/each}
+```
+
+Conditional logic such as `{:else}` and `{:if else}` can also be utilized for more complex scenarios.
+
+```
+{#each members as user}
+    WHERE user.signup > '20-08-2024'
+{:else}
+    WHERE user.signup != null
+{/each}
+```
