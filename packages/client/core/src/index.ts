@@ -4,7 +4,6 @@ import { type FunnelChartProps as FunnelChartPropsOriginal } from './theme/ui/ch
 import { type ScatterChartProps as ScatterChartPropsOriginal } from './theme/ui/chart/config/scatter'
 export * as theme from './theme'
 export * from './data/api'
-export * from './param'
 export * from './stores/queries'
 
 export type CartesianChartProps = CartesianChartPropsOriginal
