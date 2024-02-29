@@ -38,7 +38,7 @@ export const input = (key: string, defaultValue?: unknown): InlineParam => ({
 })
 
 function computeQueryParams(
-  inlineParams: InlineParams,
+  inlineParams: InlineParams
 ): Record<string, unknown> {
   const viewParams = getAllViewParams()
   const params: Record<string, unknown> = { ...viewParams }
@@ -50,7 +50,7 @@ function computeQueryParams(
 
 function createMiddlewareKey(
   queryPath: string,
-  inlineParams: InlineParams = {},
+  inlineParams: InlineParams = {}
 ): string {
   const hashedParams = Object.keys(inlineParams)
     .sort()
@@ -102,7 +102,7 @@ async function fetchQueryFromCore({
   }
 }
 
-type QuerySubscriptionOptions = {
+export type QuerySubscriptionOptions = {
   reactiveToParams?: boolean
 }
 
@@ -132,7 +132,7 @@ export function useQuery({
   }
 
   const coreQueryKeyStore = writable<string>(
-    get(middlewareQueryStore)[middlewareKey]!.coreQueryKey,
+    get(middlewareQueryStore)[middlewareKey]!.coreQueryKey
   )
   // Update coreQueryKey when middlewareQueryStore changes
   middlewareQueryStore.subscribe((state) => {
@@ -168,7 +168,7 @@ export function useQuery({
 export function runQuery(
   query: string,
   inlineParams: InlineParams = {},
-  opts: QuerySubscriptionOptions = {},
+  opts: QuerySubscriptionOptions = {}
 ): Readable<Promise<QueryResultArray>> {
   const pendingPromise = () => new Promise<QueryResultArray>(() => {})
   const resolvedPromise = (value: QueryResultArray) =>
@@ -186,7 +186,7 @@ export function runQuery(
     useQuery({ query, inlineParams, opts }),
     ($queryResultState, set) => {
       set(queryStateToPromise($queryResultState))
-    },
+    }
   )
 }
 

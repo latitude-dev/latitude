@@ -18,6 +18,9 @@ export default defineConfig({
     }),
     sveltekit(),
   ],
+  server: {
+    port: 3000,
+  },
   ssr: {
     noExternal: ['@latitude-data/client', '@latitude-data/svelte'],
   },

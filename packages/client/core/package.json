@@ -26,11 +26,7 @@
     "./latitude.css": "./src/theme/assets/latitude.css",
     "./theme/preset": "./tailwind.config.js"
   },
-  "files": [
-    "dist",
-    "tailwind.config.js",
-    "!dist/**/*.test.*"
-  ],
+  "files": ["dist", "tailwind.config.js", "!dist/**/*.test.*"],
   "dependencies": {
     "@latitude-data/query_result": "workspace:*",
     "clsx": "^2.1.0",

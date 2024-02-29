@@ -12,6 +12,13 @@ export type Field = {
   name: string
   type: DataType
 }
+
+type Props = {
+  fields?: Field[]
+  rows?: unknown[][]
+  rowCount?: number
+}
+
 export type QueryResultPayload = {
   fields: Field[]
   rows: unknown[][]
@@ -27,10 +34,10 @@ export default class QueryResult {
   rowCount: number
   rows: unknown[][]
 
-  constructor({ fields = [], rowCount = 0, rows = [] }: QueryResultPayload) {
+  constructor({ fields = [], rowCount = 0, rows = [] }: Props) {
     this.fields = fields
-    this.rows = rows
     this.rowCount = rowCount
+    this.rows = rows
   }
 
   payload() {
