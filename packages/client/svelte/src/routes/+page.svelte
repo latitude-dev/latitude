@@ -2,8 +2,6 @@
   import ThemeProvider from '$lib/ui/theme-wrapper'
   import { theme } from '@latitude-sdk/client'
   import { Button, Text } from '$lib'
-  import { Table } from '$lib/internal'
-  import QueryResult from '@latitude-sdk/query_result'
 
   const defaultTheme = theme.skins.themes[1]
 </script>
@@ -18,5 +16,3 @@
 <Text.H6>Header 6</Text.H6>
 
 <Button>Button</Button>
-
-<Table data={new QueryResult({})} />

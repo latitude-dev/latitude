@@ -7,8 +7,7 @@
     "build:vite": "vite build",
     "build:with-prebuild-not-used-yet": "pnpm run prebuild && pnpm run buildAndPackage",
     "buildAndPackage": "pnpm run build:vite && pnpm run package",
-    "dev": "svelte-package --watch",
-    "dev:vite": "vite dev",
+    "dev": "vite dev",
     "lint": "eslint . --max-warnings 0",
     "package": "pnpm run prepare && svelte-package && publint",
     "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
@@ -22,34 +21,21 @@
   "type": "module",
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
-    "./internal": {
-      "types": "./dist/internal/index.d.ts",
-      "svelte": "./dist/internal/index.js",
-      "default": "./dist/internal/index.js"
-    },
     ".": {
       "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
-  },
-  "typesVersions": {
-    ">4.0": {
-      "*": ["./dist/index.d.ts"],
-      "internal": ["./dist/internal/index.d.ts"]
+      "svelte": "./dist/index.js"
     }
   },
   "files": [
-    "dist",
-    "dist/internal",
+    "src",
     "tailwind.config.js",
+    "dist",
     "!dist/**/*.test.*",
     "!dist/**/*.stories.svelte"
   ],
   "dependencies": {
     "@latitude-sdk/client": "workspace:*",
     "@latitude-sdk/query_result": "workspace:^",
-    "@tanstack/svelte-table": "^8.13.2",
     "bits-ui": "^0.18.1",
     "echarts": "^5.5.0",
     "lodash": "^4.17.21",

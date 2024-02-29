@@ -4,12 +4,8 @@
 
   export let gap: Gap = 4
   export let grow: boolean = false
-  let className: string
 
-  export { className as class }
-
-  $: classes =
-    theme.ui.column.cssClass({ gap, grow }) + (className ? ` ${className}` : '')
+  $: classes = theme.ui.column.cssClass({ gap, grow })
 </script>
 
 <div class={classes}>
