@@ -82,8 +82,6 @@
     element: HTMLElement,
     { options, theme, locale }: ChartableProps,
   ) {
-    console.log('FIRST_RENDER_HOLA', options)
-
     let resizeObserver: ResizeObserver
     const echartsInstance = echarts.init(element, theme, {
       renderer: 'canvas',
@@ -105,7 +103,6 @@
     onWindowResize()
     return {
       update({ options: newOptions }: ChartableProps) {
-        console.log('UPDATE_CALLBACK_HOLA', newOptions)
         echartsInstance.setOption({ ...options, ...newOptions })
       },
       destroy() {

@@ -3,15 +3,15 @@ import { type Props } from '../cartesian'
 import { ScatterStyle } from '../cartesian/types'
 
 export type ScatterChartProps = Omit<Props, 'config'> & {
-  config: Omit<Props['config'], 'scatterConfig'>
   sizeColumn: string
+  config?: Omit<Props['config'], 'scatterConfig'>
   style?: ScatterStyle
 }
 
 export default function generateScatterChart({
   sizeColumn,
   style = 'circle',
-  config,
+  config = {},
   ...rest
 }: ScatterChartProps) {
   return generateCartesianConfig({

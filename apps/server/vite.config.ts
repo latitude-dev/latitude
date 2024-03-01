@@ -9,13 +9,12 @@ export default defineConfig({
   plugins: [
     latitudePlugin(),
     autoImport({
+      module: { '@latitude-sdk/client/svelte': ['Button', 'Card'] },
       mapping: {
         runQuery: 'import { runQuery } from "$lib/stores/queries"',
         input: 'import { input } from "$lib/stores/queries"',
       },
-      module: {
-        '@latitude-sdk/client/svelte': ['Button', 'Card'],
-      },
+      components: [{ name: './src/autoimports', flat: true }],
     }),
     sveltekit(),
   ],

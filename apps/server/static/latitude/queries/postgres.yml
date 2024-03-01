@@ -1,7 +1,0 @@
-type: postgres
-details:
-  user: latitude
-  password: papapa44
-  host: localhost
-  port: 5432
-  database: latitude_development

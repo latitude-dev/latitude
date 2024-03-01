@@ -10,7 +10,7 @@ type LatitudeApiConfig = {
 export class ApiError extends Error {
   constructor(
     message: string,
-    public status: number
+    public status: number,
   ) {
     super(message)
   }
@@ -91,7 +91,9 @@ class LatitudeApi {
       try {
         const json = await response.json()
         if (json.errors) {
-          errorMessage = json.errors.map((e: ApiErrorItem) => e.detail).join(', ')
+          errorMessage = json.errors
+            .map((e: ApiErrorItem) => e.detail)
+            .join(', ')
         }
       } catch (e) {
         errorMessage = 'Error parsing API response'
