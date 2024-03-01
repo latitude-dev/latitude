@@ -5,7 +5,7 @@
     "build:css": "node ./scripts/buildCss.mjs",
     "build:rollup": "rollup -c",
     "dev": "pnpm run build:rollup -w",
-    "build": "npm run build:css && npm run build:rollup",
+    "build": "pnpm run build:css && npm run build:rollup",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",

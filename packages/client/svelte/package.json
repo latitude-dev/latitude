@@ -15,7 +15,7 @@
     "prepublishOnly": "pnpm run package",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
-    "tc": "tsc --noEmit",
+    "tc": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest --run"
   },
   "type": "module",
@@ -27,7 +27,6 @@
     }
   },
   "files": [
-    "src",
     "tailwind.config.js",
     "dist",
     "!dist/**/*.test.*",

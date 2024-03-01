@@ -1,9 +1,17 @@
 <script context="module" lang="ts">
-  import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
-  import AreaChart from './AreaChart.svelte'
+  import type { Meta } from '@storybook/svelte'
+  import { Story, Template } from '@storybook/addon-svelte-csf'
+  import AreaChart, { type Props } from './AreaChart.svelte'
   import { DATASET } from './__mock__/data'
 
-  export const meta: Meta = {
+  type Args = Props & {
+    stack: boolean
+    'config.showDots': boolean
+    'config.showValues': boolean
+    'config.showLegend': boolean
+  }
+
+  export const meta = {
     title: 'Charts/AreaChart',
     component: AreaChart,
     argTypes: {
@@ -24,18 +32,18 @@
       'config.showValues': true,
       'config.showLegend': false,
     },
-    parameters: { layout: 'centered' }
-  }
+    parameters: { layout: 'centered' },
+  } satisfies Meta<Args>
 </script>
 
-<Template id='line' let:args>
+<Template id="line" let:args>
   <AreaChart
     dataset={DATASET}
-    x='event_month'
+    x="event_month"
     y={['node_events_sum', 'project_events_sum', 'workspace_events_sum']}
-    yFormat={{ stack: args.stack }}
     xTitle={args.xTitle}
     yTitle={args.yTitle}
+    yFormat={{ stack: args.stack }}
     swapAxis={args.swapAxis}
     config={{
       showDots: args.config.showDots,
@@ -45,4 +53,4 @@
   />
 </Template>
 
-<Story name="Basic" template='line' />
+<Story name="Basic" template="line" />

@@ -21,8 +21,8 @@ export const createQueryKey = (
 }
 
 export interface QueryResultState {
-  data?: QueryResult | null
   isLoading: boolean
+  data?: QueryResult | null
   error?: Error | null
 }
 

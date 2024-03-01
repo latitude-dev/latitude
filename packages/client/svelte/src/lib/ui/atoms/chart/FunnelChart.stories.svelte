@@ -1,8 +1,9 @@
 <script context="module" lang="ts">
-  import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
+  import type { Meta } from '@storybook/svelte'
+  import { Story, Template } from '@storybook/addon-svelte-csf'
   import FunnelChart from './FunnelChart.svelte'
 
-  export const meta: Meta = {
+  export const meta = {
     title: 'Charts/FunnelChart',
     component: FunnelChart,
     argTypes: {
@@ -11,20 +12,20 @@
         control: 'select',
         options: ['descending', 'ascending']
       },
-      showGradientColor: { control: 'boolean' },
+      showColorGradient: { control: 'boolean' },
       showLabels: { control: 'boolean' },
       showDecal: { control: 'boolean' },
       showLegend: { control: 'boolean' },
     },
     args: {
       sort: 'descending',
-      showGradientColor: false,
+      showColorGradient: false,
       showLabels: true,
       showDecal: false,
       showLegend: false,
     },
     parameters: { layout: 'centered' }
-  }
+  } satisfies Meta<FunnelChart>
 </script>
 
 <Template id="funnel" let:args>
@@ -41,7 +42,7 @@
       ]
     }}
     sort={args.sort}
-    showColorGradient={args.showGradientColor}
+    showColorGradient={args.showColorGradient}
     showLabels={args.showLabels}
     showDecal={args.showDecal}
     showLegend={args.showLegend}

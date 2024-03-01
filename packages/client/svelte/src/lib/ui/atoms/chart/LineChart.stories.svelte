@@ -1,9 +1,16 @@
 <script context="module" lang="ts">
-  import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
-  import LineChart from './LineChart.svelte'
+  import type { Meta } from '@storybook/svelte'
+  import { Story, Template } from '@storybook/addon-svelte-csf'
+  import LineChart, { type Props } from './LineChart.svelte'
   import { DATASET } from './__mock__/data'
 
-  export const meta: Meta = {
+  type Args = Props & {
+    swapAxis: boolean
+    'config.showValues': boolean
+    'config.showLegend': boolean
+    'config.showDecal': boolean
+  }
+  export const meta = {
     title: 'Charts/LineChart',
     component: LineChart,
     argTypes: {
@@ -23,7 +30,7 @@
       'config.showDecal': false,
     },
     parameters: { layout: 'centered' }
-  }
+  } satisfies Meta<Args>
 </script>
 
 <Template id='line' let:args>

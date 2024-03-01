@@ -1,5 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
+// eslint-disable-next-line
+// @ts-ignore
 import autoImport from 'sveltekit-autoimport'
 import latitudePlugin from './plugins/latitude.mjs'
 
@@ -18,7 +20,7 @@ export default defineConfig({
     sveltekit(),
   ],
   ssr: {
-    noExternal: ['@latitude-sdk/client'],
+    noExternal: ['@latitude-sdk/client', '@latitude-sdk/svelte'],
   },
   build: {
     rollupOptions: {

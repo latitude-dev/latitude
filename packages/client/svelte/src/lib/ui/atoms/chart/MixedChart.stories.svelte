@@ -1,8 +1,14 @@
 <script context="module" lang="ts">
-  import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
+  import type { Meta } from '@storybook/svelte'
+  import { Story, Template } from '@storybook/addon-svelte-csf'
   import { DATASET } from './__mock__/data'
-  import MixedChart from './MixedChart.svelte'
+  import MixedChart, { type Props } from './MixedChart.svelte'
 
+  type Args = Props & {
+    'config.showValues': boolean
+    'config.showLegend': boolean
+    'config.showDecal': boolean
+  }
   export const meta: Meta = {
     title: 'Charts/MixedChart',
     component: MixedChart,
@@ -23,7 +29,7 @@
       'config.showDecal': false,
     },
     parameters: { layout: 'centered' }
-  }
+  } satisfies Meta<Args>
 </script>
 <Template id='mixed' let:args>
   <MixedChart

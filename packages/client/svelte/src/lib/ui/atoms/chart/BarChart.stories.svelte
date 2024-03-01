@@ -1,9 +1,15 @@
 <script context="module" lang="ts">
-  import { Meta, Story, Template } from '@storybook/addon-svelte-csf'
-  import BarChart from './BarChart.svelte'
+  import type { Meta } from '@storybook/svelte'
+  import { Story, Template } from '@storybook/addon-svelte-csf'
+  import BarChart, { type Props } from './BarChart.svelte'
   import { DATASET } from './__mock__/data'
 
-  export const meta: Meta = {
+  type Args = Props & {
+    'config.showValues': boolean
+    'config.showLegend': boolean
+    'config.showDecal': boolean
+  }
+  export const meta = {
     title: 'Charts/BarChart',
     component: BarChart,
     argTypes: {
@@ -22,14 +28,14 @@
       'config.showLegend': false,
       'config.showDecal': false,
     },
-    parameters: { layout: 'centered' }
-  }
+    parameters: { layout: 'centered' },
+  } satisfies Meta<Args>
 </script>
 
-<Template id='bar' let:args>
+<Template id="bar" let:args>
   <BarChart
     dataset={DATASET}
-    x='event_month'
+    x="event_month"
     y={['node_events_sum', 'project_events_sum', 'workspace_events_sum']}
     xTitle={args.xTitle}
     yTitle={args.yTitle}
@@ -42,12 +48,12 @@
   />
 </Template>
 
-<Story name="Basic" template='bar' />
+<Story name="Basic" template="bar" />
 
-<Template id='barStack' let:args>
+<Template id="barStack" let:args>
   <BarChart
     dataset={DATASET}
-    x='event_month'
+    x="event_month"
     y={['node_events_sum', 'project_events_sum', 'workspace_events_sum']}
     yFormat={{ stack: true }}
     xTitle={args.xTitle}
@@ -61,12 +67,12 @@
   />
 </Template>
 
-<Story name="Stack" template='barStack' />
+<Story name="Stack" template="barStack" />
 
-<Template id='barStack100%' let:args>
+<Template id="barStack100%" let:args>
   <BarChart
     dataset={DATASET}
-    x='event_month'
+    x="event_month"
     y={['node_events_sum', 'project_events_sum', 'workspace_events_sum']}
     yFormat={{ stack: 'normalized' }}
     xTitle={args.xTitle}
@@ -80,4 +86,4 @@
   />
 </Template>
 
-<Story name="Stack 100%" template='barStack100%' />
+<Story name="Stack 100%" template="barStack100%" />

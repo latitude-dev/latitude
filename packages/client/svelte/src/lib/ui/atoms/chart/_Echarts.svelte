@@ -1,15 +1,14 @@
 <script context="module" lang="ts">
-  type EchartsTheme = object
   type EchartsOptions = ECBasicOption
   type Locale = 'en' | 'es'
+  type EchartsTheme = object
 
   export type Props = {
-    options: EchartsOptions
-    width: number
-    height: number
-    theme: EchartsTheme
+    options: EchartsOptions | null | undefined
+    width?: number
+    height?: number
     isComputing?: boolean
-    locale: Locale
+    locale?: Locale
   }
 </script>
 
@@ -68,29 +67,27 @@
   type ChartableProps = {
     options: EchartsOptions
     theme: EchartsTheme
-    locale: 'en' | 'es'
+    locale: Locale | undefined
   }
 
-  type $$Props = Props
-
-  // PROPS
-  export let options: $$Props['options']
-
-  // DO chart theming
-  export let theme: $$Props['theme'] = client.ui.chart.THEMES.latitude
-  export let width: $$Props['width']
-  export let height: $$Props['height']
-  export let locale: $$Props['locale'] = 'en'
-  export let isComputing: $$Props['isComputing'] = false
+  // TODO: Implement theming
+  const theme = client.ui.chart.THEMES.latitude
+  export let options: Props['options']
+  export let width: Props['width'] = undefined
+  export let height: Props['height'] = undefined
+  export let locale: Props['locale'] = undefined
+  export let isComputing: Props['isComputing'] = false
 
   export function chartable(
     element: HTMLElement,
-    { options, theme, locale }: ChartableProps
+    { options, theme, locale }: ChartableProps,
   ) {
+    console.log('FIRST_RENDER_HOLA', options)
+
     let resizeObserver: ResizeObserver
     const echartsInstance = echarts.init(element, theme, {
       renderer: 'canvas',
-      locale,
+      locale: locale ?? 'en',
     })
     echartsInstance.setOption(options)
 
@@ -108,6 +105,7 @@
     onWindowResize()
     return {
       update({ options: newOptions }: ChartableProps) {
+        console.log('UPDATE_CALLBACK_HOLA', newOptions)
         echartsInstance.setOption({ ...options, ...newOptions })
       },
       destroy() {
@@ -123,9 +121,11 @@
 </script>
 
 <div class={cn('h-full w-full', { 'animate-pulse': isComputing })}>
-  <div
-    use:chartable={{ theme, options, locale }}
-    class="min-h-full min-w-full"
-    style="width: {width}px; height: {height}px"
-  />
+  {#if options}
+    <div
+      use:chartable={{ theme, options, locale }}
+      class="min-h-full min-w-full"
+      style="width: {width}px; height: {height}px"
+    />
+  {/if}
 </div>
