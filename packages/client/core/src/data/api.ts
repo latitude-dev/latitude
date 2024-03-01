@@ -85,19 +85,21 @@ class LatitudeApi {
     if (response.ok) return response.json()
 
     let errorMessage = 'Unexpected API error'
-    if (response.status >= 500) {
-      errorMessage = await response.text()
-    } else {
-      try {
+    try {
+      const contentType = response.headers.get('Content-Type')
+      if (contentType && contentType.includes('application/json')) {
         const json = await response.json()
         if (json.errors) {
           errorMessage = json.errors
             .map((e: ApiErrorItem) => e.detail)
             .join(', ')
         }
-      } catch (e) {
-        errorMessage = 'Error parsing API response'
+      } else {
+        const text = await response.text()
+        errorMessage = text
       }
+    } catch {
+      errorMessage = 'Error parsing API response'
     }
 
     throw new ApiError(errorMessage, response.status)

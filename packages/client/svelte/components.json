@@ -7,7 +7,7 @@
     "baseColor": "slate"
   },
   "aliases": {
-    "components": "$lib/components",
+    "components": "$lib",
     "utils": "$lib/utils"
   },
   "typescript": true
