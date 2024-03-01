@@ -35,8 +35,12 @@
   },
   "typesVersions": {
     ">4.0": {
-      "*": ["./dist/index.d.ts"],
-      "internal": ["./dist/internal/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "internal": [
+        "./dist/internal/index.d.ts"
+      ]
     }
   },
   "files": [

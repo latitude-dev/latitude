@@ -36,7 +36,7 @@
     {#each $table.getRowModel().rows as row}
       <tr class="border">
         {#each row.getVisibleCells() as cell}
-          <td class="max-w-[100px] truncate border px-4 py-2">
+          <td class="truncate border px-4 py-2">
             {cell.renderValue()}
           </td>
         {/each}
