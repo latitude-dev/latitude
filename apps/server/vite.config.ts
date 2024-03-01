@@ -1,7 +1,7 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 import autoImport from 'sveltekit-autoimport'
-import latitudePlugin from './plugins/latitude.mjs'
+import latitudePlugin from './plugins/latitude'
 
 export default defineConfig({
   plugins: [

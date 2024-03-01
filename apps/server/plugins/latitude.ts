@@ -1,6 +1,7 @@
 import { createFilter } from '@rollup/pluginutils'
-import { parse, walk } from 'svelte/compiler'
+import { parse } from 'svelte/compiler'
 import path from 'path'
+import { TemplateNode } from 'svelte/types/compiler/interfaces'
 
 const VIEWS_PATH = path.resolve(__dirname, '../src/routes')
 
@@ -9,8 +10,6 @@ const VIEWS_PATH = path.resolve(__dirname, '../src/routes')
  * It targets files under a specific directory, processing each to find and replace
  * 'runQuery' function calls with predetermined query results variables,
  * also injecting necessary declarations into the script tag of the Svelte files.
- *
- * @returns {Object} An object representing the plugin with a name, enforce option, and a transform method.
  */
 export default function transformCodePlugin() {
   const filter = createFilter(
@@ -21,7 +20,7 @@ export default function transformCodePlugin() {
   return {
     name: 'latitude',
     enforce: 'pre',
-    transform(code, id) {
+    transform(code: string, id: string) {
       if (!filter(id)) return
 
       const generatedCode = transformRunQuery(code)
@@ -38,11 +37,8 @@ export default function transformCodePlugin() {
  * If 'runQuery' calls are found, it generates a variable for each unique call, replaces the call
  * with the variable, and adds a declaration for this variable at the end of the script tag or creates
  * a new script tag with the declaration if a script tag doesn't exist.
- *
- * @param {string} code - The code of the Svelte file to transform.
- * @returns {string} The transformed code with 'runQuery' calls replaced by variable references and appended declarations.
  */
-function transformRunQuery(code) {
+function transformRunQuery(code: string) {
   const ast = parse(code)
   const declarations = findRunQueries({ ast })
   const ncode = replaceRunQueries({ code, declarations })
@@ -50,55 +46,50 @@ function transformRunQuery(code) {
   return ncode
 }
 
+type RunQueryInstance = {
+  queryVarName: string
+  queryParams: string
+}
+
 /**
  * Walks through the abstract syntax tree (AST) of the provided code to find 'runQuery'
  * function calls within 'AwaitBlock' nodes. For each unique call, it collects necessary
  * information for replacing the call with a variable and for injecting a corresponding
  * declaration into the script section of the Svelte file.
- *
- * @param {Object} params - An object containing the AST and original code string.
- * @param {Object} params.ast - The abstract syntax tree of the code.
- * @returns {Array<Object>} An array of objects, each representing a 'runQuery' call to be transformed.
- * Each object contains the query, a generated variable name for the query, and the declaration string.
  */
+// @ts-expect-error - TS does not pick up the AwaitBlock node type
 function findRunQueries({ ast }) {
   if (!ast?.html) return []
 
-  let encountered = {},
-    queryCounter = 0,
-    declarations = []
+  let queryCounter = 0
+  const declarations: RunQueryInstance[] = []
 
-  walk(ast.html, {
-    enter(node) {
-      if (
+  ast.html.children
+    .filter(
+      (node: TemplateNode) =>
         node.type === 'AwaitBlock' &&
         node.expression?.type === 'CallExpression' &&
         node.expression.callee?.name === 'runQuery'
-      ) {
-        const query = node.expression.arguments[0].value
-        if (encountered[query]) return
-
-        const queryVarName = `query_${++queryCounter}`
-        encountered[query] = queryVarName
-
-        // Transform the AwaitBlock expression to use the `$` prefix
-        node.expression.name = queryVarName
-
-        // Prepend `let` to addToScriptTag string
-        const queryParams = node.expression.arguments
-          .map((arg) => JSON.stringify(arg.value))
-          .join(', ')
-
-        const dev = {
-          query,
-          queryVarName,
-          declaration: `let ${queryVarName} = runQuery(${queryParams});\n`,
+    )
+    .forEach((node: TemplateNode) => {
+      const queryParamsValues = node.expression.arguments.map(
+        (arg: TemplateNode, index: number) => {
+          if (index === 0) return arg.raw
+          if (arg.type === 'ObjectExpression' && arg.properties) {
+            return serializeObjectExpressionNode(arg)
+          }
         }
-
-        declarations.push(dev)
+      )
+      const queryParams = queryParamsValues.filter(Boolean).join(', ')
+      const instance = {
+        queryVarName: `query_${++queryCounter}`,
+        queryParams,
       }
-    },
-  })
+
+      if (!declarations.some((d) => d.queryParams === instance.queryParams)) {
+        declarations.push(instance)
+      }
+    })
 
   return declarations
 }
@@ -107,26 +98,24 @@ function findRunQueries({ ast }) {
  * Iterates over provided declarations of 'runQuery' calls, replacing each occurrence in the Svelte file code
  * with a generated variable reference. Additionally, injects variable declarations into the script tag of the
  * Svelte file, creating a new script tag if necessary.
- * 
- * @param {Object} params - An object containing the original code string and an array of declarations.
- * @param {string} params.code - The original code of the Svelte file.
- * @param {Array<Object>} params.declarations - An array of objects, each object represents a declaration to be appended.
- * Every declaration object consists of the original 'runQuery' call's query, its corresponding variable name, and
- * the variable declaration string.
- * @returns {string} The transformed code with all 'runQuery' occurrences replaced by their corresponding variable references,
- * and new declarations injected appropriately.
  */
-function replaceRunQueries({ code, declarations }) {
+function replaceRunQueries({
+  code,
+  declarations,
+}: {
+  code: string
+  declarations: RunQueryInstance[]
+}) {
   if (!declarations.length) return code
 
   let ncode = code
-  declarations.forEach(({ query, queryVarName, declaration }) => {
-    ncode = ncode.replace(
-      new RegExp(`runQuery\\(('|")${query}('|")\\)`, 'g'),
-      `$${queryVarName}`
-    )
+  declarations.forEach(({ queryParams, queryVarName }) => {
+    while (ncode.includes(`runQuery(${queryParams})`)) {
+      ncode = ncode.replace(`runQuery(${queryParams})`, `$${queryVarName}`)
+    }
 
     // Append the declaration to just before the </script> tag if any (add one if there is none)
+    const declaration = `let ${queryVarName} = runQuery(${queryParams})\n`
     const scriptTagIndex = ncode.lastIndexOf('</script>')
     if (scriptTagIndex === -1) {
       ncode += `\n<script>\n${declaration}\n</script>`
@@ -139,4 +128,42 @@ function replaceRunQueries({ code, declarations }) {
   })
 
   return ncode
+}
+
+function serializeObjectExpressionNode(node: TemplateNode): string {
+  if (!node.properties) return '{}'
+
+  const properties = node.properties
+    .map((prop: { key: TemplateNode; value: TemplateNode }) => {
+      const key = prop.key.name
+      const valueNode = prop.value
+
+      if (valueNode.type === 'Identifier') {
+        return `${key}: ${valueNode.raw}`
+      } else if (valueNode.type === 'Literal') {
+        return `${key}: ${valueNode.value}`
+      } else if (valueNode.type === 'ObjectExpression') {
+        return `${key}: ${serializeObjectExpressionNode(valueNode)}`
+      } else if (valueNode.type === 'CallExpression') {
+        return `${key}: ${serializeCallExpressionNode(valueNode)}`
+      }
+    })
+    .filter(Boolean)
+    .join(', ')
+
+  return `{ ${properties} }`
+}
+
+function serializeCallExpressionNode(node: TemplateNode): string {
+  const args = node.arguments
+    .map((arg: TemplateNode) => {
+      if (arg.type === 'Identifier' || arg.type === 'Literal') {
+        return arg.raw
+      } else if (arg.type === 'ObjectExpression') {
+        return serializeObjectExpressionNode(arg)
+      }
+    })
+    .join(', ')
+
+  return `${node.callee.name}(${args})`
 }

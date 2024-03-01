@@ -23,6 +23,7 @@
     "@sveltejs/kit": "^2.4.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@testing-library/svelte": "^4.1.0",
+    "@types/estree": "^1.0.1",
     "@types/mock-fs": "^4.13.4",
     "autoprefixer": "^10.4.17",
     "jsdom": "^24.0.0",
