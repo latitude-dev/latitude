@@ -32,7 +32,6 @@
 
 <Wrapper {data} {isLoading} {error} let:dataset>
   <Echart
-    isComputing={isLoading}
     options={generate({
       dataset,
       animation,

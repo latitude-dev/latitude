@@ -29,7 +29,6 @@
 <Wrapper {data} {isLoading} {error} let:dataset>
   <Echart
     options={generatePieConfig({ dataset, displayName, animation, config })}
-    isComputing={isLoading}
     {width}
     {height}
     {locale}

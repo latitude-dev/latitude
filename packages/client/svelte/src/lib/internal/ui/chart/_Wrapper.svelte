@@ -5,6 +5,9 @@
 </script>
 
 <script lang="ts">
+  import { theme as client } from '@latitude-sdk/client'
+  const { cn } = client.utils
+  import BlankSlate from './_BlankSlate.svelte'
   export let data: WrapperProps['data'] = null
   export let isLoading: WrapperProps['isLoading'] = false
 
@@ -18,8 +21,10 @@
   } as Dataset
 </script>
 
-{#if !data && isLoading}
-  <div>Loading...</div>
-{:else}
-  <slot {dataset} />
-{/if}
+<div class={cn('relative h-full w-full', { 'animate-pulse': isLoading })}>
+  {#if !data || (!data && isLoading)}
+    <BlankSlate />
+  {:else}
+    <slot {dataset} />
+  {/if}
+</div>
