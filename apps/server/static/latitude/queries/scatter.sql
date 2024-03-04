@@ -1,0 +1,10 @@
+SELECT 1 AS y_column, 2 AS x_column, 3 AS size_column
+UNION ALL
+SELECT 4, 5, 6
+UNION ALL
+SELECT 7, 8, 9
+UNION ALL
+SELECT 10, 11, 12
+UNION ALL
+SELECT 13, 14, 20;
+

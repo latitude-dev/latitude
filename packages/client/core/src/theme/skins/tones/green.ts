@@ -1,4 +1,6 @@
-export default {
+import { ColorTheme } from '../types'
+
+const colors: ColorTheme = {
   light: {
     background: '0 0% 100%',
     foreground: '240 10% 3.9%',
@@ -19,7 +21,6 @@ export default {
     border: '240 5.9% 90%',
     input: '240 5.9% 90%',
     ring: '142.1 76.2% 36.3%',
-    radius: '0.5rem',
   },
   dark: {
     background: '20 14.3% 4.1%',
@@ -43,3 +44,5 @@ export default {
     ring: '142.4 71.8% 29.2%',
   },
 }
+
+export default colors

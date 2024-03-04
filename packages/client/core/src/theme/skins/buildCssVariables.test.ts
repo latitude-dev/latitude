@@ -17,8 +17,10 @@ function formatCssVariables(cssVariables: string) {
 
 describe('build css variables', () => {
   it('receives a Latitude theme and print css variables syntax', () => {
-    const light = defaultTheme.cssVars.light
-    const dark = defaultTheme.cssVars.dark
+    const light = defaultTheme.colors.light
+    const dark = defaultTheme.colors.dark
+    const radius = defaultTheme.radius
+    const breakpoints = defaultTheme.breakpoints
     const cssVariables = formatCssVariables(buildCssVariables(defaultTheme))
 
     expect(cssVariables).toEqual(
@@ -42,7 +44,13 @@ describe('build css variables', () => {
         --lat-border: ${light.border};
         --lat-input: ${light.input};
         --lat-ring: ${light.ring};
-        --lat-radius: ${light.radius};
+
+        --lat-radius: ${radius};
+        --lat-breakpoint-mobile: ${breakpoints.mobile};
+        --lat-breakpoint-tablet: ${breakpoints.tablet};
+        --lat-breakpoint-desktop: ${breakpoints.desktop};
+        --lat-breakpoint-wide: ${breakpoints.wide};
+        --lat-breakpoint-ultra-wide: ${breakpoints.ultraWide};
       }
       .dark {
         --lat-background: ${dark.background};

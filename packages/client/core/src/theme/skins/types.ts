@@ -18,19 +18,24 @@ export type ThemeColor = {
   border: string
   input: string
   ring: string
-  radius?: string
-}
-export type SkinCss = {
-  light: ThemeColor
-  dark: ThemeColor
 }
 
 export type ThemeName = 'latitude' | 'rose' | 'green' | 'orange'
 
+export type ColorTheme = {
+  light: ThemeColor
+  dark: ThemeColor
+}
+
+type Breakpoint = 'mobile' | 'tablet' | 'desktop' | 'wide' | 'ultraWide'
+export type Breakpoints = Record<Breakpoint, number>
+
 export type Theme = {
-  name: ThemeName
+  name: string
   label?: string
-  cssVars: {
+  radius: string
+  breakpoints: Breakpoints
+  colors: {
     light: ThemeColor
     dark: ThemeColor
   }

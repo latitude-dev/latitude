@@ -1,4 +1,5 @@
 export const gaps = {
+  none: 'gap-0',
   4: 'gap-4',
   8: 'gap-8',
   12: 'gap-12',

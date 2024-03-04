@@ -3,10 +3,7 @@ import { fontFamily } from 'tailwindcss/defaultTheme'
 /** @type {import('tailwindcss').Config} */
 const config = {
   darkMode: ['class'],
-  content: [
-    './src/theme/ui/**/*.ts',
-    './src/theme/tokens/*.ts',
-  ],
+  content: ['./src/theme/ui/**/*.ts', './src/theme/tokens/*.ts'],
   safelist: ['dark'],
   theme: {
     container: {
@@ -59,6 +56,13 @@ const config = {
       },
       fontFamily: {
         sans: [...fontFamily.sans],
+      },
+      screens: {
+        sm: 'var(--lat-breakpoint-mobile)',
+        md: 'var(--lat-breakpoint-tablet)',
+        lg: 'var(--lat-breakpoint-desktop)',
+        xl: 'var(--lat-breakpoint-wide)',
+        '2xl': 'var(--lat-breakpoint-ultraWide)',
       },
     },
   },
