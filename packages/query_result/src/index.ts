@@ -34,26 +34,44 @@ export default class QueryResult {
   rowCount: number
   rows: unknown[][]
 
+  static fromJSON(json: string) {
+    const { fields, rows, rowCount } = JSON.parse(json)
+    return new QueryResult({
+      fields,
+      rows,
+      rowCount,
+    })
+  }
+
   constructor({ fields = [], rowCount = 0, rows = [] }: Props) {
     this.fields = fields
     this.rowCount = rowCount
     this.rows = rows
   }
 
-  payload() {
+  serialize() {
     return {
       fields: this.fields,
-      rows: this.rows.map((row) => {
+      rowCount: this.rowCount,
+      rows: this.rows,
+    }
+  }
+
+  toJSON() {
+    const { fields, rows, rowCount } = this.serialize()
+    return JSON.stringify({
+      fields,
+      rows: rows.map((row) => {
         return row.map((value) => {
           if (typeof value === 'bigint') {
-            return value.toString()
+            return Number(value)
           } else {
             return value
           }
         })
       }),
-      rowCount: this.rowCount,
-    }
+      rowCount,
+    })
   }
 
   toArray() {

@@ -4,6 +4,7 @@ import { type Fragment, type TemplateNode } from './interfaces'
 import PARSER_ERRORS from '../error/errors'
 import fullCharCodeAt from './utils/full_char_code_at'
 import { reserved } from '../utils/names'
+// @ts-expect-error - no types
 import { isIdentifierStart, isIdentifierChar } from 'acorn'
 import fragment from './state/fragment'
 
