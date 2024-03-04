@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { AreaChartProps } from '@latitude-sdk/svelte/internal'
+  import type { AreaChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
-  import { AreaChart } from '@latitude-sdk/svelte/internal'
+  import { AreaChart } from '@latitude-data/svelte/internal'
   type Props = Omit<AreaChartProps, 'data' | 'isLoading' | 'error'> & QueryProps
   import { DEFAULT_HEIGHT } from './constants'
 

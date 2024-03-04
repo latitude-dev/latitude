@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   import { type Props as EchartProps } from './_Echarts.svelte'
-  import { type FunnelChartProps as ClientFunnelChartProps } from '@latitude-sdk/client'
+  import { type FunnelChartProps as ClientFunnelChartProps } from '@latitude-data/client'
   import Wrapper, { type WrapperProps } from './_Wrapper.svelte'
 
   export type FunnelChartProps = Omit<EchartProps, 'options'> &
@@ -10,7 +10,7 @@
 
 <script lang="ts">
   import Echart from './_Echarts.svelte'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
   const generate = theme.ui.chart.generateFunnelConfig
 
   type $$Props = FunnelChartProps

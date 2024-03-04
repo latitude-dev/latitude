@@ -1,13 +1,13 @@
 import findQueryFile from '$lib/findQueryFile'
 import { GET } from './+server'
-import { createConnector } from '@latitude-sdk/connector-factory'
+import { createConnector } from '@latitude-data/connector-factory'
 import { describe, it, expect, vi, beforeEach, Mock, afterEach } from 'vitest'
 
 // Mocking external dependencies
 vi.mock('$lib/findQueryFile', () => ({
   default: vi.fn(),
 }))
-vi.mock('@latitude-sdk/connector-factory', () => ({
+vi.mock('@latitude-data/connector-factory', () => ({
   createConnector: vi.fn(),
 }))
 

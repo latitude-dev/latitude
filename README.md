@@ -1,7 +1,7 @@
-![Linter](https://github.com/latitude-dev/latitude-sdk/actions/workflows/linter.yml/badge.svg)
-![Tests](https://github.com/latitude-dev/latitude-sdk/actions/workflows/test.yml/badge.svg)
+![Linter](https://github.com/latitude-dev/latitude-data/actions/workflows/linter.yml/badge.svg)
+![Tests](https://github.com/latitude-dev/latitude-data/actions/workflows/test.yml/badge.svg)
 
-# Latitude SDK
+# Latitude
 
 Latitude is an open-source full-stack framework to build interactive data apps
 on top of your database or data warehouse using SQL and React/Svelte.
@@ -19,11 +19,11 @@ machine.
 
 Here’s a quick getting started guide to get the sample app up and running:
 
-1. **Install Latitude SDK**
+1. \*\*Install Latitude
 
-Run the following command to install the Latitude SDK globally on your machine:
+Run the following command to install the Latitude CLI globally on your machine:
 
-`npm install -g @latitude-sdk/cli`
+`npm install -g @latitude-data/cli`
 
 2. **Create the starter project**
 
@@ -49,7 +49,7 @@ You can download it from the [official website](https://nodejs.org/en).
 
 Run the following command to install the Latitude CLI globally:
 
-`npm install -g @latitude-sdk/cli`
+`npm install -g @latitude-data/cli`
 
 ## Community
 

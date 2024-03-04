@@ -3,8 +3,8 @@ import {
   CompiledQuery,
   ConnectorError,
   ResolvedParam,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import pkg from 'sqlite3'
 
 const { Database, OPEN_READONLY, OPEN_READWRITE } = pkg

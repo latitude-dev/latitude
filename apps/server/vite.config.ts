@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [
     latitudePlugin(),
     autoImport({
-      module: { '@latitude-sdk/client/svelte': ['Button', 'Card', 'Row', 'Column'] },
+      module: { '@latitude-data/client/svelte': ['Button', 'Card', 'Row', 'Column'] },
       mapping: {
         runQuery: 'import { runQuery } from "$lib/stores/queries"',
         input: 'import { input } from "$lib/stores/queries"'
@@ -19,11 +19,11 @@ export default defineConfig({
     sveltekit(),
   ],
   ssr: {
-    noExternal: ['@latitude-sdk/client', '@latitude-sdk/svelte'],
+    noExternal: ['@latitude-data/client', '@latitude-data/svelte'],
   },
   build: {
     rollupOptions: {
-      external: ['@latitude-sdk/connector-factory'],
+      external: ['@latitude-data/connector-factory'],
     },
   },
 })

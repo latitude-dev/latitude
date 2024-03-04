@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { ScatterChartProps } from '@latitude-sdk/svelte/internal'
+  import type { ScatterChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
-  import { ScatterChart } from '@latitude-sdk/svelte/internal'
+  import { ScatterChart } from '@latitude-data/svelte/internal'
   type Props = Omit<ScatterChartProps, 'data' | 'isLoading' | 'error'> &
     QueryProps
   import { DEFAULT_HEIGHT } from './constants'

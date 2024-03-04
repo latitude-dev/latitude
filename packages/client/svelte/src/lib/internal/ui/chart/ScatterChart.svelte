@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   import Echart, { type Props as EchartProps } from './_Echarts.svelte'
-  import { type ScatterChartProps as ClientScatterChartProps } from '@latitude-sdk/client'
+  import { type ScatterChartProps as ClientScatterChartProps } from '@latitude-data/client'
   import type { WrapperProps } from './_Wrapper.svelte'
 
   export type ScatterChartProps = Omit<EchartProps, 'options'> &
@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
   import Wrapper from './_Wrapper.svelte'
   const generate = theme.ui.chart.generateScatterConfig
 

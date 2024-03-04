@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { theme } from '@latitude-sdk/client'
-  import type { Gap } from '@latitude-sdk/client/src/theme/ui/layout'
+  import { theme } from '@latitude-data/client'
+  import type { Gap } from '@latitude-data/client/src/theme/ui/layout'
 
   export let gap: Gap = 4
   export let grow: boolean = false

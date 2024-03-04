@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { FunnelChartProps } from '@latitude-sdk/svelte/internal'
+  import type { FunnelChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
-  import { FunnelChart } from '@latitude-sdk/svelte/internal'
+  import { FunnelChart } from '@latitude-data/svelte/internal'
   type $$Props = Omit<FunnelChartProps, 'data' | 'isLoading' | 'error'> &
     QueryProps
   import { DEFAULT_HEIGHT } from './constants'

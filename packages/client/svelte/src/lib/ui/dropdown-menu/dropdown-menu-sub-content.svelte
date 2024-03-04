@@ -1,6 +1,6 @@
 <script lang="ts">
   import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   const { cn } = client.utils
   import { flyAndScale } from "../../utils";
 

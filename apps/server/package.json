@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/server",
+  "name": "@latitude-data/server",
   "version": "0.0.1",
+  "license": "LGPL",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -14,9 +15,9 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
   },
   "devDependencies": {
-    "@latitude-sdk/client": "workspace:*",
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/query_result": "workspace:*",
+    "@latitude-data/client": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/query_result": "workspace:*",
     "@rollup/pluginutils": "^5.1.0",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/adapter-node": "^4.0.1",
@@ -41,9 +42,9 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@latitude-sdk/client": "workspace:*",
-    "@latitude-sdk/connector-factory": "workspace:^",
-    "@latitude-sdk/svelte": "workspace:*",
+    "@latitude-data/client": "workspace:*",
+    "@latitude-data/connector-factory": "workspace:^",
+    "@latitude-data/svelte": "workspace:*",
     "css-tree": "^2.3.1",
     "pg": "^8.11.3"
   }

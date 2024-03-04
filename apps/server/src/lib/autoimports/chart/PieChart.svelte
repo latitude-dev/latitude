@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { PieChart } from '@latitude-sdk/svelte/internal'
-  import type { PieChartProps } from '@latitude-sdk/svelte/internal'
+  import { PieChart } from '@latitude-data/svelte/internal'
+  import type { PieChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
   type Props = Omit<PieChartProps, 'data' | 'isLoading' | 'error'> & QueryProps
   import { DEFAULT_HEIGHT } from './constants'

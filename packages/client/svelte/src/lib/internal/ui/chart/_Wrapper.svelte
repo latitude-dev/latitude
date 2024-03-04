@@ -1,11 +1,11 @@
 <script context="module" lang="ts">
-  import type { Dataset, QueryResultState } from '@latitude-sdk/client'
+  import type { Dataset, QueryResultState } from '@latitude-data/client'
 
   export type WrapperProps = QueryResultState
 </script>
 
 <script lang="ts">
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   const { cn } = client.utils
   import BlankSlate from './_BlankSlate.svelte'
   export let data: WrapperProps['data'] = null

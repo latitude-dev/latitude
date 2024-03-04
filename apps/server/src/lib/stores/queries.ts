@@ -3,10 +3,10 @@ import {
   store as queryStore,
   createQueryKey as createKeyForQueryStore,
   type QueryResultState,
-} from '@latitude-sdk/client'
+} from '@latitude-data/client'
 import { writable, get, derived, Readable } from 'svelte/store'
 import { ViewParams, getAllViewParams, useViewParams } from './viewParams'
-import { type QueryResultArray } from '@latitude-sdk/query_result'
+import { type QueryResultArray } from '@latitude-data/query_result'
 
 let loaded = false
 

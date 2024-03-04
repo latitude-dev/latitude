@@ -2,7 +2,7 @@ import { createStore } from 'zustand/vanilla'
 import { api } from '../data/api'
 import QueryResult, {
   type QueryResultPayload,
-} from '@latitude-sdk/query_result'
+} from '@latitude-data/query_result'
 
 type QueryRequest = {
   queryPath: string

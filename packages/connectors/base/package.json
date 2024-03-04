@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/base-connector",
+  "name": "@latitude-data/base-connector",
   "version": "0.0.1",
+  "license": "LGPL",
   "description": "Base connector for Latitude",
   "scripts": {
     "dev": "rollup -c -w",
@@ -13,8 +14,8 @@
   },
   "type": "module",
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
     "rollup": "^4.10.0",
@@ -22,10 +23,10 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@latitude-sdk/sql-compiler": "workspace:*"
+    "@latitude-data/sql-compiler": "workspace:*"
   },
   "peerDependencies": {
-    "@latitude-sdk/query_result": "workspace:*"
+    "@latitude-data/query_result": "workspace:*"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

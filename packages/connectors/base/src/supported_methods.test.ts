@@ -1,8 +1,8 @@
-import QueryResult from '@latitude-sdk/query_result'
-import { DataType } from '@latitude-sdk/query_result'
+import QueryResult from '@latitude-data/query_result'
+import { DataType } from '@latitude-data/query_result'
 import { type ResolvedParam, type CompiledQuery } from './types'
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { CompileError } from '@latitude-sdk/sql-compiler'
+import { CompileError } from '@latitude-data/sql-compiler'
 import { BaseConnector } from './index'
 
 vi.mock('fs', (importOriginal) => ({

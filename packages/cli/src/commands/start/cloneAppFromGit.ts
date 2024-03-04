@@ -16,7 +16,7 @@ import {
 import { CommonProps } from './index'
 import { Props } from './setupApp'
 
-export const APP_REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/latitude-sdk/${APP_SERVER_FOLDER}`
+export const APP_REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/latitude-data/${APP_SERVER_FOLDER}`
 
 type RepoProps = CommonProps & { latitudeFolder: string; appFolderTmp: string }
 async function moveAppFromMonorepo({
@@ -45,7 +45,7 @@ async function moveAppFromMonorepo({
  * somehow the dependencies from the monorepo to the new app
  * because for example:
  *
- *    "@latitude-sdk/connector": "workspace:*"
+ *    "@latitude-data/connector": "workspace:*"
  *
  * Is not valid outside the monorepo.
  */

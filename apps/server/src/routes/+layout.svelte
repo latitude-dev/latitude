@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { theme } from '@latitude-sdk/client'
-  import { ThemeProvider } from '@latitude-sdk/svelte'
+  import { theme } from '@latitude-data/client'
+  import { ThemeProvider } from '@latitude-data/svelte'
   const defaultTheme = theme.skins.themes[1]
 
   import '../assets/app.css'

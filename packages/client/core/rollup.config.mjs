@@ -13,7 +13,7 @@ const EXTERNAL_DEPENDENCIES = [
   'lodash/isString',
   'lodash/isNaN',
   'date-fns/format',
-  '@latitude-sdk/query_result',
+  '@latitude-data/query_result',
 ]
 
 /** @type {import('rollup').RollupOptions}*/
