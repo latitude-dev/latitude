@@ -17,6 +17,7 @@ export default defineConfig({
           'Column',
           'View',
           'Text',
+          'Link',
         ],
       },
       mapping: {
