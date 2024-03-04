@@ -64,14 +64,12 @@ function findRunQueries({ ast }) {
   let queryCounter = 0
   const declarations: RunQueryInstance[] = []
 
-  ast.html.children
-    .filter(
-      (node: TemplateNode) =>
-        node.type === 'AwaitBlock' &&
-        node.expression?.type === 'CallExpression' &&
-        node.expression.callee?.name === 'runQuery'
-    )
-    .forEach((node: TemplateNode) => {
+  function traverse(node: TemplateNode) {
+    if (
+      node.type === 'AwaitBlock' &&
+      node.expression?.type === 'CallExpression' &&
+      node.expression.callee?.name === 'runQuery'
+    ) {
       const queryParamsValues = node.expression.arguments.map(
         (arg: TemplateNode, index: number) => {
           if (index === 0) return arg.raw
@@ -89,7 +87,16 @@ function findRunQueries({ ast }) {
       if (!declarations.some((d) => d.queryParams === instance.queryParams)) {
         declarations.push(instance)
       }
-    })
+    }
+
+    if (node.children) {
+      node.children.forEach((child: TemplateNode) => {
+        traverse(child)
+      })
+    }
+  }
+
+  traverse(ast.html)
 
   return declarations
 }

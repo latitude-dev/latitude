@@ -8,6 +8,8 @@ import { writable, get, derived, Readable } from 'svelte/store'
 import { ViewParams, getAllViewParams, useViewParams } from './viewParams'
 import { type QueryResultArray } from '@latitude-sdk/query_result'
 
+let loaded = false
+
 /**
  * The middlewareQueryStore is a store that keeps track of the queries being
  * used in the current view, and points to the key in the core query store with
@@ -76,6 +78,13 @@ async function fetchQueryFromCore({
   const computedParams = computeQueryParams(inlineParams)
   const coreQueryKey = createKeyForQueryStore(query, computedParams)
 
+  middlewareQueryStore.update((state: MiddlewareStoreState) => ({
+    ...state,
+    [queryKey]: { queryPath: query, inlineParams, coreQueryKey },
+  }))
+
+  if (!browser || !loaded) return
+
   if (
     !force &&
     get(middlewareQueryStore)[queryKey] &&
@@ -91,11 +100,6 @@ async function fetchQueryFromCore({
   } else {
     queryStore.getState().fetch({ queryPath: query, params: computedParams })
   }
-
-  middlewareQueryStore.update((state: MiddlewareStoreState) => ({
-    ...state,
-    [queryKey]: { queryPath: query, inlineParams, coreQueryKey },
-  }))
 }
 
 type QuerySubscriptionOptions = {
@@ -138,6 +142,7 @@ export function useQuery({
 
   const updateState = () => {
     const coreQueryKey = get(coreQueryKeyStore)
+    if (!(coreQueryKey in queryStore.getState().queries)) return
     const queryResultState = queryStore.getState().queries[coreQueryKey]
     if (queryResultState === get(queryResultStore)) return
     queryResultStore.set(queryResultState)
@@ -192,9 +197,22 @@ export async function computeQuery(queryPaths?: string[]): Promise<void> {
   Object.values(queriesInView).map((queryInView) => {
     if (queryPaths && !queryPaths.includes(queryInView.queryPath)) return
     fetchQueryFromCore({
-      queryPath: queryInView.queryPath,
+      query: queryInView.queryPath,
       inlineParams: queryInView.inlineParams,
       force: true,
     })
   })
+}
+
+/**
+ * To avoid requesting multiple fetch requests to the server while the page is
+ * loading and the params are still being added while the document loads, we
+ * need to wait for the page to be fully loaded before fetching the queries.
+ * 
+ * TODO: Find a better way to detect when the page is fully loaded without having
+ * to manually call init() in the page.
+ */
+export function init() {
+  loaded = true
+  computeQuery()
 }
