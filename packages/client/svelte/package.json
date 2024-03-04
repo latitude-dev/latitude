@@ -36,12 +36,8 @@
   },
   "typesVersions": {
     ">4.0": {
-      "*": [
-        "./dist/index.d.ts"
-      ],
-      "internal": [
-        "./dist/internal/index.d.ts"
-      ]
+      "*": ["./dist/index.d.ts"],
+      "internal": ["./dist/internal/index.d.ts"]
     }
   },
   "files": [
@@ -59,6 +55,7 @@
     "lodash": "^4.17.21",
     "mode-watcher": "^0.2.1",
     "radix-icons-svelte": "^1.2.1",
+    "svelte-headless-table": "^0.18.2",
     "svelte-persisted-store": "^0.9.1",
     "zustand": "^4.5.1"
   },

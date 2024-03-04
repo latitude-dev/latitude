@@ -275,6 +275,9 @@ importers:
       radix-icons-svelte:
         specifier: ^1.2.1
         version: 1.2.1
+      svelte-headless-table:
+        specifier: ^0.18.2
+        version: 0.18.2(svelte@4.2.10)
       svelte-persisted-store:
         specifier: ^0.9.1
         version: 0.9.1(svelte@4.2.10)
@@ -15555,6 +15558,17 @@ packages:
       postcss-scss: 4.0.9(postcss@8.4.35)
     dev: true
 
+  /svelte-headless-table@0.18.2(svelte@4.2.10):
+    resolution: {integrity: sha512-dnDTaXW5CNzRUjHVbc/Hb0Zv80zU4VcIUnAja6OuZriXvim1AqcWYQCHPRzBGwqj1m3YEHHNvspSzY0o5HzA0A==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      svelte: 4.2.10
+      svelte-keyed: 2.0.0(svelte@4.2.10)
+      svelte-render: 2.0.1(svelte@4.2.10)
+      svelte-subscribe: 2.0.1(svelte@4.2.10)
+    dev: false
+
   /svelte-hmr@0.15.3(svelte@4.2.10):
     resolution: {integrity: sha512-41snaPswvSf8TJUhlkoJBekRrABDXDMdpNpT2tfHIv4JuhgvHqLMhEPGtaQn0BmbNSTkuz2Ed20DF2eHw0SmBQ==}
     engines: {node: ^12.20 || ^14.13.1 || >= 16}
@@ -15572,6 +15586,14 @@ packages:
     dependencies:
       svelte: 4.2.7
     dev: true
+
+  /svelte-keyed@2.0.0(svelte@4.2.10):
+    resolution: {integrity: sha512-7TeEn+QbJC2OJrHiuM0T8vMBkms3DNpTE+Ir+NtnVBnBMA78aL4f1ft9t0Hn/pBbD/TnIXi4YfjFRAgtN+DZ5g==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      svelte: 4.2.10
+    dev: false
 
   /svelte-persisted-store@0.9.1(svelte@4.2.10):
     resolution: {integrity: sha512-l00I8Dy5GKjdjnE9ZcMeXLLMhvgV0+Iuru0Mue7eU3tB+pHBwBB2RVVqw2uC2Hbrf7cyZtsV/lnPKhjTHIWphQ==}
@@ -15678,6 +15700,23 @@ packages:
       svelte: 4.2.7
       typescript: 5.3.3
     dev: true
+
+  /svelte-render@2.0.1(svelte@4.2.10):
+    resolution: {integrity: sha512-RpB0SurwXm4xhjvHHtjeqMmvd645FURb79GFOotScOSqnKK5vpqBgoBPGC0pp+E/eZgDSQ9rRAdn/+N4ys1mXQ==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      svelte: 4.2.10
+      svelte-subscribe: 2.0.1(svelte@4.2.10)
+    dev: false
+
+  /svelte-subscribe@2.0.1(svelte@4.2.10):
+    resolution: {integrity: sha512-eKXIjLxB4C7eQWPqKEdxcGfNXm2g/qJ67zmEZK/GigCZMfrTR3m7DPY93R6MX+5uoqM1FRYxl8LZ1oy4URWi2A==}
+    peerDependencies:
+      svelte: ^4.0.0
+    dependencies:
+      svelte: 4.2.10
+    dev: false
 
   /svelte2tsx@0.7.1(svelte@4.2.10)(typescript@5.3.3):
     resolution: {integrity: sha512-0lKa6LrqJxRan0bDmBd/uFsVzYSXnoFUDaczaH0znke/XI79oy1JjFaF51J9EsOvpn8lXPlrUc3n/MA/ORNxBg==}
