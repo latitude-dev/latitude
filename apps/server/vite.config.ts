@@ -14,7 +14,7 @@ export default defineConfig({
         runQuery: 'import { runQuery } from "$lib/stores/queries"',
         input: 'import { input } from "$lib/stores/queries"'
       },
-      components: [{ name: './src/autoimports', flat: true }],
+      components: [{ name: './src/lib/autoimports', flat: true }],
     }),
     sveltekit(),
   ],
