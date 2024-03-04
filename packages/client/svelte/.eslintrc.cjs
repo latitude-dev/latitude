@@ -1,6 +1,6 @@
 module.exports = {
   extends: [
-    '@latitude-sdk/eslint-config/svelte.js',
+    '@latitude-data/eslint-config/svelte.js',
     'plugin:storybook/recommended',
   ],
   // plugins: ['eslint-plugin-local-rules'],

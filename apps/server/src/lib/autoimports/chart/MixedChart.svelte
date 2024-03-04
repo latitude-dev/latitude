@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { MixedChartProps } from '@latitude-sdk/svelte/internal'
+  import type { MixedChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
-  import { MixedChart } from '@latitude-sdk/svelte/internal'
+  import { MixedChart } from '@latitude-data/svelte/internal'
   type Props = Omit<MixedChartProps, 'data' | 'isLoading' | 'error'> &
     QueryProps
   import { DEFAULT_HEIGHT } from './constants'

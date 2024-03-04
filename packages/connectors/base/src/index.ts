@@ -3,9 +3,9 @@ import * as fs from 'fs'
 import compile, {
   type CompileError,
   type SupportedMethod,
-} from '@latitude-sdk/sql-compiler'
-import type QueryResult from '@latitude-sdk/query_result'
-import { type QueryResultArray } from '@latitude-sdk/query_result'
+} from '@latitude-data/sql-compiler'
+import type QueryResult from '@latitude-data/query_result'
+import { type QueryResultArray } from '@latitude-data/query_result'
 
 import {
   type QueryRequest,

@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import * as postgresConnector from '@latitude-sdk/postgresql-connector'
+import * as postgresConnector from '@latitude-data/postgresql-connector'
 import { createConnector } from './index'
 import { it, describe, beforeEach, afterEach, expect } from 'vitest'
 import { vi } from 'vitest'

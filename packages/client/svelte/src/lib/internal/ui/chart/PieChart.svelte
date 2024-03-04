@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import { type PieChartProps as CorePieChartProps } from '@latitude-sdk/client'
+  import { type PieChartProps as CorePieChartProps } from '@latitude-data/client'
   import { type Props as EchartProps } from './_Echarts.svelte'
   import { type WrapperProps } from './_Wrapper.svelte'
 
@@ -11,7 +11,7 @@
 <script lang="ts">
   import Wrapper from './_Wrapper.svelte'
   import Echart from './_Echarts.svelte'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
   const generatePieConfig = theme.ui.chart.generatePieConfig
 
   export let data: PieChartProps['data'] = null

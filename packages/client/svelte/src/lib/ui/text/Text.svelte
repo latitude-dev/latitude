@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { theme, type TextProps } from '@latitude-sdk/client'
+  import { theme, type TextProps } from '@latitude-data/client'
 
   type $$Props = TextProps
 

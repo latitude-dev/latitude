@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Input } from "@latitude-sdk/svelte";
+  import { Input } from "@latitude-data/svelte";
   import { setViewParam, useViewParam } from "$lib/stores/viewParams";
   import { createEventDispatcher } from "svelte";
 

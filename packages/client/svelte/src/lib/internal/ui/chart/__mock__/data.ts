@@ -1,4 +1,4 @@
-import QueryResult, { DataType } from '@latitude-sdk/query_result'
+import QueryResult, { DataType } from '@latitude-data/query_result'
 
 const data = new QueryResult({
   fields: [

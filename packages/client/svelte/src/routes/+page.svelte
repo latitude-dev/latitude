@@ -1,6 +1,6 @@
 <script lang="ts">
   import ThemeProvider from '$lib/ui/theme-wrapper'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
   import { Button, Text } from '$lib'
 
   const defaultTheme = theme.skins.themes[1]

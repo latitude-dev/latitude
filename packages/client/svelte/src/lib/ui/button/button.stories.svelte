@@ -2,7 +2,7 @@
   import Button from './index.svelte'
   import Cute from '$lib/components/cute/index.svelte'
   import { Story, Template } from '@storybook/addon-svelte-csf'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
 
   export const meta = {
     title: 'Button',

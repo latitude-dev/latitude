@@ -8,7 +8,7 @@
 
 <script lang="ts">
   import { Button as ButtonPrimitive } from 'bits-ui'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
 
   let className: Props['class'] = undefined
 

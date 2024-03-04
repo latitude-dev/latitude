@@ -1,5 +1,5 @@
 import findQueryFile from '$lib/findQueryFile'
-import { createConnector } from '@latitude-sdk/connector-factory'
+import { createConnector } from '@latitude-data/connector-factory'
 import { json } from '@sveltejs/kit'
 
 export async function GET({

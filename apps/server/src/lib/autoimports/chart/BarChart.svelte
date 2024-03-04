@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { BarChartProps } from '@latitude-sdk/svelte/internal'
+  import type { BarChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
-  import { BarChart } from '@latitude-sdk/svelte/internal'
+  import { BarChart } from '@latitude-data/svelte/internal'
   type Props = Omit<BarChartProps, 'data' | 'isLoading' | 'error'> & QueryProps
   import { DEFAULT_HEIGHT } from './constants'
 

@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/query_result",
+  "name": "@latitude-data/query_result",
   "version": "0.0.0",
+  "license": "LGPL",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -18,8 +19,8 @@
     }
   },
   "devDependencies": {
-    "@latitude-sdk/typescript": "workspace:*",
-    "@latitude-sdk/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "prettier": "^3.1.1",
     "rollup": "^4.10.0"

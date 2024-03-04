@@ -21,7 +21,7 @@
 </script>
 
 <script lang="ts">
-  import { theme } from "@latitude-sdk/client"
+  import { theme } from "@latitude-data/client"
   import type { HTMLInputAttributes } from "svelte/elements";
 
   type $$Props = HTMLInputAttributes;

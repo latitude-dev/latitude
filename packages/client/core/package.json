@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/client",
+  "name": "@latitude-data/client",
   "version": "0.0.1",
+  "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
     "build:rollup": "rollup -c",
@@ -31,7 +32,7 @@
     "!dist/**/*.test.*"
   ],
   "dependencies": {
-    "@latitude-sdk/query_result": "workspace:*",
+    "@latitude-data/query_result": "workspace:*",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
     "echarts": "^5.5.0",
@@ -41,8 +42,8 @@
     "zustand": "^4.5.1"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/lodash": "^4.14.202",
     "autoprefixer": "^10.4.16",

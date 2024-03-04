@@ -4,7 +4,7 @@
   import { Card } from '$lib'
   import { themeConfig } from '../store'
   import { mode } from 'mode-watcher'
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   import { Check } from 'radix-icons-svelte'
   import { COLORS, COLOR_KEYS } from './colors'
 

@@ -24,11 +24,10 @@ async function displayMessage(dataAppDir: string) {
   console.log(colors.green(banner))
   console.log(
     colors.white(`
-    ${
-      config.dev
+    ${config.dev
         ? '👋 Hi dev, thanks for contributing'
-        : 'Welcome to Latitude SDK 🎉'
-    }
+        : 'Welcome to Latitude data 🎉'
+      }
 
     You can start your project by running:
     --------------------------------------

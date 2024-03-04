@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/svelte",
+  "name": "@latitude-data/svelte",
   "version": "0.0.1",
+  "license": "LGPL",
   "scripts": {
     "build": "pnpm run buildAndPackage",
     "build-storybook": "storybook build",
@@ -51,8 +52,8 @@
     "!dist/**/*.stories.svelte"
   ],
   "dependencies": {
-    "@latitude-sdk/client": "workspace:*",
-    "@latitude-sdk/query_result": "workspace:^",
+    "@latitude-data/client": "workspace:*",
+    "@latitude-data/query_result": "workspace:^",
     "bits-ui": "^0.18.1",
     "echarts": "^5.5.0",
     "lodash": "^4.17.21",
@@ -65,7 +66,7 @@
     "svelte": "^4.0.0"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
     "@storybook/addon-essentials": "^7.6.17",
     "@storybook/addon-interactions": "^7.6.17",
     "@storybook/addon-links": "^7.6.17",

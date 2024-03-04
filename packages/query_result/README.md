@@ -1,1 +1,1 @@
-# `@latitude-sdk/query_result`
+# `@latitude-data/query_result`

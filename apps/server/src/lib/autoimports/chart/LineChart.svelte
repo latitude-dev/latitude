@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { LineChartProps } from '@latitude-sdk/svelte/internal'
+  import type { LineChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
-  import { LineChart } from '@latitude-sdk/svelte/internal'
+  import { LineChart } from '@latitude-data/svelte/internal'
   type Props = Omit<LineChartProps, 'data' | 'isLoading' | 'error'> & QueryProps
   import { DEFAULT_HEIGHT } from './constants'
 

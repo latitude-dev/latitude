@@ -2,7 +2,7 @@
   import type { Meta } from '@storybook/svelte'
   import { Story, Template } from '@storybook/addon-svelte-csf'
   import PieChart, { type PieChartProps } from './PieChart.svelte'
-  import QueryResult, { DataType } from '@latitude-sdk/query_result'
+  import QueryResult, { DataType } from '@latitude-data/query_result'
 
   const data = new QueryResult({
     fields: [

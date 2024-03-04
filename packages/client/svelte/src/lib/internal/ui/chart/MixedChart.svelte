@@ -1,6 +1,6 @@
 <script context="module" lang="ts">
   import { type Props as EchartProps } from './_Echarts.svelte'
-  import { type CartesianChartProps, theme } from '@latitude-sdk/client'
+  import { type CartesianChartProps, theme } from '@latitude-data/client'
   import Wrapper, { type WrapperProps } from './_Wrapper.svelte'
 
   export type MixedChartProps = Omit<EchartProps, 'options' | 'isComputing'> &

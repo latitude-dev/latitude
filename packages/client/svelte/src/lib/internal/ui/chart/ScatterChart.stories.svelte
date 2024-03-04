@@ -1,7 +1,7 @@
 <script context="module" lang="ts">
   import type { Meta } from '@storybook/svelte'
   import { Story, Template } from '@storybook/addon-svelte-csf'
-  import QueryResult, { DataType } from '@latitude-sdk/query_result'
+  import QueryResult, { DataType } from '@latitude-data/query_result'
   import ScatterChart, { type ScatterChartProps } from './ScatterChart.svelte'
 
   const data = new QueryResult({

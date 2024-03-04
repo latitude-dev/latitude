@@ -14,8 +14,8 @@ export default {
     }),
   ],
   external: [
-    '@latitude-sdk/base-connector',
-    '@latitude-sdk/query_result',
+    '@latitude-data/base-connector',
+    '@latitude-data/query_result',
     '@aws-sdk/client-athena',
     'crypto',
   ],

@@ -38,7 +38,7 @@
     GaugeChart,
   } from 'echarts/charts'
 
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
 
   echarts.use([
     // Charts
