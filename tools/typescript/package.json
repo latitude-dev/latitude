@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/typescript",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
   "license": "LGPL",
   "publishConfig": {

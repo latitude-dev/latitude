@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/mysql-connector",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "LGPL",
   "description": "MySQL connector for Latitude",
   "scripts": {

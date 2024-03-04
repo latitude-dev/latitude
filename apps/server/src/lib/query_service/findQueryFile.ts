@@ -1,3 +1,4 @@
+import { NotFoundError } from '$lib/errors'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
@@ -8,17 +9,15 @@ type Result = {
   sourcePath: string
 }
 
-export class QueryNotFoundError extends Error {
+export class QueryNotFoundError extends NotFoundError {
   constructor(message: string) {
     super(message)
-    this.name = 'QueryNotFoundError'
   }
 }
 
-export class SourceFileNotFoundError extends Error {
+export class SourceFileNotFoundError extends NotFoundError {
   constructor(message: string) {
     super(message)
-    this.name = 'SourceFileNotFoundError'
   }
 }
 
@@ -40,7 +39,7 @@ export default async function findQueryFile(filePath: string): Promise<Result> {
     // Try to find a .yml file in the current directory
     const files = await fs.readdir(currentDir)
     const ymlFile = files.find(
-      (file) => file.endsWith('.yml') || file.endsWith('.yaml'),
+      (file) => file.endsWith('.yml') || file.endsWith('.yaml')
     )
 
     if (ymlFile) {

@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/client",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",

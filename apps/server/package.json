@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/server",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "license": "LGPL",
   "type": "module",
   "scripts": {
