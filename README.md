@@ -1,5 +1,5 @@
-![Linter](https://github.com/latitude-dev/latitude-data/actions/workflows/linter.yml/badge.svg)
-![Tests](https://github.com/latitude-dev/latitude-data/actions/workflows/test.yml/badge.svg)
+![Linter](https://github.com/latitude-dev/latitude/actions/workflows/linter.yml/badge.svg)
+![Tests](https://github.com/latitude-dev/latitude/actions/workflows/test.yml/badge.svg)
 
 # Latitude
 
