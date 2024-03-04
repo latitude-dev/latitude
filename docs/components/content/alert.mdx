@@ -1,4 +1,33 @@
 ---
 title: 'Alert'
-description: 'description'
+description: 'Display a message to the user'
 ---
+
+## Introduction
+
+Use the `<Alert>` component to display a message to the user. The component can be used to display a success, warning, or error message.
+
+## Usage
+
+To use the `<Alert>` component, include it in your views as follows:
+
+```html
+<Alert type="success">
+    <Alert.Title>
+        Success
+    </Alert.Title>
+    <Alert.Message>
+        Your changes have been saved.
+    </Alert.Message>
+</Alert>
+```
+
+As you can see, the `<Alert>` component can contain a `<Alert.Title>` and a `<Alert.Message>` component. The title is optional, but the message is required.
+
+Here are the available types:
+
+- `default`
+- `success`
+- `warning`
+- `error`
+

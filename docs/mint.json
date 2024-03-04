@@ -153,12 +153,8 @@
       "group": "Content",
       "pages": [
         "components/content/text",
-        "components/content/image",
-        "components/content/list",
-        "components/content/quote",
         "components/content/alert",
-        "components/content/card",
-        "components/content/accordion"
+        "components/content/card"
       ]
     },
     {
@@ -179,7 +175,6 @@
         "components/inputs/text",
         "components/inputs/select",
         "components/inputs/date",
-        "components/inputs/toggle",
         "components/inputs/checkbox"
       ]
     },
@@ -187,9 +182,7 @@
       "group": "Navigation",
       "pages": [
         "components/navigation/link",
-        "components/navigation/button",
-        "components/navigation/segmented-buttons",
-        "components/navigation/tabs"
+        "components/navigation/button"
       ]
     },
     {
