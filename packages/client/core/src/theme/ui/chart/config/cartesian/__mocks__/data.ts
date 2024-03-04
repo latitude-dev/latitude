@@ -2,17 +2,17 @@ import { DBSource } from '../../../types'
 export const FONT_FAMILY =
   'Inter var,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,"Apple Color Emoji","Segoe UI Emoji",Segoe UI Symbol,"Noto Color Emoji"'
 const RAW_DATASET = [
-  ['country', 'movies', 'shows'],
-  ['CN', null, '100'],
-  ['TW', null, '100'],
-  ['KR', '2', '98'],
-  ['JP', '10', '89'],
-  ['GB', '13', '86'],
-  ['ES', '16', '83'],
-  ['US', '21', '78'],
-  ['CA', '25', '75'],
-  ['AU', '28', '71'],
-  ['IN', '78', '21'],
+  ['country', 'movies_1', 'shows', 'movies_2'],
+  ['CN', null, '100', '3'],
+  ['TW', null, '100', '3'],
+  ['KR', '2', '98', '3'],
+  ['JP', '10', '89', '3'],
+  ['GB', '13', '86', '3'],
+  ['ES', '16', '83', '3'],
+  ['US', '21', '78', '3'],
+  ['CA', '25', '75', '8'],
+  ['AU', '28', '71', '8'],
+  ['IN', '78', '21', '11'],
 ]
 const OUTPUT_DATASET = RAW_DATASET.map((row) =>
   row.map((cell) => (cell === null ? 'null' : cell)),
@@ -66,7 +66,7 @@ export const testData = {
       show: true,
       boundaryGap: 0,
       type: 'value',
-      name: 'movies',
+      name: 'movies_1',
       nameLocation: 'center',
       nameRotate: 90,
       nameTextStyle: {
@@ -119,7 +119,7 @@ export const testData = {
   series: [
     {
       type: 'bar',
-      name: 'movies',
+      name: 'movies_1',
       showSymbol: true,
       areaStyle: { opacity: 0 },
       connectNulls: true,

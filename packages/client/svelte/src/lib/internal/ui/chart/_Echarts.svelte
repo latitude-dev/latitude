@@ -7,7 +7,6 @@
     options: EchartsOptions | null | undefined
     width?: number
     height?: number
-    isComputing?: boolean
     locale?: Locale
   }
 </script>
@@ -40,7 +39,6 @@
   } from 'echarts/charts'
 
   import { theme as client } from '@latitude-sdk/client'
-  const { cn } = client.utils
 
   echarts.use([
     // Charts
@@ -76,14 +74,11 @@
   export let width: Props['width'] = undefined
   export let height: Props['height'] = undefined
   export let locale: Props['locale'] = undefined
-  export let isComputing: Props['isComputing'] = false
 
   export function chartable(
     element: HTMLElement,
     { options, theme, locale }: ChartableProps,
   ) {
-    console.log('FIRST_RENDER_HOLA', options)
-
     let resizeObserver: ResizeObserver
     const echartsInstance = echarts.init(element, theme, {
       renderer: 'canvas',
@@ -105,7 +100,6 @@
     onWindowResize()
     return {
       update({ options: newOptions }: ChartableProps) {
-        console.log('UPDATE_CALLBACK_HOLA', newOptions)
         echartsInstance.setOption({ ...options, ...newOptions })
       },
       destroy() {
@@ -120,7 +114,7 @@
   }
 </script>
 
-<div class={cn('h-full w-full', { 'animate-pulse': isComputing })}>
+<div class="h-full w-full">
   {#if options}
     <div
       use:chartable={{ theme, options, locale }}

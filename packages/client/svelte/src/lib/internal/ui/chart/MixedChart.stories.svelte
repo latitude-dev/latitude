@@ -1,10 +1,10 @@
 <script context="module" lang="ts">
   import type { Meta } from '@storybook/svelte'
   import { Story, Template } from '@storybook/addon-svelte-csf'
-  import { DATASET } from './__mock__/data'
-  import MixedChart, { type Props } from './MixedChart.svelte'
+  import MixedChart, { type MixedChartProps } from './MixedChart.svelte'
+  import data from './__mock__/data'
 
-  type Args = Props & {
+  type Args = MixedChartProps & {
     'config.showValues': boolean
     'config.showLegend': boolean
     'config.showDecal': boolean
@@ -13,6 +13,8 @@
     title: 'Charts/MixedChart',
     component: MixedChart,
     argTypes: {
+      data: { control: 'object' },
+      isLoading: { control: 'boolean' },
       yTitle: { control: 'text' },
       xTitle: { control: 'text' },
       swapAxis: { control: 'boolean' },
@@ -21,6 +23,8 @@
       'config.showDecal': { control: 'boolean' },
     },
     args: {
+      data,
+      isLoading: false,
       yTitle: 'Events by month',
       xTitle: 'Type of event',
       swapAxis: false,
@@ -28,13 +32,15 @@
       'config.showLegend': false,
       'config.showDecal': false,
     },
-    parameters: { layout: 'centered' }
+    parameters: { layout: 'centered' },
   } satisfies Meta<Args>
 </script>
-<Template id='mixed' let:args>
+
+<Template id="mixed" let:args>
   <MixedChart
-    dataset={DATASET}
-    x='event_month'
+    data={args.data}
+    isLoading={args.isLoading}
+    x="event_month"
     y={[
       { name: 'node_events_sum', chartType: 'line' },
       { name: 'project_events_sum', chartType: 'bar' },
@@ -49,5 +55,4 @@
     }}
   />
 </Template>
-<Story name="Mixed" template='mixed' />
-
+<Story name="Mixed" template="mixed" />

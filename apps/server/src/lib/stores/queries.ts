@@ -63,18 +63,18 @@ function createMiddlewareKey(
  * Otherwise, it fetches it from the core query store (which fetches it from the server if not already in that store).
  * If force is true, it forces a refetch of the query from the server.
  */
-async function fetchQueryFromCore ({
-  queryPath,
+async function fetchQueryFromCore({
+  query,
   inlineParams,
   force = false,
 }: {
-  queryPath: string
+  query: string
   inlineParams: InlineParams
   force?: boolean
 }): Promise<void> {
-  const queryKey = createMiddlewareKey(queryPath, inlineParams)
+  const queryKey = createMiddlewareKey(query, inlineParams)
   const computedParams = computeQueryParams(inlineParams)
-  const coreQueryKey = createKeyForQueryStore(queryPath, computedParams)
+  const coreQueryKey = createKeyForQueryStore(query, computedParams)
 
   if (
     !force &&
@@ -87,21 +87,25 @@ async function fetchQueryFromCore ({
   if (force) {
     queryStore
       .getState()
-      .forceRefetch({ queryPath: queryPath, params: computedParams })
+      .forceRefetch({ queryPath: query, params: computedParams })
   } else {
-    queryStore
-      .getState()
-      .fetch({ queryPath: queryPath, params: computedParams })
+    queryStore.getState().fetch({ queryPath: query, params: computedParams })
   }
 
   middlewareQueryStore.update((state: MiddlewareStoreState) => ({
     ...state,
-    [queryKey]: { queryPath, inlineParams, coreQueryKey },
+    [queryKey]: { queryPath: query, inlineParams, coreQueryKey },
   }))
 }
 
 type QuerySubscriptionOptions = {
   reactiveToParams?: boolean
+}
+
+export type QueryProps = {
+  query: string
+  inlineParams?: InlineParams
+  opts?: QuerySubscriptionOptions
 }
 
 /**
@@ -110,17 +114,18 @@ type QuerySubscriptionOptions = {
  * - error: Error | null
  * - data: QueryResult | null
  */
-export function useQuery(
-  queryPath: string,
-  inlineParams: InlineParams = {},
-  opts: QuerySubscriptionOptions = {},
-): Readable<QueryResultState> {
+export function useQuery({
+  query,
+  inlineParams = {},
+  opts = {},
+}: QueryProps): Readable<QueryResultState> {
   const queryResultStore = writable<QueryResultState>({ isLoading: true })
   if (!browser) return queryResultStore
 
-  const middlewareKey = createMiddlewareKey(queryPath, inlineParams)
-  if (!get(middlewareQueryStore)[middlewareKey])
-    fetchQueryFromCore({ queryPath, inlineParams })
+  const middlewareKey = createMiddlewareKey(query, inlineParams)
+  if (!get(middlewareQueryStore)[middlewareKey]) {
+    fetchQueryFromCore({ query, inlineParams })
+  }
 
   const coreQueryKeyStore = writable<string>(
     get(middlewareQueryStore)[middlewareKey]!.coreQueryKey,
@@ -143,7 +148,7 @@ export function useQuery(
   // Refetch when viewParams change
   if (opts.reactiveToParams)
     useViewParams().subscribe(() => {
-      fetchQueryFromCore({ queryPath, inlineParams })
+      fetchQueryFromCore({ query, inlineParams })
     })
 
   updateState()
@@ -156,7 +161,7 @@ export function useQuery(
  * This method is targeted for easier use in Svelte pages made by users.
  */
 export function runQuery(
-  queryPath: string,
+  query: string,
   inlineParams: InlineParams = {},
   opts: QuerySubscriptionOptions = {},
 ): Readable<Promise<QueryResultArray>> {
@@ -173,14 +178,14 @@ export function runQuery(
   }
 
   return derived(
-    useQuery(queryPath, inlineParams, opts),
+    useQuery({ query, inlineParams, opts }),
     ($queryResultState, set) => {
       set(queryStateToPromise($queryResultState))
     },
   )
 }
 
-export async function computeQuery (queryPaths?: string[]): Promise<void> {
+export async function computeQuery(queryPaths?: string[]): Promise<void> {
   if (!browser) return
 
   const queriesInView = get(middlewareQueryStore)

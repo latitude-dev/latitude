@@ -8,7 +8,7 @@ describe('generateConfig', () => {
       generateConfig({
         dataset: DATASET,
         x: 'country',
-        y: { name: 'movies', chartType: 'bar' },
+        y: { name: 'movies_1', chartType: 'bar' },
       }),
     ).toEqual({
       ...testData,
@@ -27,7 +27,7 @@ describe('generateConfig', () => {
         dataset: DATASET,
         animation: false,
         x: 'country',
-        y: 'movies',
+        y: 'movies_1',
       }),
     ).toEqual({
       ...testData,
@@ -46,7 +46,7 @@ describe('generateConfig', () => {
       generateConfig({
         dataset: DATASET,
         x: 'country',
-        y: ['shows', { name: 'movies', chartType: 'bar' }],
+        y: ['shows', { name: 'movies_1', chartType: 'bar' }],
       }),
     ).toEqual({
       ...testData,
@@ -75,13 +75,56 @@ describe('generateConfig', () => {
     })
   })
 
+  it('accepts a wilcard * for y', () => {
+    expect(
+      generateConfig({
+        dataset: DATASET,
+        x: 'country',
+        y: [
+          { name: 'movies_*', chartType: 'line' },
+          { name: 'shows', chartType: 'bar' },
+        ],
+      }),
+    ).toEqual({
+      ...testData,
+      series: [
+        {
+          ...testData.series[0],
+          xAxisIndex: 0,
+          type: 'line',
+        },
+        {
+          ...testData.series[0],
+          xAxisIndex: 0,
+          encode: { x: 0, y: 3 },
+          label: {
+            ...testData.series[0]?.label,
+            formatter: '{@3}',
+          },
+          type: 'line',
+          name: 'movies_2',
+        },
+        {
+          ...testData.series[0],
+          name: 'shows',
+          encode: { x: 0, y: 2 },
+          label: {
+            ...testData.series[0]?.label,
+            formatter: '{@2}',
+          },
+          xAxisIndex: 0,
+        },
+      ],
+    })
+  })
+
   it('Axis titles', () => {
     expect(
       generateConfig({
         dataset: DATASET,
         x: 'country',
         xTitle: 'Country axis',
-        y: 'movies',
+        y: 'movies_1',
         yTitle: 'Movies and shows',
       }),
     ).toEqual({
@@ -112,7 +155,7 @@ describe('generateConfig', () => {
       generateConfig({
         dataset: DATASET,
         x: 'country',
-        y: { name: 'movies', chartType: 'line' },
+        y: { name: 'movies_1', chartType: 'line' },
       }),
     ).toEqual({
       ...testData,
@@ -137,7 +180,7 @@ describe('generateConfig', () => {
       generateConfig({
         dataset: DATASET,
         x: 'country',
-        y: { name: 'movies', chartType: 'area' },
+        y: { name: 'movies_1', chartType: 'area' },
       }),
     ).toEqual({
       ...testData,
@@ -164,7 +207,7 @@ describe('generateConfig', () => {
         dataset: DATASET,
         animation: false,
         x: 'country',
-        y: ['movies', 'shows'],
+        y: ['movies_1', 'shows'],
         yFormat: { stack: true },
       }),
     ).toEqual({
@@ -191,7 +234,7 @@ describe('generateConfig', () => {
       yAxis: [
         {
           ...testData.yAxis[0],
-          name: 'movies',
+          name: 'movies_1',
         },
       ],
     })
@@ -202,7 +245,7 @@ describe('generateConfig', () => {
       generateConfig({
         dataset: DATASET,
         x: 'country',
-        y: ['movies', 'shows'],
+        y: ['movies_1', 'shows'],
         yFormat: { stack: 'normalized' },
       }),
     ).toEqual({
@@ -211,17 +254,52 @@ describe('generateConfig', () => {
         {
           sourceHeader: true,
           source: [
-            ['country', 'movies', 'shows'],
-            ['CN', '0', '1'],
-            ['TW', '0', '1'],
-            ['KR', '0.02', '0.98'],
-            ['JP', '0.10101010101010101', '0.898989898989899'],
-            ['GB', '0.13131313131313133', '0.8686868686868687'],
-            ['ES', '0.16161616161616163', '0.8383838383838383'],
-            ['US', '0.21212121212121213', '0.7878787878787878'],
-            ['CA', '0.25', '0.75'],
-            ['AU', '0.2828282828282828', '0.7171717171717171'],
-            ['IN', '0.7878787878787878', '0.21212121212121213'],
+            ['country', 'movies_1', 'shows', 'movies_2'],
+            ['CN', '0', '0.970873786407767', '0.02912621359223301'],
+            ['TW', '0', '0.970873786407767', '0.02912621359223301'],
+            [
+              'KR',
+              '0.019417475728155338',
+              '0.9514563106796117',
+              '0.02912621359223301',
+            ],
+            [
+              'JP',
+              '0.09803921568627451',
+              '0.8725490196078431',
+              '0.029411764705882353',
+            ],
+            [
+              'GB',
+              '0.12745098039215685',
+              '0.8431372549019608',
+              '0.029411764705882353',
+            ],
+            [
+              'ES',
+              '0.1568627450980392',
+              '0.8137254901960784',
+              '0.029411764705882353',
+            ],
+            [
+              'US',
+              '0.20588235294117646',
+              '0.7647058823529411',
+              '0.029411764705882353',
+            ],
+            [
+              'CA',
+              '0.23148148148148148',
+              '0.6944444444444444',
+              '0.07407407407407407',
+            ],
+            [
+              'AU',
+              '0.2616822429906542',
+              '0.6635514018691588',
+              '0.07476635514018691',
+            ],
+            ['IN', '0.7090909090909091', '0.19090909090909092', '0.1'],
           ],
         },
       ],
@@ -246,7 +324,7 @@ describe('generateConfig', () => {
       yAxis: [
         {
           ...testData.yAxis[0],
-          name: 'movies',
+          name: 'movies_1',
         },
       ],
     })
@@ -257,7 +335,7 @@ describe('generateConfig', () => {
       generateConfig({
         dataset: DATASET,
         x: 'country',
-        y: { name: 'movies', chartType: 'bar' },
+        y: { name: 'movies_1', chartType: 'bar' },
         swapAxis: true,
       }),
     ).toEqual({
