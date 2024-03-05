@@ -1,6 +1,6 @@
 import colors from 'picocolors'
 import { APP_FOLDER } from '../constants'
-import { exec, spawn } from 'child_process'
+import { spawn } from 'child_process'
 import { exit } from 'process'
 
 export const cleanTerminal = () => {

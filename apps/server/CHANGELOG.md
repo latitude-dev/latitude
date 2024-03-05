@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.7
+
+### Patch Changes
+
+- Move Table to autoimports folder
+
 ## 0.0.6
 
 ### Patch Changes
