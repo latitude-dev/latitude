@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/svelte",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "LGPL",
   "scripts": {
     "build": "pnpm run buildAndPackage",
@@ -36,8 +36,12 @@
   },
   "typesVersions": {
     ">4.0": {
-      "*": ["./dist/index.d.ts"],
-      "internal": ["./dist/internal/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "internal": [
+        "./dist/internal/index.d.ts"
+      ]
     }
   },
   "files": [

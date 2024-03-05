@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/connector-factory",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "LGPL",
   "description": "Factory to create connectors",
   "type": "module",

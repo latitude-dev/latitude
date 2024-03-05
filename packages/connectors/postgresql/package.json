@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/postgresql-connector",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "LGPL",
   "description": "PostgreSQL connector for Latitude",
   "scripts": {
@@ -29,7 +29,5 @@
   },
   "dependencies": {
     "pg": "^8.11.3"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts"
+  }
 }
