@@ -1,4 +1,49 @@
 ---
 title: 'Cast Methods'
-description: 'description'
+description: 'Converts data types in Latitude logic blocks, ensuring that SQL operations are performed with the correct data type.'
 ---
+
+## Introduction
+
+The `cast` method allows you to convert values to a different type in your query logic enclosed in `{ }`. Cast ensures that the data types of variables are suitable for the operations you wish to perform.
+
+## Example
+
+Consider a scenario where you have a parameter named `limit`, but the user has provided a value as a string, `"3"`, instead of a numeric value. To correctly perform a comparison operation, you need the value to be of a numeric type.
+
+Without casting, the comparison in the following block would not work as expected:
+
+```
+{#if limit > 5}
+    ...
+{:else}
+    ...
+{/if}
+```
+
+
+This is because, with `limit = "3"`, you're comparing the string `"3"` to the number `5`, which leads to an incorrect comparison.
+
+### Solution: Using `cast`
+
+To resolve this, you can use the `cast` function to convert `limit` to an integer:
+
+```
+{#if cast(limit, "int") > 5}
+    ...
+{:else}
+    ...
+{/if}
+```
+
+This way, if `limit` is `"3"`, it gets converted to the numeric value `3` before the comparison, ensuring the operation is correctly performed.
+
+## Accepted Casting Types
+
+You can cast values to various types using the `cast` method. The following are the accepted types for casting:
+
+- `string` or `text`: Converts the value to a string. Both `string` and `text` perform the same function.
+- `int`: Converts the value to an integer.
+- `float` or `number`: Converts the value to a floating-point number. Both `float` and `number` are treated similarly.
+- `bool` or `boolean`: Converts the value to a boolean. Both `bool` and `boolean` are interchangeable and perform the same function.
+- `date`: Converts the value to a date.

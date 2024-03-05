@@ -101,24 +101,26 @@
     {
       "group": "Basics",
       "pages": [
-        "queries/basics/sql-syntax-basics",
-        "queries/basics/reference-other-queries",
-        "queries/basics/interpolate-values",
-        "queries/basics/variables"
+        "queries/basics/file-structure",
+        "queries/basics/sql-syntax-basics"
       ]
     },
     {
       "group": "Logic",
       "pages": [
+        "queries/logic/variables",
         "queries/logic/if-else",
-        "queries/logic/conditions",
         "queries/logic/loops",
-        "queries/logic/functions"
+        "queries/logic/interpolate-values"
       ]
     },
     {
       "group": "Advanced",
-      "pages": ["queries/advanced/run-query", "queries/advanced/cast-methods"]
+      "pages": [
+        "queries/advanced/reference-queries",
+        "queries/advanced/run-query",
+        "queries/advanced/cast-methods"
+      ]
     },
     {
       "group": "Basics",

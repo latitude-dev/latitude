@@ -1,0 +1,98 @@
+---
+title: 'Variables'
+description: 'Modify and optimize SQL code with the flexibility of variables'
+---
+
+## Introduction
+
+Variables and constants store values you can later use anywhere in your query.
+
+## Basic Usage
+Variables are placeholders that can be assigned and reassigned values throughout the SQL code.
+
+To assign a value to a variable, use the equal sign `=` followed by the value.
+```
+{name = 'foo'}
+{age = 30}
+{sum = 2 + 4} 
+```
+
+Example in use:
+```sql
+---- Defining the variable and SQL code ----
+
+{sum = 2 + 4} 
+
+SELECT *
+FROM table
+WHERE id = {sum}
+
+---- ⬇️ After proccessing ⬇️ ----
+
+SELECT *
+FROM database
+WHERE id = 6
+```
+### Incrementing
+Variables can be modified using operations such as addition.
+```sql
+{counter = counter + 10}
+
+SELECT *
+FROM table
+WHERE id != null
+AND (
+{#each [1, 2, 3] as products}
+OR id = {counter}
+{/each}
+)
+
+---- ⬇️ After proccessing ⬇️ ----
+
+SELECT *
+FROM table
+WHERE id != null 
+AND id = 10
+AND id = 20
+AND id = 30
+```
+
+## Constants
+Constants are similar to variables but, once defined, their value cannot be changed. Also the main syntax difference is constants are defined using the `@const` keyword.
+
+```
+{@const name = 'value'}
+```
+
+```sql
+---- Defining the constant and SQL code ----
+
+{@const birthday = '2000/02/28'} 
+
+SELECT *
+FROM table
+{#if birthday = '2000/02/28'}
+    {@const birthday = '2024/12/31'} 
+{/if}
+
+
+---- ⬇️ After proccessing ⬇️ ----
+
+'!Error. You are trying to modify the constant content'
+```
+
+## Scope
+### Global
+Variables defined outside of any logic blocks are considered global and can be modified and accessed throughout the entire code.
+```
+{var1 = 'latitude'}
+```
+
+### Local Variables
+Variables defined within logic blocks are local to that block. They cannot be accessed outside the block in which they are defined.
+
+``` 
+{#if condition}
+    {var2 = 'localValue'} -- Accessible only within this block
+{/if}
+```

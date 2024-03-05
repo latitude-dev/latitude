@@ -49,11 +49,11 @@ To configure the connection with your your Microsoft SQL database follow these s
 - **Password** → The password associated with the user account for authentication purposes.
 - **Database** → The name of the database on the SQL Server that you want to access or manipulate.
 - **Server** → The name or IP address of the SQL Server instance you are connecting to.
-- **Max** → he maximum number of connections allowed in the connection pool. This is the upper limit on the number of active connections your application can have to the SQL Server at any time.
-- **Min** → The minimum number of connections to maintain in the pool. This ensures that a certain number of connections are always ready and available.
-- **IdleTimeoutMillis** → The amount of time, in milliseconds, a connection can remain idle in the pool before being closed. This helps manage and free up unused connections efficiently.
-- **Encrypt** → A boolean setting that determines whether the data sent between the client and SQL Server should be encrypted. This is crucial for securing sensitive data in transit.
-- **TrustServerCertificate** →  A boolean setting that, when true, indicates the client should trust the SQL Server's certificate without validating it. This is important for connections where SSL encryption is used but the server's certificate may not be verified by a known Certificate Authority (CA).
+- **Max** → (Optional) he maximum number of connections allowed in the connection pool. This is the upper limit on the number of active connections your application can have to the SQL Server at any time.
+- **Min** → (Optional) The minimum number of connections to maintain in the pool. This ensures that a certain number of connections are always ready and available.
+- **IdleTimeoutMillis** → (Optional) The amount of time, in milliseconds, a connection can remain idle in the pool before being closed. This helps manage and free up unused connections efficiently.
+- **Encrypt** → (Optional) A boolean setting that determines whether the data sent between the client and SQL Server should be encrypted. This is crucial for securing sensitive data in transit.
+- **TrustServerCertificate** → (Optional)  A boolean setting that, when true, indicates the client should trust the SQL Server's certificate without validating it. This is important for connections where SSL encryption is used but the server's certificate may not be verified by a known Certificate Authority (CA).
 
 ## Test connection
 

@@ -1,4 +1,108 @@
 ---
 title: 'If / Else'
-description: 'description'
+description: 'Adjust your SQL code dynamically according to conditions'
 ---
+
+## Introduction
+
+The logic blocks supports conditional execution through the use of if and else, allowing SQL code to be executed only when certain conditions are met.
+
+## Syntax
+
+The syntax of these conditions is as follows:
+
+### Simple Conditions
+Includes the code only if the condition is true, without an alternative.
+
+```
+{#if id > 100}
+    ...
+{/if}
+```
+
+### Conditions with Else
+Allow two content alternatives. If the condition is not true, the content defined after `{:else}` will be included.
+   
+```
+{#if id > 100}
+    ...
+{:else}
+    ...
+{/if}
+```
+
+### Multiple Conditions
+Allow unlimited content alternatives. It evaluates conditions cascading until one is met. If none is met, it returns the content defined after `{:else}`.
+
+```
+{#if id > 100}
+    ...
+{:else if > 50}
+    ...
+{:else if > 25}
+    ...
+{:else}
+    ...
+{/if}
+```
+
+## Expressions
+
+Expressions are crucial for determining the logic within if and else constructs. They can evaluate variables, constants, or any combination of the two using a variety of operators.
+
+### Values
+
+Values can be inside expressions:
+
+- **Literals**: Such as numeric values (`123`), strings (`'Hello'`), or boolean values (`true`, `false`).
+    ```
+    {#if id > 100} -- numeric values
+    {#if name = 'John'} -- strings
+    {#if active = true} -- boolean
+    ```
+- **Variables/Parameters**: References to values passed to the template. For example, `userId` could be a variable representing a user's ID.
+    ```
+    {#if id = {userID}} 
+    -- Which results in:
+    {#if id = 64} 
+    ```
+
+### Operators
+
+Expressions are compared with operators, which include the following options:
+
+- **Equality and Inequality**:
+  - `==`: Equal to
+    ```
+    {#if id == 100}
+    ```
+  - `!=`: Not equal to
+    ```
+    {#if id != 100}
+    ```
+- **Greater Than or Less Than**:
+  - `>`: Greater than
+    ```
+    {#if id > 100}
+    ```
+  - `<`: Less than
+    ```
+    {#if id < 100}
+    ```
+  - `<=`: Less than or equal to
+    ```
+    {#if id <= 100}
+    ```
+  - `>=`: Greater than or equal to
+    ```
+    {#if id >= 100}
+    ```
+- **Multiple conditions**:
+  - `&&`: Logical AND to concatenate multiple conditions in the same expression. **They must all be true to continue**.
+    ```
+    {#if id > 100 && workspace_id = 45}
+    ```
+  - `||`: Logical OR to concatenate multiple conditions in the same expression. **At least one of them must be true to continue**.
+    ```
+    {#if id > 100 || workspace_id = 45}
+    ```
