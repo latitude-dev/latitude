@@ -3,21 +3,68 @@ title: 'Interpolate Values'
 description: 'Insert values dynamically into SQL queries'
 ---
 
-Interpolating values allows you to reuse the same value or change it dynamically along the entire SQL query.
+------------
+
+## Introduction 
+Interpolating values directly into SQL queries enables dynamic substitution of values within the query string. This approach allows for flexible query construction but must be used with caution to prevent security vulnerabilities.
+
 
 ## Syntax
+### Interpolation
 
-### Variable Interpolation
+Interpolation involves inserting values directly into the SQL string. In the example above we are using a variable enclosed with `{}` to embed the value from the variable into the query.
+
+``` sql
+---- Using a placeholder in the documentation to demonstrate interpolation ----
+SELECT *
+FROM table
+WHERE company = '{companyFiltered}'
+
+---- ⬇️ After proccessing ⬇️ ----
+SELECT *
+FROM table
+WHERE company = 'latitude'
 
 ```
- WHERE company = '{'companyFiltered'}'
- ---
- WHERE company = 'latitude'
- ```
 
-## Parametization
-To avoid SQL injections, queries are parametized. You can skip the parametization with `unsafeParam`.
+<Note>Note: Direct interpolation can lead to SQL injection vulnerabilities if the interpolated values are not properly sanitized.</Note>
 
+### Parameterization
+
+To mitigate the risks of SQL injection, queries should be parameterized. This means using placeholders within the SQL query and providing the actual values separately. 
+
+```sql
+-- Parameterized query example
+
+{first_name = param('name')}
+
+SELECT
+  {first_name} AS name
+  {first_name + ' my_last_name'} AS name_and_last_name
+FROM table
+
+---- ⬇️ After proccessing ⬇️ ----
+
+SELECT
+  $1 AS name
+  $2 AS name_and_last_name
+FROM table
+
+-- It will provide the value for foo separatel from the SQL command
 ```
-SELECT {'latitude'} AS {unsafeParam('column_name')}
+
+An option to bypass parameterization with `unsafeParam`. This way you can skip the parameterization (not recommended for untrusted input) and include the raw code into the SQL statement.
+
+```sql
+{company = param('company_clean')}
+
+SELECT {unsafeParam('company')} AS column_name
+
+---- ⬇️ After proccessing ⬇️ ----
+
+SELECT latitude AS column_name
+
+-- It return the value without being parametized
 ```
+
+<Note>Important: The unsafeParam syntax or similar is highly discouraged unless you are working with trusted input or in scenarios where parameterization is not feasible. Always prioritize using parameterization to safeguard against SQL injection attacks.</Note>

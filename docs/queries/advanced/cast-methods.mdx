@@ -1,11 +1,11 @@
 ---
 title: 'Cast Methods'
-description: 'Converts data types in Latitude logic blocks, ensuring correct operation performance.'
+description: 'Converts data types in Latitude logic blocks, ensuring that SQL operations are performed with the correct data type.'
 ---
 
-# Cast Method
+## Introduction
 
-The `cast` method allows you to convert values between different types within the Latitude logic blocks, enclosed in curly brackets `{ }`. This functionality ensures that the data types of variables are suitable for the operations you wish to perform.
+The `cast` method allows you to convert values to a different type in your query logic enclosed in `{ }`. Cast ensures that the data types of variables are suitable for the operations you wish to perform.
 
 ## Example
 
@@ -15,9 +15,9 @@ Without casting, the comparison in the following block would not work as expecte
 
 ```
 {#if limit > 5}
-content 1
+    ...
 {:else}
-content 2
+    ...
 {/if}
 ```
 
@@ -30,9 +30,9 @@ To resolve this, you can use the `cast` function to convert `limit` to an intege
 
 ```
 {#if cast(limit, "int") > 5}
-content 1
+    ...
 {:else}
-content 2
+    ...
 {/if}
 ```
 

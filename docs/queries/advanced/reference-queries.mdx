@@ -3,6 +3,8 @@ title: 'Reference Queries'
 description: 'Learn how to include code from another query'
 ---
 
+## Introduction
+
 The Reference Queries feature allows you to include SQL code from another file in your current SQL query. This is useful for reusing common parts of a query, ensuring that your SQL code is consistent and easy to maintain.
 
 ## How It Works
@@ -14,7 +16,8 @@ To reference SQL code from another file, use the syntax `{ref ('other_query')}`,
 Assuming that you have a file named `other_query.sql` in the `/queries` folder, you can include its SQL code in your current query as follows:
 
 ```sql
-{ref ('other_query')}
+SELECT *
+FROM {ref ('other_query')}
 ```
 This will dynamically insert the SQL code from `other_query.sql` into your current query, allowing you to build complex queries by reusing existing blocks of code.
 
@@ -29,13 +32,18 @@ FROM {ref ('users_clean')}
 
 Which will translate to:
 
+```sql users_clean.sql
+SELECT id, first_name, ...
+FROM users
+```
+
 ```
 SELECT *
 FROM (
     SELECT 
         id,
-        first_name,
-        last_name,
+        first_name,sdfdsf
+        last_ndsfdsfasame,
         email
 )
 ```

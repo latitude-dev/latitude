@@ -26,11 +26,11 @@ These are the supported connections, go to their specific section to know the sp
 <Note>It's not necessary to include the FROM clause in your queries. The data is automatically retrieved from the closest source. Check [Source Resolution](#source-resolution) section</Note>
 
 ## File Requirements and Directory Structure
-- **Source Files:** Must be `.yaml` or `.yml`.
-- **Location:** All source files should be placed in the `queries` directory. This includes being nested within any subdirectories under `queries`.
-- **One Connection Per File:** Each `.yaml` file represents a unique connection. Do not mix multiple connections in a single file.
-- **Naming:** Use the `.yaml` filename in your queries to reference the source.
-- **Co-location:** `.sql` query files and `.yaml` source files should all reside within the `queries` directory or its subdirectories.
+- **Source Files**: Must be `.yaml` or `.yml`.
+- **Location**: All source files should be placed in the `queries` directory. This includes being nested within any subdirectories under `queries`.
+- **One Connection Per File**: Each `.yaml` file represents a unique connection. Do not mix multiple connections in a single file.
+- **Naming**: Use the `.yaml` filename in your queries to reference the source.
+- **Co-location**: `.sql` query files and `.yaml` source files should all reside within the `queries` directory or its subdirectories.
 
 ## Directory hierarchy and source discovery
 
@@ -39,9 +39,9 @@ You may organize your source files in subfolders within the `queries` directory.
 Example:
 ```
 queries/
-├── product/
-├── active_users.sql
-├── snowflake_product.yaml
+└── product/
+    ├── active_users.sql
+    └── snowflake_product.yaml
 ```
 
 ### Source Resolution
@@ -51,8 +51,8 @@ Example:
 queries/
 ├── postgresql.yaml
 ├── subscriptions.sql
-├── aggregations/
-├── total_subscriptions_by_country.sql
+└── aggregations/
+    └── total_subscriptions_by_country.sql
 ```
 
 *In this scenario, `total_subscriptions_by_country.sql` will use `postgresql.yaml` as its source since it doesn't have a closer source file in its directory (`aggregations`).*

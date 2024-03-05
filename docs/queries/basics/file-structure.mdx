@@ -1,7 +1,9 @@
 ---
 title: 'Queries set-up'
-description: 'How to configure your project to start queriying data'
+description: 'How to configure your project to start retrieving data'
 ---
+
+## Introduction 
 
 Before you start retrieving data, there are two important things to consider: the configuration of the query files and the sources from which you will retrieve data.
 
@@ -9,17 +11,29 @@ Before you start retrieving data, there are two important things to consider: th
 
 Queries are stored in files, and here are the necessary specifications and options:
 
-- **Source files:** Must be `.sql`.
-- **Location:** All query files should be placed in the `queries` directory. This includes nesting in any subdirectories under `queries`.
-- **Reuse Queries** It's possible to reuse the results of one query in another. See [Referencing other queries](sql-syntax-basics#from) for more information.
-- **Subqueries:** Each `.sql` file represents a single query, which can include subqueries or CTEs. Alternatively, you may split subqueries into separate files and reference them as required. The approach is entirely up to you..
-- **Naming:** The `.sql` filename is the one you can use to reference one query in another.
-- **Co-location:** `.sql` query files and `.yaml` source files must all reside within the queries directory or its subdirectories.
+- **Source Files**: Must be `.sql`.
+- **Location**: All query files should be placed in the `queries` directory. This includes nesting in any subdirectories under `queries`.
+
+    ```
+    queries/
+    ├── my_first_query.sql
+    └── product/
+        └── active_users.sql
+    ```
+
+- **Naming**: The `.sql` filename is the one you can use to reference one query in another. See [Referencing other queries](sql-syntax-basics#from) for more information.
+- **Co-Location**: `.sql` query files and `.yaml` source files must all reside within the queries directory or its subdirectories. See [How to Configure Sources](sql-syntax-basics#from) for more information.
+    ```
+    queries/
+    └── product/
+        ├── active_users.sql
+        └── snowflake_product.yaml
+    ```
 
 ## Sources
 
 ### Configuration
-<Note>The first step is to configure a source. To learn more about how to do this, see [How to configure Sources](../../sources/how-to-configure-sources.mdx)</Note>
+The first step is to configure a source. To learn more about how to do this, see [How to configure Sources](../../sources/how-to-configure-sources.mdx)
 
 ### Source Resolution
-<Note>It is important understand the source resolution when creating a query. [Check Source Resolution](../../sources/how-to-configure-sources#source-esolution)</Note>
+It is important understand the source resolution when creating a query. [Check Source Resolution](../../sources/how-to-configure-sources#source-esolution)

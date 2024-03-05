@@ -1,8 +1,9 @@
 ---
 title: 'Run Query'
-description: 'Dynamically executes SQL queries, ideal for generating reports with runtime-known values.'
+description: 'Dynamically executes SQL queries, ideal for generating SQL code with runtime-known values.'
 ---
 
+##Introduction
 
 The `runQuery` function allows you to dynamically execute SQL queries based on the results of a previous query. This functionality is particularly useful when you need to dynamically generate column names or perform operations based on values that are not known until runtime.
 
@@ -10,15 +11,38 @@ The `runQuery` function allows you to dynamically execute SQL queries based on t
 
 The syntax is `runQuery` + `('query_file_name_to_run')`. This would return the whole query.
 
-To access a specific column within the query, you can wrap it in a variable
-``` 
+``` sql payment_methods
+-- The output of the query:
+id    | payment_method |
+1     | cash           |
+2     | credit_card    |
+3     | transfer       |
+4     | promotion      |
+
+```
+
+You can run a query from another one. For instace in `purchases_validation` we are goint to run the `payment_methods` one.
+
+``` sql purchases_validation
 {results = runQuery('payment_methods')}
 ```
 Then you can access a specific row with:
- ```
+``` sql payment_validation
+SELECT *
+FROM table
+WHERE payment_method IS NOT null
 {#each row in results}
-    {payment_type = row['payment_method']}
+  OR payment_method = {payment_type = row['payment_method']}
 {/each}
+
+---- ⬇️ After proccessing ⬇️ ----
+SELECT *
+FROM table
+WHERE payment_method IS NOT null
+  OR payment_method = cash
+  OR payment_method = credit_card
+  OR payment_method = transfer
+  OR payment_method = promotion
 ```
 
 
@@ -26,7 +50,7 @@ Then you can access a specific row with:
 
 Consider a scenario where you have a `payments` table and you want to generate a table that shows the total amount for each payment method, along with a column for the total amount. The steps would be as follows:
 
-1. **Identify Different Payment Methods:**
+1. **Identify Different Payment Methods**:
 
 ```sql
 -- payment_methods.sql
@@ -34,7 +58,7 @@ SELECT DISTINCT payment_method FROM payments
 ORDER BY 1
 ```
 
-2. **Generate Report Based on Distinct Payment Methods:**
+2. **Generate Report Based on Distinct Payment Methods**:
 
 Generate a report based on distinct payment methods:
 Using the results of the first query, `runQuery` is called to dynamically generate a second SQL query. This second query aggregates the payment amounts by each different payment method obtained from the first query.
@@ -57,4 +81,4 @@ FROM payments
 GROUP BY 1
 ```
 
-This approach is essential for creating dynamic SQL queries that adapt based on actual database content, which is not directly possible with standard SQL due to its static nature.
+This approach is essential for creating dynamic SQL queries that adjust based on actual database contents, which is not directly possible with standard SQL due to its static nature.
