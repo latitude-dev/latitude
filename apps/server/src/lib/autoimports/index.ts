@@ -1,4 +1,4 @@
 export * from './forms'
 export * from './chart'
-export * from './Table'
+export { default as Table } from './Table'
 export { default as RunButton } from './RunButton'
