@@ -4,14 +4,21 @@ import { spawn } from 'child_process'
 import { exit } from 'process'
 
 export const cleanTerminal = () => {
-  process.stdout.write('\x1bc');
+  process.stdout.write('\x1bc')
 }
 
 export async function installAppDependencies() {
   console.log(colors.yellow('Installing dependencies...'))
-  const npmInstall = spawn('npm', ['install'])
 
-  npmInstall.stderr.on('data', (data) => {
+  // TODO: Remove --force flag
+  // this is here because we have an incompatibility with the SvelteKit version
+  // declared as peer dependency in sveltekit-autoimport
+  const npmInstall = spawn('npm', ['install', '--force'], {
+    stdio: 'inherit',
+    shell: true,
+  })
+
+  npmInstall.on('data', (data) => {
     console.error(colors.red(`💥 Error on npm install: ${data}`))
   })
 

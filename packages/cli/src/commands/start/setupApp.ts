@@ -1,11 +1,14 @@
 import config from '../../config'
-import cloneAppFromGit from './cloneAppFromGit'
+import cloneAppFromNpm from './cloneAppFromNpm'
 import { CommonProps } from './index'
 import synlinkAppFromLocal from './synlinkAppFromLocal'
 
-export type Props = CommonProps & { destinationPath: string }
+export type Props = CommonProps & {
+  destinationPath: string
+  appVersion?: string
+}
 
 export default async function setupApp(props: Props) {
-  const setup = config.pro ? cloneAppFromGit : synlinkAppFromLocal
+  const setup = config.pro ? cloneAppFromNpm : synlinkAppFromLocal
   return setup(props)
 }
