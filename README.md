@@ -1,7 +1,7 @@
-![Linter](https://github.com/latitude-dev/latitude-sdk/actions/workflows/linter.yml/badge.svg)
-![Tests](https://github.com/latitude-dev/latitude-sdk/actions/workflows/test.yml/badge.svg)
+![Linter](https://github.com/latitude-dev/latitude/actions/workflows/linter.yml/badge.svg)
+![Tests](https://github.com/latitude-dev/latitude/actions/workflows/test.yml/badge.svg)
 
-# Latitude SDK
+# Latitude
 
 Latitude is an open-source full-stack framework to build interactive data apps
 on top of your database or data warehouse using SQL and React/Svelte.
@@ -19,11 +19,11 @@ machine.
 
 Here’s a quick getting started guide to get the sample app up and running:
 
-1. **Install Latitude SDK**
+1. \*\*Install Latitude
 
-Run the following command to install the Latitude SDK globally on your machine:
+Run the following command to install the Latitude CLI globally on your machine:
 
-`npm install -g @latitude-sdk/cli`
+`npm install -g @latitude-data/cli`
 
 2. **Create the starter project**
 
@@ -49,7 +49,7 @@ You can download it from the [official website](https://nodejs.org/en).
 
 Run the following command to install the Latitude CLI globally:
 
-`npm install -g @latitude-sdk/cli`
+`npm install -g @latitude-data/cli`
 
 ## Community
 
@@ -66,6 +66,25 @@ If you are interested in contributing, please join us on our [Slack
 channel](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email),
 open an [issue](https://github.com/evidence-dev/evidence/issues/new), or
 contribute a pull request.
+
+### Release
+
+We use [changesets](https://github.com/changesets/changesets) for doing our
+releases. This package has 2 commands very handy.
+
+1. `pnpm changeset add`. It will ask what packages you want to publish and what
+   SEMVER version you want to pump. `MAYOR` `MINOR` or `PACTH`. When you pick
+   what you want it will write a file with a random file in
+   `./changsets/ramdom-name.md`. You can read [more about it here](https://github.com/changesets/changesets/blob/main/docs/detailed-explanation.md)
+2. If you do point (1) you can push the code to GitHub. Nothing will happen. Is
+   when you do `pnpm changeset version` that all the files in `.changesets/...`
+   are collected, the version on the packages in those files are bumped and a
+   release is prepared.
+3. Once a release is prepared you can publish with this command: `pnpm publish --recursive --access public`
+
+**NOTE** This release documentation is temporal we need to fully understand the
+release cycle. We need to include for example `TAGS` for grouping things. Or
+automate the release cycle. Changesets docs are full of great info.
 
 ## Contact
 

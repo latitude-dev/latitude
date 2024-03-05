@@ -3,8 +3,8 @@ import {
   CompiledQuery,
   ConnectionError,
   ResolvedParam,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { DBSQLClient } from '@databricks/sql'
 import { ConnectionOptions } from '@databricks/sql/dist/contracts/IDBSQLClient'
 import { TTypeDesc } from '@databricks/sql/thrift/TCLIService_types'

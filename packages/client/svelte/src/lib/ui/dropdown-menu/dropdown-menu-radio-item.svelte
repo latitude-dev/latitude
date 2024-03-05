@@ -1,7 +1,7 @@
 <script lang="ts">
   import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
   import { DotFilled } from "radix-icons-svelte";
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   const { cn } = client.utils
 
   type $$Props = DropdownMenuPrimitive.RadioItemProps;

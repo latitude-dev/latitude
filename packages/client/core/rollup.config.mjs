@@ -1,5 +1,6 @@
 import { dts } from 'rollup-plugin-dts'
 import typescript from '@rollup/plugin-typescript'
+import copy from 'rollup-plugin-copy'
 
 const EXTERNAL_DEPENDENCIES = [
   'clsx',
@@ -13,7 +14,7 @@ const EXTERNAL_DEPENDENCIES = [
   'lodash/isString',
   'lodash/isNaN',
   'date-fns/format',
-  '@latitude-sdk/query_result',
+  '@latitude-data/query_result',
 ]
 
 /** @type {import('rollup').RollupOptions}*/
@@ -22,7 +23,17 @@ export default [
     input: 'src/index.ts',
     output: [{ file: 'dist/index.js' }],
     external: EXTERNAL_DEPENDENCIES,
-    plugins: [typescript()],
+    plugins: [
+      typescript(),
+      copy({
+        targets: [
+          {
+            src: 'src/theme/assets/latitude.css',
+            dest: 'dist',
+          },
+        ],
+      }),
+    ],
   },
   {
     input: 'src/index.ts',

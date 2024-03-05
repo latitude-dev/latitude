@@ -5,8 +5,8 @@ import {
   CompiledQuery,
   ResolvedParam,
   ConnectorError,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { OAuth2Client } from 'google-auth-library'
 import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
 

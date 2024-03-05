@@ -3,8 +3,8 @@ import {
   QueryError,
   CompiledQuery,
   ResolvedParam,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { Trino, BasicAuth } from 'trino-client'
 
 export type ConnectionParams = {

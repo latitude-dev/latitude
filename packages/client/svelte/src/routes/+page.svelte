@@ -1,7 +1,9 @@
 <script lang="ts">
   import ThemeProvider from '$lib/ui/theme-wrapper'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
   import { Button, Text } from '$lib'
+  import { Table } from '$lib/internal'
+  import QueryResult, { DataType } from '@latitude-data/query_result'
 
   const defaultTheme = theme.skins.themes[1]
 </script>
@@ -16,3 +18,11 @@
 <Text.H6>Header 6</Text.H6>
 
 <Button>Button</Button>
+
+<Table
+  data={new QueryResult({
+    rows: [[1]],
+    fields: [{ name: 'id', type: DataType.Integer }],
+    rowCount: 1,
+  })}
+/>

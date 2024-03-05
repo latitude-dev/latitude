@@ -8,13 +8,16 @@ import devCommand from './commands/dev'
 
 const CLI = sade('latitude')
 
-CLI.version(process.env.PACKAGE_VERSION ?? 'development').option(
-  '--debug',
-  'Enables verbose console logs',
-)
+CLI.version(process.env.PACKAGE_VERSION ?? 'development')
+  .option('--debug', 'Enables verbose console logs')
+  .option('--simulate-pro', 'Enable pro mode in development')
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')
+  .option(
+    '--app-version',
+    'Latitude app version used to build the data project. Default: latest',
+  )
   .action(startDataProject)
 
 CLI.command('dev')
@@ -29,7 +32,11 @@ CLI.command('deploy')
 
 const parsedArgs = CLI.parse(process.argv, { lazy: true })
 
-config.debug = parsedArgs?.args
-config.dev = process.env.NODE_ENV === 'development'
+const args = parsedArgs?.args
+config.debug = args
+config.setDev({
+  dev: process.env.NODE_ENV === 'development',
+  args,
+})
 
 parsedArgs?.handler.apply(null, parsedArgs?.args)

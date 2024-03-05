@@ -1,4 +1,4 @@
-# `@latitude-sdk/cli`
+# `@latitude-data/cli`
 
 CLI for running latitude projects.
 

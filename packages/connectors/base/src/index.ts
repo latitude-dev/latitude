@@ -3,9 +3,9 @@ import * as fs from 'fs'
 import compile, {
   type CompileError,
   type SupportedMethod,
-} from '@latitude-sdk/sql-compiler'
-import type QueryResult from '@latitude-sdk/query_result'
-import { type QueryResultArray } from '@latitude-sdk/query_result'
+} from '@latitude-data/sql-compiler'
+import type QueryResult from '@latitude-data/query_result'
+import { type QueryResultArray } from '@latitude-data/query_result'
 
 import {
   type QueryRequest,
@@ -33,7 +33,7 @@ export abstract class BaseConnector {
   protected async connect(): Promise<void> {}
   protected async disconnect(): Promise<void> {}
 
-  async query(request: QueryRequest): Promise<QueryResult> {
+  async run(request: QueryRequest): Promise<QueryResult> {
     await this.connect()
 
     const resolvedParams: ResolvedParam[] = []
@@ -52,6 +52,33 @@ export abstract class BaseConnector {
     }
   }
 
+  async runCompiled(request: CompiledQuery): Promise<QueryResult> {
+    await this.connect()
+
+    try {
+      return await this.runQuery(request)
+    } finally {
+      await this.disconnect()
+    }
+  }
+
+  async compileQuery(
+    request: QueryRequest,
+  ): Promise<{ compiledQuery: string; resolvedParams: ResolvedParam[] }> {
+    const resolvedParams: ResolvedParam[] = []
+    const ranQueries: Record<string, QueryResultArray> = {}
+    const queriesBeingCompiled: string[] = []
+
+    const { compiledQuery } = await this._compileQuery({
+      request,
+      resolvedParams,
+      ranQueries,
+      queriesBeingCompiled,
+    })
+
+    return { compiledQuery, resolvedParams }
+  }
+
   private async _query({
     request,
     resolvedParams,
@@ -63,6 +90,30 @@ export abstract class BaseConnector {
     ranQueries: Record<string, QueryResultArray> // Ran query results are cached to avoid re-running the same query
     queriesBeingCompiled: string[] // Used to detect cyclic references
   }): Promise<QueryResult> {
+    const { compiledQuery } = await this._compileQuery({
+      request,
+      resolvedParams,
+      ranQueries,
+      queriesBeingCompiled,
+    })
+
+    return this.runQuery({
+      sql: compiledQuery,
+      params: resolvedParams,
+    })
+  }
+
+  private async _compileQuery({
+    request,
+    resolvedParams,
+    ranQueries,
+    queriesBeingCompiled,
+  }: {
+    request: QueryRequest
+    resolvedParams: ResolvedParam[]
+    ranQueries: Record<string, QueryResultArray> // Ran query results are cached to avoid re-running the same query
+    queriesBeingCompiled: string[] // Used to detect cyclic references
+  }): Promise<{ compiledQuery: string; resolvedParams: ResolvedParam[] }> {
     const fullQueryName = this.fullQueryPath(request.queryPath)
     queriesBeingCompiled.push(fullQueryName)
 
@@ -85,12 +136,14 @@ export abstract class BaseConnector {
       supportedMethods,
     })
 
+    // NOTE: To avoid compiling subqueries that have already been compiled in
+    // the current call stack.
     queriesBeingCompiled.pop()
 
-    return await this.runQuery({
-      sql: compiledQuery,
-      params: resolvedParams,
-    })
+    return {
+      compiledQuery,
+      resolvedParams,
+    }
   }
 
   private fullQueryPath(queryName: string): string {

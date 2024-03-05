@@ -1,11 +1,13 @@
 {
-  "name": "@latitude-sdk/client",
-  "version": "0.0.1",
+  "name": "@latitude-data/client",
+  "description": "Core package of all Latitude client libraries",
+  "version": "0.0.3",
+  "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
     "build:rollup": "rollup -c",
     "dev": "pnpm run build:rollup -w",
-    "build": "npm run build:css && npm run build:rollup",
+    "build": "pnpm run build:css && npm run build:rollup",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
@@ -22,7 +24,7 @@
     },
     "./css/all.css": "./dist/css/all.css",
     "./css/components/*.css": "./dist/css/components/*.css",
-    "./latitude.css": "./src/theme/assets/latitude.css",
+    "./latitude.css": "./dist/latitude.css",
     "./theme/preset": "./tailwind.config.js"
   },
   "files": [
@@ -31,7 +33,7 @@
     "!dist/**/*.test.*"
   ],
   "dependencies": {
-    "@latitude-sdk/query_result": "workspace:*",
+    "@latitude-data/query_result": "workspace:*",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
     "echarts": "^5.5.0",
@@ -41,8 +43,8 @@
     "zustand": "^4.5.1"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/lodash": "^4.14.202",
     "autoprefixer": "^10.4.16",
@@ -51,6 +53,7 @@
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
     "rollup": "^4.10.0",
+    "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-postcss": "^4.0.2",
     "tailwindcss": "^3.3.6",

@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/svelte'
 import { ThemeProvider } from '../src/lib'
 
-import '@latitude-sdk/client/latitude.css'
+import '@latitude-data/client/latitude.css'
 
 /** @type { import('@storybook/svelte').Preview } */
 const preview: Preview = {

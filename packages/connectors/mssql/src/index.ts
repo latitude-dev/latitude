@@ -2,8 +2,8 @@ import {
   BaseConnector,
   CompiledQuery,
   ResolvedParam,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import sql from 'mssql'
 
 export type ConnectionParams = {

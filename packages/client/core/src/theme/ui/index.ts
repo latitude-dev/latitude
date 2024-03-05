@@ -4,5 +4,7 @@ import * as text from './text'
 import * as column from './column'
 import * as row from './row'
 import * as chart from './chart'
+import * as input from './input'
+import table from './table'
 
-export { button, card, text, column, row, chart }
+export { button, card, text, column, row, chart, input, table }

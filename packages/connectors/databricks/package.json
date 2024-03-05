@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/databricks-connector",
+  "name": "@latitude-data/databricks-connector",
   "version": "0.0.1",
+  "license": "LGPL",
   "description": "Databricks connector for Latitude",
   "type": "module",
   "scripts": {
@@ -11,8 +12,8 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
@@ -22,15 +23,12 @@
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "@latitude-sdk/base-connector": "workspace:*",
-    "@latitude-sdk/query_result": "workspace:*"
+    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/query_result": "workspace:*"
   },
   "dependencies": {
     "@databricks/sql": "^1.8.1"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "types": "dist/index.d.ts"
 }

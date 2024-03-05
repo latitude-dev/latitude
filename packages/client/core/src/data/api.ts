@@ -1,8 +1,5 @@
 type AnyObject = Record<string, unknown>
 type ApiErrorItem = { title: string; detail: string }
-type ApiErrorBody = {
-  errors: ApiErrorItem[]
-}
 
 type LatitudeApiConfig = {
   host?: string
@@ -14,14 +11,13 @@ export class ApiError extends Error {
   constructor(
     message: string,
     public status: number,
-    public json: ApiErrorBody,
   ) {
     super(message)
   }
 }
 
 class LatitudeApi {
-  private host: string = ''
+  private host?: string
   private cors: RequestMode = 'cors'
   private customHeaders: Record<string, string> = {}
 
@@ -51,17 +47,16 @@ class LatitudeApi {
   }
 
   private buildUrl(urlStr: string, params: AnyObject = {}) {
-    if (!this.host)
-      throw new ApiError('API host not configured', 500, {
-        errors: [{ title: 'API error', detail: 'API host not configured' }],
-      })
-
-    const url = new URL(`${this.host}/${urlStr}`)
+    const url = new URL(`${this.safeHost}/${urlStr}`)
     Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, params[key]!.toString()),
+      url.searchParams.append(key, String(params[key])),
     )
 
     return url
+  }
+
+  private get safeHost() {
+    return this.host ?? globalThis.location.origin
   }
 
   private buildHeaders({
@@ -82,39 +77,32 @@ class LatitudeApi {
     return headers
   }
 
-  private request<T>(fn: () => Promise<T>) {
-    try {
-      return fn()
-    } catch (e) {
-      if (e instanceof ApiError) throw e
-
-      throw new ApiError('Unexpected API error', 500, {
-        errors: [{ title: 'API error', detail: 'Unexpected API error' }],
-      })
-    }
+  private async request<T>(fn: () => Promise<T>) {
+    return await fn()
   }
 
   private async handleResponse<T>(response: Response): Promise<T> {
     if (response.ok) return response.json()
 
-    let json: ApiErrorBody = { errors: [] }
-    if (response.status >= 500) {
-      json = {
-        errors: [{ title: 'API error', detail: await response.text() }],
-      } as ApiErrorBody
-    } else {
-      try {
-        json = await response.json()
-      } catch (e) {
-        console.error('Error parsing JSON', e)
-
-        json = {
-          errors: [{ title: 'API error', detail: 'Unexpected API error' }],
+    let errorMessage = 'Unexpected API error'
+    try {
+      const contentType = response.headers.get('Content-Type')
+      if (contentType && contentType.includes('application/json')) {
+        const json = await response.json()
+        if (json.errors) {
+          errorMessage = json.errors
+            .map((e: ApiErrorItem) => e.detail)
+            .join(', ')
         }
+      } else {
+        const text = await response.text()
+        errorMessage = text
       }
+    } catch {
+      errorMessage = 'Error parsing API response'
     }
 
-    throw new ApiError(response.statusText, response.status, json)
+    throw new ApiError(errorMessage, response.status)
   }
 }
 

@@ -1,5 +1,5 @@
 {
-  "extends": ["@latitude-sdk/typescript/base.json"],
+  "extends": ["@latitude-data/typescript/base.json"],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"

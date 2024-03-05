@@ -1,13 +1,15 @@
 {
-  "name": "@latitude-sdk/svelte",
-  "version": "0.0.1",
+  "name": "@latitude-data/svelte",
+  "version": "0.0.3",
+  "license": "LGPL",
   "scripts": {
     "build": "pnpm run buildAndPackage",
     "build-storybook": "storybook build",
     "build:vite": "vite build",
     "build:with-prebuild-not-used-yet": "pnpm run prebuild && pnpm run buildAndPackage",
     "buildAndPackage": "pnpm run build:vite && pnpm run package",
-    "dev": "vite dev",
+    "dev": "svelte-package --watch",
+    "dev:vite": "vite dev",
     "lint": "eslint . --max-warnings 0",
     "package": "pnpm run prepare && svelte-package && publint",
     "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
@@ -15,32 +17,49 @@
     "prepublishOnly": "pnpm run package",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
-    "tc": "tsc --noEmit",
+    "tc": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "vitest --run"
   },
   "type": "module",
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
+    "./internal": {
+      "types": "./dist/internal/index.d.ts",
+      "svelte": "./dist/internal/index.js",
+      "default": "./dist/internal/index.js"
+    },
     ".": {
       "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js"
+      "svelte": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "typesVersions": {
+    ">4.0": {
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "internal": [
+        "./dist/internal/index.d.ts"
+      ]
     }
   },
   "files": [
-    "src",
     "tailwind.config.js",
     "dist",
+    "dist/internal",
     "!dist/**/*.test.*",
     "!dist/**/*.stories.svelte"
   ],
   "dependencies": {
-    "@latitude-sdk/client": "workspace:*",
-    "@latitude-sdk/query_result": "workspace:^",
+    "@latitude-data/client": "workspace:*",
+    "@latitude-data/query_result": "workspace:^",
     "bits-ui": "^0.18.1",
     "echarts": "^5.5.0",
     "lodash": "^4.17.21",
     "mode-watcher": "^0.2.1",
     "radix-icons-svelte": "^1.2.1",
+    "svelte-headless-table": "^0.18.2",
     "svelte-persisted-store": "^0.9.1",
     "zustand": "^4.5.1"
   },
@@ -48,7 +67,7 @@
     "svelte": "^4.0.0"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
     "@storybook/addon-essentials": "^7.6.17",
     "@storybook/addon-interactions": "^7.6.17",
     "@storybook/addon-links": "^7.6.17",

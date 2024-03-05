@@ -44,14 +44,14 @@ module.exports = {
               context.report({
                 node,
                 message: `
-                💥 Oops! you build @latitude-sdk/svelte in your machine
+                💥 Oops! you build @latitude-data/svelte in your machine
                 This has the side effect of modifying the package.json file
                 why we modify package.json file at build time is explained here:
                 ./packages/client/svelte/scripts/hack-svelte-package/README.md
 
                 The fix is simple don't commit changes in 'main' branch
                 with the word './dist' in package.json in 'exports' field
-                for @latitude-sdk/svelte package
+                for @latitude-data/svelte package
 
                 Easy no? 😅
                 `,

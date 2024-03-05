@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/eslint-config",
-  "version": "0.0.1",
+  "name": "@latitude-data/eslint-config",
+  "version": "0.0.0",
+  "license": "LGPL",
   "files": [
     "library.js",
     "svelte.js"

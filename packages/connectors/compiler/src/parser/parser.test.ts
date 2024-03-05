@@ -67,6 +67,27 @@ describe('Text Block', () => {
     })
   })
 
+  it('does not ignore brackets within an escaped string', () => {
+    const stringCharacters = ['"', "'", '`']
+    stringCharacters.forEach((char) => {
+      const text = `hello \\${char}{foo}\\${char} world`
+      const expected = `hello ${char}{${char} world`
+      const fragment = parse(text)
+      expect(fragment.children.length).toBe(3)
+
+      const textBlock1 = fragment.children[0]!
+      expect(textBlock1.type).toBe('Text')
+      expect(textBlock1.data).toBe(`hello ${char}`)
+
+      const mustacheTag = fragment.children[1]!
+      expect(mustacheTag.type).toBe('MustacheTag')
+
+      const textBlock2 = fragment.children[2]!
+      expect(textBlock2.type).toBe('Text')
+      expect(textBlock2.data).toBe(`${char} world`)
+    })
+  })
+
   it('ignores comments within a string', () => {
     const text = "hello '--' world"
     const fragment = parse(text)

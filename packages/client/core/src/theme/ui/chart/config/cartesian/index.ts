@@ -7,8 +7,6 @@ import type {
 import { type Dataset } from '../../types'
 import { AxisType, CartesianChartType } from '../types'
 import {
-  FullColumn,
-  type Column,
   ConfigProps,
   yAxis,
   xAxis,
@@ -23,6 +21,7 @@ import setLegend from '../common/setLegend'
 import setGrid from './serieUtils/setGrid'
 import { transformXAxis, transformYAxis } from './transformAxis'
 import transformCartesiansSeries from './transformSeries'
+import { ColumnConfig, getColumns } from './getColumns'
 
 function swapAxisFn({
   swapAxis,
@@ -44,35 +43,6 @@ function swapAxisFn({
   }
 }
 
-type ColumnConfig = string | Column | Column[] | (string | Column)[]
-
-function completeStringColumn(
-  column: string,
-  chartType: CartesianChartType,
-): FullColumn {
-  return {
-    name: column,
-    chartType,
-    axisIndex: 0,
-    displayName: column,
-  }
-}
-
-function completeColumn(
-  column: Column | string,
-  chartType: CartesianChartType,
-): FullColumn {
-  if (typeof column === 'string') {
-    return completeStringColumn(column, chartType)
-  }
-
-  return {
-    ...column,
-    displayName: column?.displayName ?? column.name,
-    axisIndex: column?.axisIndex ?? 0,
-  }
-}
-
 function completeXAxis(axis: xAxisFormat) {
   return {
     ...X_FORMAT_DEFAULT,
@@ -84,19 +54,6 @@ function completeYAxis(axis: yAxisFormat) {
     ...Y_FORMAT_DEFAULT,
     ...axis,
   }
-}
-
-function getColumns(
-  column: ColumnConfig,
-  chartType: CartesianChartType,
-): FullColumn[] {
-  if (Array.isArray(column))
-    return column.map((c) => completeColumn(c, chartType))
-
-  if (typeof column === 'string')
-    return [completeStringColumn(column, chartType)]
-
-  return [completeColumn(column, chartType)]
 }
 
 const CONIFG_DEFAULTS: ConfigProps = {
@@ -169,8 +126,10 @@ export default function generateConfig({
     ? xFormat.map(completeXAxis)
     : [completeXAxis(xFormat)]
   const usePercentage = yAxisList[0]?.stack === 'normalized'
-  const xColumns = getColumns(x, chartType)
-  const yColumns = getColumns(y, chartType)
+
+  const fields = dataset.fields
+  const xColumns = getColumns({ column: x, chartType, fields })
+  const yColumns = getColumns({ column: y, chartType, fields })
   const generatedDataset = getDataset({
     dataset,
     column: yColumns[0]?.name ?? '',

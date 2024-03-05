@@ -27,7 +27,7 @@ async function displayMessage(dataAppDir: string) {
     ${
       config.dev
         ? '👋 Hi dev, thanks for contributing'
-        : 'Welcome to Latitude SDK 🎉'
+        : 'Welcome to Latitude data 🎉'
     }
 
     You can start your project by running:
@@ -45,14 +45,16 @@ function cdToAppFolder(destinationPath: string) {
   return `${process.cwd()} / ${APP_FOLDER}`
 }
 
-const startDataProject: Handler = async (_args) => {
+const startDataProject: Handler = async (args) => {
   // Clone template
   const dataAppDir = (await cloneTemplate({ onError })) as string
+  const appVersion = args['app-version'] ?? 'latest'
 
   // Setup application server for running queries
   await setupApp({
     onError,
     destinationPath: dataAppDir,
+    appVersion,
   })
 
   displayMessage(dataAppDir)

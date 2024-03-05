@@ -2,7 +2,7 @@
   import type { Props } from './types'
   import { themeConfig } from './store'
   import { onMount } from 'svelte'
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   import ThemeSwitcher from './switcher'
   import { ModeWatcher } from 'mode-watcher'
 

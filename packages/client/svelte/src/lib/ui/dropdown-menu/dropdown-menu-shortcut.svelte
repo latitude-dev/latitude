@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   const { cn } = client.utils
   import type { HTMLAttributes } from "svelte/elements";
 

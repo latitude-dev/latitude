@@ -1,25 +1,35 @@
 import colors from 'picocolors'
 import { APP_FOLDER } from '../constants'
-import { spawn } from 'child_process'
+import { exec, spawn } from 'child_process'
 import { exit } from 'process'
 
 export const cleanTerminal = () => {
-  process.stdout.write('\x1bc');
+  process.stdout.write('\x1bc')
 }
 
 export async function installAppDependencies() {
   console.log(colors.yellow('Installing dependencies...'))
-  const npmInstall = spawn('npm', ['install'])
 
-  npmInstall.stderr.on('data', (data) => {
-    console.error(colors.red(`💥 Error on npm install: ${data}`))
-  })
+  // TODO: Remove --force flag
+  // this is here because we have an incompatibility with the SvelteKit version
+  // declared as peer dependency in sveltekit-autoimport
+  const command = 'npm install --force'
 
   return new Promise<void>((resolve) => {
-    npmInstall.on('close', () => {
-      console.log(colors.green(`✅ Dependencies installed`))
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(colors.red(`💥 Error on npm install: ${error.message}`))
+        return
+      }
 
-      resolve()
+      console.log(stdout)
+
+      if (stderr) {
+        console.error(colors.red(`💥 Error installing: ${stderr}`))
+      } else {
+        console.log(colors.green('🚀 Dependencies installed'))
+        resolve()
+      }
     })
   })
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Tooltip as TooltipPrimitive } from "bits-ui";
   import { flyAndScale } from "../../utils";
-  import { theme } from "@latitude-sdk/client";
+  import { theme } from "@latitude-data/client";
   const { cn } = theme.utils
   type $$Props = TooltipPrimitive.ContentProps;
 
