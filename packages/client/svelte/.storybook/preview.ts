@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/svelte'
-import ThemeWrapper from '../src/lib/ui/theme-wrapper/index.svelte'
+import { ThemeProvider } from '../src/lib'
 
 import '@latitude-sdk/client/latitude.css'
 
@@ -7,6 +7,7 @@ import '@latitude-sdk/client/latitude.css'
 const preview: Preview = {
   parameters: {
     actions: { argTypesRegex: '^on[A-Z].*' },
+    deepControls: { enabled: true },
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -16,7 +17,7 @@ const preview: Preview = {
   },
   decorators: [
     () => ({
-      Component: ThemeWrapper,
+      Component: ThemeProvider,
       props: {
         isStorybook: true,
       },

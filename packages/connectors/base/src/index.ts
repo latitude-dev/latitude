@@ -3,8 +3,9 @@ import * as fs from 'fs'
 import compile, {
   type CompileError,
   type SupportedMethod,
-} from '@latitude-sdk/sql-compiler'
-import type QueryResult from '@latitude-sdk/query_result'
+} from '@latitude-data/sql-compiler'
+import type QueryResult from '@latitude-data/query_result'
+import { type QueryResultArray } from '@latitude-data/query_result'
 
 import {
   type QueryRequest,
@@ -32,11 +33,11 @@ export abstract class BaseConnector {
   protected async connect(): Promise<void> {}
   protected async disconnect(): Promise<void> {}
 
-  async query(request: QueryRequest): Promise<QueryResult> {
+  async run(request: QueryRequest): Promise<QueryResult> {
     await this.connect()
 
     const resolvedParams: ResolvedParam[] = []
-    const ranQueries: Record<string, QueryResult> = {}
+    const ranQueries: Record<string, QueryResultArray> = {}
     const queriesBeingCompiled: string[] = []
 
     try {
@@ -51,6 +52,33 @@ export abstract class BaseConnector {
     }
   }
 
+  async runCompiled(request: CompiledQuery): Promise<QueryResult> {
+    await this.connect()
+
+    try {
+      return await this.runQuery(request)
+    } finally {
+      await this.disconnect()
+    }
+  }
+
+  async compileQuery(
+    request: QueryRequest,
+  ): Promise<{ compiledQuery: string; resolvedParams: ResolvedParam[] }> {
+    const resolvedParams: ResolvedParam[] = []
+    const ranQueries: Record<string, QueryResultArray> = {}
+    const queriesBeingCompiled: string[] = []
+
+    const { compiledQuery } = await this._compileQuery({
+      request,
+      resolvedParams,
+      ranQueries,
+      queriesBeingCompiled,
+    })
+
+    return { compiledQuery, resolvedParams }
+  }
+
   private async _query({
     request,
     resolvedParams,
@@ -59,9 +87,33 @@ export abstract class BaseConnector {
   }: {
     request: QueryRequest
     resolvedParams: ResolvedParam[]
-    ranQueries: Record<string, QueryResult> // Ran query results are cached to avoid re-running the same query
+    ranQueries: Record<string, QueryResultArray> // Ran query results are cached to avoid re-running the same query
     queriesBeingCompiled: string[] // Used to detect cyclic references
   }): Promise<QueryResult> {
+    const { compiledQuery } = await this._compileQuery({
+      request,
+      resolvedParams,
+      ranQueries,
+      queriesBeingCompiled,
+    })
+
+    return this.runQuery({
+      sql: compiledQuery,
+      params: resolvedParams,
+    })
+  }
+
+  private async _compileQuery({
+    request,
+    resolvedParams,
+    ranQueries,
+    queriesBeingCompiled,
+  }: {
+    request: QueryRequest
+    resolvedParams: ResolvedParam[]
+    ranQueries: Record<string, QueryResultArray> // Ran query results are cached to avoid re-running the same query
+    queriesBeingCompiled: string[] // Used to detect cyclic references
+  }): Promise<{ compiledQuery: string; resolvedParams: ResolvedParam[] }> {
     const fullQueryName = this.fullQueryPath(request.queryPath)
     queriesBeingCompiled.push(fullQueryName)
 
@@ -84,12 +136,14 @@ export abstract class BaseConnector {
       supportedMethods,
     })
 
+    // NOTE: To avoid compiling subqueries that have already been compiled in
+    // the current call stack.
     queriesBeingCompiled.pop()
 
-    return await this.runQuery({
-      sql: compiledQuery,
-      params: resolvedParams,
-    })
+    return {
+      compiledQuery,
+      resolvedParams,
+    }
   }
 
   private fullQueryPath(queryName: string): string {
@@ -113,22 +167,20 @@ export abstract class BaseConnector {
   }: {
     params: QueryParams
     resolveFn: (value: unknown) => Promise<string>
-    ranQueries: Record<string, QueryResult>
+    ranQueries: Record<string, QueryResultArray>
     queriesBeingCompiled: string[]
   }): Record<string, SupportedMethod> {
     const supportedMethods = {
-      unsafeParam: async <T extends boolean>(
-        _: T,
-        name: unknown,
-        defaultValue?: unknown,
-      ): Promise<T extends true ? string : unknown> => {
-        if (typeof name !== 'string') {
-          throw new Error('Invalid parameter name')
+      interpolate: async <T extends boolean>(
+        interpolation: T,
+        value: unknown,
+      ): Promise<string> => {
+        if (!interpolation) {
+          throw new Error(
+            'interpolate function cannot be used inside a logic block',
+          )
         }
-        if (!(name in params) && defaultValue === undefined)
-          throw new Error(`Missing parameter '${name}' in request`)
-
-        return (params[name] || defaultValue) as string
+        return String(value)
       },
       param: async <T extends boolean>(
         interpolation: T,
@@ -136,12 +188,31 @@ export abstract class BaseConnector {
         defaultValue?: unknown,
       ): Promise<T extends true ? string : unknown> => {
         if (typeof name !== 'string') throw new Error('Invalid parameter name')
-        if (!(name in params) && defaultValue === undefined)
+        if (!(name in params) && defaultValue === undefined) {
           throw new Error(`Missing parameter '${name}' in request`)
+        }
         const value = name in params ? params[name] : defaultValue
 
         const resolvedValue = interpolation ? await resolveFn(value) : value
         return resolvedValue as T extends true ? string : unknown
+      },
+      unsafeParam: async <T extends boolean>(
+        interpolation: T,
+        name: unknown,
+        defaultValue?: unknown,
+      ): Promise<T extends true ? string : unknown> => {
+        if (!interpolation) {
+          throw new Error(
+            'unsafeParam function cannot be used inside a logic block',
+          )
+        }
+        if (typeof name !== 'string') throw new Error('Invalid parameter name')
+        if (!(name in params) && defaultValue === undefined) {
+          throw new Error(`Missing parameter '${name}' in request`)
+        }
+        const value = name in params ? params[name] : defaultValue
+
+        return String(value)
       },
       cast: async <T extends boolean>(
         interpolation: T,
@@ -186,21 +257,21 @@ export abstract class BaseConnector {
 
         return `(${compiledSubQuery})`
       },
-      run_query: async <T extends boolean>(
+      runQuery: async <T extends boolean>(
         interpolation: T,
         queryName: unknown,
-      ): Promise<T extends true ? string : QueryResult> => {
+      ): Promise<T extends true ? string : QueryResultArray> => {
         if (typeof queryName !== 'string') throw new Error('Invalid query name')
         if (interpolation) {
           throw new Error(
-            'run_query function cannot be directly interpolated into the query',
+            'runQuery function cannot be directly interpolated into the query',
           )
         }
         const fullSubQueryPath = this.fullQueryPath(queryName)
         if (fullSubQueryPath in ranQueries) {
           return ranQueries[fullSubQueryPath] as T extends true
             ? string
-            : QueryResult
+            : QueryResultArray
         }
         if (queriesBeingCompiled.includes(fullSubQueryPath)) {
           throw new Error(
@@ -208,14 +279,16 @@ export abstract class BaseConnector {
           )
         }
 
-        const subQueryResults = await this._query({
-          request: { queryPath: queryName, params },
-          resolvedParams: [],
-          ranQueries,
-          queriesBeingCompiled,
-        })
+        const subQueryResults = (
+          await this._query({
+            request: { queryPath: queryName, params },
+            resolvedParams: [],
+            ranQueries,
+            queriesBeingCompiled,
+          })
+        ).toArray()
         ranQueries[fullSubQueryPath] = subQueryResults
-        return subQueryResults as T extends true ? string : QueryResult
+        return subQueryResults as T extends true ? string : QueryResultArray
       },
     }
 

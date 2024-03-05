@@ -4,8 +4,8 @@ import {
   CompiledQuery,
   ResolvedParam,
   QueryError,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { PoolConfig, Types, createPool } from 'mysql'
 import fs from 'fs'
 
@@ -58,7 +58,7 @@ export class MysqlConnector extends BaseConnector {
             resolve(
               new QueryResult({
                 rowCount: results.length,
-                fields: fields?.map(
+                fields: (fields ?? [])?.map(
                   (field) =>
                     ({
                       name: field.name,

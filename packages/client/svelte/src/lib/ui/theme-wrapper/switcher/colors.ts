@@ -1,4 +1,4 @@
-import { theme } from '@latitude-sdk/client'
+import { theme } from '@latitude-data/client'
 
 const latitude = theme.skins.themes[0].cssVars
 const rose = theme.skins.themes[1].cssVars

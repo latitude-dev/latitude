@@ -1,9 +1,9 @@
-import QueryResult from '@latitude-sdk/query_result'
-import { DataType } from '@latitude-sdk/query_result'
-import { type ResolvedParam } from '..'
+import QueryResult from '@latitude-data/query_result'
+import { DataType } from '@latitude-data/query_result'
+import { type ResolvedParam, type CompiledQuery } from './types'
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { CompileError } from '@latitude-sdk/sql-compiler'
-import { BaseConnector, CompiledQuery } from '.'
+import { CompileError } from '@latitude-data/sql-compiler'
+import { BaseConnector } from './index'
 
 vi.mock('fs', (importOriginal) => ({
   ...importOriginal(),
@@ -68,6 +68,123 @@ const getExpectedError = async <T>(
   throw new Error('Expected an error to be thrown')
 }
 
+describe('interpolate function', async () => {
+  afterEach(clearQueries)
+
+  it('interpolates a value directly into the query', async () => {
+    const connector = new MockConnector()
+    const sql = '{interpolate("foo")}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('foo')
+  })
+
+  it('interpolates a value directly into the query even if it is null', async () => {
+    const connector = new MockConnector()
+    const sql = '{interpolate(null)}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('null')
+  })
+
+  it('interpolates the value of a variable into the query', async () => {
+    const connector = new MockConnector()
+    const sql = '{bar = "foo"}{interpolate(bar)}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('foo')
+  })
+
+  it('interpolates the value of an expression into the query', async () => {
+    const connector = new MockConnector()
+    const sql = '{interpolate(1 + 2)}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('3')
+  })
+
+  it('fails if called inside a logical expression', async () => {
+    const connector = new MockConnector()
+    const sql = "{result = {interpolate('foo')}} {result}"
+    const queryPath = addFakeQuery(sql)
+
+    const action = () => connector.run({ queryPath })
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('parse-error')
+  })
+})
+
+describe('param function', async () => {
+  afterEach(clearQueries)
+
+  it('returns the value of a parameter', async () => {
+    const connector = new MockConnector()
+    const sql = '{param("foo")}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath, params: { foo: 'var' } })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('$[[var]]')
+  })
+
+  it('returns the default value when the parameter is not provided', async () => {
+    const connector = new MockConnector()
+    const sql = '{param("foo", "default")}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('$[[default]]')
+  })
+
+  it('returns the given value even if it is null', async () => {
+    const connector = new MockConnector()
+    const sql = '{param("foo", "default")}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath, params: { foo: null } })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('$[[null]]')
+  })
+
+  it('throws an error when the parameter is not provided and there is no default value', async () => {
+    const connector = new MockConnector()
+    const sql = '{param("foo")}'
+    const queryPath = addFakeQuery(sql)
+    const action = () => connector.run({ queryPath })
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('function-call-error')
+  })
+
+  it('parametrises the value when called as interpolation', async () => {
+    const connector = new MockConnector()
+    const sql = '{param("foo")}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath, params: { foo: 'var' } })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('$[[var]]')
+  })
+
+  it('returns the actual value when called inside a logical expression', async () => {
+    const connector = new MockConnector()
+    const sql = '{param("foo") + 3}'
+    const queryPath = addFakeQuery(sql)
+    await connector.run({ queryPath, params: { foo: 2 } })
+
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('$[[5]]')
+  })
+})
+
 describe('unsafeParam function', async () => {
   afterEach(clearQueries)
 
@@ -75,7 +192,7 @@ describe('unsafeParam function', async () => {
     const connector = new MockConnector()
     const sql = '{unsafeParam("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'var' } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('var')
@@ -86,7 +203,7 @@ describe('unsafeParam function', async () => {
     const sql = '{unsafeParam("foo", "bar")}'
     const queryPath = addFakeQuery(sql)
 
-    await connector.query({ queryPath, params: {} })
+    await connector.run({ queryPath, params: {} })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('bar')
@@ -98,81 +215,28 @@ describe('unsafeParam function', async () => {
     const queryPath = addFakeQuery(sql)
 
     await expect(() =>
-      connector.query({ queryPath, params: {} }),
+      connector.run({ queryPath, params: {} }),
     ).rejects.toThrow()
-  })
-
-  it('fails if value is null', async () => {
-    const connector = new MockConnector()
-    const sql = '{unsafeParam("foo")}'
-    const queryPath = addFakeQuery(sql)
-
-    await expect(() =>
-      connector.query({ queryPath, params: { foo: null } }),
-    ).rejects.toThrow()
-  })
-})
-
-describe('params function', async () => {
-  afterEach(clearQueries)
-
-  it('returns the value of a parameter', async () => {
-    const connector = new MockConnector()
-    const sql = '{param("foo")}'
-    const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' } })
-
-    expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('$[[var]]')
-  })
-
-  it('returns the default value when the parameter is not provided', async () => {
-    const connector = new MockConnector()
-    const sql = '{param("foo", "default")}'
-    const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath })
-
-    expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('$[[default]]')
   })
 
   it('returns the given value even if it is null', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo", "default")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: null } })
+    await connector.run({ queryPath, params: { foo: null } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[null]]')
   })
 
-  it('throws an error when the parameter is not provided and there is no default value', async () => {
+  it('fails if value is null', async () => {
     const connector = new MockConnector()
-    const sql = '{param("foo")}'
+    const sql = '{unsafeParam("foo")}'
     const queryPath = addFakeQuery(sql)
-    const action = () => connector.query({ queryPath })
-    const error = await getExpectedError(action, CompileError)
-    expect(error.code).toBe('function-call-error')
-  })
-
-  it('parametrises the value when called as interpolation', async () => {
-    const connector = new MockConnector()
-    const sql = '{param("foo")}'
-    const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: null } })
 
     expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('$[[var]]')
-  })
-
-  it('returns the actual value when called inside a logical expression', async () => {
-    const connector = new MockConnector()
-    const sql = '{param("foo") + 3}'
-    const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 2 } })
-
-    expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('$[[5]]')
+    expect(ranQueries[0]!.sql).toBe('null')
   })
 })
 
@@ -186,7 +250,7 @@ describe('ref function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
-    await connector.query({ queryPath: mainQueryPath })
+    await connector.run({ queryPath: mainQueryPath })
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('main (ref) end')
   })
@@ -196,7 +260,7 @@ describe('ref function', async () => {
     const mainQuery = 'main {ref("referenced_query")} end'
     const mainQueryPath = addFakeQuery(mainQuery)
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -206,7 +270,7 @@ describe('ref function', async () => {
     const mainQuery = "{result = {ref('referenced_query')}} {result}"
     const mainQueryPath = addFakeQuery(mainQuery)
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('parse-error')
   })
@@ -218,24 +282,23 @@ describe('ref function', async () => {
     const query1Path = addFakeQuery(query1, 'query1')
     addFakeQuery(query2, 'query2')
 
-    const action = () => connector.query({ queryPath: query1Path })
+    const action = () => connector.run({ queryPath: query1Path })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
 })
 
-describe('run_query function', async () => {
+describe('runQuery function', async () => {
   afterEach(clearQueries)
 
   it('runs a subquery and returns it as a value', async () => {
     const connector = new MockConnector()
-    const mainQuery =
-      "{result = run_query('referenced_query')} {result.rowCount}"
+    const mainQuery = "{result = runQuery('referenced_query')} {result.length}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
-    await connector.query({ queryPath: mainQueryPath })
+    await connector.run({ queryPath: mainQueryPath })
     expect(ranQueries.length).toBe(2)
     expect(ranQueries[0]!.sql).toBe('ref')
     expect(ranQueries[1]!.sql).toBe('$[[1]]')
@@ -244,34 +307,34 @@ describe('run_query function', async () => {
   it('fails if query does not exist', async () => {
     const connector = new MockConnector()
     const mainQuery =
-      "{result = {run_query('referenced_query')}} {result.rowCount}"
+      "{result = {runQuery('referenced_query')}} {result.length}"
     const mainQueryPath = addFakeQuery(mainQuery)
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('parse-error')
   })
 
   it('fails if called as interpolation', async () => {
     const connector = new MockConnector()
-    const mainQuery = "{run_query('referenced_query')}"
+    const mainQuery = "{runQuery('referenced_query')}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
 
   it('fails when there are cyclic references', async () => {
     const connector = new MockConnector()
-    const query1 = "{result = run_query('query2')} {result.rowCount}"
-    const query2 = "{result = run_query('query1')} {result.rowCount}"
+    const query1 = "{result = runQuery('query2')} {result.length}"
+    const query2 = "{result = runQuery('query1')} {result.length}"
     const query1Path = addFakeQuery(query1, 'query1')
     addFakeQuery(query2, 'query2')
 
-    const action = () => connector.query({ queryPath: query1Path })
+    const action = () => connector.run({ queryPath: query1Path })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -280,7 +343,7 @@ describe('run_query function', async () => {
     const connector = new MockConnector()
     const mainQuery = "{ref('child1')}{ref('child2')}{ref('child3')}"
     const childQuery =
-      "{@const result = run_query('referenced_query')}{result.rowCount}"
+      "{@const result = runQuery('referenced_query')}{result.length}"
     const refQuery = 'ref'
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(childQuery, 'child1')
@@ -288,7 +351,7 @@ describe('run_query function', async () => {
     addFakeQuery(childQuery, 'child3')
     addFakeQuery(refQuery, 'referenced_query')
 
-    await connector.query({ queryPath: mainQueryPath })
+    await connector.run({ queryPath: mainQueryPath })
     expect(ranQueries.length).toBe(2)
     expect(ranQueries[0]!.sql).toBe('ref')
     expect(ranQueries[1]!.sql).toBe('($[[1]])($[[1]])($[[1]])')

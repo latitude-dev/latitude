@@ -2,7 +2,7 @@
   import type { Props } from './types'
   import { themeConfig } from './store'
   import { onMount } from 'svelte'
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   import ThemeSwitcher from './switcher'
   import { ModeWatcher } from 'mode-watcher'
 
@@ -51,10 +51,12 @@
 
 <ModeWatcher defaultMode="light" />
 
-<div class={cn({ 'flex flex-col gap-y-4': isStorybook })}>
+<div class={cn({ 'absolute inset-0 p-4 flex flex-col gap-y-4': isStorybook })}>
   {#if isStorybook}
     <ThemeSwitcher />
   {/if}
 
-  <slot />
+  <div class="flex items-center justify-center h-full">
+    <slot />
+  </div>
 </div>

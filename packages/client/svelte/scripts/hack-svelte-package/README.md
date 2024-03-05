@@ -3,7 +3,7 @@
 Welcome to my hell friend. Let me tell you a little tale. Once on a time...just
 kidding let's see what's all of this 😂
 
-We have several goals with `@latitude-sdk/svelte`
+We have several goals with `@latitude-data/svelte`
 
 1. We want to have a great dev experience in the monorepo by not having a build
    step inside this package and let our main app in `./apps/server` compile the

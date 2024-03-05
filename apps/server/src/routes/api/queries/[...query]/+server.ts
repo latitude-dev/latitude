@@ -1,6 +1,7 @@
-import findQueryFile from '$lib/findQueryFile'
-import { createConnector } from '@latitude-sdk/connector-factory'
-import { json } from '@sveltejs/kit'
+import handleError from '$lib/errors/handler'
+import findOrCompute from '$lib/query_service/find_or_compute'
+
+const FORCE_PARAM = '__force'
 
 export async function GET({
   params,
@@ -10,26 +11,17 @@ export async function GET({
   url: URL
 }) {
   const { query } = params
+  const { params: queryParams, force } = getQueryParams(url)
 
   try {
-    const { queryPath, sourcePath } = await findQueryFile(query)
-    const connector = createConnector(sourcePath)
-    const queryParams = getQueryParams(url)
+    const queryResult = await findOrCompute({ query, queryParams, force })
 
-    try {
-      const queryResult = await connector.query({
-        queryPath,
-        params: queryParams,
-      })
-
-      return json(queryResult.toJSON())
-    } catch (e) {
-      // eslint-disable-next-line
-      // @ts-ignore
-      return new Response(e.message, { status: 500 })
-    }
+    return new Response(queryResult.toJSON(), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
+    })
   } catch (e) {
-    return new Response((e as Error).message, { status: 404 })
+    return handleError(e as Error)
   }
 }
 
@@ -39,10 +31,12 @@ function getQueryParams(url: URL) {
   const searchParams = url.searchParams
   const params: { [key: string]: IValue } = {}
   for (const [key, value] of searchParams) {
-    params[key] = castValue(value)
+    if (key !== FORCE_PARAM) {
+      params[key] = castValue(value)
+    }
   }
 
-  return params
+  return { params, force: searchParams.get(FORCE_PARAM) === 'true' }
 }
 
 function castValue(value: string) {

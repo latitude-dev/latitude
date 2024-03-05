@@ -1,18 +1,20 @@
 {
-  "name": "@latitude-sdk/client",
+  "name": "@latitude-data/client",
+  "description": "Core package of all Latitude client libraries",
   "version": "0.0.1",
-  "main": "src/index.ts",
+  "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
     "build:rollup": "rollup -c",
     "dev": "pnpm run build:rollup -w",
-    "build": "npm run build:css && npm run build:rollup",
+    "build": "pnpm run build:css && npm run build:rollup",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
+  "main": "src/index.ts",
   "type": "module",
   "types": "dist/index.d.ts",
   "exports": {
@@ -31,14 +33,20 @@
     "!dist/**/*.test.*"
   ],
   "dependencies": {
+    "@latitude-data/query_result": "workspace:*",
     "clsx": "^2.1.0",
+    "date-fns": "^3.3.1",
+    "echarts": "^5.5.0",
+    "lodash": "^4.17.21",
     "tailwind-merge": "^2.2.1",
-    "tailwind-variants": "^0.2.0"
+    "tailwind-variants": "^0.2.0",
+    "zustand": "^4.5.1"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/lodash": "^4.14.202",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.32",
     "postcss-load-config": "^5.0.2",
@@ -48,6 +56,7 @@
     "rollup-plugin-dts": "^6.1.0",
     "rollup-plugin-postcss": "^4.0.2",
     "tailwindcss": "^3.3.6",
+    "tslib": "^2.4.1",
     "vitest": "^1.2.2"
   }
 }

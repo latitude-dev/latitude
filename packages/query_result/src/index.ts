@@ -13,39 +13,76 @@ export type Field = {
   type: DataType
 }
 
-export default class QueryResult {
-  fields: Field[] = []
-  rowCount: number = 0
-  rows: unknown[][] = []
+type Props = {
+  fields?: Field[]
+  rows?: unknown[][]
+  rowCount?: number
+}
 
-  constructor({
-    fields = [],
-    rowCount = 0,
-    rows = [],
-  }: {
-    fields?: Field[]
-    rowCount?: number
-    rows?: unknown[][]
-  }) {
+export type QueryResultPayload = {
+  fields: Field[]
+  rows: unknown[][]
+  rowCount: number
+}
+
+export type QueryResultArray = {
+  [key: string]: unknown
+}[]
+
+export default class QueryResult {
+  fields: Field[]
+  rowCount: number
+  rows: unknown[][]
+
+  static fromJSON(json: string) {
+    const { fields, rows, rowCount } = JSON.parse(json)
+    return new QueryResult({
+      fields,
+      rows,
+      rowCount,
+    })
+  }
+
+  constructor({ fields = [], rowCount = 0, rows = [] }: Props) {
     this.fields = fields
-    this.rows = rows
     this.rowCount = rowCount
+    this.rows = rows
+  }
+
+  serialize() {
+    return {
+      fields: this.fields,
+      rowCount: this.rowCount,
+      rows: this.rows,
+    }
   }
 
   toJSON() {
-    return JSON.stringify(
-      {
-        fields: this.fields,
-        rows: this.rows,
-        rowCount: this.rowCount,
-      },
-      (_, value) => {
-        if (typeof value === 'bigint') {
-          return value.toString()
-        } else {
-          return value
-        }
-      },
+    const { fields, rows, rowCount } = this.serialize()
+    return JSON.stringify({
+      fields,
+      rows: rows.map((row) => {
+        return row.map((value) => {
+          if (typeof value === 'bigint') {
+            return Number(value)
+          } else {
+            return value
+          }
+        })
+      }),
+      rowCount,
+    })
+  }
+
+  toArray() {
+    return this.rows.map((row: unknown[]) =>
+      row.reduce(
+        (acc: Record<string, unknown>, value, i) => {
+          acc[this.fields[i]!.name] = value
+          return acc
+        },
+        {} as { [key: string]: unknown },
+      ),
     )
   }
 }

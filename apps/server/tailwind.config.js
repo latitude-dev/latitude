@@ -1,2 +1,2 @@
-import preset from '@latitude-sdk/svelte/tailwind.preset'
+import preset from '@latitude-data/svelte/tailwind.preset'
 export default { presets: [preset] }

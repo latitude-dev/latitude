@@ -1,8 +1,8 @@
 {
-  "name": "@latitude-sdk/mysql-connector",
+  "name": "@latitude-data/mysql-connector",
   "version": "0.0.1",
+  "license": "LGPL",
   "description": "MySQL connector for Latitude",
-  "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -10,18 +10,16 @@
     "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "peerDependencies": {
-    "@latitude-sdk/base-connector": "workspace:^",
-    "@latitude-sdk/query_result": "workspace:^"
+    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/query_result": "workspace:^"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/mysql": "^2.15.25",

@@ -1,3 +1,4 @@
+// @ts-expect-error - no types for this package
 import { isIdentifierStart } from 'acorn'
 import fullCharCodeAt from '../utils/full_char_code_at';
 import {

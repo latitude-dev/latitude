@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Latitude SDK Docs",
+  "name": "Latitude Docs",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -23,10 +23,10 @@
   ],
   "topbarCtaButton": {
     "name": "Get started",
-    "url": "https://github.com/latitude-dev/latitude-sdk"
+    "url": "https://github.com/latitude-dev/latitude"
   },
   "primaryTab": {
-      "name": "Guides"
+    "name": "Guides"
   },
   "tabs": [
     {
@@ -50,9 +50,7 @@
       "url": "visualizations"
     }
   ],
-  "anchors": [
-
-  ],
+  "anchors": [],
   "navigation": [
     {
       "group": "Getting started",
@@ -70,16 +68,11 @@
     },
     {
       "group": "Examples",
-      "pages": [
-        "guides/examples/basic-example",
-        "guides/examples/api"
-      ]
+      "pages": ["guides/examples/basic-example", "guides/examples/api"]
     },
     {
       "group": "Deploy",
-      "pages": [
-        "guides/deploy/self-hosted"
-      ]
+      "pages": ["guides/deploy/self-hosted"]
     },
     {
       "group": "Embed",
@@ -88,9 +81,7 @@
       ]
     }, {
       "group": "Configuration",
-      "pages": [
-        "sources/how-to-configure-sources"
-      ]
+      "pages": ["sources/how-to-configure-sources"]
     },
     {
       "group": "Sources",
@@ -127,17 +118,11 @@
     },
     {
       "group": "Advanced",
-      "pages": [
-        "queries/advanced/run-query",
-        "queries/advanced/cast-methods"
-      ]
+      "pages": ["queries/advanced/run-query", "queries/advanced/cast-methods"]
     },
     {
       "group": "Basics",
-      "pages": [
-        "views/basics/what-are-views",
-        "views/basics/layout"
-      ]
+      "pages": ["views/basics/what-are-views", "views/basics/layout"]
     },
     {
       "group": "Logic",
@@ -158,15 +143,11 @@
     },
     {
       "group": "Customization",
-      "pages": [
-        "views/customization/component-styles"
-      ]
+      "pages": ["views/customization/component-styles"]
     },
     {
       "group": "Advanced",
-      "pages": [
-        "views/advanced/svelte-syntax"
-      ]
+      "pages": ["views/advanced/svelte-syntax"]
     },
     {
       "group": "Inputs",
@@ -216,7 +197,7 @@
   ],
   "footerSocials": {
     "twitter": "https://twitter.com/trylatitude",
-    "github": "https://github.com/latitude-dev/latitude-sdk",
+    "github": "https://github.com/latitude-dev/latitude",
     "linkedin": "https://www.linkedin.com/company/trylatitude/"
   }
 }

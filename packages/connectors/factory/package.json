@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/connector-factory",
+  "name": "@latitude-data/connector-factory",
   "version": "0.0.1",
+  "license": "LGPL",
   "description": "Factory to create connectors",
   "type": "module",
   "main": "dist/index.js",
@@ -15,30 +16,27 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
     "rollup": "^4.10.0",
+    "vitest": "^1.2.2",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@latitude-sdk/athena-connector": "workspace:^",
-    "@latitude-sdk/base-connector": "workspace:*",
-    "@latitude-sdk/bigquery-connector": "workspace:^",
-    "@latitude-sdk/mysql-connector": "workspace:^",
-    "@latitude-sdk/postgresql-connector": "workspace:*",
-    "@latitude-sdk/snowflake-connector": "workspace:^",
-    "@latitude-sdk/trino-connector": "workspace:*",
-    "@latitude-sdk/duckdb-connector": "workspace:^",
-    "@latitude-sdk/sqlite-connector": "workspace:^",
-    "@latitude-sdk/mssql-connector": "workspace:^",
-    "@latitude-sdk/databricks-connector": "workspace:^",
-    "vitest": "^1.2.2",
+    "@latitude-data/athena-connector": "workspace:^",
+    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/bigquery-connector": "workspace:^",
+    "@latitude-data/mysql-connector": "workspace:^",
+    "@latitude-data/postgresql-connector": "workspace:*",
+    "@latitude-data/snowflake-connector": "workspace:^",
+    "@latitude-data/trino-connector": "workspace:*",
+    "@latitude-data/duckdb-connector": "workspace:^",
+    "@latitude-data/sqlite-connector": "workspace:^",
+    "@latitude-data/mssql-connector": "workspace:^",
+    "@latitude-data/databricks-connector": "workspace:^",
     "yaml": "^2.3.4"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }

@@ -1,9 +1,25 @@
 {
-  "name": "@latitude-sdk/eslint-config",
+  "name": "@latitude-data/eslint-config",
   "version": "0.0.0",
+  "license": "LGPL",
   "files": [
-    "library.js"
+    "library.js",
+    "svelte.js"
   ],
+  "exports": {
+    ".": {
+      "import": "./library.js",
+      "require": "./library.js"
+    },
+    "./library.js": {
+      "import": "./library.js",
+      "require": "./library.js"
+    },
+    "./svelte.js": {
+      "import": "./svelte.js",
+      "require": "./svelte.js"
+    }
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.17.0",
     "@typescript-eslint/parser": "^6.17.0",
