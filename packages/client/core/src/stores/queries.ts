@@ -11,7 +11,7 @@ type QueryRequest = {
 
 export const createQueryKey = (
   queryPath: string,
-  params: Record<string, unknown>,
+  params: Record<string, unknown>
 ): string => {
   const hashedParams = Object.keys(params)
     .sort()
@@ -35,14 +35,19 @@ interface StoreState {
 export const store = createStore<StoreState>((set, get) => {
   const performQueryFetch = async (
     queryKey: string,
-    fetchFn: () => Promise<QueryResult>,
+    fetchFn: () => Promise<QueryResult>
   ) => {
     set((state) => ({
       queries: {
         ...state.queries,
-        [queryKey]: { isLoading: true, error: null },
+        [queryKey]: {
+          ...(state.queries[queryKey] || {}),
+          isLoading: true,
+          error: null,
+        },
       },
     }))
+
     try {
       const response = await fetchFn()
       const data = new QueryResult({
@@ -50,6 +55,7 @@ export const store = createStore<StoreState>((set, get) => {
         rows: response.rows,
         rowCount: response.rows?.length,
       })
+
       set((state) => ({
         queries: {
           ...state.queries,
@@ -80,7 +86,7 @@ export const store = createStore<StoreState>((set, get) => {
       performQueryFetch(queryKey, async () => {
         const response = await api.get<QueryResultPayload>(
           `api/queries/${queryPath}`,
-          params,
+          params
         )
         return new QueryResult(response)
       })
@@ -91,7 +97,7 @@ export const store = createStore<StoreState>((set, get) => {
         // TODO: Add force parameter or header when backend cache is implemented
         const response = await api.get<QueryResultPayload>(
           `api/queries/${queryPath}`,
-          params,
+          params
         )
 
         return new QueryResult(response)
@@ -102,7 +108,7 @@ export const store = createStore<StoreState>((set, get) => {
 
 export const useFetchQuery = (
   queryPath: string,
-  params: Record<string, unknown> = {},
+  params: Record<string, unknown> = {}
 ) => {
   const queryKey = createQueryKey(queryPath, params)
   const state = store.getState()
@@ -116,7 +122,8 @@ export const useFetchQuery = (
 
 export const useRunQuery = (
   queryPath: string,
-  params: Record<string, unknown>,
+  params: Record<string, unknown>
 ) => {
   store.getState().forceRefetch({ queryPath, params })
+}
 }
