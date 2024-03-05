@@ -178,10 +178,10 @@
       ]
     },
     {
-      "group": "Navigation",
+      "group": "Interaction",
       "pages": [
-        "components/navigation/link",
-        "components/navigation/button"
+        "components/interaction/run-button",
+        "components/interaction/link"
       ]
     },
     {
