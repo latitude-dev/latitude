@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.7
+
+### Patch Changes
+
+- I forgot to build the CLI package
+
 ## 0.0.6
 
 ### Patch Changes
