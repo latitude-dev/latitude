@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.4
+
+### Patch Changes
+
+- Use exec instead of spawn for running npm install
+
 ## 0.0.3
 
 ### Patch Changes

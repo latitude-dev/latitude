@@ -29,7 +29,7 @@ export default [
         targets: [
           {
             src: 'src/theme/assets/latitude.css',
-            dest: 'dist/src/theme/assets',
+            dest: 'dist',
           },
         ],
       }),

@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.0.3
+
+### Patch Changes
+
+- Expose latitude.css in dist/latitude.css
+
 ## 0.0.2
 
 ### Patch Changes

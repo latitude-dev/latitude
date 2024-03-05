@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/client",
   "description": "Core package of all Latitude client libraries",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
@@ -24,7 +24,7 @@
     },
     "./css/all.css": "./dist/css/all.css",
     "./css/components/*.css": "./dist/css/components/*.css",
-    "./latitude.css": "./src/theme/assets/latitude.css",
+    "./latitude.css": "./dist/latitude.css",
     "./theme/preset": "./tailwind.config.js"
   },
   "files": [

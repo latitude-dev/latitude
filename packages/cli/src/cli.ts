@@ -10,7 +10,7 @@ const CLI = sade('latitude')
 
 CLI.version(process.env.PACKAGE_VERSION ?? 'development')
   .option('--debug', 'Enables verbose console logs')
-  .option('--simulate-pro', 'Enables verbose console logs')
+  .option('--simulate-pro', 'Enable pro mode in development')
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')
@@ -32,7 +32,7 @@ CLI.command('deploy')
 
 const parsedArgs = CLI.parse(process.argv, { lazy: true })
 
-const args = parsedArgs?.args ?? []
+const args = parsedArgs?.args
 config.debug = args
 config.setDev({
   dev: process.env.NODE_ENV === 'development',

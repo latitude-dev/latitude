@@ -4,7 +4,7 @@ class CLIConfig {
   private _dev: boolean = false
   private _pro: boolean = true
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): CLIConfig {
     if (CLIConfig.instance) return this.instance
@@ -33,14 +33,16 @@ class CLIConfig {
 
   set debug(args: string[]) {
     if (Array.isArray(args)) {
-      this._debug = !!(args[0] as unknown as { debug?: boolean }).debug
+      this._debug = !!(args[0] as unknown as { debug?: boolean })?.debug
     }
   }
 
   private isSimulatedPro(args: string[]): boolean {
     if (!Array.isArray(args)) return false
 
-    return !!(args[0] as unknown as { 'simulate-pro': boolean })['simulate-pro']
+    return !!(args[0] as unknown as { 'simulate-pro': boolean })?.[
+      'simulate-pro'
+    ]
   }
 }
 

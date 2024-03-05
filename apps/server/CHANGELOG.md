@@ -1,5 +1,13 @@
 # @latitude-data/server
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @latitude-data/client@0.0.3
+  - @latitude-data/svelte@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes
