@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.0.2
+
+### Patch Changes
+
+- Release client/core with missing latitude.css file.
+
 ## 0.0.1
 
 ### Patch Changes

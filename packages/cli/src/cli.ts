@@ -32,10 +32,11 @@ CLI.command('deploy')
 
 const parsedArgs = CLI.parse(process.argv, { lazy: true })
 
-config.debug = parsedArgs?.args
+const args = parsedArgs?.args ?? []
+config.debug = args
 config.setDev({
   dev: process.env.NODE_ENV === 'development',
-  args: parsedArgs.args,
+  args,
 })
 
 parsedArgs?.handler.apply(null, parsedArgs?.args)

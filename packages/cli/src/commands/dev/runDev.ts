@@ -19,6 +19,10 @@ export async function installAppDependencies() {
   })
 
   npmInstall.on('data', (data) => {
+    console.log(colors.yellow(data))
+  })
+
+  npmInstall.on('error', (data) => {
     console.error(colors.red(`💥 Error on npm install: ${data}`))
   })
 
