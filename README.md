@@ -1,6 +1,14 @@
 ![Linter](https://github.com/latitude-dev/latitude/actions/workflows/linter.yml/badge.svg)
 ![Tests](https://github.com/latitude-dev/latitude/actions/workflows/test.yml/badge.svg)
 
+# TODO
+
+- [ ] Fix Tailwind style in production. The content is wrong is going to
+      `src/**/*.ts` it should go to `./dist/**/*.js`
+- [ ] Fix start server pick the right view.
+- [ ] Improve npm progress install
+- [ ] Auto detect if they have `pnpm` or `npm` installed.
+
 # Latitude
 
 Latitude is an open-source full-stack framework to build interactive data apps
