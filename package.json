@@ -11,10 +11,12 @@
     "prettier": "turbo prettier",
     "build": "turbo build",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "publish-packages": "turbo run build lint tc test && pnpm run changeset version && pnpm run changeset publish"
+    "publish-packages": "turbo run build lint tc test && pnpm run changeset version && pnpm run changeset publish",
+    "latitude-dev": "./node_modules/.bin/latitude"
   },
   "devDependencies": {
     "@latitude-data/typescript": "workspace:*",
+    "@latitude-data/cli": "workspace:*",
     "prettier": "^3.1.1",
     "turbo": "^1.12.4",
     "@changesets/cli": "^2.27.1"
