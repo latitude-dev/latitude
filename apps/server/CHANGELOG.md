@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.8
+
+### Patch Changes
+
+- Fix better table autoimport
+
 ## 0.0.7
 
 ### Patch Changes

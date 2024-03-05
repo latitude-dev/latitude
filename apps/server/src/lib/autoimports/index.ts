@@ -1,3 +1,4 @@
 export * from './forms'
 export * from './chart'
-export { default as RunButton } from './run-button'
+export * from './Table'
+export { default as RunButton } from './RunButton'
