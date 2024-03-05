@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.5
+
+### Patch Changes
+
+- Remove static route in apps server
+
 ## 0.0.4
 
 ### Patch Changes
