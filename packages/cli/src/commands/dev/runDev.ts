@@ -7,29 +7,32 @@ export const cleanTerminal = () => {
   process.stdout.write('\x1bc')
 }
 
-export async function installAppDependencies() {
+export async function installAppDependencies({ cwd }: { cwd: string }) {
   console.log(colors.yellow('Installing dependencies...'))
 
   // TODO: Remove --force flag
   // this is here because we have an incompatibility with the SvelteKit version
   // declared as peer dependency in sveltekit-autoimport
-  const command = 'npm install --force'
-
   return new Promise<void>((resolve) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        console.error(colors.red(`💥 Error on npm install: ${error.message}`))
-        return
-      }
+    const npmInstall = spawn('npm', ['install', '--force'], {
+      cwd,
+      shell: true,
+    })
 
-      console.log(stdout)
+    // Listen for stdout data (standard output)
+    npmInstall.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`)
+    })
 
-      if (stderr) {
-        console.error(colors.red(`💥 Error installing: ${stderr}`))
-      } else {
-        console.log(colors.green('🚀 Dependencies installed'))
-        resolve()
-      }
+    // Listen for stderr data (standard error)
+    npmInstall.stderr.on('data', (data) => {
+      console.error(`stderr: ${data}`)
+    })
+
+    // Handle the close event
+    npmInstall.on('close', (code) => {
+      console.log(`npm install process exited with code ${code}`)
+      resolve()
     })
   })
 }

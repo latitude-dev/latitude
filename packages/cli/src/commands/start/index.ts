@@ -41,8 +41,9 @@ async function displayMessage(dataAppDir: string) {
 
 function cdToAppFolder(destinationPath: string) {
   const dataAppDirPath = path.resolve(destinationPath)
+  const appFolder = `${dataAppDirPath}/${APP_FOLDER}`
   process.chdir(dataAppDirPath)
-  return `${process.cwd()} / ${APP_FOLDER}`
+  return appFolder
 }
 
 const startDataProject: Handler = async (args) => {
@@ -64,7 +65,7 @@ const startDataProject: Handler = async (args) => {
   if (config.dev) return
 
   const appFolder = cdToAppFolder(dataAppDir)
-  await installAppDependencies()
+  await installAppDependencies({ cwd: appFolder })
   runDevServer({ appFolder, open: true })
 }
 

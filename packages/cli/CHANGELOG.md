@@ -1,5 +1,17 @@
 # @latitude-data/cli
 
+## 0.0.6
+
+### Patch Changes
+
+- Fix dependency installation by passing the right CWD (current working directory)
+
+## 0.0.5
+
+### Patch Changes
+
+- Fix app folder where npm install happens
+
 ## 0.0.4
 
 ### Patch Changes
