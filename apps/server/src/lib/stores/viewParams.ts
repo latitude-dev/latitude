@@ -1,6 +1,7 @@
 import { writable, get, Writable, Readable, derived } from 'svelte/store'
-import { browser } from "$app/environment"
+import { browser } from '$app/environment'
 import { replaceState } from '$app/navigation'
+import { parse, format } from '@latitude-data/type_parser'
 
 export type ViewParams = {
   [key: string]: unknown
@@ -11,7 +12,7 @@ const getParamsFromUrl = () => {
   const urlParams = new URLSearchParams(globalThis.location.search)
   const newParams: ViewParams = {}
   urlParams.forEach((value, key) => {
-    newParams[key] = value
+    newParams[key] = parse(value)
   })
   return newParams
 }
@@ -21,9 +22,14 @@ const viewParamsStore = writable<ViewParams>(getParamsFromUrl())
 export const useViewParams = (): Writable<ViewParams> => viewParamsStore
 export const getAllViewParams = (): ViewParams => get(viewParamsStore)
 
-export const useViewParam = (key: string, defaultValue?: unknown): Readable<unknown> => {
+export const useViewParam = (
+  key: string,
+  defaultValue?: unknown,
+): Readable<unknown> => {
   if (!(key in get(viewParamsStore))) setViewParam(key, defaultValue)
-  return derived(viewParamsStore, ($viewParams) => key in $viewParams ? $viewParams[key] : defaultValue)
+  return derived(viewParamsStore, ($viewParams) =>
+    key in $viewParams ? $viewParams[key] : defaultValue,
+  )
 }
 export const getViewParam = (key: string, defaultValue?: unknown): unknown => {
   const params = get(viewParamsStore)
@@ -41,10 +47,18 @@ export const setViewParam = (key: string, value: unknown): void => {
 
 function setUrlParam(key: string, value: unknown) {
   if (!browser) return
-  
+
+  // Parse all Params from the store to the URL format
   const urlParams = new URLSearchParams(globalThis.location.search)
-  if (value === undefined) urlParams.delete(key)
-  else urlParams.set(key, String(value))
+  const urlParamsValues: Record<string, unknown> = {}
+  urlParams.forEach((value, key) => {
+    urlParamsValues[key] = parse(value)
+  })
+  if (value === undefined) delete urlParamsValues[key]
+  else urlParamsValues[key] = value
+  const newParamsString = Object.entries(urlParamsValues)
+    .map(([key, value]) => `${key}=${format(value)}`)
+    .join('&')
 
   // There are two ways to update the url: the default window.location.replaceState and svelte's replaceState
   // When using the default window.location.replaceState, sveltekit will print a warning in the console recommending to use svelte's replaceState instead
@@ -52,7 +66,8 @@ function setUrlParam(key: string, value: unknown) {
   // To avoid the warning and the error, we use a try/catch block to catch the error and do nothing
 
   try {
-    replaceState(`?${urlParams.toString()}`, {}) 
-  } catch (_) { /* do nothing */ } // replaceState fails when not ran within a svelte component
-
+    replaceState(`?${newParamsString}`, {})
+  } catch (_) {
+    /* do nothing */
+  } // replaceState fails when not ran within a svelte component
 }

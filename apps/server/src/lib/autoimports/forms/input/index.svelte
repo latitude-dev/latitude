@@ -5,16 +5,30 @@
 
   export let param: string;
   export let value: unknown = "";
+  export let type: string = "text";
 
   let inputStore = useViewParam(param, value);
+
+  function castValue(value: unknown) {
+    if (type === "checkbox") return value === "true";
+    if (type === "number") return Number(value);
+
+    return value;
+  }
 
   const dispatch = createEventDispatcher();
   const handleInput = (event: Event) => {
     const newValue = (event.target as HTMLInputElement).value;
-    setViewParam(param, newValue);
+    setViewParam(param, castValue(newValue));
 
     dispatch("input", event);
   };
 </script>
 
-<Input on:input={handleInput} value={$inputStore} {...$$restProps} />
+<Input
+  on:input={handleInput}
+  value={$inputStore}
+  type={type}
+  checked={type === "checkbox" && !!$inputStore}
+  {...$$restProps}
+/>
