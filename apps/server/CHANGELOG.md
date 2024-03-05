@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.4
+
+### Patch Changes
+
+- Fix autoimport from svelte ui package
+
 ## 0.0.3
 
 ### Patch Changes

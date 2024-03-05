@@ -9,10 +9,10 @@ export default defineConfig({
   plugins: [
     latitudePlugin(),
     autoImport({
-      module: { '@latitude-data/client/svelte': ['Button', 'Card', 'Row', 'Column'] },
+      module: { '@latitude-data/svelte': ['Button', 'Card', 'Row', 'Column'] },
       mapping: {
         runQuery: 'import { runQuery } from "$lib/stores/queries"',
-        input: 'import { input } from "$lib/stores/queries"'
+        input: 'import { input } from "$lib/stores/queries"',
       },
       components: [{ name: './src/lib/autoimports', flat: true }],
     }),
