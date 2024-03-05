@@ -40,7 +40,7 @@ export async function installAppDependencies({ cwd }: { cwd: string }) {
 const COMMAND = 'npx'
 const BASE_ARGS = ['vite', 'dev']
 
-type DevServerProps = {
+export type DevServerProps = {
   appFolder?: string
   port?: number
   host?: string

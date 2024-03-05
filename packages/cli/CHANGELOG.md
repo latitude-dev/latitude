@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.8
+
+### Patch Changes
+
+- Fix autoimports by adding missing components
+
 ## 0.0.7
 
 ### Patch Changes

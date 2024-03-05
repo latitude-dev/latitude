@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.6
+
+### Patch Changes
+
+- Fix autoimports by adding missing components
+
 ## 0.0.5
 
 ### Patch Changes
