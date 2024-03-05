@@ -1,5 +1,6 @@
 {
   "name": "@latitude-data/client",
+  "description": "Core package of all Latitude client libraries",
   "version": "0.0.1",
   "license": "LGPL",
   "scripts": {

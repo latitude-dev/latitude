@@ -1,5 +1,6 @@
 {
   "name": "@latitude-data/query_result",
+  "description": "A library for working with query results at Latitude",
   "version": "0.0.1",
   "license": "LGPL",
   "scripts": {
