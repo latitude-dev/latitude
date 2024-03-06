@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.10
+
+### Patch Changes
+
+- we forgot to built the cli in prod mode
+
 ## 0.0.9
 
 ### Patch Changes
