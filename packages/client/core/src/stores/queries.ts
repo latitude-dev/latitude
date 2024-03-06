@@ -126,4 +126,3 @@ export const useRunQuery = (
 ) => {
   store.getState().forceRefetch({ queryPath, params })
 }
-}
