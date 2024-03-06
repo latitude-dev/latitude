@@ -9,6 +9,6 @@
   $: data = $res.data as QueryResult
 </script>
 
-<TableBlankSlate loading={$res.isLoading} error={$res.error}>
+<TableBlankSlate loading={$res.isLoading} data={$res.data} error={$res.error}>
   <Table {data} />
 </TableBlankSlate>
