@@ -186,7 +186,6 @@
     {
       "group": "Others",
       "pages": [
-        "visualizations/others/big-number",
         "visualizations/others/pie-chart",
         "visualizations/others/funnel-chart"
       ]

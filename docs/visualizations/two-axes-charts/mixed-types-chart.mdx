@@ -29,7 +29,7 @@ You can use `<MixedChart ... />` to add it in your view. Within the tag you must
 ## Properties
 To configure and customize the chart, you can add properties, some of which are required and some of which are optional.
 
-<ParamField path="dataset" type="string" required>
+<ParamField path="query" type="string" required>
 The name of your `.sql` file from which your chart will get the data. It's not necessary to specify the full path, just the name, because we will search all folders until we find it
 </ParamField>
 
@@ -46,13 +46,13 @@ The name of your `.sql` file from which your chart will get the data. It's not n
 </ParamField>
 
 
-<ParamField path="xAxisFormat" type="configuration">
+<ParamField path="xAxisFormat" type="array">
     It allows you to customize how the information is displayed in the given axis. It contains several options.    
     
     [See the section xAxisFormat](#x-and-y-options) to learn more about the options.
 </ParamField>
 
-<ParamField path="yAxisFormat" type="configuration">
+<ParamField path="yAxisFormat" type="array">
     It allows you to customize how the information is displayed in the given axis. It contains several options.    
 
     [See the section yAxisFormat](#x-and-y-options) to learn more about the options.
@@ -74,7 +74,7 @@ The name of your `.sql` file from which your chart will get the data. It's not n
     Swap the axis orientation. Visually swap the (x) axis with the (y) axis.
 </ParamField>
 
-<ParamField path="config" type="configuration">
+<ParamField path="config" type="array">
     Contains some options to customize your chart.
     
     [See the Config section](#config) to learn more about the options.
@@ -96,10 +96,9 @@ Both `x` and `y` can contain multiple data series, so instead of specifying just
 </ParamField>
 
 <ParamField path="axisIndex" type="string">
-    Specifies the side of the axis on which the series is displayed. The configuration of each axis side depends on the Axis Format property. The options are:
-    
-    - `start` (The default if not specified)
-    - `end`
+    Specifies the group within an axis. Imagine 3 series that belong to the left side of the Y-axis, 2 of them need one specific format but the rest need another. axisIndex helps to define different formats for series on the same side of the axis.
+
+    The options for this property are numbers: `0`, `1`, `2`...
 </ParamField>
 
 Example of syntax for multiple series:
@@ -125,6 +124,17 @@ Example to add all columns starting wiht `sum_`:
     ]}
 ```
 ### Axis Format
+
+Example of different axis format. The order of the array will determine the axisIndex where `0` = the first format in the list.
+
+```
+    yAxisFormat={[
+		{type: 'value', stack: 'true'},
+		{type: 'category', stack: 'false'},
+		{type: 'value', stack: 'false;}
+    ]}
+```
+
 <ParamField path="type" type="string">
     The format of the data displayed in the axis. The options are:
     - `category`
@@ -133,8 +143,12 @@ Example to add all columns starting wiht `sum_`:
     - `log`
 </ParamField>
 
+<ParamField path="stack" type="boolean">
+    Display the data series of the given axis on top of each other, visualizing cumulative totals or comparisons over time.
+</ParamField>
+
 <ParamField path="showAxis" type="boolean">
-    Display the axis info in the chart or not.
+    Display the axis info (labels, numbers...) in the chart or not.
 </ParamField>
 
 <ParamField path="rotate" type="number">
