@@ -36,14 +36,16 @@ WHERE id = 6
 ### Incrementing
 Variables can be modified using operations such as addition.
 ```sql
-{counter = counter + 10}
+{counter = 10} -- Define the variable
 
 SELECT *
 FROM table
 WHERE id != null
 AND (
-{#each [1, 2, 3] as products}
-OR id = {counter}
+{#each [1, 2, 3] as products, i}
+  id = {counter}                       -- Print the value of the variable
+  {counter = counter + 10}             -- Increment the value of the variable
+  {#if i+1 < products.length} OR {/if} -- Add an OR to every element except the last one
 {/each}
 )
 
@@ -52,9 +54,11 @@ OR id = {counter}
 SELECT *
 FROM table
 WHERE id != null 
-AND id = 10
-AND id = 20
-AND id = 30
+AND (
+  id = 10 OR
+  id = 20 OR
+  id = 30
+)
 ```
 
 ## Constants
@@ -72,13 +76,13 @@ Constants are similar to variables but, once defined, their value cannot be chan
 SELECT *
 FROM table
 {#if birthday = '2000/02/28'}
-    {@const birthday = '2024/12/31'} 
+    {birthday = '2024/12/31'} 
 {/if}
 
 
 ---- ⬇️ After proccessing ⬇️ ----
 
-'!Error. You are trying to modify the constant content'
+'!Error: Cannot reassign a constant'
 ```
 
 ## Scope
