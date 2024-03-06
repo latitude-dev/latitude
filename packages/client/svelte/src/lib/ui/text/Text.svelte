@@ -19,6 +19,9 @@
   export let whiteSpace: $$Props['whiteSpace'] = 'normal'
   export let wordBreak: $$Props['wordBreak'] = 'normal'
 
+  let className: $$Props['className'] = undefined
+  export { className as class }
+
   $: classes = theme.ui.text.cssClass({
     align,
     capitalize,
@@ -34,6 +37,7 @@
     weight,
     whiteSpace,
     wordBreak,
+    className,
   })
 </script>
 

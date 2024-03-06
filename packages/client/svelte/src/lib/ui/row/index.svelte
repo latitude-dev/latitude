@@ -1,9 +1,5 @@
 <script context="module" lang="ts">
-  import type { Gap } from '@latitude-data/client/src/theme/ui/layout'
-
   export type Props = {
-    gap?: Gap
-    grow?: boolean
     class?: string
   }
 </script>
@@ -14,11 +10,9 @@
   type $$Props = Props
 
   let className: $$Props['class'] = undefined
-  export let gap: $$Props['gap'] = undefined
-  export let grow: $$Props['grow'] = undefined
   export { className as class }
 
-  $: classes = theme.ui.row.cssClass({ gap, grow, className })
+  $: classes = theme.ui.row.cssClass({ className })
 </script>
 
 <div class={classes}>

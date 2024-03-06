@@ -77,6 +77,7 @@ export type FontFamily = keyof typeof families
 export type TextProps = {
   as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   capitalize?: boolean
+  className?: string | undefined | null
   centered?: boolean
   color?: TextColor
   ellipsis?: boolean
@@ -101,6 +102,7 @@ export function cssClass({
   family = 'sans',
   capitalize = false,
   centered = false,
+  className,
   size = 'h4',
   leading = 'h4',
   color = 'foreground',
@@ -141,6 +143,7 @@ export function cssClass({
       'line-through': lineThrough,
       'text-center': centered,
       truncate: ellipsis,
-    }
+    },
+    className
   )
 }

@@ -15,6 +15,7 @@ const EXTERNAL_DEPENDENCIES = [
   'lodash/isNaN',
   'date-fns/format',
   '@latitude-data/query_result',
+  '@latitude-data/type_parser'
 ]
 
 /** @type {import('rollup').RollupOptions}*/
