@@ -1,5 +1,14 @@
 # @latitude-data/server
 
+## 0.0.11
+
+### Patch Changes
+
+- Updated dependencies
+  - @latitude-data/type_parser@0.0.1
+  - @latitude-data/client@0.0.5
+  - @latitude-data/svelte@0.0.5
+
 ## 0.0.10
 
 ### Patch Changes

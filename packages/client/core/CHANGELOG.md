@@ -1,5 +1,12 @@
 # @latitude-data/client
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @latitude-data/type_parser@0.0.1
+
 ## 0.0.4
 
 ### Patch Changes
