@@ -198,26 +198,20 @@
         "visualizations/two-axes-charts/bar-chart",
         "visualizations/two-axes-charts/area-chart",
         "visualizations/two-axes-charts/scatter",
-        "visualizations/two-axes-charts/bubble-chart",
         "visualizations/two-axes-charts/mixed-types-chart"
       ]
     },
     {
       "group": "Tables",
       "pages": [
-        "visualizations/tables/table",
-        "visualizations/tables/pivot-table",
-        "visualizations/tables/heatmap"
+        "visualizations/tables/table"
       ]
     },
     {
       "group": "Others",
       "pages": [
-        "visualizations/others/big-number",
         "visualizations/others/pie-chart",
-        "visualizations/others/funnel-chart",
-        "visualizations/others/calendar-heatmap",
-        "visualizations/others/map"
+        "visualizations/others/funnel-chart"
       ]
     }
   ],
