@@ -78,20 +78,15 @@ async function fetchQueryFromCore({
   const computedParams = computeQueryParams(inlineParams)
   const coreQueryKey = createKeyForQueryStore(query, computedParams)
 
+  const oldQueryKey = get(middlewareQueryStore)[queryKey]?.coreQueryKey
+
   middlewareQueryStore.update((state: MiddlewareStoreState) => ({
     ...state,
     [queryKey]: { queryPath: query, inlineParams, coreQueryKey },
   }))
 
-  if (!browser || !loaded) return
-
-  if (
-    !force &&
-    get(middlewareQueryStore)[queryKey] &&
-    get(middlewareQueryStore)[queryKey].coreQueryKey == coreQueryKey
-  ) {
-    return
-  }
+  if (!browser || !loaded) return // Don't fetch queries until the page is fully loaded
+  if (!force && oldQueryKey === coreQueryKey) return // Don't refetch if there have been no changes to the params (unless force is true)
 
   if (force) {
     queryStore
@@ -151,10 +146,11 @@ export function useQuery({
   coreQueryKeyStore.subscribe(updateState) // Update state when coreQueryKey changes
   queryStore.subscribe(updateState) // Check for state updates when queryStore changes
   // Refetch when viewParams change
-  if (opts.reactiveToParams)
+  if (opts.reactiveToParams) {
     useViewParams().subscribe(() => {
       fetchQueryFromCore({ query, inlineParams })
     })
+  }
 
   updateState()
 
