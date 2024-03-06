@@ -3,15 +3,15 @@
   import { setViewParam, useViewParam } from "$lib/stores/viewParams";
   import { createEventDispatcher } from "svelte";
 
-  export let name: string;
+  export let param: string;
   export let value: unknown = "";
 
-  let inputStore = useViewParam(name, value);
+  let inputStore = useViewParam(param, value);
 
   const dispatch = createEventDispatcher();
   const handleInput = (event: Event) => {
     const newValue = (event.target as HTMLInputElement).value;
-    setViewParam(name, newValue);
+    setViewParam(param, newValue);
 
     dispatch("input", event);
   };
