@@ -35,6 +35,9 @@ importers:
       '@latitude-data/svelte':
         specifier: workspace:*
         version: link:../../packages/client/svelte
+      '@latitude-data/type_parser':
+        specifier: workspace:^
+        version: link:../../packages/type_parser
       css-tree:
         specifier: ^2.3.1
         version: 2.3.1
@@ -199,6 +202,9 @@ importers:
       '@latitude-data/query_result':
         specifier: workspace:*
         version: link:../../query_result
+      '@latitude-data/type_parser':
+        specifier: workspace:^
+        version: link:../../type_parser
       clsx:
         specifier: ^2.1.0
         version: 2.1.0
@@ -867,6 +873,28 @@ importers:
         version: 5.3.3
 
   packages/query_result:
+    devDependencies:
+      '@latitude-data/eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@latitude-data/typescript':
+        specifier: workspace:*
+        version: link:../../tools/typescript
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
+      prettier:
+        specifier: ^3.1.1
+        version: 3.1.1
+      rollup:
+        specifier: ^4.10.0
+        version: 4.10.0
+
+  packages/type_parser:
+    dependencies:
+      date-fns:
+        specifier: ^3.3.1
+        version: 3.3.1
     devDependencies:
       '@latitude-data/eslint-config':
         specifier: workspace:*
@@ -14075,6 +14103,7 @@ packages:
   /prettier@3.1.1:
     resolution: {integrity: sha512-22UbSzg8luF4UuZtzgiUOfcGM8s4tjBv6dJRT7j275NXsy2jb4aJa4NNveul5x4eqlF1wuhuR2RElK71RvmVaw==}
     engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /pretty-format@27.5.1:
@@ -15274,6 +15303,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0

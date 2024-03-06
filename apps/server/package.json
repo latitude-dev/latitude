@@ -46,6 +46,7 @@
     "@latitude-data/client": "workspace:*",
     "@latitude-data/connector-factory": "workspace:^",
     "@latitude-data/svelte": "workspace:*",
+    "@latitude-data/type_parser": "workspace:^",
     "css-tree": "^2.3.1",
     "pg": "^8.11.3"
   }

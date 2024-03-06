@@ -1,5 +1,6 @@
 import handleError from '$lib/errors/handler'
 import findOrCompute from '$lib/query_service/find_or_compute'
+import { RichDate, parse } from '@latitude-data/type_parser'
 
 const FORCE_PARAM = '__force'
 
@@ -25,7 +26,7 @@ export async function GET({
   }
 }
 
-type IValue = string | number | boolean
+type IValue = string | number | boolean | Date | null
 
 function getQueryParams(url: URL) {
   const searchParams = url.searchParams
@@ -39,10 +40,16 @@ function getQueryParams(url: URL) {
   return { params, force: searchParams.get(FORCE_PARAM) === 'true' }
 }
 
-function castValue(value: string) {
-  if (value === 'true') return true
-  if (value === 'false') return false
-  if (!isNaN(Number(value))) return Number(value)
+function castValue(value: string): IValue { // TODO: Make this function an actual service with proper testing
+  const parsedValue = parse(value)
+  if (typeof parsedValue !== 'string') {
+    if (parsedValue instanceof RichDate) return parsedValue.resolve()
+    return parsedValue as IValue
+  }
 
-  return value
+  if (parsedValue === 'true') return true
+  if (parsedValue === 'false') return false
+  if (!isNaN(Number(parsedValue))) return Number(parsedValue)
+
+  return parsedValue
 }

@@ -1,3 +1,4 @@
+import { format } from '@latitude-data/type_parser'
 type AnyObject = Record<string, unknown>
 type ApiErrorItem = { title: string; detail: string }
 
@@ -46,11 +47,12 @@ class LatitudeApi {
     })
   }
 
-  private buildUrl(urlStr: string, params: AnyObject = {}) {
+  private buildUrl(urlStr: string, params: AnyObject = {}): URL {
     const url = new URL(`${this.safeHost}/${urlStr}`)
-    Object.keys(params).forEach((key) =>
-      url.searchParams.append(key, String(params[key])),
-    )
+    const formattedParams = Object.entries(params)
+      .map(([key, value]) => `${key}=${format(value)}`)
+      .join('&')
+    url.search = formattedParams
 
     return url
   }
