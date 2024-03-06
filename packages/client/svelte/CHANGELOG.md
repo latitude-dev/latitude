@@ -1,5 +1,15 @@
 # @latitude-data/svelte
 
+## 0.0.4
+
+### Patch Changes
+
+- - View component is columnar by default now
+  - Improved Table blank slate with proper loading indicators
+- Updated dependencies
+  - @latitude-data/client@0.0.4
+  - @latitude-data/query_result@0.0.2
+
 ## 0.0.3
 
 ### Patch Changes

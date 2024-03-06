@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 0.0.9
+
+### Patch Changes
+
+- - View component is columnar by default now
+  - Improved Table blank slate with proper loading indicators
+
 ## 0.0.8
 
 ### Patch Changes

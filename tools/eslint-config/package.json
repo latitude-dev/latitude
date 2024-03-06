@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/eslint-config",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "LGPL",
   "files": [
     "library.js",
