@@ -1,11 +1,15 @@
 <script lang="ts">
   import QueryResult from '@latitude-data/query_result'
   import { Table, TableBlankSlate } from '@latitude-data/svelte/internal'
-  import { useQuery } from '$lib/stores/queries'
+  import { useQuery, type QueryProps } from '$lib/stores/queries'
 
-  export let query: string
+  type Props = QueryProps
+  
+  export let query: Props['query']
+  export let inlineParams: Props['inlineParams'] = {}
+  export let opts: Props['opts'] = {}
 
-  let res = useQuery({ query })
+  let res = useQuery({ query, inlineParams, opts })
   $: data = $res.data as QueryResult
 </script>
 
