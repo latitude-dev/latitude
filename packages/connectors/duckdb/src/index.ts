@@ -38,7 +38,8 @@ export class DuckdbConnector extends BaseConnector {
       let results = []
       if (query.params.length > 0) {
         const stmt = await conn.prepare(query.sql)
-        results = await stmt.all(this.buildQueryParams(query.params))
+        results = await stmt.all(...this.buildQueryParams(query.params))
+        stmt.finalize()
       } else {
         results = await conn.all(query.sql)
       }
