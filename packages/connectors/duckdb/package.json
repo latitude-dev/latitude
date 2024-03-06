@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/duckdb-connector",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "LGPL",
   "description": "Duckdb connector for Latitude",
   "type": "module",

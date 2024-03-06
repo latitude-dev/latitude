@@ -1,5 +1,12 @@
 # @latitude-data/connector-factory
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @latitude-data/duckdb-connector@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

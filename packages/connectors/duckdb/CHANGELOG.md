@@ -1,5 +1,11 @@
 # @latitude-data/duckdb-connector
 
+## 0.0.3
+
+### Patch Changes
+
+- Fixes parametrized queries with more than one parameter
+
 ## 0.0.2
 
 ### Patch Changes

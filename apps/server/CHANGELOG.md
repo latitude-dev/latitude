@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.10
+
+### Patch Changes
+
+- @latitude-data/connector-factory@0.0.3
+
 ## 0.0.9
 
 ### Patch Changes
