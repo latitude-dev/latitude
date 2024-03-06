@@ -4,9 +4,9 @@ import { Handler } from 'sade'
 import { getLatitudeBanner } from '../../utils.js'
 import cloneTemplate from './cloneTemplate.js'
 import setupApp from './setupApp.js'
-import { installAppDependencies, runDevServer } from '../dev/runDev.js'
-import { APP_FOLDER } from '../constants.js'
+import { installAppDependencies } from '../dev/runDev.js'
 import config from '../../config.js'
+import runLatitudeServer from '../dev/runLatitudeServer.js'
 
 type ErrorColor = 'red' | 'yellow'
 type OnErrorProps = { error: Error; message: string; color?: ErrorColor }
@@ -39,17 +39,11 @@ async function displayMessage(dataAppDir: string) {
   )
 }
 
-function cdToAppFolder(destinationPath: string) {
-  const dataAppDirPath = path.resolve(destinationPath)
-  const appFolder = `${dataAppDirPath}/${APP_FOLDER}`
-  process.chdir(dataAppDirPath)
-  return appFolder
-}
-
 const startDataProject: Handler = async (args) => {
+  const isPro = config.pro || config.simulatedPro
   // Clone template
   const dataAppDir = (await cloneTemplate({ onError })) as string
-  const appVersion = args['app-version'] ?? 'latest'
+  const appVersion = args['version'] ?? 'latest'
 
   // Setup application server for running queries
   await setupApp({
@@ -58,15 +52,17 @@ const startDataProject: Handler = async (args) => {
     appVersion,
   })
 
+  // Once the app is cloned, we need to install the dependencies
+  // in the data app folder
+  process.chdir(path.resolve(dataAppDir))
+
+  if (isPro) {
+    await installAppDependencies({ dataAppDir })
+  }
+
   displayMessage(dataAppDir)
 
-  // In development we go manually to the app folder
-  // in the monorepo and install the dependencies
-  if (config.dev) return
-
-  const appFolder = cdToAppFolder(dataAppDir)
-  await installAppDependencies({ cwd: appFolder })
-  runDevServer({ appFolder, open: true })
+  runLatitudeServer({ devServer: { appFolder: dataAppDir, open: true } })
 }
 
 export default startDataProject

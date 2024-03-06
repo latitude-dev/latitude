@@ -3,6 +3,7 @@ class CLIConfig {
   private _debug: boolean = false
   private _dev: boolean = false
   private _pro: boolean = true
+  private _simulatedPro: boolean = false
 
   private constructor() {}
 
@@ -21,9 +22,14 @@ class CLIConfig {
     return this._pro
   }
 
+  get simulatedPro(): boolean {
+    return this._simulatedPro
+  }
+
   setDev({ dev, args }: { dev: boolean; args: string[] }) {
     const simulatedPro = this.isSimulatedPro(args)
-    this._dev = simulatedPro ? false : dev
+    this._dev = dev
+    this._simulatedPro = simulatedPro
     this._pro = !this._dev
   }
 

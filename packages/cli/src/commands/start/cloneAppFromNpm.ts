@@ -14,7 +14,7 @@ export default async function cloneAppFromNpm({
 }: Props) {
   const latitudeFolder = `${destinationPath}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
-  fsExtra.emptyDirSync(`${process.cwd()}/${appDir}`)
+  fsExtra.ensureDirSync(appDir)
   const command = `npm view ${PACKAGE_NAME}@${appVersion} dist.tarball`
 
   return new Promise((resolve, reject) => {
@@ -23,14 +23,11 @@ export default async function cloneAppFromNpm({
         onError({ error, message: `Error cloning app from npm`, color: 'red' })
         return
       }
+
       if (stderr) {
-        console.error(`stderr: ${stderr}`)
-        onError({
-          error: new Error('Unexpected error'),
-          message: `Error cloning app from npm`,
-          color: 'red',
-        })
-        return
+        // NOTE: NPM can output warnings to stderr, so we don't want to exit
+        // the process, just inform the user.
+        console.error(stderr)
       }
 
       const tarballUrl = stdout.trim()

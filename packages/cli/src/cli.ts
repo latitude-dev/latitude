@@ -15,14 +15,26 @@ CLI.version(process.env.PACKAGE_VERSION ?? 'development')
 CLI.command('start')
   .describe('Setup you data project with an example data source')
   .option(
-    '--app-version',
+    '--version',
     'Latitude app version used to build the data project. Default: latest',
   )
   .action(startDataProject)
 
-CLI.command('dev')
+const cliDev = CLI.command('dev')
   .describe('Launch the local Latitude development environment')
-  .action(devCommand)
+  .option(
+    '--open',
+    'Open the data app in your browser, Default: yes. Options: yes, no',
+  )
+
+if (process.env.NODE_ENV === 'development') {
+  cliDev.option(
+    '--folder',
+    'Use in development to specify the data app folder to run',
+  )
+}
+
+cliDev.action(devCommand)
 
 CLI.command('deploy')
   .describe('Deploy data app to production')

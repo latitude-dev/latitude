@@ -1,14 +1,18 @@
 import fs from 'fs'
 import colors from 'picocolors'
+import path from 'path'
 import enquirer from 'enquirer'
 import degit from 'degit'
 import { CommonProps } from './index.js'
 import { LATITUDE_GITHUB_SLUG } from '../constants.js'
+import config from '../../config'
 
 const REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/template`
-type Options = { dest: string | null }
-export default async function cloneTemplate({ onError }: CommonProps) {
-  let options: Options = { dest: null }
+type Options = { dest: string | null; force: boolean }
+
+async function askForDestination({ onError }: CommonProps) {
+  let options: Options = { dest: null, force: false }
+
   try {
     options = await enquirer.prompt<Options>([
       {
@@ -24,16 +28,19 @@ export default async function cloneTemplate({ onError }: CommonProps) {
       message: '😢 Creation stopped, ready when you are!',
       color: 'yellow',
     })
+    return options
   }
 
-  const destination = options.dest
+  if (!options.dest) return options
 
-  if (!destination) return
+  options.dest = config.dev ? `sites/${options.dest}` : options.dest
 
   const isDestinationEmpty =
-    !fs.existsSync(destination) || fs.readdirSync(destination).length === 0
+    !fs.existsSync(options.dest) || fs.readdirSync(options.dest).length === 0
 
-  if (!isDestinationEmpty) {
+  if (isDestinationEmpty) {
+    options.force = true
+  } else {
     const { force } = await enquirer.prompt<{ force: boolean }>([
       {
         type: 'toggle',
@@ -41,29 +48,38 @@ export default async function cloneTemplate({ onError }: CommonProps) {
         message: 'Directory is not empty. Do you want to continue?',
       },
     ])
+    options.force = force
+  }
 
-    if (!force) {
-      onError({
-        error: new Error('Directory not empty'),
-        message: '! Directory not empty — aborting',
-      })
-    }
+  return { ...options, dest: path.resolve(`./${options.dest}`) }
+}
+
+export default async function cloneTemplate({ onError }: CommonProps) {
+  const { dest, force } = await askForDestination({ onError })
+
+  if (!dest) {
+    onError({
+      error: new Error('No destination'),
+      message: '🚧 No destination provided',
+      color: 'red',
+    })
+    return
   }
 
   return new Promise<string>((resolve) => {
-    const template = degit(REPO_SLUG, { force: true })
-    console.log(colors.yellow(`📦 Cloning template to ${destination}`))
+    const template = degit(REPO_SLUG, { force })
+    console.log(colors.yellow(`📦 Cloning template to ${dest}`))
 
     template.on('info', () => {
       console.log(colors.green('✅ template cloned'))
 
-      return resolve(destination)
+      return resolve(dest)
     })
 
-    template.clone(destination).catch((err) => {
+    template.clone(dest).catch((err) => {
       onError({
         error: err,
-        message: `💥 Error cloning template in ${destination}`,
+        message: `💥 Error cloning template in ${dest}`,
       })
     })
   })
