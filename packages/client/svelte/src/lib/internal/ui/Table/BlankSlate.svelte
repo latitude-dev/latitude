@@ -20,14 +20,16 @@
       style="max-height: {height};"
     >
       <div class="grid grid-cols-4 gap-4 rounded-lg bg-muted p-4">
-        {#each Array(4) as _, i (i)} <!-- eslint-disable-line -->
+        <!-- eslint-disable-next-line -->
+        {#each Array(4) as _, i (i)}
           <div
             class="animate-gradient h-4 rounded-full bg-gradient-to-r from-muted via-white to-muted"
           />
         {/each}
       </div>
       <div class="grid grid-cols-4 gap-4">
-        {#each Array(120) as _} <!-- eslint-disable-line -->
+        <!-- eslint-disable-next-line -->
+        {#each Array(120) as _}
           <div
             class="animate-gradient h-4 rounded-full bg-gradient-to-r from-muted via-white to-muted"
           />

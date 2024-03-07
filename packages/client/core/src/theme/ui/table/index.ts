@@ -1,9 +1,16 @@
 import { cn } from '../../utils'
 
-type Props = { className: string | null | undefined }
+type Props = { className?: string | null | undefined }
+
+function containerCssClass({ className }: Props) {
+  return cn(
+    'border rounded-md w-full h-full overflow-auto whitespace-nowrap',
+    className
+  )
+}
 
 function tableCssClass({ className }: Props) {
-  return cn('w-full caption-bottom text-sm', className)
+  return cn('w-full caption-bottom text-sm table-auto', className)
 }
 
 function tableRowCssClass({ className }: Props) {
@@ -44,7 +51,7 @@ function tableBodyCssClass({ className }: Props) {
 }
 
 export default {
-  container: { cssClass: () => 'w-full overflow-auto' },
+  container: { cssClass: containerCssClass },
   root: { cssClass: tableCssClass },
   row: { cssClass: tableRowCssClass },
   header: { cssClass: tableHeaderCssClass },
