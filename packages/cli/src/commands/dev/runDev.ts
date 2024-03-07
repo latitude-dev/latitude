@@ -25,7 +25,6 @@ export function runDevServer({
   open = false,
   verbose = false,
 }: DevServerProps) {
-  console.log(colors.yellow(`${appFolder} is the app folder`))
   let building = true
   const logLevel = verbose ? 'debug' : 'silent'
   let args = [
@@ -40,28 +39,22 @@ export function runDevServer({
   const serverProccess = spawn('npm', args, {
     detached: false,
     cwd: appFolder,
-    stdio: 'pipe',
   })
 
   serverProccess.stdout?.on('data', (data) => {
     const isReady = READY_REGEX.test(data.toString())
     if (isReady && building) {
-      cleanTerminal()
+      console.log(colors.green(`Latitude Dev Server ready at ${hostUrl}`))
 
-      if (open) {
-        openFn(hostUrl)
-      }
+      if (open) openFn(hostUrl)
 
-      console.log(colors.green(`Latitude Dev Server running on port ${port}`))
       building = false
-    }
-
-    if (verbose) {
-      console.log(colors.gray(data))
     }
   })
 
   serverProccess.stderr?.on('data', (data) => {
+    if (data.includes('WARNING')) return // ignore warnings
+
     console.error(colors.yellow(data))
   })
 
