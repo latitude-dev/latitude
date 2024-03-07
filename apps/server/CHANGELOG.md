@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.14
+
+### Patch Changes
+
+- - fix: gitignore was including the api routes of the template project
+
 ## 0.0.13
 
 ### Patch Changes
