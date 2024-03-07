@@ -75,7 +75,8 @@ export function parse(value: string): unknown {
   if (!value.startsWith('$')) return decodeURIComponent(value)
 
   const [type, ...rest] = value.slice(1).split(':')
-  if (!Object.values(ValueType).includes(type as ValueType)) return decodeURIComponent(value)
+  if (!Object.values(ValueType).includes(type as ValueType))
+    return decodeURIComponent(value)
   if (type === ValueType.NULL) return null
 
   if (rest.length === 0) return value // Value not specified

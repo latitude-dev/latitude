@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
-import { APP_FOLDER, APP_SERVER_FOLDER } from '../constants'
-import { Props } from './setupApp'
+import { APP_FOLDER, APP_SERVER_FOLDER } from '../../commands/constants'
+import { Props } from './index'
 import { forceSymlink } from '../../utils'
 
 function createAppFolder(destinationPath: string) {

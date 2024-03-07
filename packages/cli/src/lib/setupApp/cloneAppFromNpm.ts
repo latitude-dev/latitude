@@ -3,8 +3,8 @@ import axios from 'axios'
 import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
-import { Props } from './setupApp'
-import { LATITUDE_FOLDER } from '../constants'
+import { Props } from './index'
+import { LATITUDE_FOLDER } from '../../commands/constants'
 
 const PACKAGE_NAME = '@latitude-data/server'
 export default async function cloneAppFromNpm({
