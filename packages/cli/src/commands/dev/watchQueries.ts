@@ -1,79 +1,68 @@
-import colors from 'picocolors'
 import fs from 'fs'
 import path from 'path'
 import { APP_FOLDER } from '../constants'
 import watcher from './common/watcher'
-import output from './common/output'
+import syncFiles from './common/syncFiles'
 
-function getQueriesPath(cwd: string): string {
-  return path.join(cwd, APP_FOLDER, 'static', 'latitude', 'queries')
-}
+export default async function watchQueries(rootDir: string) {
+  const queriesPath = path.join(
+    rootDir,
+    APP_FOLDER,
+    'static',
+    'latitude',
+    'queries',
+  )
+  const csvsPath = path.join(rootDir, APP_FOLDER, 'queries')
 
-export default async function watchQueries(dir: string) {
-  const queriesPath = getQueriesPath(dir)
-  const queries = path.join(dir, 'queries')
+  clearFolders([queriesPath, csvsPath])
 
-  clearInternalQueriesFolder(queriesPath)
-
-  const syncFile = (
+  const syncQueriesAndCsvs = (
     srcPath: string,
     type: 'add' | 'change' | 'unlink',
     ready: boolean,
   ) => {
-    const relativePath = path.relative(queries, srcPath)
-    const destPath = path.join(queriesPath, relativePath)
+    const relativePath = path.relative(rootDir, srcPath).replace(/^queries/, '')
 
-    if (type === 'add' || type === 'change') {
-      // Make sure all directories in the path exist
-      fs.mkdirSync(path.dirname(destPath), { recursive: true })
+    let destPath
 
-      fs.copyFile(srcPath, destPath, (err) => {
-        if (err) {
-          return output(
-            colors.red(
-              `${relativePath} could not be copied to ${destPath}: ${err}`,
-            ),
-            ready,
-          )
-        } else {
-          output(colors.gray(`${relativePath} synced`), ready)
-        }
-      })
-    } else if (type === 'unlink') {
-      fs.unlink(destPath, (err) => {
-        if (err) {
-          output(colors.red(`${destPath} could not be deleted: ${err}`), ready)
-        }
-      })
+    if (srcPath.endsWith('.csv')) {
+      destPath = path.join(csvsPath, relativePath)
+    } else if (
+      srcPath.endsWith('.sql') ||
+      srcPath.endsWith('.yml' || srcPath.endsWith('.yaml'))
+    ) {
+      destPath = path.join(queriesPath, relativePath)
+    } else {
+      return
     }
+
+    syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
 
-  await watcher(queries, syncFile, {
-    ignored: /(^|[/\\])\../, // ignore dotfiles
+  const queriesDir = path.join(rootDir, 'queries')
+
+  await watcher(queriesDir, syncQueriesAndCsvs, {
     persistent: true,
   })
 
-  console.log(colors.green('Watching [queries]...'))
-
   process.on('exit', () => {
-    clearInternalQueriesFolder(queriesPath)
+    clearFolders([queriesPath, csvsPath])
   })
 }
 
-/**
- * Clears the internal queries folder by deleting all files and subfolders.
- */
-function clearInternalQueriesFolder(queriesPath: string) {
-  if (!fs.existsSync(queriesPath)) {
-    fs.mkdirSync(queriesPath, { recursive: true })
-  }
-
-  fs.readdirSync(queriesPath).forEach((file: string) => {
-    const filePath = path.join(queriesPath, file)
-    if (fs.statSync(filePath).isDirectory()) {
-      fs.rmSync(filePath, { recursive: true })
-    } else {
-      fs.unlinkSync(filePath)
+function clearFolders(folders: string[]) {
+  folders.forEach((folder) => {
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true })
     }
+
+    fs.readdirSync(folder).forEach((file: string) => {
+      const filePath = path.join(folder, file)
+      if (fs.statSync(filePath).isDirectory()) {
+        fs.rmSync(filePath, { recursive: true })
+      } else {
+        fs.unlinkSync(filePath)
+      }
+    })
   })
 }

@@ -1,4 +1,3 @@
-import colors from 'picocolors'
 import config from '../../config'
 import path from 'path'
 import watchQueries from './watchQueries'
@@ -23,11 +22,6 @@ function getCwd(cwd?: string): string {
   return getDefaultCwd()
 }
 
-function getRoutesFolderPath(cwd: string, routePath: string | null): string {
-  const basePath = path.join(cwd, APP_FOLDER, 'src', 'routes')
-  return routePath ? `${basePath}/${routePath}` : basePath
-}
-
 type Props = {
   devServer: DevServerProps
   dataAppDir?: string
@@ -44,10 +38,8 @@ export default async function runLatitudeServer(props: Props) {
     routePath,
   }
 
-  const routesFolder = getRoutesFolderPath(cwd, routePath)
-  await watchViews({ dataAppDir: cwd, destinationDir: routesFolder })
+  await watchViews({ dataAppDir: cwd, appName })
   await watchQueries(cwd)
 
-  console.log(colors.gray('Starting development server... \n'))
   runDevServer(devServer)
 }

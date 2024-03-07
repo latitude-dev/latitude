@@ -23,7 +23,8 @@
     "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "prettier": "^3.1.1",
-    "rollup": "^4.10.0"
+    "rollup": "^4.10.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "date-fns": "^3.3.1"

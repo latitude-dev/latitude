@@ -1,17 +1,26 @@
 import colors from 'picocolors'
 import fs from 'fs'
+import config from '../../config'
 import path from 'path'
 import watcher from './common/watcher'
-import output from './common/output'
+import syncFiles from './common/syncFiles'
+import { APP_FOLDER, DEV_SITES_ROUTE_PREFIX } from '../constants'
 
-export const copiedFiles = new Set<string>()
+function getRoutesFolderPath(cwd: string, routePath: string | null): string {
+  const basePath = path.join(cwd, APP_FOLDER, 'src', 'routes')
+  return routePath ? `${basePath}/${routePath}` : basePath
+}
+
+const copiedFiles = new Set<string>()
 export default async function watchViews({
   dataAppDir,
-  destinationDir,
+  appName,
 }: {
   dataAppDir: string
-  destinationDir: string
+  appName: string
 }): Promise<void> {
+  const routePath = config.pro ? null : `/${DEV_SITES_ROUTE_PREFIX}/${appName}`
+  const destinationDir = getRoutesFolderPath(dataAppDir, routePath)
   const views = path.join(dataAppDir, 'views')
 
   const syncFile = (
@@ -26,40 +35,18 @@ export default async function watchViews({
     const destPath = path.join(destinationDir, relativePath)
 
     if (type === 'add' || type === 'change') {
-      // Make sure all directories in the path exist
-      fs.mkdirSync(path.dirname(destPath), { recursive: true })
-
-      fs.copyFile(srcPath, destPath, (err) => {
-        if (err) {
-          return output(
-            colors.red(
-              `${relativePath} could not be copied to ${destPath}: ${err}`,
-            ),
-            ready,
-          )
-        } else {
-          output(colors.gray(`${relativeSrcPath} synced`), ready)
-        }
-      })
-
       copiedFiles.add(destPath)
     } else if (type === 'unlink') {
-      fs.unlink(destPath, (err) => {
-        if (err) {
-          output(colors.red(`${destPath} could not be deleted: ${err}`), ready)
-        } else {
-          copiedFiles.delete(destPath)
-        }
-      })
+      copiedFiles.delete(destPath)
     }
+
+    syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
 
   await watcher(views, syncFile, {
     ignored: /(?!.*\/index\.html$)(^|[/\\])\../, // ignore all files except index.html
     persistent: true,
   })
-
-  console.log(colors.green('Watching [views]...'))
 
   process.on('exit', () => {
     for (const copiedFile of copiedFiles) {

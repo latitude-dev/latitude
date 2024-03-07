@@ -6,6 +6,7 @@ export default async function devCommand(args: DevArgs = {}) {
   const open = args?.open ?? 'yes'
   const dataAppDir = args?.folder ? `/${args.folder}` : ''
   const appFolder = `${getDefaultCwd()}${dataAppDir}`
+
   runLatitudeServer({
     devServer: {
       open: open === 'yes',
