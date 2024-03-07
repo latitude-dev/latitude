@@ -14,7 +14,7 @@ const VIEWS_PATH = path.resolve(__dirname, '../src/routes')
 export default function transformCodePlugin() {
   const filter = createFilter(
     [`${VIEWS_PATH}/**/*.svelte`],
-    ['**/node_modules/**', '**/.git/**', '**/.svelte-kit/**', '**/.svelte/**']
+    ['**/node_modules/**', '**/.git/**', '**/.svelte-kit/**', '**/.svelte/**'],
   )
 
   return {
@@ -76,7 +76,7 @@ function findRunQueries({ ast }) {
           if (arg.type === 'ObjectExpression' && arg.properties) {
             return serializeObjectExpressionNode(arg)
           }
-        }
+        },
       )
       const queryParams = queryParamsValues.filter(Boolean).join(', ')
       const instance = {

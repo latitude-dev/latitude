@@ -1,23 +1,16 @@
-import colors from 'picocolors'
 import config from '../../config'
-import path from 'path'
-import watchQueries from './watchQueries'
-import watchViews from './watchViews'
-import { cwd } from 'process'
-import { runDevServer } from './runDev'
-import type { DevServerProps } from './runDev'
+import runLatitudeServer, { getDefaultCwd } from './runLatitudeServer'
 
-type Props = {
-  devServer: DevServerProps
-}
-export default async function devCommand(props: Props) {
-  const defaultDevServer = { open: config.pro }
-  const devServer = props.devServer
-    ? { ...props.devServer, ...defaultDevServer }
-    : defaultDevServer
-  console.log(colors.gray('Starting development server... \n'))
-
-  await watchViews(path.join(cwd(), 'views'))
-  await watchQueries(path.join(cwd(), 'queries'))
-  runDevServer(devServer)
+type DevArgs = { open?: 'yes' | 'no'; folder?: string }
+export default async function devCommand(args: DevArgs = {}) {
+  const open = args?.open ?? 'yes'
+  const dataAppDir = args?.folder ? `/${args.folder}` : ''
+  const appFolder = `${getDefaultCwd()}${dataAppDir}`
+  runLatitudeServer({
+    devServer: {
+      open: open === 'yes',
+      appFolder,
+      verbose: config.debug,
+    },
+  })
 }

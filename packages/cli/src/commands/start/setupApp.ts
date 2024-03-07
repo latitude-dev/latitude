@@ -9,6 +9,7 @@ export type Props = CommonProps & {
 }
 
 export default async function setupApp(props: Props) {
-  const setup = config.pro ? cloneAppFromNpm : synlinkAppFromLocal
+  const isPro = config.pro || config.simulatedPro
+  const setup = isPro ? cloneAppFromNpm : synlinkAppFromLocal
   return setup(props)
 }

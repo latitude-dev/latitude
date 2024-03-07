@@ -1,28 +1,29 @@
 import colors from 'picocolors'
 import fs from 'fs'
 import path from 'path'
-import { APP_FOLDER } from '../constants'
 import watcher from './common/watcher'
 import output from './common/output'
 
-const INTERNAL_VIEWS_FOLDER = path.join(
-  process.cwd(),
-  APP_FOLDER,
-  'src',
-  'routes',
-)
+export const copiedFiles = new Set<string>()
+export default async function watchViews({
+  dataAppDir,
+  destinationDir,
+}: {
+  dataAppDir: string
+  destinationDir: string
+}): Promise<void> {
+  const views = path.join(dataAppDir, 'views')
 
-const copiedFiles: Set<string> = new Set()
-
-export default async function watchViews(dir: string): Promise<void> {
   const syncFile = (
     srcPath: string,
     type: 'add' | 'change' | 'unlink',
     ready: boolean,
   ) => {
-    const relativeSrcPath = path.relative(dir, srcPath)
+    const relativeSrcPath = path
+      .relative(dataAppDir, srcPath)
+      .replace(/^views/, '')
     const relativePath = relativeSrcPath.replace(/[^/]*$/, '+page.svelte')
-    const destPath = path.join(INTERNAL_VIEWS_FOLDER, relativePath)
+    const destPath = path.join(destinationDir, relativePath)
 
     if (type === 'add' || type === 'change') {
       // Make sure all directories in the path exist
@@ -53,10 +54,12 @@ export default async function watchViews(dir: string): Promise<void> {
     }
   }
 
-  await watcher(dir, syncFile, {
+  await watcher(views, syncFile, {
     ignored: /(?!.*\/index\.html$)(^|[/\\])\../, // ignore all files except index.html
     persistent: true,
   })
+
+  console.log(colors.green('Watching [views]...'))
 
   process.on('exit', () => {
     for (const copiedFile of copiedFiles) {

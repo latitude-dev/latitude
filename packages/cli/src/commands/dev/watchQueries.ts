@@ -5,24 +5,23 @@ import { APP_FOLDER } from '../constants'
 import watcher from './common/watcher'
 import output from './common/output'
 
-const INTERNAL_QUERIES_FOLDER = path.join(
-  process.cwd(),
-  APP_FOLDER,
-  'static',
-  'latitude',
-  'queries',
-)
+function getQueriesPath(cwd: string): string {
+  return path.join(cwd, APP_FOLDER, 'static', 'latitude', 'queries')
+}
 
 export default async function watchQueries(dir: string) {
-  clearInternalQueriesFolder()
+  const queriesPath = getQueriesPath(dir)
+  const queries = path.join(dir, 'queries')
+
+  clearInternalQueriesFolder(queriesPath)
 
   const syncFile = (
     srcPath: string,
     type: 'add' | 'change' | 'unlink',
     ready: boolean,
   ) => {
-    const relativePath = path.relative(dir, srcPath)
-    const destPath = path.join(INTERNAL_QUERIES_FOLDER, relativePath)
+    const relativePath = path.relative(queries, srcPath)
+    const destPath = path.join(queriesPath, relativePath)
 
     if (type === 'add' || type === 'change') {
       // Make sure all directories in the path exist
@@ -49,28 +48,30 @@ export default async function watchQueries(dir: string) {
     }
   }
 
-  await watcher(dir, syncFile, {
+  await watcher(queries, syncFile, {
     ignored: /(^|[/\\])\../, // ignore dotfiles
     persistent: true,
   })
 
+  console.log(colors.green('Watching [queries]...'))
+
   process.on('exit', () => {
-    clearInternalQueriesFolder()
+    clearInternalQueriesFolder(queriesPath)
   })
 }
 
 /**
  * Clears the internal queries folder by deleting all files and subfolders.
  */
-function clearInternalQueriesFolder() {
-  if (!fs.existsSync(INTERNAL_QUERIES_FOLDER)) {
-    fs.mkdirSync(INTERNAL_QUERIES_FOLDER, { recursive: true })
+function clearInternalQueriesFolder(queriesPath: string) {
+  if (!fs.existsSync(queriesPath)) {
+    fs.mkdirSync(queriesPath, { recursive: true })
   }
 
-  fs.readdirSync(INTERNAL_QUERIES_FOLDER).forEach((file: string) => {
-    const filePath = path.join(INTERNAL_QUERIES_FOLDER, file)
+  fs.readdirSync(queriesPath).forEach((file: string) => {
+    const filePath = path.join(queriesPath, file)
     if (fs.statSync(filePath).isDirectory()) {
-      fs.rmdirSync(filePath, { recursive: true })
+      fs.rmSync(filePath, { recursive: true })
     } else {
       fs.unlinkSync(filePath)
     }

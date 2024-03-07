@@ -36,5 +36,7 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
 sites
+!sites/README.md
 apps/server/static/latitude
