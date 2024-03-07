@@ -1,5 +1,13 @@
 # @latitude-data/svelte
 
+## 0.0.7
+
+### Patch Changes
+
+- build all packages before release
+- Updated dependencies
+  - @latitude-data/client@0.0.7
+
 ## 0.0.6
 
 ### Patch Changes
