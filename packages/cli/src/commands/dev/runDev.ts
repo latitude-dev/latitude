@@ -7,41 +7,6 @@ export const cleanTerminal = () => {
   process.stdout.write('\x1bc')
 }
 
-export async function installAppDependencies({
-  dataAppDir,
-}: {
-  dataAppDir: string
-}) {
-  const appFolder = `${dataAppDir}/${APP_FOLDER}`
-  console.log(colors.yellow(`Installing dependencies... ${appFolder}`))
-
-  // TODO: Remove --force flag
-  // this is here because we have an incompatibility with the SvelteKit version
-  // declared as peer dependency in sveltekit-autoimport
-  return new Promise<void>((resolve) => {
-    const npmInstall = spawn('npm', ['install', '--force'], {
-      cwd: appFolder,
-      shell: true,
-    })
-
-    // Listen for stdout data (standard output)
-    npmInstall.stdout.on('data', (data) => {
-      console.log(colors.yellow(data))
-    })
-
-    // Listen for stderr data (standard error)
-    npmInstall.stderr.on('data', (data) => {
-      console.error(colors.red(data))
-    })
-
-    // Handle the close event
-    npmInstall.on('close', (code) => {
-      console.log(`npm install process exited with code ${code}`)
-      resolve()
-    })
-  })
-}
-
 export type DevServerProps = {
   appFolder?: string
   routePath?: string | null

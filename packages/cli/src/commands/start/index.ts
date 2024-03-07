@@ -1,16 +1,12 @@
 import colors from 'picocolors'
-import path from 'path'
 import { Handler } from 'sade'
-import { getLatitudeBanner } from '../../utils.js'
-import cloneTemplate from './cloneTemplate.js'
-import setupApp from './setupApp.js'
-import { installAppDependencies } from '../dev/runDev.js'
-import config from '../../config.js'
-import runLatitudeServer from '../dev/runLatitudeServer.js'
+import { getLatitudeBanner } from '../../utils'
+import cloneTemplate from './cloneTemplate'
+import config from '../../config'
+import runLatitudeServer from '../dev/runLatitudeServer'
+import { OnErrorFn, OnErrorProps } from '../../types'
+import setupApp from '../../lib/setupApp/index'
 
-type ErrorColor = 'red' | 'yellow'
-type OnErrorProps = { error: Error; message: string; color?: ErrorColor }
-type OnErrorFn = (_args: OnErrorProps) => void
 export type CommonProps = { onError: OnErrorFn }
 
 function onError({ error, message, color = 'red' }: OnErrorProps) {
@@ -40,25 +36,19 @@ async function displayMessage(dataAppDir: string) {
 }
 
 const startDataProject: Handler = async (args) => {
-  const isPro = config.pro || config.simulatedPro
   // Clone template
   const dataAppDir = (await cloneTemplate({ onError })) as string
   const appVersion = args['version'] ?? 'latest'
 
   // Setup application server for running queries
-  await setupApp({
+  const installationComplete = await setupApp({
     onError,
     destinationPath: dataAppDir,
     appVersion,
   })
 
-  // Once the app is cloned, we need to install the dependencies
-  // in the data app folder
-  process.chdir(path.resolve(dataAppDir))
-
-  if (isPro) {
-    await installAppDependencies({ dataAppDir })
-  }
+  // Something went wrong. We already handled the error
+  if (!installationComplete) return
 
   displayMessage(dataAppDir)
 
