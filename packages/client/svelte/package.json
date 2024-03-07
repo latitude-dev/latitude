@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/svelte",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "LGPL",
   "scripts": {
     "build": "pnpm run buildAndPackage",

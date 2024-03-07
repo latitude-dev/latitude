@@ -1,5 +1,16 @@
 # @latitude-data/server
 
+## 0.0.12
+
+### Patch Changes
+
+- - Table accepts now a class prop and has better default styles #f77a9ab
+  - Table accepts inline params as a prop #b0ec854
+  - Fix reactiveToParams was not working #3b0b8c9
+- Updated dependencies
+  - @latitude-data/client@0.0.6
+  - @latitude-data/svelte@0.0.6
+
 ## 0.0.11
 
 ### Patch Changes
