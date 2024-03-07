@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.12
+
+### Patch Changes
+
+- - Implements syncing of csvs #21b51bc
+
 ## 0.0.11
 
 ### Patch Changes
