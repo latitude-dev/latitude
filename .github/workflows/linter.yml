@@ -75,4 +75,4 @@ jobs:
         run: pnpm lint
 
       - name: TypeScript
-        run: pnpm tc
+        run: pnpm turbo tc build --cache-dir=.turbo --filter=@latitude-data/*{./packages/*}[HEAD^1] --filter=@latitude-data/*{./apps/*}[HEAD^1]
