@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "@latitude-data/query_result": "workspace:*",
-    "@latitude-data/type_parser": "workspace:^",
+    "@latitude-data/custom_types": "workspace:^",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
     "echarts": "^5.5.0",

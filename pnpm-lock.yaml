@@ -26,24 +26,30 @@ importers:
 
   apps/server:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.5.2
+        version: 3.5.2
       '@latitude-data/client':
         specifier: workspace:*
         version: link:../../packages/client/core
       '@latitude-data/connector-factory':
         specifier: workspace:^
         version: link:../../packages/connectors/factory
+      '@latitude-data/custom_types':
+        specifier: workspace:^
+        version: link:../../packages/custom_types
       '@latitude-data/svelte':
         specifier: workspace:*
         version: link:../../packages/client/svelte
-      '@latitude-data/type_parser':
-        specifier: workspace:^
-        version: link:../../packages/type_parser
       css-tree:
         specifier: ^2.3.1
         version: 2.3.1
       pg:
         specifier: ^8.11.3
         version: 8.11.3
+      radix-icons-svelte:
+        specifier: ^1.2.1
+        version: 1.2.1
     devDependencies:
       '@latitude-data/eslint-config':
         specifier: workspace:*
@@ -205,12 +211,12 @@ importers:
 
   packages/client/core:
     dependencies:
+      '@latitude-data/custom_types':
+        specifier: workspace:^
+        version: link:../../custom_types
       '@latitude-data/query_result':
         specifier: workspace:*
         version: link:../../query_result
-      '@latitude-data/type_parser':
-        specifier: workspace:^
-        version: link:../../type_parser
       clsx:
         specifier: ^2.1.0
         version: 2.1.0
@@ -284,9 +290,15 @@ importers:
 
   packages/client/svelte:
     dependencies:
+      '@internationalized/date':
+        specifier: ^3.5.2
+        version: 3.5.2
       '@latitude-data/client':
         specifier: workspace:*
         version: link:../core
+      '@latitude-data/custom_types':
+        specifier: workspace:^
+        version: link:../../custom_types
       '@latitude-data/query_result':
         specifier: workspace:^
         version: link:../../query_result
@@ -878,25 +890,7 @@ importers:
         specifier: ^5.2.2
         version: 5.3.3
 
-  packages/query_result:
-    devDependencies:
-      '@latitude-data/eslint-config':
-        specifier: workspace:*
-        version: link:../../tools/eslint-config
-      '@latitude-data/typescript':
-        specifier: workspace:*
-        version: link:../../tools/typescript
-      '@rollup/plugin-typescript':
-        specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
-      prettier:
-        specifier: ^3.1.1
-        version: 3.1.1
-      rollup:
-        specifier: ^4.10.0
-        version: 4.10.0
-
-  packages/type_parser:
+  packages/custom_types:
     dependencies:
       date-fns:
         specifier: ^3.3.1
@@ -917,9 +911,27 @@ importers:
       rollup:
         specifier: ^4.10.0
         version: 4.10.0
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
+      vitest:
+        specifier: ^1.2.2
+        version: 1.2.2(jsdom@24.0.0)
+
+  packages/query_result:
+    devDependencies:
+      '@latitude-data/eslint-config':
+        specifier: workspace:*
+        version: link:../../tools/eslint-config
+      '@latitude-data/typescript':
+        specifier: workspace:*
+        version: link:../../tools/typescript
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
+      prettier:
+        specifier: ^3.1.1
+        version: 3.1.1
+      rollup:
+        specifier: ^4.10.0
+        version: 4.10.0
 
   tools/eslint-config:
     devDependencies:
@@ -4056,8 +4068,8 @@ packages:
     resolution: {integrity: sha512-dvuCeX5fC9dXgJn9t+X5atfmgQAzUOWqS1254Gh0m6i8wKd10ebXkfNKiRK+1GWi/yTvvLDHpoxLr0xxxeslWw==}
     dev: true
 
-  /@internationalized/date@3.5.1:
-    resolution: {integrity: sha512-LUQIfwU9e+Fmutc/DpRTGXSdgYZLBegi4wygCWDSVmUdLTaMHsQyASDiJtREwanwKuQLq0hY76fCJ9J/9I2xOQ==}
+  /@internationalized/date@3.5.2:
+    resolution: {integrity: sha512-vo1yOMUt2hzp63IutEaTUxROdvQg1qlMRsbCvbay2AK2Gai7wIgCyK5weEX3nHkiLgo4qCXHijFNC/ILhlRpOQ==}
     dependencies:
       '@swc/helpers': 0.5.6
     dev: false
@@ -4230,7 +4242,7 @@ packages:
     dependencies:
       '@floating-ui/core': 1.6.0
       '@floating-ui/dom': 1.6.3
-      '@internationalized/date': 3.5.1
+      '@internationalized/date': 3.5.2
       dequal: 2.0.3
       focus-trap: 7.5.4
       nanoid: 5.0.5
@@ -7939,7 +7951,7 @@ packages:
     peerDependencies:
       svelte: ^4.0.0
     dependencies:
-      '@internationalized/date': 3.5.1
+      '@internationalized/date': 3.5.2
       '@melt-ui/svelte': 0.71.2(svelte@4.2.10)
       nanoid: 5.0.5
       svelte: 4.2.10
@@ -15326,6 +15338,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0

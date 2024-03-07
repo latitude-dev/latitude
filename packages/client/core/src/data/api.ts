@@ -1,4 +1,4 @@
-import { format } from '@latitude-data/type_parser'
+import { format } from '@latitude-data/custom_types'
 type AnyObject = Record<string, unknown>
 type ApiErrorItem = { title: string; detail: string }
 

@@ -1,6 +1,6 @@
 import handleError from '$lib/errors/handler'
 import findOrCompute from '$lib/query_service/find_or_compute'
-import { RichDate, parse } from '@latitude-data/type_parser'
+import { RichDate, parse } from '@latitude-data/custom_types'
 
 const FORCE_PARAM = '__force'
 

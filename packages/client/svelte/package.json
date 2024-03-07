@@ -52,7 +52,9 @@
     "!dist/**/*.stories.svelte"
   ],
   "dependencies": {
+    "@internationalized/date": "^3.5.2",
     "@latitude-data/client": "workspace:*",
+    "@latitude-data/custom_types": "workspace:^",
     "@latitude-data/query_result": "workspace:^",
     "bits-ui": "^0.18.1",
     "echarts": "^5.5.0",

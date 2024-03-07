@@ -1,0 +1,40 @@
+<script context="module" lang="ts">
+  import { Story, Template } from '@storybook/addon-svelte-csf'
+  import Calendar from './index.svelte'
+  import {
+    DateFormatter,
+    type DateValue,
+    today,
+    getLocalTimeZone
+  } from "@internationalized/date";
+
+  export const meta = {
+    title: 'Calendar',
+    component: Calendar
+  }
+</script>
+
+<script lang="ts">
+  const df = new DateFormatter("en-US", { dateStyle: "long" });
+  const localTimeZone = getLocalTimeZone();
+
+  let value = today(localTimeZone);
+  let label: string = df.format(value.toDate(localTimeZone));
+
+  function onValueChange(newValue?: DateValue): void {
+    label = newValue
+      ? df.format(newValue.toDate(localTimeZone))
+      : "No date selected";
+  }
+</script>
+
+<Template let:args>
+  <div class="flex flex-col justify-center gap-8">
+    <div class="flex w-[250px] p-2 rounded-md text-primary-foreground bg-secondary-foreground">
+      <div class="ml-4">{label}</div>
+    </div>
+    <Calendar bind:value {onValueChange} {...args} />
+  </div>
+</Template>
+
+<Story name="Default" />
