@@ -40,7 +40,8 @@ function getQueryParams(url: URL) {
   return { params, force: searchParams.get(FORCE_PARAM) === 'true' }
 }
 
-function castValue(value: string): IValue { // TODO: Make this function an actual service with proper testing
+function castValue(value: string): IValue {
+  // TODO: Make this function an actual service with proper testing
   const parsedValue = parse(value)
   if (typeof parsedValue !== 'string') {
     if (parsedValue instanceof RichDate) return parsedValue.resolve()

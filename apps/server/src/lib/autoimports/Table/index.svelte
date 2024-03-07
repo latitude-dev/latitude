@@ -9,10 +9,13 @@
   export let inlineParams: Props['inlineParams'] = {}
   export let opts: Props['opts'] = {}
 
+  let className: string | undefined
+  export { className as class }
+
   let res = useQuery({ query, inlineParams, opts })
   $: data = $res.data as QueryResult
 </script>
 
 <TableBlankSlate loading={$res.isLoading} data={$res.data} error={$res.error}>
-  <Table {data} />
+  <Table {data} class={className} />
 </TableBlankSlate>
