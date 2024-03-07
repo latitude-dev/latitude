@@ -144,6 +144,6 @@ export function cssClass({
       'text-center': centered,
       truncate: ellipsis,
     },
-    className
+    className,
   )
 }

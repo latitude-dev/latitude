@@ -1,11 +1,8 @@
 import colors from 'picocolors'
 import { spawn } from 'child_process'
-import openFn from 'open'
+import config from '../../config'
 import { APP_FOLDER } from '../constants'
-
-export const cleanTerminal = () => {
-  process.stdout.write('\x1bc')
-}
+import { cleanTerminal } from '../../utils'
 
 export type DevServerProps = {
   appFolder?: string
@@ -16,7 +13,6 @@ export type DevServerProps = {
   verbose?: boolean
 }
 
-const READY_REGEX = /ready in \d+ ms/
 export function runDevServer({
   appFolder = APP_FOLDER,
   routePath = '',
@@ -27,35 +23,29 @@ export function runDevServer({
 }: DevServerProps) {
   let building = true
   const logLevel = verbose ? 'debug' : 'silent'
+  const hostUrl = `http://${host}:${port}${routePath ? routePath : ''}`
   let args = [
     'run',
     'dev',
     `--port=${port}`,
     `--host=${host}`,
+    open ? `--open=${hostUrl}` : '',
     `--logLevel=${logLevel}`,
-  ]
+  ].filter((f) => f !== '')
 
-  const hostUrl = `http://${host}:${port}${routePath ? routePath : ''}`
-  const serverProccess = spawn('npm', args, {
+  const serverProccess = spawn(config.pkgManager.command, args, {
     detached: false,
     cwd: appFolder,
+    stdio: verbose ? 'inherit' : 'ignore',
   })
 
-  serverProccess.stdout?.on('data', (data) => {
-    const isReady = READY_REGEX.test(data.toString())
-    if (isReady && building) {
-      console.log(colors.green(`Latitude Dev Server ready at ${hostUrl}`))
+  serverProccess?.on('data', () => {
+    if (building) {
+      cleanTerminal()
 
-      if (open) openFn(hostUrl)
-
+      console.log(colors.green(`Latitude Dev Server running on port ${port}`))
       building = false
     }
-  })
-
-  serverProccess.stderr?.on('data', (data) => {
-    if (data.includes('WARNING')) return // ignore warnings
-
-    console.error(colors.yellow(data))
   })
 
   serverProccess.on('error', (err) => {

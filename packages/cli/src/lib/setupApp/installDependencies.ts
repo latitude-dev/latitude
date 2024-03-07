@@ -10,16 +10,15 @@ export default async function installAppDependencies({
   appVersion?: string
 }) {
   const appFolder = `${dataAppDir}/${APP_FOLDER}`
-  let args = ['install', '--legacy-peer-deps']
-  args = config.pro ? [...args, '--silent'] : args
+  let args = ['install', ...config.pkgManager.flags.mandatoryInstallFlags]
+  args = config.pro
+    ? [...args, config.pkgManager.flags.installFlags.silent]
+    : args
 
   console.log(colors.yellow('Installing dependencies...'))
 
-  // TODO: Remove --force flag
-  // this is here because we have an incompatibility with the SvelteKit version
-  // declared as peer dependency in sveltekit-autoimport
   return new Promise<void>((resolve, reject) => {
-    const npmInstall = spawn('npm', args, {
+    const npmInstall = spawn(config.pkgManager.command, args, {
       cwd: appFolder,
       shell: true,
       stdio: 'inherit',
