@@ -11,7 +11,7 @@ You can use `<ScatterChart ... />` to add it in your view. Within the tag you mu
 
 ``` js
 <ScatterChart
-	dataset='sales_evolution'
+	query='sales_evolution'
     x='created_at'
     y='sales'
     xTitle='Month'
@@ -30,13 +30,13 @@ To configure and customize the chart, you can add properties, some of which are 
 </ParamField>
 
 <ParamField path="x" type="string | array" required>
-    Specify a column name to return from your query .sql file. This will be the data in the horizontal (x) axis.
+    Specify a column name to return from your query. This will be the data in the horizontal (x) axis.
 
     [See the section Axis X and Y ](#x-and-y-options) to learn more about the options.
 </ParamField>
 
 <ParamField path="y" type="string | array" required>
-    Specify the array of series you want to visualize. Each serie has the column name that your query `.sql` file and other properties.
+    Specify the array of series you want to visualize. Each serie has the column name that your query and other properties.
     
     [See the section Axis X and Y ](#x-and-y-options) to learn more about the options.
 </ParamField>
@@ -80,7 +80,7 @@ To configure and customize the chart, you can add properties, some of which are 
 Both `x` and `y` can contain multiple data series, so instead of specifying just a column name, you need to create a list of series using the following properties:
 
 <ParamField path="name" type="string">
-    Specify a column name returned by your query `.sql` file.
+    Specify a column name returned by your query.
 </ParamField>
 
 <ParamField path="axisIndex" type="string">
@@ -184,3 +184,4 @@ Allows you to add more configuration and customize your chart.
 <ParamField path="showDecal" type="boolean">
     Add a visual pattern to each series to help colorblind people distinguish them.
 </ParamField>
+
