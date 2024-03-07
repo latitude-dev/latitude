@@ -109,9 +109,11 @@ SELECT
         {#if list < 4},{/if}  -- This avoids including a comma on the last item, preventing SQL errors.
     {/each}
 FROM table
+```
 
----- ⬇️ After proccessing ⬇️ ----
+It is transformed into:
 
+```
 SELECT
     id,
     name,
