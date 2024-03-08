@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.17
+
+### Patch Changes
+
+- fix: added missing default app version to some latitude commands
+
 ## 0.0.16
 
 ### Patch Changes
