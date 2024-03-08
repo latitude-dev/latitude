@@ -10,5 +10,8 @@ export default async function maybeSetupApp() {
 
   if (hasApp) return true
 
-  return setupApp({ onError: onError })
+  return setupApp({
+    onError: onError,
+    appVersion: 'latest',
+  })
 }
