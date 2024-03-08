@@ -149,7 +149,10 @@
     },
     {
       "group": "Advanced",
-      "pages": ["views/advanced/svelte-syntax"]
+      "pages": [
+        "views/advanced/svelte-syntax",
+        "views/advanced/head"
+      ]
     },
     {
       "group": "Inputs",

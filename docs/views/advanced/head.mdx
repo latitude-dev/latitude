@@ -1,0 +1,22 @@
+---
+title: '<Head>'
+description: 'Learn more about the Svelte syntax and how to use it in your Latitude projects'
+---
+
+We provide a way to add elements to the `<head>` of your document using the `<Head>` component. This is useful for adding meta tags, styles, and scripts to your document.
+
+You can use the `<Head>` component in any view. It will automatically add the elements to the `<head>` of the document.
+
+Here's an example:
+
+```html
+<Head>
+    <title>My Page</title>
+    <meta name="description" content="This is my page" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js"></script>
+</Head>
+<View>
+    ...
+</View>
+```

@@ -65,7 +65,7 @@ people.
 Contributions to Latitude are welcome and highly appreciated.
 
 If you are interested in contributing, please join us on our [Slack
-channel](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email),
+community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email),
 open an [issue](https://github.com/evidence-dev/evidence/issues/new), or
 contribute a pull request.
 
