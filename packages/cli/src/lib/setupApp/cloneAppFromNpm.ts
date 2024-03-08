@@ -7,12 +7,8 @@ import { Props } from './index'
 import config from '../../config'
 import { LATITUDE_FOLDER, PACKAGE_NAME } from '../../commands/constants'
 
-export default async function cloneAppFromNpm({
-  onError,
-  destinationPath,
-  appVersion,
-}: Props) {
-  const latitudeFolder = `${destinationPath}/${LATITUDE_FOLDER}`
+export default async function cloneAppFromNpm({ onError, appVersion }: Props) {
+  const latitudeFolder = `${config.cwd}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
   const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${appVersion} dist.tarball`
 

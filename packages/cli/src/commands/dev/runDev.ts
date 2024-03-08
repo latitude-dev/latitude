@@ -2,7 +2,6 @@ import colors from 'picocolors'
 import { spawn } from 'child_process'
 import config from '../../config'
 import { APP_FOLDER } from '../constants'
-import { cleanTerminal } from '../../utils'
 
 export type DevServerProps = {
   appFolder?: string
@@ -41,8 +40,6 @@ export function runDevServer({
 
   serverProccess?.on('data', () => {
     if (building) {
-      cleanTerminal()
-
       console.log(colors.green(`Latitude Dev Server running on port ${port}`))
       building = false
     }

@@ -1,7 +1,7 @@
 import colors from 'picocolors'
-import output from './output'
 import fs from 'fs'
 import path from 'path'
+import output from '../output'
 
 type Strategy = 'copy' | 'symlink'
 

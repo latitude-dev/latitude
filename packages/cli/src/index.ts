@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import sade from 'sade'
+import buildCommand from './commands/build'
 import colors from 'picocolors'
-import startDataProject from './commands/start/index'
 import config from './config'
 import devCommand from './commands/dev'
+import sade from 'sade'
+import startDataProject from './commands/start/index'
 import updateCommand from './commands/update'
 
 const CLI = sade('latitude')
@@ -37,9 +38,14 @@ const cliDev = CLI.command('dev')
 
 cliDev.action(devCommand)
 
+CLI.command('build')
+  .describe('Build data app for production')
+  .option('--target', 'Platform you want to build for. Default: vercel')
+  .action(buildCommand)
+
 CLI.command('deploy')
   .describe('Deploy data app to production')
-  .action((_args) => {
+  .action(() => {
     console.log(colors.red('Not implemented yet'))
   })
 
@@ -47,14 +53,13 @@ async function initCli() {
   const parsedArgs = CLI.parse(process.argv, { lazy: true })
 
   const args = parsedArgs?.args
-  config.debug = args
-  config.setDev({
-    dev: process.env.NODE_ENV === 'development',
-    args,
-  })
-  await config.setupPkgManager()
+  config.setDebug(args)
+  config.setDev({ dev: process.env.NODE_ENV === 'development', args })
 
-  parsedArgs?.handler.apply(null, parsedArgs?.args)
+  await config.setPkgManager()
+  config.setCwd(args)
+
+  parsedArgs?.handler.apply(null, args)
 }
 
 initCli()

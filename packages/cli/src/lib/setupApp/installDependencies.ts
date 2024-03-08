@@ -3,13 +3,10 @@ import { spawn } from 'child_process'
 import { APP_FOLDER } from '../../commands/constants'
 import config from '../../config'
 
-export default async function installAppDependencies({
-  dataAppDir,
-}: {
-  dataAppDir: string
+export default async function installAppDependencies(_: {
   appVersion?: string
 }) {
-  const appFolder = `${dataAppDir}/${APP_FOLDER}`
+  const appFolder = `${config.cwd}/${APP_FOLDER}`
   let args = ['install', ...config.pkgManager.flags.mandatoryInstallFlags]
   args = config.pro
     ? [...args, config.pkgManager.flags.installFlags.silent]

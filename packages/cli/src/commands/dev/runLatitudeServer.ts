@@ -1,45 +1,28 @@
 import config from '../../config'
 import path from 'path'
-import watchQueries from './watchQueries'
-import watchViews from './watchViews'
-import { runDevServer } from './runDev'
-import type { DevServerProps } from './runDev'
+import syncQueries from '../shared/syncQueries'
+import syncViews from '../shared/syncViews'
 import { APP_FOLDER, DEV_SITES_ROUTE_PREFIX } from '../constants'
+import { runDevServer } from './runDev'
 
-export function getDefaultCwd(): string {
-  const naturalCwd = process.cwd()
-
-  const isPro = config.pro
-  if (isPro) return naturalCwd
-
-  return path.join(naturalCwd, DEV_SITES_ROUTE_PREFIX)
-}
-
-function getCwd(cwd?: string): string {
-  // If cwd is provided, use it.
-  if (cwd) return cwd
-
-  return getDefaultCwd()
-}
+import type { DevServerProps } from './runDev'
 
 type Props = {
-  devServer: DevServerProps
+  server: DevServerProps
   dataAppDir?: string
 }
+
 export default async function runLatitudeServer(props: Props) {
-  const devServerProps = props.devServer ?? {}
-  const cwd = getCwd(devServerProps?.appFolder)
+  const cwd = config.cwd
   const appName = path.basename(cwd)
-  const routePath = config.pro ? null : `/${DEV_SITES_ROUTE_PREFIX}/${appName}`
-  const devServer: DevServerProps = {
-    ...devServerProps,
-    open: devServerProps?.open ?? true,
+
+  await syncViews({ dataAppDir: cwd, appName, watch: true })
+  await syncQueries({ rootDir: cwd, watch: true })
+
+  runDevServer({
+    ...props.server,
+    open: props.server?.open ?? true,
     appFolder: `${cwd}/${APP_FOLDER}`,
-    routePath,
-  }
-
-  await watchViews({ dataAppDir: cwd, appName })
-  await watchQueries(cwd)
-
-  runDevServer(devServer)
+    routePath: config.pro ? null : `/${DEV_SITES_ROUTE_PREFIX}/${appName}`,
+  })
 }

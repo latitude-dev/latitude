@@ -1,10 +1,16 @@
 import fs from 'fs'
 import path from 'path'
-import { APP_FOLDER } from '../constants'
-import watcher from './common/watcher'
-import syncFiles from './common/syncFiles'
+import { APP_FOLDER } from '../../constants'
+import syncFiles from '../shared/syncFiles'
+import watcher from '../shared/watcher'
 
-export default async function watchQueries(rootDir: string) {
+export default async function syncQueries({
+  rootDir,
+  watch = false,
+}: {
+  rootDir: string
+  watch?: boolean
+}) {
   const queriesPath = path.join(
     rootDir,
     APP_FOLDER,
@@ -41,9 +47,16 @@ export default async function watchQueries(rootDir: string) {
 
   const queriesDir = path.join(rootDir, 'queries')
 
-  await watcher(queriesDir, syncQueriesAndCsvs, {
-    persistent: true,
-  })
+  if (watch) {
+    await watcher(queriesDir, syncQueriesAndCsvs, {
+      persistent: true,
+    })
+  } else {
+    fs.readdirSync(queriesDir).forEach((file: string) => {
+      const srcPath = path.join(queriesDir, file)
+      syncQueriesAndCsvs(srcPath, 'add', true)
+    })
+  }
 
   process.on('exit', () => {
     clearFolders([queriesPath, csvsPath])

@@ -7,7 +7,6 @@ import installAppDependencies from './installDependencies'
 
 export type Props = {
   onError: OnErrorFn
-  destinationPath: string
   appVersion?: string
 }
 
@@ -15,7 +14,7 @@ export default async function setupApp(props: Props) {
   let allGood = false
 
   const isPro = config.pro || config.simulatedPro
-  const dataAppDir = props.destinationPath
+  const dataAppDir = config.cwd
   const setup = isPro ? cloneAppFromNpm : synlinkAppFromLocal
   await setup(props)
 
@@ -28,7 +27,6 @@ export default async function setupApp(props: Props) {
 
   try {
     await installAppDependencies({
-      dataAppDir: props.destinationPath,
       appVersion: props.appVersion,
     })
     allGood = true
