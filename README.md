@@ -6,6 +6,8 @@
 Latitude is an open-source full-stack framework to build interactive data apps
 on top of your database or data warehouse using SQL and React/Svelte.
 
+![Sample project](assets/hero.png)
+
 ## Documentation
 
 Visit the [public docs](https://latitude-21.mintlify.app/) to view the full documentation.
