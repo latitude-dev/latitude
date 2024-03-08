@@ -35,7 +35,6 @@ export default async function startDataProject() {
   // Setup application server for running queries
   const installationComplete = await setupApp({
     onError,
-    destinationPath: dataAppDir,
   })
 
   // Something went wrong. We already handled the error
@@ -43,5 +42,5 @@ export default async function startDataProject() {
 
   displayMessage(dataAppDir)
 
-  runLatitudeServer({ devServer: { appFolder: dataAppDir, open: true } })
+  runLatitudeServer({ server: { appFolder: dataAppDir, open: true } })
 }

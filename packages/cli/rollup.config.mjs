@@ -18,9 +18,9 @@ const packageVersion =
   nodeEnv === 'development' ? 'development-0.0.0' : getPackageVersion()
 
 export default {
-  input: 'src/cli.ts',
+  input: 'src/index.ts',
   output: {
-    file: 'dist/cli.cjs.js',
+    file: 'dist/index.cjs.js',
     format: 'cjs',
   },
   plugins: [

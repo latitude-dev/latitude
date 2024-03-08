@@ -1,13 +1,11 @@
-import { exec } from 'child_process'
 import colors from 'picocolors'
-import { prompt } from 'enquirer'
+import config from '../../config'
 import semverSort from 'semver/functions/rsort'
 import setupApp from '../../lib/setupApp'
-import { CommonCLIArgs } from '../../types'
-import { cleanTerminal, onError } from '../../utils'
-import { getDefaultCwd } from '../dev/runLatitudeServer'
-import config from '../../config'
 import { PACKAGE_NAME } from '../constants'
+import { cleanTerminal, onError } from '../../utils'
+import { exec } from 'child_process'
+import { prompt } from 'enquirer'
 
 const DEFAULT_VERSION_LIST = ['latest'] // If we fail to get the list
 
@@ -66,10 +64,7 @@ async function askForAppVersion() {
   ])
 }
 
-export default async function updateCommand(args: CommonCLIArgs = {}) {
-  const dataAppDir = args?.folder ? `/ ${args.folder}` : ''
-  const appFolder = `${getDefaultCwd()}${dataAppDir}`
-
+export default async function updateCommand() {
   let response: { version: string } | undefined
   try {
     response = await askForAppVersion()
@@ -92,7 +87,6 @@ export default async function updateCommand(args: CommonCLIArgs = {}) {
 
   return setupApp({
     onError,
-    destinationPath: appFolder,
     appVersion: response.version,
   })
 }

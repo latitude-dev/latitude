@@ -1,4 +1,6 @@
 import { exec } from 'child_process'
+import path from 'path'
+import { DEV_SITES_ROUTE_PREFIX } from './commands/constants'
 
 enum PackageManager {
   pnpm = 'pnpm',
@@ -50,11 +52,12 @@ type PackageManagerWithFlags = {
 
 class CLIConfig {
   private static instance: CLIConfig
-  private _debug: boolean = false
-  private _dev: boolean = false
-  private _pro: boolean = true
-  private _simulatedPro: boolean = false
-  public _pkgManager: PackageManagerWithFlags = {
+  public cwd: string = this.getDefaultCwd()
+  public debug: boolean = false
+  public dev: boolean = true
+  public pro: boolean = false
+  public simulatedPro: boolean = false
+  public pkgManager: PackageManagerWithFlags = {
     command: PackageManager.npm,
     flags: PACKAGE_FLAGS[PackageManager.npm],
   }
@@ -66,26 +69,10 @@ class CLIConfig {
     return this.instance
   }
 
-  get dev(): boolean {
-    return this._dev
-  }
-
-  get pro(): boolean {
-    return this._pro
-  }
-
-  get simulatedPro(): boolean {
-    return this._simulatedPro
-  }
-
-  get pkgManager(): PackageManagerWithFlags {
-    return this._pkgManager
-  }
-
-  async setupPkgManager() {
+  async setPkgManager() {
     const pkg = await this.getPackageManager()
     const flags = PACKAGE_FLAGS[pkg]
-    this._pkgManager = {
+    this.pkgManager = {
       command: pkg,
       flags,
     }
@@ -93,18 +80,23 @@ class CLIConfig {
 
   setDev({ dev, args }: { dev: boolean; args: string[] }) {
     const simulatedPro = this.isSimulatedPro(args)
-    this._dev = dev
-    this._simulatedPro = simulatedPro
-    this._pro = !this._dev
+    this.dev = dev
+    this.pro = !this.dev
+    this.simulatedPro = simulatedPro
   }
 
-  get debug(): boolean {
-    return this._debug
-  }
-
-  set debug(args: string[]) {
+  setDebug(args: string[]) {
     if (Array.isArray(args)) {
-      this._debug = !!(args[0] as unknown as { debug?: boolean })?.debug
+      this.debug = !!(args[0] as unknown as { debug?: boolean })?.debug
+    }
+  }
+
+  setCwd(args: string[]) {
+    if (Array.isArray(args)) {
+      const folder = (args[0] as unknown as { folder?: string })?.folder
+
+      if (folder) this.cwd = path.join(this.getDefaultCwd(), folder)
+      else this.cwd = this.getDefaultCwd()
     }
   }
 
@@ -127,6 +119,14 @@ class CLIConfig {
         })
       })
     })
+  }
+
+  private getDefaultCwd() {
+    const naturalCwd = process.cwd()
+
+    if (this.pro) return naturalCwd
+
+    return path.join(naturalCwd, DEV_SITES_ROUTE_PREFIX)
   }
 }
 
