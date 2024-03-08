@@ -35,6 +35,7 @@ export default async function startDataProject() {
   // Setup application server for running queries
   const installationComplete = await setupApp({
     onError,
+    appVersion: 'latest' // TODO: change for fancy selector
   })
 
   // Something went wrong. We already handled the error
