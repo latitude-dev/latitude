@@ -1,5 +1,14 @@
 # @latitude-data/client
 
+## 0.0.9
+
+### Patch Changes
+
+- We forgot to build the packages before release :facepalm:
+- Updated dependencies
+  - @latitude-data/custom_types@0.0.2
+  - @latitude-data/query_result@0.0.2
+
 ## 0.0.8
 
 ### Patch Changes

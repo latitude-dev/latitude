@@ -1,5 +1,11 @@
 # @latitude-data/eslint-config
 
+## 0.0.3
+
+### Patch Changes
+
+- We forgot to build the packages before release :facepalm:
+
 ## 0.0.2
 
 ### Patch Changes

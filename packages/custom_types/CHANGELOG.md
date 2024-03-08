@@ -1,5 +1,11 @@
 # @latitude-data/type_parser
 
+## 0.0.2
+
+### Patch Changes
+
+- We forgot to build the packages before release :facepalm:
+
 ## 0.0.1
 
 ### Patch Changes

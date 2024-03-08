@@ -1,5 +1,16 @@
 # @latitude-data/server
 
+## 0.0.16
+
+### Patch Changes
+
+- We forgot to build the packages before release :facepalm:
+- Updated dependencies
+  - @latitude-data/client@0.0.9
+  - @latitude-data/svelte@0.0.9
+  - @latitude-data/custom_types@0.0.2
+  - @latitude-data/connector-factory@0.0.3
+
 ## 0.0.15
 
 ### Patch Changes

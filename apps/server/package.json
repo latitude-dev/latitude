@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/server",
   "description": "Backend for Latitude",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "license": "LGPL",
   "type": "module",
   "scripts": {
