@@ -1,8 +1,8 @@
-import QueryResult from '@latitude-sdk/query_result'
-import { DataType } from '@latitude-sdk/query_result'
+import QueryResult from '@latitude-data/query_result'
+import { DataType } from '@latitude-data/query_result'
 import { type ResolvedParam, type CompiledQuery } from './types'
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { CompileError } from '@latitude-sdk/sql-compiler'
+import { CompileError } from '@latitude-data/sql-compiler'
 import { BaseConnector } from './index'
 
 vi.mock('fs', (importOriginal) => ({
@@ -75,7 +75,7 @@ describe('interpolate function', async () => {
     const connector = new MockConnector()
     const sql = '{interpolate("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath })
+    await connector.run({ queryPath })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('foo')
@@ -85,7 +85,7 @@ describe('interpolate function', async () => {
     const connector = new MockConnector()
     const sql = '{interpolate(null)}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath })
+    await connector.run({ queryPath })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('null')
@@ -95,7 +95,7 @@ describe('interpolate function', async () => {
     const connector = new MockConnector()
     const sql = '{bar = "foo"}{interpolate(bar)}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath })
+    await connector.run({ queryPath })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('foo')
@@ -105,7 +105,7 @@ describe('interpolate function', async () => {
     const connector = new MockConnector()
     const sql = '{interpolate(1 + 2)}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath })
+    await connector.run({ queryPath })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('3')
@@ -116,7 +116,7 @@ describe('interpolate function', async () => {
     const sql = "{result = {interpolate('foo')}} {result}"
     const queryPath = addFakeQuery(sql)
 
-    const action = () => connector.query({ queryPath })
+    const action = () => connector.run({ queryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('parse-error')
   })
@@ -129,7 +129,7 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'var' } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[var]]')
@@ -139,7 +139,7 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo", "default")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath })
+    await connector.run({ queryPath })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[default]]')
@@ -149,7 +149,7 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo", "default")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: null } })
+    await connector.run({ queryPath, params: { foo: null } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[null]]')
@@ -159,7 +159,7 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    const action = () => connector.query({ queryPath })
+    const action = () => connector.run({ queryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -168,7 +168,7 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'var' } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[var]]')
@@ -178,7 +178,7 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo") + 3}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 2 } })
+    await connector.run({ queryPath, params: { foo: 2 } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[5]]')
@@ -192,7 +192,7 @@ describe('unsafeParam function', async () => {
     const connector = new MockConnector()
     const sql = '{unsafeParam("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'var' } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('var')
@@ -203,7 +203,7 @@ describe('unsafeParam function', async () => {
     const sql = '{unsafeParam("foo", "bar")}'
     const queryPath = addFakeQuery(sql)
 
-    await connector.query({ queryPath, params: {} })
+    await connector.run({ queryPath, params: {} })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('bar')
@@ -215,7 +215,7 @@ describe('unsafeParam function', async () => {
     const queryPath = addFakeQuery(sql)
 
     await expect(() =>
-      connector.query({ queryPath, params: {} }),
+      connector.run({ queryPath, params: {} }),
     ).rejects.toThrow()
   })
 
@@ -223,7 +223,7 @@ describe('unsafeParam function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo", "default")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: null } })
+    await connector.run({ queryPath, params: { foo: null } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('$[[null]]')
@@ -233,7 +233,7 @@ describe('unsafeParam function', async () => {
     const connector = new MockConnector()
     const sql = '{unsafeParam("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.query({ queryPath, params: { foo: null } })
+    await connector.run({ queryPath, params: { foo: null } })
 
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('null')
@@ -250,7 +250,7 @@ describe('ref function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
-    await connector.query({ queryPath: mainQueryPath })
+    await connector.run({ queryPath: mainQueryPath })
     expect(ranQueries.length).toBe(1)
     expect(ranQueries[0]!.sql).toBe('main (ref) end')
   })
@@ -260,7 +260,7 @@ describe('ref function', async () => {
     const mainQuery = 'main {ref("referenced_query")} end'
     const mainQueryPath = addFakeQuery(mainQuery)
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -270,7 +270,7 @@ describe('ref function', async () => {
     const mainQuery = "{result = {ref('referenced_query')}} {result}"
     const mainQueryPath = addFakeQuery(mainQuery)
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('parse-error')
   })
@@ -282,7 +282,7 @@ describe('ref function', async () => {
     const query1Path = addFakeQuery(query1, 'query1')
     addFakeQuery(query2, 'query2')
 
-    const action = () => connector.query({ queryPath: query1Path })
+    const action = () => connector.run({ queryPath: query1Path })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -298,7 +298,7 @@ describe('runQuery function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
-    await connector.query({ queryPath: mainQueryPath })
+    await connector.run({ queryPath: mainQueryPath })
     expect(ranQueries.length).toBe(2)
     expect(ranQueries[0]!.sql).toBe('ref')
     expect(ranQueries[1]!.sql).toBe('$[[1]]')
@@ -310,7 +310,7 @@ describe('runQuery function', async () => {
       "{result = {runQuery('referenced_query')}} {result.length}"
     const mainQueryPath = addFakeQuery(mainQuery)
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('parse-error')
   })
@@ -322,7 +322,7 @@ describe('runQuery function', async () => {
     const mainQueryPath = addFakeQuery(mainQuery)
     addFakeQuery(refQuery, 'referenced_query')
 
-    const action = () => connector.query({ queryPath: mainQueryPath })
+    const action = () => connector.run({ queryPath: mainQueryPath })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -334,7 +334,7 @@ describe('runQuery function', async () => {
     const query1Path = addFakeQuery(query1, 'query1')
     addFakeQuery(query2, 'query2')
 
-    const action = () => connector.query({ queryPath: query1Path })
+    const action = () => connector.run({ queryPath: query1Path })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
@@ -351,7 +351,7 @@ describe('runQuery function', async () => {
     addFakeQuery(childQuery, 'child3')
     addFakeQuery(refQuery, 'referenced_query')
 
-    await connector.query({ queryPath: mainQueryPath })
+    await connector.run({ queryPath: mainQueryPath })
     expect(ranQueries.length).toBe(2)
     expect(ranQueries[0]!.sql).toBe('ref')
     expect(ranQueries[1]!.sql).toBe('($[[1]])($[[1]])($[[1]])')

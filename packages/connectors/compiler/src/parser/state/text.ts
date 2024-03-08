@@ -24,16 +24,16 @@ export function text(parser: Parser) {
 
   while (parser.index < parser.template.length) {
     const isEscaping = ENDS_WITH_ESCAPE_REGEX.test(data);
+    if (isEscaping) data = data.slice(0, -1); // Remove the escape character
 
-    if (RESERVED_DELIMITERS.some(sample => parser.match(sample))) {
-      if (!isEscaping) break
-      data = data.slice(0, -1);
+    if (!isEscaping && RESERVED_DELIMITERS.some(sample => parser.match(sample))) {
+      break
     }
     if (!isEscaping && parser.matchRegex(STRING_DELIMITERS_REGEX)) {
-      data += textInString(parser, parser.template[parser.index++]!);
+      data += textInString(parser, parser.template[parser.index++]!)
       continue;
     }
-    data += parser.template[parser.index++];
+    data += parser.template[parser.index++]
   }
 
   const node = {

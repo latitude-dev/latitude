@@ -1,6 +1,8 @@
-import findQueryFile from '$lib/findQueryFile'
-import { createConnector } from '@latitude-sdk/connector-factory'
-import { json } from '@sveltejs/kit'
+import handleError from '$lib/errors/handler'
+import findOrCompute from '$lib/query_service/find_or_compute'
+import { RichDate, parse } from '@latitude-data/custom_types'
+
+const FORCE_PARAM = '__force'
 
 export async function GET({
   params,
@@ -10,45 +12,45 @@ export async function GET({
   url: URL
 }) {
   const { query } = params
+  const { params: queryParams, force } = getQueryParams(url)
 
   try {
-    const { queryPath, sourcePath } = await findQueryFile(query)
-    const connector = createConnector(sourcePath)
-    const queryParams = getQueryParams(url)
+    const queryResult = await findOrCompute({ query, queryParams, force })
 
-    try {
-      const queryResult = await connector.query({
-        queryPath,
-        params: queryParams,
-      })
-
-      return json(queryResult.payload())
-    } catch (e) {
-      // eslint-disable-next-line
-      // @ts-ignore
-      return new Response(e.message, { status: 500 })
-    }
+    return new Response(queryResult.toJSON(), {
+      headers: { 'Content-Type': 'application/json' },
+      status: 200,
+    })
   } catch (e) {
-    return new Response((e as Error).message, { status: 404 })
+    return handleError(e as Error)
   }
 }
 
-type IValue = string | number | boolean
+type IValue = string | number | boolean | Date | null
 
 function getQueryParams(url: URL) {
   const searchParams = url.searchParams
   const params: { [key: string]: IValue } = {}
   for (const [key, value] of searchParams) {
-    params[key] = castValue(value)
+    if (key !== FORCE_PARAM) {
+      params[key] = castValue(value)
+    }
   }
 
-  return params
+  return { params, force: searchParams.get(FORCE_PARAM) === 'true' }
 }
 
-function castValue(value: string) {
-  if (value === 'true') return true
-  if (value === 'false') return false
-  if (!isNaN(Number(value))) return Number(value)
+function castValue(value: string): IValue {
+  // TODO: Make this function an actual service with proper testing
+  const parsedValue = parse(value)
+  if (typeof parsedValue !== 'string') {
+    if (parsedValue instanceof RichDate) return parsedValue.resolve()
+    return parsedValue as IValue
+  }
 
-  return value
+  if (parsedValue === 'true') return true
+  if (parsedValue === 'false') return false
+  if (!isNaN(Number(parsedValue))) return Number(parsedValue)
+
+  return parsedValue
 }

@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/sql-compiler",
-  "version": "0.0.1",
+  "name": "@latitude-data/sql-compiler",
+  "version": "0.0.2",
+  "license": "LGPL",
   "description": "Compiler for Latitude's custom sql sintax based on svelte",
   "type": "module",
   "scripts": {
@@ -11,8 +12,8 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/estree": "^1.0.1",
     "rollup": "^4.10.0",

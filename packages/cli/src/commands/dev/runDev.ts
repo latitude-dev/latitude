@@ -1,34 +1,11 @@
 import colors from 'picocolors'
-import { APP_FOLDER } from '../constants'
 import { spawn } from 'child_process'
-import { exit } from 'process'
+import config from '../../config'
+import { APP_FOLDER } from '../constants'
 
-export const cleanTerminal = () => {
-  process.stdout.write('\x1bc');
-}
-
-export async function installAppDependencies() {
-  console.log(colors.yellow('Installing dependencies...'))
-  const npmInstall = spawn('npm', ['install'])
-
-  npmInstall.stderr.on('data', (data) => {
-    console.error(colors.red(`💥 Error on npm install: ${data}`))
-  })
-
-  return new Promise<void>((resolve) => {
-    npmInstall.on('close', () => {
-      console.log(colors.green(`✅ Dependencies installed`))
-
-      resolve()
-    })
-  })
-}
-
-const COMMAND = 'npx'
-const BASE_ARGS = ['vite', 'dev']
-
-type DevServerProps = {
+export type DevServerProps = {
   appFolder?: string
+  routePath?: string | null
   port?: number
   host?: string
   open?: boolean
@@ -37,39 +14,46 @@ type DevServerProps = {
 
 export function runDevServer({
   appFolder = APP_FOLDER,
+  routePath = '',
   port = 3000,
   host = 'localhost',
   open = false,
   verbose = false,
 }: DevServerProps) {
-  let init = true
-  const tmp_args = [...BASE_ARGS, `--port=${port}`, `--host=${host}`]
-  const args = open ? [...tmp_args, '--open'] : tmp_args
-  const serverProccess = spawn(COMMAND, args, {
+  let building = true
+  const logLevel = verbose ? 'debug' : 'silent'
+  const hostUrl = `http://${host}:${port}${routePath ? routePath : ''}`
+  let args = [
+    'run',
+    'dev',
+    `--port=${port}`,
+    `--host=${host}`,
+    open ? `--open=${hostUrl}` : '',
+    `--logLevel=${logLevel}`,
+  ].filter((f) => f !== '')
+
+  const serverProccess = spawn(config.pkgManager.command, args, {
     detached: false,
     cwd: appFolder,
-    stdio: 'pipe',
+    stdio: verbose ? 'inherit' : 'ignore',
   })
 
-  serverProccess.stdout?.on('data', (data) => {
-    if (init) {
-      cleanTerminal()
-
+  serverProccess?.on('data', () => {
+    if (building) {
       console.log(colors.green(`Latitude Dev Server running on port ${port}`))
-      init = false
-    }
-
-    if (verbose) {
-      console.log(colors.gray(data))
+      building = false
     }
   })
 
-  serverProccess.stderr?.on('data', (data) => {
-    console.error(colors.yellow(data))
+  serverProccess.on('error', (err) => {
+    console.error(colors.red(`Latitude Dev Server error: ${err.message}`))
+    process.exit()
   })
 
-  serverProccess.on('close', () => {
-    console.log(colors.red('Latitude Dev Server unexpectedly closed...'))
-    exit()
+  serverProccess.on('close', (code, signal) => {
+    console.log(
+      colors.yellow(`Latitude Server closed... ${code} ${signal?.toString()}`),
+    )
+    process.exit()
   })
 }

@@ -1,15 +1,33 @@
-import colors from 'picocolors'
 import config from '../../config'
+import fsExtra from 'fs-extra'
 import path from 'path'
-import watchQueries from './watchQueries'
-import watchViews from './watchViews'
-import { cwd } from 'process'
-import { runDevServer } from './runDev'
+import runLatitudeServer from './runLatitudeServer'
+import setupApp from '../../lib/setupApp'
+import { CommonCLIArgs } from '../../types'
+import { LATITUDE_FOLDER } from '../constants'
+import { onError } from '../../utils'
 
-export default async function devCommand() {
-  console.log(colors.gray('Starting development server... \n'))
+async function maybeSetupApp() {
+  const hasApp = fsExtra.existsSync(path.join(config.cwd, LATITUDE_FOLDER))
 
-  await watchViews(path.join(cwd(), 'views'))
-  await watchQueries(path.join(cwd(), 'queries'))
-  runDevServer({ open: config.pro })
+  if (hasApp) return true
+
+  return setupApp({ onError })
+}
+
+type Args = CommonCLIArgs & { open?: string }
+export default async function devCommand(args: Args = {}) {
+  const open = args?.open ?? 'yes'
+
+  const installComplete = await maybeSetupApp()
+
+  if (!installComplete) return
+
+  runLatitudeServer({
+    server: {
+      open: open === 'yes',
+      appFolder: config.cwd,
+      verbose: config.debug,
+    },
+  })
 }

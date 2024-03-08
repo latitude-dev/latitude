@@ -1,6 +1,7 @@
 {
-  "name": "@latitude-sdk/postgresql-connector",
-  "version": "0.0.1",
+  "name": "@latitude-data/postgresql-connector",
+  "version": "0.0.2",
+  "license": "LGPL",
   "description": "PostgreSQL connector for Latitude",
   "scripts": {
     "dev": "rollup -c -w",
@@ -13,8 +14,8 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/pg": "^8.11.0",
@@ -23,15 +24,10 @@
     "typescript": "^5.2.2"
   },
   "peerDependencies": {
-    "@latitude-sdk/base-connector": "workspace:*",
-    "@latitude-sdk/query_result": "workspace:*"
+    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/query_result": "workspace:*"
   },
   "dependencies": {
     "pg": "^8.11.3"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  }
 }

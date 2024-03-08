@@ -7,7 +7,7 @@
 
 <script lang="ts">
   import type { HTMLAttributes } from 'svelte/elements'
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
 
   let className: Props['class'] = undefined
   export let tag: Props['tag'] = 'h3'

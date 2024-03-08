@@ -1,4 +1,35 @@
 ---
-title: 'Text'
-description: 'description'
+title: 'Text input'
+description: 'Create a text input to control parameters in your queries'
 ---
+
+
+## Introduction
+
+Inputs provide a straightforward way to set the values of the [parameters in your queries](/queries/basics/interpolate-values) from your views. Basically they let you provide a user interface to your queries.
+
+## Basic usage
+
+The most basic usage of an input is to provide a text input for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control.
+
+```html
+<Input param="name" />
+```
+
+This will create a text input that is associated with the `name` parameter. If you load the page with the `name` parameter already in the URL, you will see the value from the URL in the input. You can also provide a default value for the input by using the `value` prop.
+
+```html
+<Input param="name" value="Jon" />
+```
+
+If you load the page without the `name` parameter in the URL, the input will be set to the default value. If you load the page with a different value for the `name` parameter in the URL, the input will be set to that value.
+
+## Types
+
+You can also specify the type of input you want to use by using the `type` prop. This works with the `type` attribute of the `<input>` element in HTML. You can use this to specify that the input should be a `number`, `email`, `tel` (phone number), `time`, etc.
+
+```html
+<Input param="age" type="number" />
+```
+
+This will create a number input that is associated with the `age` parameter.

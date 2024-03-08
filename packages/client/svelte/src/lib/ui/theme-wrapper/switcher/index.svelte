@@ -4,7 +4,7 @@
   import { Card } from '$lib'
   import { themeConfig } from '../store'
   import { mode } from 'mode-watcher'
-  import { theme as client } from '@latitude-sdk/client'
+  import { theme as client } from '@latitude-data/client'
   import { Check } from 'radix-icons-svelte'
   import { COLORS, COLOR_KEYS } from './colors'
 
@@ -27,7 +27,7 @@
                 on:click={() => themeConfig.update(() => theme)}
                 class={cn(
                   'flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs',
-                  isActive ? 'border-[--theme-primary]' : 'border-transparent'
+                  isActive ? 'border-[--theme-primary]' : 'border-transparent',
                 )}
                 style="--theme-primary: hsl({COLORS[theme.name][
                   $mode === 'dark' ? 'dark' : 'light'
@@ -35,7 +35,7 @@
               >
                 <span
                   class={cn(
-                    'flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]'
+                    'flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]',
                   )}
                 >
                   {#if isActive}

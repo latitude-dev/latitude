@@ -1,9 +1,8 @@
 {
-  "name": "@latitude-sdk/query_result",
-  "version": "0.0.0",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "name": "@latitude-data/query_result",
+  "description": "A library for working with query results at Latitude",
+  "version": "0.0.2",
+  "license": "LGPL",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -11,9 +10,18 @@
     "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
+  "type": "module",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "devDependencies": {
-    "@latitude-sdk/typescript": "workspace:*",
-    "@latitude-sdk/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "prettier": "^3.1.1",
     "rollup": "^4.10.0"

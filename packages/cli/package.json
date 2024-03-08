@@ -1,12 +1,13 @@
 {
-  "name": "@latitude-sdk/cli",
+  "name": "@latitude-data/cli",
   "description": "CLI for Latitude",
-  "version": "0.0.1",
+  "version": "0.0.13",
+  "license": "LGPL",
   "bin": {
-    "latitude": "dist/cli.cjs.js"
+    "latitude": "dist/index.cjs.js"
   },
-  "main": "dist/cli.cjs.js",
-  "types": "dist/cli.d.ts",
+  "main": "dist/index.cjs.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "rollup": "rollup -c",
     "build": "NODE_ENV=production pnpm run rollup",
@@ -16,9 +17,10 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
-    "@latitude-sdk/eslint-config": "workspace:*",
-    "@latitude-sdk/typescript": "workspace:*",
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.5",
     "@rollup/plugin-typescript": "^11.1.6",
@@ -26,12 +28,13 @@
     "@types/eslint": "^8.56.1",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^20.10.6",
+    "@types/semver": "^7.5.8",
+    "@types/tar": "^6.1.11",
     "prettier": "^3.1.1",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
   "author": "",
-  "license": "BSL-1.0",
   "keywords": [
     "analytics",
     "business-intelligence",
@@ -44,13 +47,17 @@
     "echarts"
   ],
   "dependencies": {
+    "axios": "^1.6.7",
     "child_process": "^1.0.2",
     "chokidar": "^3.5.3",
     "degit": "^2.8.4",
+    "dotenv": "^16.4.5",
     "enquirer": "^2.4.1",
     "fs-extra": "^11.2.0",
     "picocolors": "^1.0.0",
     "rimraf": "^5.0.5",
-    "sade": "^1.8.1"
+    "sade": "^1.8.1",
+    "semver": "^7.6.0",
+    "tar": "^6.2.0"
   }
 }

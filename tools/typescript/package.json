@@ -1,8 +1,8 @@
 {
-  "name": "@latitude-sdk/typescript",
+  "name": "@latitude-data/typescript",
   "version": "0.0.1",
   "private": true,
-  "license": "MIT",
+  "license": "LGPL",
   "publishConfig": {
     "access": "public"
   }

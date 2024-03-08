@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import path from 'path'
+import json from '@rollup/plugin-json'
 import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import commonjs from '@rollup/plugin-commonjs'
@@ -17,9 +18,9 @@ const packageVersion =
   nodeEnv === 'development' ? 'development-0.0.0' : getPackageVersion()
 
 export default {
-  input: 'src/cli.ts',
+  input: 'src/index.ts',
   output: {
-    file: 'dist/cli.cjs.js',
+    file: 'dist/index.cjs.js',
     format: 'cjs',
   },
   plugins: [
@@ -27,7 +28,8 @@ export default {
     commonjs(),
     // The preferBuiltins option is required to resolve the built-in modules in
     // Node.js over any installed packages in node_modules directory
-    resolve({ preferBuiltins: true }),
+    resolve({ preferBuiltins: true, browser: false }),
+    json(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),

@@ -2,7 +2,7 @@ import { createStore } from 'zustand/vanilla'
 import { api } from '../data/api'
 import QueryResult, {
   type QueryResultPayload,
-} from '@latitude-sdk/query_result'
+} from '@latitude-data/query_result'
 
 type QueryRequest = {
   queryPath: string
@@ -21,8 +21,8 @@ export const createQueryKey = (
 }
 
 export interface QueryResultState {
-  data?: QueryResult | null
   isLoading: boolean
+  data?: QueryResult | null
   error?: Error | null
 }
 
@@ -40,9 +40,14 @@ export const store = createStore<StoreState>((set, get) => {
     set((state) => ({
       queries: {
         ...state.queries,
-        [queryKey]: { isLoading: true, error: null },
+        [queryKey]: {
+          ...(state.queries[queryKey] || {}),
+          isLoading: true,
+          error: null,
+        },
       },
     }))
+
     try {
       const response = await fetchFn()
       const data = new QueryResult({
@@ -50,6 +55,7 @@ export const store = createStore<StoreState>((set, get) => {
         rows: response.rows,
         rowCount: response.rows?.length,
       })
+
       set((state) => ({
         queries: {
           ...state.queries,

@@ -3,8 +3,8 @@ import {
   CompiledQuery,
   ConnectorError,
   ResolvedParam,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { Database, OPEN_READONLY, OPEN_READWRITE } from 'duckdb-async'
 
 export type ConnectionParams = {
@@ -38,7 +38,8 @@ export class DuckdbConnector extends BaseConnector {
       let results = []
       if (query.params.length > 0) {
         const stmt = await conn.prepare(query.sql)
-        results = await stmt.all(this.buildQueryParams(query.params))
+        results = await stmt.all(...this.buildQueryParams(query.params))
+        stmt.finalize()
       } else {
         results = await conn.all(query.sql)
       }

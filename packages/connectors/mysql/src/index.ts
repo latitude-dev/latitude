@@ -4,8 +4,8 @@ import {
   CompiledQuery,
   ResolvedParam,
   QueryError,
-} from '@latitude-sdk/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-sdk/query_result'
+} from '@latitude-data/base-connector'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { PoolConfig, Types, createPool } from 'mysql'
 import fs from 'fs'
 

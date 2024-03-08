@@ -5,7 +5,7 @@
 </script>
 
 <script lang="ts">
-  import { theme } from '@latitude-sdk/client'
+  import { theme } from '@latitude-data/client'
 
   let className: Props['class'] = undefined
 

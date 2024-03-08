@@ -1,11 +1,11 @@
-# @latitude-sdk/svelte
+# @latitude-data/svelte
 
 Collection of Svelte components used in Latitude apps.
 
 ## Develop for apps/server
 
 We have a SvelteKit app that we use for showing data apps and building queries.
-This app use `@latitude-sdk/svelte` ui components. To run both packages run
+This app use `@latitude-data/svelte` ui components. To run both packages run
 `pnpm dev` in the root of the monorepo.
 
 ## Develop individual components (Storybook)
@@ -44,10 +44,10 @@ pnpm package
 
 When using Latitude client components you have two npm packages:
 
-1. `@latitude-sdk/client` - Generic package that manage. Data calling, caching
+1. `@latitude-data/client` - Generic package that manage. Data calling, caching
    and also CSS theming
-2. `@latitude-skd/[framework]` - This is where the UI components for your
-   framework are places. For example we have `@latitude-skd/svelte` for Svelte.
+2. `@latitude-data/[framework]` - This is where the UI components for your
+   framework are places. For example we have `@latitude-data/svelte` for Svelte.
 
 The UI components come unstyled. You have to options to include our styles.
 
@@ -57,7 +57,7 @@ The first is by importing in your own css files or in the `<head />` of your
 webapp our styles like this:
 
 ```css
-@import '@latitude-sdk/client/css/all.css';
+@import '@latitude-data/client/css/all.css';
 ```
 
 This add all the styles of all our components to your app. This might be
@@ -67,11 +67,11 @@ expose individual css components.
 Ex.:
 
 ```css
-@import '@latitude-sdk/client/css/button.css';
-@import '@latitude-sdk/client/css/chart.css';
-@import '@latitude-sdk/client/css/column.css';
-@import '@latitude-sdk/client/css/table.css';
-/* You can see all in: node_modules/@latitude-sdk/client/css/*.css */
+@import '@latitude-data/client/css/button.css';
+@import '@latitude-data/client/css/chart.css';
+@import '@latitude-data/client/css/column.css';
+@import '@latitude-data/client/css/table.css';
+/* You can see all in: node_modules/@latitude-data/client/css/*.css */
 ```
 
 ## Use our TailwinCSS preset (second option)
@@ -81,14 +81,14 @@ feel of things like spacing, typography, animations a good way is by using our
 Tailwind config as a preset for yours:
 
 ```javascript
-import preset from '@latitude-sdk/client/theme/preset'
+import preset from '@latitude-data/client/theme/preset'
 
 /** @type {import('tailwindcss').Config} */
 export default {
   presets: [preset],
   content: [
     './src/**/*.{html,js,svelte,ts}',
-    './node_modules/@latitude-sdk/client/src/theme/components/**/*.ts',
+    './node_modules/@latitude-data/client/src/theme/components/**/*.ts',
   ],
   theme: {
     extend: {},
@@ -104,7 +104,7 @@ After that you need to import our tailwind css file in yours like this:
 This will import all tailwind layers/base/components
 
 ```css
-@import '@latitude-sdk/svelte/latitude.css';
+@import '@latitude-data/svelte/latitude.css';
 ```
 
 If you don't have already Tailwind running you can see how is done for your

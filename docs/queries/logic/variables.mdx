@@ -38,12 +38,14 @@ WHERE id = 6
 ### Incrementing
 Variables can be modified using operations such as addition.
 ```sql
+
 {counter = counter + 10}
 
 SELECT *
 FROM table
 WHERE id != null
 AND (
+
 {#each [1, 2, 3] as products}
 OR id = {counter}
 {/each}
@@ -56,6 +58,7 @@ It is transformed into:
 SELECT *
 FROM table
 WHERE id != null 
+
 AND id = 10
 AND id = 20
 AND id = 30

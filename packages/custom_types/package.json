@@ -1,0 +1,33 @@
+{
+  "name": "@latitude-data/custom_types",
+  "version": "0.0.0",
+  "license": "LGPL",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "test": "vitest run",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
+    "prettier": "prettier --write src/**/*.ts"
+  },
+  "type": "module",
+  "main": "dist/index.ts",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "vitest": "^1.2.2",
+    "prettier": "^3.1.1",
+    "rollup": "^4.10.0"
+  },
+  "dependencies": {
+    "date-fns": "^3.3.1"
+  }
+}

@@ -1,8 +1,6 @@
 import { cn } from '../../utils'
-import { Gap, gaps } from '../layout'
+import { LayoutProps } from '../column'
 
-export function cssClass({ gap, grow }: { gap: Gap; grow: boolean }) {
-  return cn('flex flex-row', gaps[gap], {
-    'flex-grow': grow,
-  })
+export function cssClass({ className }: LayoutProps) {
+  return cn('flex flex-row', className)
 }

@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Latitude SDK Docs",
+  "name": "Latitude Docs",
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
@@ -23,10 +23,10 @@
   ],
   "topbarCtaButton": {
     "name": "Get started",
-    "url": "https://github.com/latitude-dev/latitude-sdk"
+    "url": "https://github.com/latitude-dev/latitude"
   },
   "primaryTab": {
-      "name": "Guides"
+    "name": "Guides"
   },
   "tabs": [
     {
@@ -50,9 +50,7 @@
       "url": "visualizations"
     }
   ],
-  "anchors": [
-
-  ],
+  "anchors": [],
   "navigation": [
     {
       "group": "Getting started",
@@ -70,28 +68,20 @@
     },
     {
       "group": "Examples",
-      "pages": [
-        "guides/examples/basic-example",
-        "guides/examples/api"
-      ]
+      "pages": ["guides/examples/basic-example", "guides/examples/api"]
     },
     {
       "group": "Deploy",
-      "pages": [
-        "guides/deploy/self-hosted"
-      ]
+      "pages": ["guides/deploy/self-hosted"]
     },
     {
       "group": "Embed",
       "pages": [
-        "guides/embed/iframe",
-        "guides/embed/react-components"
+        "guides/embed/iframe"
       ]
     }, {
       "group": "Configuration",
-      "pages": [
-        "sources/how-to-configure-sources"
-      ]
+      "pages": ["sources/how-to-configure-sources"]
     },
     {
       "group": "Sources",
@@ -135,10 +125,7 @@
     },
     {
       "group": "Basics",
-      "pages": [
-        "views/basics/what-are-views",
-        "views/basics/layout"
-      ]
+      "pages": ["views/basics/what-are-views", "views/basics/layout"]
     },
     {
       "group": "Logic",
@@ -153,25 +140,17 @@
       "group": "Content",
       "pages": [
         "components/content/text",
-        "components/content/image",
-        "components/content/list",
-        "components/content/quote",
         "components/content/alert",
-        "components/content/card",
-        "components/content/accordion"
+        "components/content/card"
       ]
     },
     {
       "group": "Customization",
-      "pages": [
-        "views/customization/component-styles"
-      ]
+      "pages": ["views/customization/component-styles"]
     },
     {
       "group": "Advanced",
-      "pages": [
-        "views/advanced/svelte-syntax"
-      ]
+      "pages": ["views/advanced/svelte-syntax"]
     },
     {
       "group": "Inputs",
@@ -179,17 +158,14 @@
         "components/inputs/text",
         "components/inputs/select",
         "components/inputs/date",
-        "components/inputs/toggle",
         "components/inputs/checkbox"
       ]
     },
     {
-      "group": "Navigation",
+      "group": "Interaction",
       "pages": [
-        "components/navigation/link",
-        "components/navigation/button",
-        "components/navigation/segmented-buttons",
-        "components/navigation/tabs"
+        "components/interaction/run-button",
+        "components/interaction/link"
       ]
     },
     {
@@ -224,7 +200,7 @@
   ],
   "footerSocials": {
     "twitter": "https://twitter.com/trylatitude",
-    "github": "https://github.com/latitude-dev/latitude-sdk",
+    "github": "https://github.com/latitude-dev/latitude",
     "linkedin": "https://www.linkedin.com/company/trylatitude/"
   }
 }
