@@ -1,1 +1,0 @@
-# `@latitude-data/custom_type`

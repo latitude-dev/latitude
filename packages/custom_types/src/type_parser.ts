@@ -1,43 +1,4 @@
-import { format as formatDate, parse as parseDate } from 'date-fns'
-
-export enum RelativeDate {
-  TODAY = '_TODAY_',
-  YESTERDAY = '_YESTERDAY_',
-  TOMORROW = '_TOMORROW_',
-}
-
-export class RichDate {
-  constructor(
-    public value: Date | RelativeDate,
-    public format: string,
-  ) {}
-
-  static fromString(formattedValue: string, format: string): RichDate {
-    if (Object.values(RelativeDate).includes(formattedValue as RelativeDate)) {
-      return new RichDate(formattedValue as RelativeDate, format)
-    }
-
-    const date = parseDate(formattedValue, format, new Date())
-    return new RichDate(date, format)
-  }
-
-  toString(): string {
-    if (this.value instanceof Date) return formatDate(this.value, this.format)
-    return this.value
-  }
-
-  resolve(): Date {
-    if (this.value instanceof Date) return this.value
-
-    if (this.value === RelativeDate.TODAY) return new Date()
-    if (this.value === RelativeDate.YESTERDAY)
-      return new Date(Date.now() - 24 * 60 * 60 * 1000)
-    if (this.value === RelativeDate.TOMORROW)
-      return new Date(Date.now() + 24 * 60 * 60 * 1000)
-
-    return new Date()
-  }
-}
+import { RichDate } from './rich_date'
 
 enum ValueType {
   NULL = 'null',
@@ -48,7 +9,7 @@ enum ValueType {
 }
 
 export function format(value: unknown): string {
-  if (value instanceof Date) value = new RichDate(value, 'yyyy-MM-dd')
+  if (value instanceof Date) value = new RichDate(value)
 
   if (value === null) {
     return `$${ValueType.NULL}`

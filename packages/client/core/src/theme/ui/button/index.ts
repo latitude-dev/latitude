@@ -22,7 +22,7 @@ export const BUTTON_SIZES = Object.values(BUTTON_SIZE)
 export type Variant = VariantProps<typeof buttonVariants>['variant']
 export type Size = VariantProps<typeof buttonVariants>['size']
 
-const buttonVariants = tv({
+export const buttonVariants = tv({
   base: 'inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
   variants: {
     variant: {

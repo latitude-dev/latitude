@@ -1,7 +1,7 @@
 import { writable, get, Writable, Readable, derived } from 'svelte/store'
 import { browser } from '$app/environment'
 import { replaceState } from '$app/navigation'
-import { parse, format } from '@latitude-data/type_parser'
+import { parse, format } from '@latitude-data/custom_types'
 
 export type ViewParams = {
   [key: string]: unknown

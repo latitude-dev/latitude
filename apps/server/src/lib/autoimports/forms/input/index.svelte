@@ -10,7 +10,7 @@
   let inputStore = useViewParam(param, value);
 
   function castValue(value: unknown) {
-    if (type === "checkbox") return value === "true";
+    if (type === "checkbox") return value === "true"; // TODO: Add an actual checkbox component
     if (type === "number") return Number(value);
 
     return value;
@@ -19,7 +19,7 @@
   const dispatch = createEventDispatcher();
   const handleInput = (event: Event) => {
     const newValue = (event.target as HTMLInputElement).value;
-    setViewParam(param, castValue(newValue));
+    setViewParam(param, castValue(castValue(newValue)));
 
     dispatch("input", event);
   };
