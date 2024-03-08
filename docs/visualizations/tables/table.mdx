@@ -1,4 +1,23 @@
 ---
 title: 'Table'
-description: 'description'
+description: 'How to create and configure the Table visualization'
 ---
+
+## Introduction
+The Table format organizes data in rows and columns, providing a clear view for comparison and detailed analysis. It's ideal for displaying precise values.
+
+## Syntax
+You can use `<Table ... />` to add it to your view. Within the tag you must add the properties to configure the chart.
+
+``` js
+<Table
+	query='orders_evolution'
+/>
+```
+
+## Properties
+To configure and customize the table, simply reference the query from which you want to view the data.
+
+<ParamField path="query" type="string" required>
+    The name of your `.sql` file from which your chart will get the data. It's not necessary to specify the full path, just the name, because we will search all folders until we find it
+</ParamField>

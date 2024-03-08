@@ -1,4 +1,183 @@
 ---
 title: 'Bar Chart'
-description: 'description'
+description: 'How to create and configure the Bar chart'
 ---
+
+## Introduction
+The Bar chart represents quantitative data with vertical or horizontal bars, showing comparisons across categories or time. It highlights differences in values, making it ideal for comparing multiple datasets and identifying trends or outliers.
+
+## Syntax
+You can use `<BarChart ... />` to add it in your view. Within the tag you must add the properties to configure the chart.
+
+``` js
+<BarChart
+	query='sales_evolution'
+    x='created_at'
+    y='sales'
+    xTitle='Month'
+    yTitle='Sales'
+    config={{ 
+        ...
+    }}
+/>
+```
+
+## Properties
+To configure and customize the chart, you can add properties, some of which are required and some of which are optional.
+
+<ParamField path="query" type="string" required>
+    The name of your `.sql` file from which your chart will get the data. It's not necessary to specify the full path, just the name, because we will search all folders until we find it
+</ParamField>
+
+<ParamField path="x" type="string | array" required>
+    Specify a column name to return from your query. This will be the data in the horizontal (x) axis.
+
+    [See the section Axis X and Y](#x-and-y-options) to learn more about the options.
+</ParamField>
+
+<ParamField path="y" type="string | array" required>
+    Specify the array of series you want to visualize. Each serie has the column name that your query and other properties.
+    
+    [See the section Axis X and Y](#x-and-y-options) to learn more about the options.
+</ParamField>
+
+<ParamField path="xAxisFormat" type="array">
+    It allows you to customize how the information is displayed in the given axis. It contains several options.    
+    
+    [See the section xAxisFormat](#x-and-y-options) to learn more about the options.
+</ParamField>
+
+<ParamField path="yAxisFormat" type="array">
+    It allows you to customize how the information is displayed in the given axis. It contains several options.    
+
+    [See the section yAxisFormat](#x-and-y-options) to learn more about the options.
+</ParamField>
+
+<ParamField path="animation" type="boolean">
+    Specifies whether or not to show an animation when the page loads.
+</ParamField>
+
+<ParamField path="xTitle" type="string">
+    A custom name to display as the title of your (x) axis.
+</ParamField>
+
+<ParamField path="yTitle" type="string">
+    A custom name to display as the title of your (y) axis.
+</ParamField>
+
+<ParamField path="swapAxis" type="boolean">
+    Swap the axis orientation. Visually swap the (x) axis with the (y) axis.
+</ParamField>
+
+<ParamField path="config" type="array">
+    Contains some options to customize your chart.
+    
+    [See the Config section](#config) to learn more about the options.
+</ParamField>
+
+### Axis X and Y Options
+
+Both `x` and `y` can contain multiple data series, so instead of specifying just a column name, you need to create a list of series using the following properties:
+
+<ParamField path="name" type="string">
+    Specify a column name returned by your query.
+</ParamField>
+
+<ParamField path="axisIndex" type="string">
+    Specifies the group within an axis. Imagine 3 series that belong to the left side of the Y-axis, 2 of them need one specific format but the rest need another. axisIndex helps to define different formats for series on the same side of the axis.
+
+    The options for this property are numbers: `0`, `1`, `2`...
+
+    How this link to axisFormat is by the order of the object in the arra of axisFormat. `1` will be the second object in the list, `0` is the first object in the list...
+</ParamField>
+
+Example of syntax for multiple series:
+
+```
+    y={[
+		{name: 'column_name'},
+		{name: 'column_name' axisIndex: '0'},
+		{name: 'column_name' axisIndex: '1'}
+    ]}
+```
+
+#### Pivoted table
+If you have a pivoted table where you have multiple columns with names like sum_users, sum_amount, sum_orders, (...) and you need to add all the columns without typing all the names you can use:
+
+- `prefix_` + `*`
+- `*` + `suffix`
+
+Example to add all columns starting wiht `sum_`:
+```
+    y={[
+		{name: 'sum_*'},
+    ]}
+```
+### Axis Format
+
+Example of different axis format. The order of the array will determine the axisIndex where `0` = the first format in the list.
+
+```
+    yAxisFormat={[
+		{type: 'value', stack: 'true'},
+		{type: 'category', stack: 'false'},
+		{type: 'value', stack: 'false;}
+    ]}
+```
+<ParamField path="type" type="string">
+    The format of the data displayed in the axis. The options are:
+    - `category`
+    - `value`
+    - `time`
+    - `log`
+</ParamField>
+
+<ParamField path="stack" type="boolean">
+    Display the data series of the given axis on top of each other, visualizing cumulative totals or comparisons over time.
+</ParamField>
+
+<ParamField path="showAxis" type="boolean">
+    Display the axis info (labels, numbers...) in the chart or not.
+</ParamField>
+
+<ParamField path="rotate" type="number">
+    Allow to display the axis values with a tilt to avoid overlapping between them.
+</ParamField>
+
+<ParamField path="displayName" type="string | null">
+    The axis title to display.
+</ParamField>
+
+<ParamField path="showAxisTitle" type="boolean">
+    Whether or not to show the title of the axis.
+</ParamField>
+
+<ParamField path="showSplitLine" type="boolean">
+    Specifies whether or not to show the value indicator with a split line.
+</ParamField>
+
+<ParamField path="axisAlign" type="boolean">
+    Specifies the side of the axis
+    - `start`: in axis (x) means left and for (y) axis means top.
+    - `end`: in axis (x) means right and for (y) axis means bottom.
+</ParamField>
+
+### Config
+Allows you to add more configuration and customize your chart.
+
+<ParamField path="showZoom" type="boolean">
+    Display a zoom control for the displayed data.
+</ParamField>
+
+<ParamField path="showValues" type="boolean">
+ Display the values directly on the chart.
+</ParamField>
+
+<ParamField path="showLegend" type="boolean">
+    Display the color legend for each series displayed.
+</ParamField>
+
+<ParamField path="showDecal" type="boolean">
+    Add a visual pattern to each series to help colorblind people distinguish them.
+</ParamField>
+
