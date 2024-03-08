@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/custom_types",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "LGPL",
   "scripts": {
     "dev": "rollup -c -w",

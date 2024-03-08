@@ -1,5 +1,13 @@
 # @latitude-data/cli
 
+## 0.0.14
+
+### Patch Changes
+
+- ef78e3e: Add build command to build the production version of Latitude
+- 485a3cf: - When cloning a data project repo auto install latitude app when running dev command
+  - Implement `latitude update --app-version` so users can updgrade/downgrade
+
 ## 0.0.13
 
 ### Patch Changes

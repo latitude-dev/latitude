@@ -1,5 +1,17 @@
 # @latitude-data/server
 
+## 0.0.15
+
+### Patch Changes
+
+- ef78e3e: Add build command to build the production version of Latitude
+- 2a71cec: Added Link, Calendar, Popover, Select and DatePicker components
+- Updated dependencies [2a71cec]
+  - @latitude-data/svelte@0.0.8
+  - @latitude-data/custom_types@0.0.1
+  - @latitude-data/client@0.0.8
+  - @latitude-data/connector-factory@0.0.3
+
 ## 0.0.14
 
 ### Patch Changes

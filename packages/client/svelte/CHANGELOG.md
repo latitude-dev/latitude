@@ -1,5 +1,15 @@
 # @latitude-data/svelte
 
+## 0.0.8
+
+### Patch Changes
+
+- 2a71cec: Added Link, Calendar, Popover, Select and DatePicker components
+- Updated dependencies [2a71cec]
+  - @latitude-data/custom_types@0.0.1
+  - @latitude-data/client@0.0.8
+  - @latitude-data/query_result@0.0.2
+
 ## 0.0.7
 
 ### Patch Changes
