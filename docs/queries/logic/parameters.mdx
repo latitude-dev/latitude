@@ -1,0 +1,146 @@
+---
+title: 'Parameters'
+description: 'Insert values dynamically into SQL queries from the URL or view inputs'
+---
+
+## Introduction 
+In some cases, we want to retrieve data based on some dynamic input, for example, when a user requests data for the past year. This is something we can't guess in our SQL code, so we allow some parts of the code to change.
+
+The function of introducing values from external inputs into the SQL code is parameters.
+
+## Parameters
+`param()` retrieves the value from an input and inserts it into the SQL code to generate results dynamically. 
+
+``` js
+<Input param="company_id" value="Latitude" />
+```
+
+``` sql
+sql my_query.sql
+SELECT *
+FROM table
+WHERE id != param(company_id) -- This is where the data from Input is inserted.
+```
+
+
+<Note>It only works in `.sql` files</Note>
+
+### Example
+
+1. **Configure the input in our view**
+
+    ```html my_view.html
+    <Input param="custom_input_name" value="Jon" />
+    ```
+    This tag creates a text input field in which the user can enter a value. The value entered is identified by the `param()` property, which in this case, is `custom_input_name`.
+
+    <Note>This example uses Input but it would work with any component that can contain the `param()` property. See the [Components](../../components/) for more information.</Note>
+
+2. **Working with Parameters in SQL queries**
+
+    To use the input parameter within an SQL query, use the `param()` function. This function retrieves the value specified by the user and inserts it directly into the query.
+
+    ```sql my_query.sql
+    SELECT 
+        first_name,
+        last_name
+    FROM users
+    WHERE first_name != param(custom_input_name)
+    ```
+
+    In this example, the `param()` function is used to insert the user's input (as specified by `custom_input_name`) into the SELECT statement. This dynamically modifies the query based on user input.
+    
+    ```sql my_query.sql result
+    SELECT 
+        first_name,
+        last_name
+    FROM users
+    WHERE first_name != 'John'
+    ```
+
+## Inline Parameters
+
+`inlineParams` help to modify the data for a specific component in views while `param()` only works in `.sql` files. All components that receive data with the property `query` can accept the `inlineParams`.
+
+
+``` js comparison_view.html
+<Input param="input_param_name" />
+
+<LineChart
+  query="data"
+  inlineParams={{ 
+    query_param_name: input("input_param_name")
+  }}
+/>
+```
+
+Inside `inlineParams` we make the match between `query_param_name` and `input_param_name` to send the parameter from the input to the SQL query with the name that is waiting.
+
+
+<Note>It works only in `.html` files with components that accept the `query` property to receive data. See the [Components](../../components/) for more information.</Note>
+
+### Example
+
+Suppose we want to compare the information of two users in the same view.
+
+1. **Query and view setup**
+    
+    We have the following query as base:
+
+    ```sql users.sql
+    SELECT *
+    FROM users
+    WHERE id = {param('user_id')}
+    ```
+
+    And in the view we have two inputs and two line charts:
+
+    ```js comparison_view.html
+    <Input param="first_user_id" />
+    <Input param="second_user_id" />
+
+    <LineChart query="user_data" />
+    <LineChart query="user_data" />
+    ```
+    
+    This will fail because our query is expecting the param `user_id` but the inputs name in the view are sending the data to `first_user_id` and `second_user_id` params.
+
+2. **Adding inlineParams** 
+
+    What we can do is send `first_user_id` and `second_user_id` params as the `user_id` to the query and then retrieve two results, one for each input. 
+
+    ``` js comparison_view.html
+    <Input param="first_user_id" />
+    <Input param="second_user_id" />
+
+    <LineChart
+    query="user_data"
+    inlineParams={{ // We add the inlineParams to modify the params we send
+        user_id: input("first_user_id") // We send first_user_id as user_id
+    }}
+    />
+    <LineChart
+    query="user_data"
+    inlineParams={{ // We add the inlineParams to modify the params we send
+        user_id: input("second_user_id") // We send second_user_id as user_id
+    }}
+    />
+    ```
+
+    This way we use `users.sql` as template and return two different results based on the two inputs to show two different charts.
+
+    `first_user_id` = 24
+    | id    | created_at | amount   |  
+    | ----- | ---------- | -------- |  
+    | 24    | 2024       |  4,159   |  
+    | 24    | 2023       |  3,780   |  
+    | 24    | 2022       |  5,211   |  
+    | 24    | 2021       |  9,864   |  
+
+    `second_user_id` = 91
+    | id    | created_at | amount   |  
+    | ----- | ---------- | -------- |  
+    | 91    | 2024       |  6,205   |  
+    | 91    | 2023       |  4,981   |  
+    | 91    | 2022       |  2,904   |  
+    | 91    | 2021       |  7,333   |  

@@ -121,7 +121,7 @@
         "queries/logic/variables",
         "queries/logic/if-else",
         "queries/logic/loops",
-        "queries/logic/interpolate-values"
+        "queries/logic/parameters"
       ]
     },
     {
@@ -129,7 +129,8 @@
       "pages": [
         "queries/advanced/reference-queries",
         "queries/advanced/run-query",
-        "queries/advanced/cast-methods"
+        "queries/advanced/cast-methods",
+        "queries/advanced/interpolation"
       ]
     },
     {
