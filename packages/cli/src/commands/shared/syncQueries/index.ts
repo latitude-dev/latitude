@@ -46,19 +46,28 @@ export default async function syncQueries({
   }
 
   const queriesDir = path.join(rootDir, 'queries')
+  const syncDirectory = (dirPath: string): void => {
+    fs.readdirSync(dirPath, { withFileTypes: true }).forEach((dirent) => {
+      const currentPath = path.join(dirPath, dirent.name)
+      if (dirent.isDirectory()) {
+        syncDirectory(currentPath)
+      } else {
+        syncQueriesAndCsvs(currentPath, 'add', true)
+      }
+    })
+  }
 
   if (watch) {
     await watcher(queriesDir, syncQueriesAndCsvs, {
       persistent: true,
     })
   } else {
-    fs.readdirSync(queriesDir).forEach((file: string) => {
-      const srcPath = path.join(queriesDir, file)
-      syncQueriesAndCsvs(srcPath, 'add', true)
-    })
+    syncDirectory(queriesDir)
   }
 
   process.on('exit', () => {
+    if (!watch) return
+
     clearFolders([queriesPath, csvsPath])
   })
 }

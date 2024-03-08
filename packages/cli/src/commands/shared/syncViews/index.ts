@@ -45,19 +45,32 @@ export default async function syncViews({
     syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
 
+  const syncDirectory = (directory: string): void => {
+    fs.readdirSync(directory).forEach((file: string) => {
+      const srcPath = path.join(directory, file)
+
+      // Check if the srcPath is a directory, and recursively call syncDirectory if it is
+      if (fs.statSync(srcPath).isDirectory()) {
+        syncDirectory(srcPath)
+      } else {
+        // It's a file, perform the synchronization operation
+        syncFile(srcPath, 'add', true)
+      }
+    })
+  }
+
   if (watch) {
     await watcher(views, syncFile, {
       ignored: /(?!.*\/index\.html$)(^|[/\\])\../, // ignore all files except index.html
       persistent: true,
     })
   } else {
-    fs.readdirSync(views).forEach((file: string) => {
-      const srcPath = path.join(views, file)
-      syncFile(srcPath, 'add', true)
-    })
+    syncDirectory(views)
   }
 
   process.on('exit', () => {
+    if (!watch) return
+
     for (const copiedFile of copiedFiles) {
       fs.unlink(copiedFile, (err) => {
         if (err) {

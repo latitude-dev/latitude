@@ -3,19 +3,15 @@ import typescript from '@rollup/plugin-typescript'
 import copy from 'rollup-plugin-copy'
 
 const EXTERNAL_DEPENDENCIES = [
+  '@latitude-data/custom_types',
+  '@latitude-data/query_result',
   'clsx',
+  'date-fns/format',
+  'lodash-es',
   'tailwind-merge',
   'tailwind-variants',
   'zustand',
   'zustand/vanilla',
-  'lodash/flatten',
-  'lodash/compact',
-  'lodash/format',
-  'lodash/isString',
-  'lodash/isNaN',
-  'date-fns/format',
-  '@latitude-data/query_result',
-  '@latitude-data/type_parser'
 ]
 
 /** @type {import('rollup').RollupOptions}*/

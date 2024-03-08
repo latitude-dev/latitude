@@ -43,13 +43,9 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@internationalized/date": "^3.5.2",
     "@latitude-data/client": "workspace:*",
     "@latitude-data/connector-factory": "workspace:^",
-    "@latitude-data/svelte": "workspace:*",
     "@latitude-data/custom_types": "workspace:^",
-    "css-tree": "^2.3.1",
-    "pg": "^8.11.3",
-    "radix-icons-svelte": "^1.2.1"
+    "@latitude-data/svelte": "workspace:*"
   }
 }

@@ -1,6 +1,6 @@
 import type { XAXisComponentOption, YAXisComponentOption } from 'echarts'
 import { format } from 'date-fns/format'
-import compact from 'lodash/compact'
+import { compact } from 'lodash-es'
 
 import { Dataset, ScaleDataValue } from '../../types'
 import { COLORS, FONT, SPACES } from '../common/designTokens'
@@ -86,7 +86,7 @@ type TextObject = {
  * https://github.com/lightdash/lightdash/pull/2730
  */
 const calculateDimensionsText = (
-  textObject: TextObject,
+  textObject: TextObject
 ): {
   width: number
   height: number
@@ -121,7 +121,7 @@ const PADDING_TITLE_TO_LABEL = SPACES.s4
 
 function calculateNamedGap(
   axisLabel: TextObject,
-  axisTitle: TextObject,
+  axisTitle: TextObject
 ): number {
   const axisLabelSize = calculateDimensionsText(axisLabel)
   const axisTitleSize = calculateDimensionsText(axisTitle)
@@ -137,7 +137,7 @@ function calculateNamedGap(
 
 function getAxisName(
   axis: CommonAxisFormat,
-  axisMetadata: AxisMetadata,
+  axisMetadata: AxisMetadata
 ): string {
   const displayName = axis.displayName
   if (displayName && displayName.length > 0) {
@@ -255,7 +255,7 @@ export function transformXAxis({
   const series = xColumns.filter((c) => c.axisIndex === 0)
   const ySeries = yColumns.filter((c) => c.axisIndex === 0)
   const allLines = ySeries.every(
-    (serie) => serie.chartType === 'line' || serie.chartType === 'area',
+    (serie) => serie.chartType === 'line' || serie.chartType === 'area'
   )
   const serie = series[0]
   const seriesNames = serie?.displayName || serie?.name
@@ -274,7 +274,7 @@ export function transformXAxis({
       })
       nameGap = calculateNamedGap(
         { text: longestWord, fontSize: AXIS_LABEL_NAME_STYLES.fontSize },
-        { text: seriesNames, fontSize: AXIS_NAME_STYLES.fontSize },
+        { text: seriesNames, fontSize: AXIS_NAME_STYLES.fontSize }
       )
     } else {
       nameGap = SPACES.s6
@@ -340,7 +340,7 @@ export function transformYAxis({
               text: addCommas(metadata.longestValue),
               fontSize: AXIS_LABEL_NAME_STYLES.fontSize,
             },
-            { text: title, fontSize: AXIS_NAME_STYLES.fontSize },
+            { text: title, fontSize: AXIS_NAME_STYLES.fontSize }
           )
         } else {
           nameGap = SPACES.s6
@@ -357,6 +357,6 @@ export function transformYAxis({
         nameGap,
         showAxisPointerLabel: false,
       })
-    }),
+    })
   )
 }

@@ -12,7 +12,7 @@
 </script>
 
 <script lang="ts">
-  import debounce from 'lodash/debounce'
+  import { debounce } from 'lodash-es'
   import * as echarts from 'echarts/core'
   import { CanvasRenderer } from 'echarts/renderers'
   import type { ECBasicOption } from 'echarts/types/dist/shared'
@@ -77,7 +77,7 @@
 
   export function chartable(
     element: HTMLElement,
-    { options, theme, locale }: ChartableProps,
+    { options, theme, locale }: ChartableProps
   ) {
     let resizeObserver: ResizeObserver
     const echartsInstance = echarts.init(element, theme, {

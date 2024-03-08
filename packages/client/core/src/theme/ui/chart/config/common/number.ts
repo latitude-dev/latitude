@@ -1,4 +1,4 @@
-import isString from 'lodash/isString'
+import { isString } from 'lodash-es'
 
 export function numericToNumber(val: unknown): number {
   const valFloat = parseFloat(val as string)

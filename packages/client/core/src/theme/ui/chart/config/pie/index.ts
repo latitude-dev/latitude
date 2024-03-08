@@ -1,5 +1,5 @@
 import { EChartsOption } from 'echarts'
-import isNaN from 'lodash/isNaN'
+import { isNaN } from 'lodash-es'
 import { DBSource, DBSourceRow, Dataset } from '../../types'
 import { getDataset } from '../common/getDataset'
 import setLegend from '../common/setLegend'
@@ -65,7 +65,7 @@ export default function generatePieConfig({
       top: 'center',
       textVerticalAlign: 'top',
       text: String(
-        Number.isInteger(totalValues) ? totalValues : totalValues.toFixed(2),
+        Number.isInteger(totalValues) ? totalValues : totalValues.toFixed(2)
       ),
       textStyle: {
         fontFamily: FONT.fontFamily.sans,
