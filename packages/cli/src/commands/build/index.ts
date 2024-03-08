@@ -8,6 +8,7 @@ import { APP_FOLDER } from '../constants'
 import { configDotenv } from 'dotenv'
 import { onError } from '../../utils'
 import { spawn } from 'child_process'
+import maybeSetupApp from '../shared/maybeSetupApp'
 
 const { Select } = require('enquirer')
 
@@ -67,6 +68,9 @@ export default async function build({
 }: {
   target: string | undefined
 }) {
+  const ready = await maybeSetupApp()
+  if (!ready) process.exit(1)
+
   const cwd = config.cwd
   const appName = path.basename(cwd)
 
