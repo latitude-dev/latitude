@@ -1,6 +1,5 @@
 import colors from 'picocolors'
 import config from '../../config'
-import fsExtra from 'fs-extra'
 import path from 'path'
 import syncQueries from '../shared/syncQueries'
 import syncViews from '../shared/syncViews'
@@ -74,15 +73,14 @@ export default async function build({
   const cwd = config.cwd
   const appName = path.basename(cwd)
 
-  await syncViews({ dataAppDir: cwd, appName, watch: true })
-  await syncQueries({ rootDir: cwd, watch: true })
+  await syncViews({ dataAppDir: cwd, appName })
+  await syncQueries({ rootDir: cwd })
 
   const buildCwd = path.join(cwd, APP_FOLDER)
   const env = {
     ...process.env,
     ...(await targetEnv(target)),
   }
-  console.log(buildCwd, env)
   const buildProcess = spawn(config.pkgManager.command, ['run', 'build'], {
     detached: false,
     cwd: buildCwd,
@@ -112,20 +110,7 @@ export default async function build({
       process.exit(code)
     }
 
-    // Copy contents from buildCwd /dist to cwd /dist
-    const distPath = path.join(cwd, 'build')
-    const buildDistPath = path.join(buildCwd, 'build')
-
-    // ensure distPath exists
-    fsExtra.ensureDirSync(distPath)
-
-    // clean distPath before copying
-    fsExtra.emptyDirSync(distPath)
-
-    // copy buildDistPath to distPath
-    fsExtra.copySync(buildDistPath, distPath)
-
-    console.log(colors.green(`📦 Build completed for ${target}`))
+    console.log(colors.green(`📦 Build completed for ${target || 'NodeJS'}`))
 
     process.exit()
   })

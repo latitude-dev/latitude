@@ -1,6 +1,5 @@
 import { Dataset, DBSource } from '../../types'
-import flatten from 'lodash/flatten'
-import compact from 'lodash/compact'
+import { flatten, compact } from 'lodash-es'
 
 import setSerie from './serieUtils/setSerie'
 import { AxisAlign, ConfigProps, FullColumn, yAxisFormat } from './types'
@@ -19,12 +18,12 @@ function findLongest(list: string[]) {
 
 export function findLongestValue(
   source: DBSource,
-  sourceIndex: number,
+  sourceIndex: number
 ): string {
   return findLongest(
     source
       .filter((row) => !!row[sourceIndex])
-      .map((row) => String(row[sourceIndex])),
+      .map((row) => String(row[sourceIndex]))
   )
 }
 
@@ -71,7 +70,7 @@ export default function transformCartesiansSeries({
         : null
       axisMetadata[axisIndex] = { longestValue: '', seriesNames: [] }
       const measurements = yColumns.filter(
-        (column) => column.axisIndex === axisIndex,
+        (column) => column.axisIndex === axisIndex
       )
       return compact(
         measurements.map((measurement) => {
@@ -117,9 +116,9 @@ export default function transformCartesiansSeries({
           axisMetadata[axisIndex] = meta
 
           return serie
-        }),
+        })
       )
-    }),
+    })
   )
 
   return {

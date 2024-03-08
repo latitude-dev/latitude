@@ -26,9 +26,6 @@ importers:
 
   apps/server:
     dependencies:
-      '@internationalized/date':
-        specifier: ^3.5.2
-        version: 3.5.2
       '@latitude-data/client':
         specifier: workspace:*
         version: link:../../packages/client/core
@@ -41,15 +38,6 @@ importers:
       '@latitude-data/svelte':
         specifier: workspace:*
         version: link:../../packages/client/svelte
-      css-tree:
-        specifier: ^2.3.1
-        version: 2.3.1
-      pg:
-        specifier: ^8.11.3
-        version: 8.11.3
-      radix-icons-svelte:
-        specifier: ^1.2.1
-        version: 1.2.1
     devDependencies:
       '@latitude-data/eslint-config':
         specifier: workspace:*
@@ -229,7 +217,7 @@ importers:
       echarts:
         specifier: ^5.5.0
         version: 5.5.0
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       tailwind-merge:
@@ -251,9 +239,9 @@ importers:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
         version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
-      '@types/lodash':
-        specifier: ^4.14.202
-        version: 4.14.202
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.17(postcss@8.4.35)
@@ -305,13 +293,16 @@ importers:
       '@latitude-data/query_result':
         specifier: workspace:^
         version: link:../../query_result
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       bits-ui:
         specifier: ^0.18.1
         version: 0.18.1(svelte@4.2.10)
       echarts:
         specifier: ^5.5.0
         version: 5.5.0
-      lodash:
+      lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
       mode-watcher:
@@ -375,9 +366,6 @@ importers:
       '@types/eslint':
         specifier: 8.56.0
         version: 8.56.0
-      '@types/lodash':
-        specifier: ^4.14.202
-        version: 4.14.202
       eslint-plugin-jsonc:
         specifier: ^2.13.0
         version: 2.13.0(eslint@8.56.0)
@@ -6843,9 +6831,13 @@ packages:
       '@types/node': 20.10.6
     dev: true
 
+  /@types/lodash-es@4.17.12:
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+
   /@types/lodash@4.14.202:
     resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
-    dev: true
 
   /@types/mdx@2.0.11:
     resolution: {integrity: sha512-HM5bwOaIQJIQbAYfax35HCKxx7a3KrK3nBtIqJgSOitivTD1y3oW9P3rxY9RkXYPUk7y/AjAohfHKmFpGE79zw==}
@@ -12082,6 +12074,10 @@ packages:
       p-locate: 5.0.0
     dev: true
 
+  /lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash.assignwith@4.2.0:
     resolution: {integrity: sha512-ZznplvbvtjK2gMvnQ1BR/zqPFZmS6jbK4p+6Up4xcRYA7yMIwxHCfbTcrYxXKzzqLsQ05eJPVznEW3tuwV7k1g==}
     dev: false
@@ -12139,6 +12135,7 @@ packages:
 
   /lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+    dev: true
 
   /log-symbols@4.1.0:
     resolution: {integrity: sha512-8XPvpAA8uyhfteu8pIvQxpJZ7SYYdpUivZpGy6sFsBuKRY/7rQGavedeB8aK+Zkyq6upMFVL/9AW6vOYzfRyLg==}
@@ -15346,9 +15343,6 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
-    peerDependenciesMeta:
-      node-gyp:
-        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0
