@@ -7,6 +7,7 @@ import devCommand from './commands/dev'
 import sade from 'sade'
 import startDataProject from './commands/start/index'
 import updateCommand from './commands/update'
+import boxedMessage from './lib/boxedMessage'
 
 const CLI = sade('latitude')
 
@@ -27,6 +28,7 @@ CLI.command('start')
 
 CLI.command('update')
   .describe('Update latitude app.You can define the version with --version')
+  .option('--fix', 'Installed the version in your latitude.json file')
   .action(updateCommand)
 
 const cliDev = CLI.command('dev')
@@ -50,16 +52,22 @@ CLI.command('deploy')
   })
 
 async function initCli() {
-  const parsedArgs = CLI.parse(process.argv, { lazy: true })
+  const argv = process.argv
+  const parsedArgs = CLI.parse(argv, { lazy: true })
 
-  const args = parsedArgs?.args
-  config.setDebug(args)
-  config.setDev({ dev: process.env.NODE_ENV === 'development', args })
+  try {
+    await config.init(argv)
+  } catch (error) {
+    const message = (error as Error).message
+    boxedMessage({
+      text: message,
+      title: 'Error in latitude.json',
+      color: 'red',
+    })
+    process.exit(1)
+  }
 
-  await config.setPkgManager()
-  config.setCwd(args)
-
-  parsedArgs?.handler.apply(null, args)
+  parsedArgs?.handler.apply(null, parsedArgs?.args)
 }
 
 initCli()

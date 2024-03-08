@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
 import { APP_FOLDER, APP_SERVER_FOLDER } from '../../commands/constants'
-import { Props } from './index'
-import { forceSymlink } from '../../utils'
+import { forceSymlink, onError } from '../../utils'
 import config from '../../config'
+import { type Props } from './index'
 
 function createAppFolder() {
   const target = path.resolve(`${config.cwd}/${APP_FOLDER}`)
@@ -12,7 +12,7 @@ function createAppFolder() {
   return target
 }
 
-export default async function synlinkAppFromLocal({ onError }: Props) {
+export default async function synlinkAppFromLocal(_p: Props): Promise<boolean> {
   const serverFolderInMonorepo = path.resolve(
     process.cwd(),
     `./${APP_SERVER_FOLDER}`,
@@ -26,7 +26,9 @@ export default async function synlinkAppFromLocal({ onError }: Props) {
         `✅ Latitude app linked to ${serverFolderInMonorepo} in ${dataApp}`,
       ),
     )
+    return true
   } catch (err) {
     onError({ error: err as Error, message: `💥 Error linking server folder` })
+    return false
   }
 }

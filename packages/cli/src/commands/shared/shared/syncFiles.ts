@@ -40,6 +40,8 @@ export default function syncFiles({
     } else {
       fs.copyFile(srcPath, destPath, onError)
     }
+
+    console.log(`${colors.blue(relativePath)} ${colors.green(`was ${type}ed`)}`)
   } else if (type === 'unlink') {
     fs.unlink(destPath, (err) => {
       if (err) {

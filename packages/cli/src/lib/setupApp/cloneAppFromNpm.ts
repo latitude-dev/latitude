@@ -3,20 +3,38 @@ import axios from 'axios'
 import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
-import { Props } from './index'
 import config from '../../config'
 import { LATITUDE_FOLDER, PACKAGE_NAME } from '../../commands/constants'
+import { onError } from '../../utils'
+import { type Props } from './index'
+import { getInstalledVersion } from '../getAppVersions'
+import boxedMessage from '../boxedMessage'
 
-export default async function cloneAppFromNpm({ onError, appVersion }: Props) {
+export default async function cloneAppFromNpm({
+  appVersion: updateVersion,
+}: Props): Promise<boolean> {
   const latitudeFolder = `${config.cwd}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
+  const appVersion = updateVersion ?? config.projectConfig.appVersion
   const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${appVersion} dist.tarball`
+  const installedVersion = getInstalledVersion(config.cwd)
 
-  return new Promise((resolve, reject) => {
+  if (installedVersion === appVersion) {
+    boxedMessage({
+      title: 'Same version',
+      text: `${colors.blue('Version')} ${colors.green(
+        appVersion,
+      )} ${colors.blue('is already installed')}`,
+      color: 'green',
+    })
+    return false
+  }
+
+  return new Promise((resolve) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
         onError({ error, message: `Error cloning app from npm`, color: 'red' })
-        return
+        return false
       }
 
       if (stderr) {
@@ -28,9 +46,6 @@ export default async function cloneAppFromNpm({ onError, appVersion }: Props) {
       const tarballUrl = stdout.trim()
       console.log(colors.yellow(`Downloading from: ${tarballUrl}`))
 
-      // TODO: Check if requested version is current version
-      // This will be easier when we have `latitude.json` and "appVersion"
-      // field in it.
       const oldApp = fsExtra.existsSync(appDir)
 
       if (oldApp) {
@@ -65,7 +80,7 @@ export default async function cloneAppFromNpm({ onError, appVersion }: Props) {
             message: 'Error downloading latitude app',
             color: 'red',
           })
-          reject(error)
+          resolve(false)
         })
     })
   })
