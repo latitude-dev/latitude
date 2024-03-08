@@ -5,6 +5,7 @@ import colors from 'picocolors'
 import startDataProject from './commands/start/index'
 import config from './config'
 import devCommand from './commands/dev'
+import updateCommand from './commands/update'
 
 const CLI = sade('latitude')
 
@@ -12,13 +13,20 @@ CLI.version(process.env.PACKAGE_VERSION ?? 'development')
   .option('--debug', 'Enables verbose console logs')
   .option('--simulate-pro', 'Enable pro mode in development')
 
+if (process.env.NODE_ENV === 'development') {
+  CLI.option(
+    '--folder',
+    'Use in development to specify the data app folder to run',
+  )
+}
+
 CLI.command('start')
   .describe('Setup you data project with an example data source')
-  .option(
-    '--version',
-    'Latitude app version used to build the data project. Default: latest',
-  )
   .action(startDataProject)
+
+CLI.command('update')
+  .describe('Update latitude app.You can define the version with --version')
+  .action(updateCommand)
 
 const cliDev = CLI.command('dev')
   .describe('Launch the local Latitude development environment')
@@ -26,13 +34,6 @@ const cliDev = CLI.command('dev')
     '--open',
     'Open the data app in your browser, Default: yes. Options: yes, no',
   )
-
-if (process.env.NODE_ENV === 'development') {
-  cliDev.option(
-    '--folder',
-    'Use in development to specify the data app folder to run',
-  )
-}
 
 cliDev.action(devCommand)
 
@@ -42,13 +43,18 @@ CLI.command('deploy')
     console.log(colors.red('Not implemented yet'))
   })
 
-const parsedArgs = CLI.parse(process.argv, { lazy: true })
+async function initCli() {
+  const parsedArgs = CLI.parse(process.argv, { lazy: true })
 
-const args = parsedArgs?.args
-config.debug = args
-config.setDev({
-  dev: process.env.NODE_ENV === 'development',
-  args,
-})
+  const args = parsedArgs?.args
+  config.debug = args
+  config.setDev({
+    dev: process.env.NODE_ENV === 'development',
+    args,
+  })
+  await config.setupPkgManager()
 
-parsedArgs?.handler.apply(null, parsedArgs?.args)
+  parsedArgs?.handler.apply(null, parsedArgs?.args)
+}
+
+initCli()

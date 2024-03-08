@@ -4,9 +4,9 @@ import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
 import { Props } from './index'
-import { LATITUDE_FOLDER } from '../../commands/constants'
+import config from '../../config'
+import { LATITUDE_FOLDER, PACKAGE_NAME } from '../../commands/constants'
 
-const PACKAGE_NAME = '@latitude-data/server'
 export default async function cloneAppFromNpm({
   onError,
   destinationPath,
@@ -14,8 +14,7 @@ export default async function cloneAppFromNpm({
 }: Props) {
   const latitudeFolder = `${destinationPath}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
-  fsExtra.ensureDirSync(appDir)
-  const command = `npm view ${PACKAGE_NAME}@${appVersion} dist.tarball`
+  const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${appVersion} dist.tarball`
 
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
@@ -32,6 +31,19 @@ export default async function cloneAppFromNpm({
 
       const tarballUrl = stdout.trim()
       console.log(colors.yellow(`Downloading from: ${tarballUrl}`))
+
+      // TODO: Check if requested version is current version
+      // This will be easier when we have `latitude.json` and "appVersion"
+      // field in it.
+      const oldApp = fsExtra.existsSync(appDir)
+
+      if (oldApp) {
+        console.log(colors.yellow('Uninstalling old app version...'))
+        fsExtra.removeSync(appDir)
+      }
+
+      // Make sure the app directory exists
+      fsExtra.ensureDirSync(appDir)
 
       axios({
         method: 'get',

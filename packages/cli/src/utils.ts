@@ -1,6 +1,8 @@
+import colors from 'picocolors'
 import path from 'path'
 import fsExtra from 'fs-extra'
 import fs from 'fs'
+import { OnErrorProps } from './types'
 
 /**
  * This ASCII log is generated using the following website:
@@ -40,4 +42,14 @@ export async function forceSymlink(
       resolve()
     })
   })
+}
+
+export function onError({ error, message, color = 'red' }: OnErrorProps) {
+  const colorFn = color === 'red' ? colors.red : colors.yellow
+  console.error(colorFn(`${message} \nERROR:\n${error}`))
+  process.exit(1)
+}
+
+export const cleanTerminal = () => {
+  process.stdout.write('\x1bc')
 }
