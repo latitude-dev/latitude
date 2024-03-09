@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest'
+import { format } from 'date-fns/format'
 import { RichDate, RelativeDate } from '.'
 
 describe('RichDate', () => {
@@ -6,10 +7,8 @@ describe('RichDate', () => {
     it('default to current date with default format', () => {
       const richDate = new RichDate()
       expect(richDate.toString()).toBe(
-        new Date()
-          .toISOString()
-          .slice(0, 10) // Assuming default format is 'yyyy-MM-dd'
-        )
+        new Date().toISOString().slice(0, 10), // Assuming default format is 'yyyy-MM-dd'
+      )
     })
 
     it('accepts custom date and format', () => {
@@ -86,7 +85,11 @@ describe('RichDate', () => {
   describe('resolve', () => {
     it('resolves to the current date for Today', () => {
       const richDateToday = new RichDate(RelativeDate.Today)
-      expect(richDateToday.resolve()).toEqual(new Date())
+      const fmt = 'dd/MM/yyyy'
+
+      expect(format(richDateToday.resolve(), fmt)).toEqual(
+        format(new Date(), fmt),
+      )
     })
 
     it('resolves to the previous date for Yesterday', () => {
