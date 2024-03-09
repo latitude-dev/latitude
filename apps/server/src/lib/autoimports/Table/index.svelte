@@ -4,7 +4,7 @@
   import { useQuery, type QueryProps } from '$lib/stores/queries'
 
   type Props = QueryProps
-  
+
   export let query: Props['query']
   export let inlineParams: Props['inlineParams'] = {}
   export let opts: Props['opts'] = {}

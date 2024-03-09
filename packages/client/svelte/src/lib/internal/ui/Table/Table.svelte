@@ -7,9 +7,9 @@
 
 <script lang="ts">
   import { createTable, Render, Subscribe } from 'svelte-headless-table'
-  import { readable } from 'svelte/store'
+  import { writable } from 'svelte/store'
   import * as Table from '$lib/internal/ui/_table'
-  import QueryResult from '@latitude-data/query_result'
+  import QueryResult, { type QueryResultRow } from '@latitude-data/query_result'
 
   type $$Props = Props
 
@@ -18,12 +18,22 @@
   let className: $$Props['class'] = undefined
   export { className as class }
 
-  const table = createTable(readable(data.toArray()))
+  let items = writable<QueryResultRow[]>(data.toArray())
+
+  function updateItems() {
+    items.set(data.toArray())
+  }
+
+  $: if (data) {
+    updateItems()
+  }
+
+  const table = createTable(items)
 
   const columns = table.createColumns(
     data.fields.map((field) =>
-      table.column({ accessor: field.name, header: field.name })
-    )
+      table.column({ accessor: field.name, header: field.name }),
+    ),
   )
 
   const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
