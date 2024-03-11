@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.23
+
+### Patch Changes
+
+- Check node environment at runtime not at build time in the CLI
+
 ## 0.0.22
 
 ### Patch Changes

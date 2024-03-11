@@ -83,7 +83,7 @@ function getConfig(appDir: string) {
 
 class CLIConfig {
   private static instance: CLIConfig
-  public cwd: string = this.getDefaultCwd()
+  public cwd: string
   public debug: boolean = false
   public dev: boolean = true
   public pro: boolean = false
@@ -93,6 +93,12 @@ class CLIConfig {
     flags: PACKAGE_FLAGS[PackageManager.npm],
   }
   private _latitudeConfig: PartialLatitudeConfig | null = null
+
+  constructor() {
+    this.dev = process.env.NODE_ENV === 'development'
+    this.pro = !this.dev
+    this.cwd = this.getDefaultCwd()
+  }
 
   public static getInstance(): CLIConfig {
     if (CLIConfig.instance) return this.instance
@@ -105,11 +111,8 @@ class CLIConfig {
     const args = mri(argv.slice(2))
     const requireConfig = this.hasToLoadConfig(args._[0])
     this.debug = (args.debug as boolean | undefined) ?? false
+    this.simulatedPro = args['simulate-pro'] ?? false,
     this.addFolderToCwd(args.folder)
-    this.setDev({
-      dev: process.env.NODE_ENV === 'development',
-      simulatedPro: args['simulate-pro'] ?? false,
-    })
 
     await this.setPkgManager()
 
@@ -157,18 +160,6 @@ class CLIConfig {
     if (!command) return false
 
     return !INGORED_LOAD_CONFIG_COMMANDS.includes(command)
-  }
-
-  private setDev({
-    dev,
-    simulatedPro,
-  }: {
-    dev: boolean
-    simulatedPro: boolean
-  }) {
-    this.dev = dev
-    this.simulatedPro = simulatedPro
-    this.pro = !this.dev
   }
 
   get projectConfig(): PartialLatitudeConfig {

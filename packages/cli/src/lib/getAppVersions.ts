@@ -1,4 +1,5 @@
 import { exec } from 'child_process'
+import { readFileSync } from 'fs'
 import semverSort from 'semver/functions/rsort'
 import {
   APP_FOLDER,
@@ -10,7 +11,8 @@ import { type PackageManagerWithFlags } from '../config'
 export function getInstalledVersion(appDir: string) {
   let version = null
   try {
-    version = require(`${appDir}/${APP_FOLDER}/package.json`).version
+    const packageJson = readFileSync(`${appDir}/${APP_FOLDER}/package.json`, 'utf-8')
+     version = JSON.parse(packageJson).version
   } catch (e) {
     // Do nothing
   }
