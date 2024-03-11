@@ -9,7 +9,7 @@ In some cases, we want to retrieve data based on some dynamic input, for example
 The function of introducing values from external inputs into the SQL code is parameters.
 
 ## Parameters
-`param()` retrieves the value from an input and inserts it into the SQL code to generate results dynamically. 
+`param()` retrieves the value from an input and inserts it into the SQL code to generate results dynamically. If there is no value in the input, the query containing a pram() will fail.
 
 ``` js
 <Input param="company_id" value="Latitude" />
@@ -19,7 +19,7 @@ The function of introducing values from external inputs into the SQL code is par
 sql my_query.sql
 SELECT *
 FROM table
-WHERE id != param(company_id) -- This is where the data from Input is inserted.
+WHERE id != {param('company_id')} -- This is where the data from Input is inserted.
 ```
 
 
@@ -45,7 +45,7 @@ WHERE id != param(company_id) -- This is where the data from Input is inserted.
         first_name,
         last_name
     FROM users
-    WHERE first_name != param(custom_input_name)
+    WHERE first_name != {param(custom_input_name)}
     ```
 
     In this example, the `param()` function is used to insert the user's input (as specified by `custom_input_name`) into the SELECT statement. This dynamically modifies the query based on user input.
@@ -57,6 +57,40 @@ WHERE id != param(company_id) -- This is where the data from Input is inserted.
     FROM users
     WHERE first_name != 'John'
     ```
+### Fallback
+
+You can set a fallback in case the input parameter is empty. It's the second argument to the `param()` function:
+
+```
+param('input_value', 'fallback')
+```
+
+This is an example of a possible error when using `param()`. Let's say we have an input whose `value` property is empty:
+
+```js
+    <Input param="user_info" value="" />
+```
+
+And it's being used like this in the query:
+
+```
+SELECT {param(user_info)}
+FROM table
+```
+
+The query will fail because it will not get any value. But if we add the fallback `first_name` in case the input is empty, the query will get the second argument. In this case it is a string, but it can be a variable or other logic.
+
+```
+SELECT {param(user_info, 'first_name')}
+FROM table
+```
+
+Final query:
+
+```
+SELECT first_name
+FROM table
+```
 
 ## Inline Parameters
 
@@ -64,13 +98,14 @@ WHERE id != param(company_id) -- This is where the data from Input is inserted.
 
 
 ``` js comparison_view.html
-<Input param="input_param_name" />
+<Input param="customer_id"/>
 
 <LineChart
   query="data"
-  inlineParams={{ 
-    query_param_name: input("input_param_name")
+  inlineParams={{
+    id: input("customer_id")
   }}
+/>
 />
 ```
 
@@ -114,16 +149,16 @@ Suppose we want to compare the information of two users in the same view.
     <Input param="second_user_id" />
 
     <LineChart
-    query="user_data"
-    inlineParams={{ // We add the inlineParams to modify the params we send
-        user_id: input("first_user_id") // We send first_user_id as user_id
-    }}
+        query="user_data"
+        inlineParams={{ // We add the inlineParams to modify the params we send
+            user_id: input("first_user_id") // We send first_user_id as user_id
+        }}
     />
     <LineChart
-    query="user_data"
-    inlineParams={{ // We add the inlineParams to modify the params we send
-        user_id: input("second_user_id") // We send second_user_id as user_id
-    }}
+        query="user_data"
+        inlineParams={{ // We add the inlineParams to modify the params we send
+            user_id: input("second_user_id") // We send second_user_id as user_id
+        }}
     />
     ```
 

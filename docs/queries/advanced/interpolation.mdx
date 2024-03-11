@@ -26,7 +26,7 @@ interpolate({your_logic_here})
 
     SELECT *
     FROM table
-    WHERE company = '{companyFiltered}'
+    WHERE company = {companyFiltered}
     ```
     Will send the query parametized:
     ``` sql
@@ -47,7 +47,7 @@ interpolate({your_logic_here})
 
     SELECT *
     FROM table
-    WHERE company = interpolate({companyFiltered})
+    WHERE company = {interpolate({companyFiltered})}
     ```
     Will send the query as it is:
     ``` sql
