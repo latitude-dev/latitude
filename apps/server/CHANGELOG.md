@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.17
+
+### Patch Changes
+
+- Use our own sveltekit autoimport package with no dependency conflicts
+
 ## 0.0.16
 
 ### Patch Changes
