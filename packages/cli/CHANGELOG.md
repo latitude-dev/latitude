@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.18
+
+### Patch Changes
+
+- Forgot to build (again)
+
 ## 0.0.17
 
 ### Patch Changes
