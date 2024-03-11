@@ -10,11 +10,11 @@
       { name: 'Values', type: DataType.Integer },
     ],
     rows: [
-      ['Visit', 100],
-      ['Show', 60],
-      ['Click', 80],
-      ['Inquiry', 40],
-      ['Deal', 20],
+      [100, 'Visit'],
+      [60, 'Show'],
+      [80, 'Click'],
+      [40, 'Inquiry'],
+      [20, 'Deal'],
     ],
     rowCount: 33,
   })
@@ -30,6 +30,10 @@
         control: 'select',
         options: ['descending', 'ascending'],
       },
+      orientation: {
+        control: 'select',
+        options: ['vertical', 'horizontal'],
+      },
       showColorGradient: { control: 'boolean' },
       showLabels: { control: 'boolean' },
       showDecal: { control: 'boolean' },
@@ -39,6 +43,7 @@
       data,
       isLoading: false,
       sort: 'descending',
+      orientation: 'vertical',
       showColorGradient: false,
       showLabels: true,
       showDecal: false,
@@ -50,10 +55,12 @@
 
 <Template id="funnel" let:args>
   <FunnelChart
+    height={400}
     data={args.data}
     isLoading={args.isLoading}
     animation={args.animation}
     sort={args.sort}
+    orientation={args.orientation}
     showColorGradient={args.showColorGradient}
     showLabels={args.showLabels}
     showDecal={args.showDecal}

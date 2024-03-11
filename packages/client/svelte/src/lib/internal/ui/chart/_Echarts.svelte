@@ -1,4 +1,5 @@
 <script context="module" lang="ts">
+  import type { ECBasicOption } from 'echarts/types/dist/shared'
   type EchartsOptions = ECBasicOption
   type Locale = 'en' | 'es'
   type EchartsTheme = object
@@ -15,7 +16,6 @@
   import { debounce } from 'lodash-es'
   import * as echarts from 'echarts/core'
   import { CanvasRenderer } from 'echarts/renderers'
-  import type { ECBasicOption } from 'echarts/types/dist/shared'
 
   // Core components
   import {
@@ -87,7 +87,10 @@
     echartsInstance.setOption(options)
 
     const onWindowResize = debounce(() => {
-      echartsInstance.resize({ animation: { duration: 400 } })
+      echartsInstance.resize({
+        animation: {
+          duration: options.animation ? 400 : 0 }
+      })
     }, 100)
 
     if (window.ResizeObserver && element) {

@@ -3,6 +3,11 @@ import { cn } from '../../utils'
 
 export type Variant = VariantProps<typeof alertVariants>['variant']
 export type HeadingLevel = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+export type Props = {
+  variant: Variant
+  scrollable?: boolean
+  className?: string | null
+}
 
 export const alertVariants = tv({
   base: 'relative w-full rounded-lg border px-4 py-3 text-sm [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground',
@@ -21,14 +26,15 @@ export const alertVariants = tv({
 function rootCssClass({
   variant,
   className,
-}: {
-  variant: Variant
-  className?: string | null
-}) {
+  scrollable = false
+}: Props) {
   return cn(
     alertVariants({ variant }),
     'text-sm [&_p]:leading-relaxed',
-    className
+    className,
+    {
+      'overflow-y-auto custom-scrollbar': scrollable,
+    }
   )
 }
 

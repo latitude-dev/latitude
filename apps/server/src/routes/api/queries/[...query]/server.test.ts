@@ -133,4 +133,18 @@ describe('GET endpoint', () => {
     expect(response.status).toBe(404)
     expect(await response.text()).toBe('Query file not found')
   })
+
+  it('return generic error when is production', async () => {
+    import.meta.env.PROD = true
+    mockRunQuery.mockRejectedValue(new Error('Query execution failed'))
+
+    const response = await GET({
+      params: { query: 'testQuery' },
+      url: new URL('http://localhost'),
+    })
+
+    expect(response.status).toBe(500)
+    expect(await response.text()).toBe('There was an error in this query')
+  })
+
 })

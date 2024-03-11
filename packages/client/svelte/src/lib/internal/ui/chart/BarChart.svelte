@@ -13,31 +13,49 @@
   import { theme } from '@latitude-data/client'
   const generate = theme.ui.chart.generateBarConfig
 
-  export let data: BarChartProps['data'] = null
-  export let isLoading: BarChartProps['isLoading'] = false
-  export let error: BarChartProps['error'] = null
+  type $$Props = BarChartProps
+  export let data: $$Props['data'] = null
+  export let isLoading: $$Props['isLoading'] = false
+  export let error: $$Props['error'] = null
 
-  export let x: BarChartProps['x']
-  export let y: BarChartProps['y']
-  export let width: BarChartProps['width'] = undefined
-  export let height: BarChartProps['height'] = undefined
-  export let locale: BarChartProps['locale'] = 'en'
-  export let animation: BarChartProps['animation'] = false
-  export let yTitle: BarChartProps['yTitle'] = ''
-  export let xTitle: BarChartProps['xTitle'] = ''
-  export let swapAxis: BarChartProps['swapAxis'] = false
-  export let xFormat: BarChartProps['xFormat'] = undefined
-  export let yFormat: BarChartProps['yFormat'] = undefined
-  export let config: BarChartProps['config'] = undefined
+  export let x: $$Props['x']
+  export let y: $$Props['y']
+  export let sort: $$Props['sort'] = undefined
+  export let title: $$Props['title'] = undefined
+  export let description: $$Props['description'] = undefined
+  export let bordered: $$Props['bordered'] = false
+  export let width: $$Props['width'] = undefined
+  export let height: $$Props['height'] = undefined
+  export let locale: $$Props['locale'] = 'en'
+  export let animation: $$Props['animation'] = true
+  export let yTitle: $$Props['yTitle'] = ''
+  export let xTitle: $$Props['xTitle'] = ''
+  export let swapAxis: $$Props['swapAxis'] = false
+  export let xFormat: $$Props['xFormat'] = undefined
+  export let yFormat: $$Props['yFormat'] = undefined
+  export let config: $$Props['config'] = undefined
 </script>
 
-<Wrapper {data} {isLoading} {error} let:dataset>
+<Wrapper
+  {data}
+  {title}
+  {description}
+  {bordered}
+  {isLoading}
+  {error}
+  {width}
+  {height}
+  let:dataset
+  let:contentHeight
+>
   <Echart
+    height={contentHeight}
     options={generate({
       dataset,
       animation,
       x,
       y,
+      sort,
       yTitle,
       xTitle,
       swapAxis,
@@ -46,7 +64,6 @@
       config,
     })}
     {width}
-    {height}
     {locale}
   />
 </Wrapper>

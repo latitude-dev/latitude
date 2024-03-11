@@ -1,7 +1,7 @@
 import { EChartsOption } from 'echarts'
 import { isNaN } from 'lodash-es'
 import { DBSource, DBSourceRow, Dataset } from '../../types'
-import { getDataset } from '../common/getDataset'
+import { Sort, getDataset } from '../common/getDataset'
 import setLegend from '../common/setLegend'
 import { COLORS, FONT } from '../common/designTokens'
 
@@ -37,12 +37,14 @@ const CONIFG_DEFAULTS: ConfigProps = {
 
 export type PieChartProps = {
   dataset: Dataset
+  sort?: Sort
   displayName?: string
   animation?: boolean
   config?: ConfigProps
 }
 export default function generatePieConfig({
   dataset,
+  sort,
   displayName,
   animation = true,
   config: {
@@ -53,12 +55,12 @@ export default function generatePieConfig({
     showHole = false,
   } = CONIFG_DEFAULTS,
 }: PieChartProps): EChartsOption {
-  const generatedDataset = getDataset({ dataset })
+  const { datasets, datasetIndex } = getDataset({ dataset, sort })
   const legend = setLegend({ show: showLegend })
   const totalValues = sumValues(dataset.source, DEFAULT_VALUE_INDEX)
   return {
     animation,
-    dataset: [generatedDataset],
+    dataset: datasets,
     title: {
       show: showTotalValue && showHole,
       left: 'center',
@@ -111,14 +113,15 @@ export default function generatePieConfig({
         },
         labelLine: {
           show: true,
-          length: 40,
-          length2: 10,
+          length: 4,
+          length2: 1,
           maxSurfaceAngle: 100,
         },
         encode: {
           value: DEFAULT_VALUE_INDEX,
           itemName: DEFAULT_LABEL_INDEX,
         },
+        datasetIndex
       },
     ],
     aria: { enabled: showDecal, decal: { show: showDecal } },

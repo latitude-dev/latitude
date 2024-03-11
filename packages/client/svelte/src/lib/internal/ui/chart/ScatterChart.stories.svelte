@@ -45,6 +45,7 @@
 
 <Template id="scatter" let:args>
   <ScatterChart
+    height={400}
     data={args.data}
     isLoading={args.isLoading}
     x="x_column"

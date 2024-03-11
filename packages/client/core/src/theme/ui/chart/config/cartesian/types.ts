@@ -16,11 +16,12 @@ export type ChartType = keyof typeof CHART_TYPES
 
 export type Column = {
   name: string
-  chartType: ChartType
+  chartType?: ChartType
   displayName?: string | null
   axisIndex?: number
 }
 export type FullColumn = Column & {
+  chartType: ChartType
   displayName: string | null
   axisIndex: number
 }

@@ -9,12 +9,11 @@ The Funnel chart visualizes sequential stages in a process, showing decreasing q
 ## Preparation
 The query `.sql` file that the Funnel chart accepts must contain only 2 columns, one for the labels and another one for the values.
 
-| labels      | values   |
-| ----------- | -------- |
-| Pending     | 245      |
-| In Progress | 120      |
-| Closed      | 32       |
-
+| values   | labels      |
+| -------- | ----------- |
+| 245      | Pending     |
+| 120      | In Progress |
+| 32       | Closed      |
 
 ## Syntax
 You can use `<FunnelChart ... />` to add it to your view. Within the tag you must add the properties to configure the chart.
@@ -22,11 +21,9 @@ You can use `<FunnelChart ... />` to add it to your view. Within the tag you mus
 ``` js
 <FunnelChart
 	query='orders_evolution'
-    config={{ 
-        sort: descending,
-        showColorGradient: false,
-        showLabels: true
-    }}
+  sort='descending'
+  showColorGradient={false}
+  showLabels={true}
 />
 ```
 
@@ -37,13 +34,13 @@ To configure and customize the chart, you can add properties, some of which are 
     The name of your `.sql` file from which your chart will get the data. It's not necessary to specify the full path, just the name, because we will search all folders until we find it
 </ParamField>
 
-<ParamField path="config" type="array">
-    Contains some options to customize your chart.
-    
-    [See the Config section](#config) to learn more about the options.
+<ParamField path="sort" type="string" required>
+    The order in which the data will be displayed. It can be `ascending` or `descending`. Default `descending`.
 </ParamField>
 
-### Config
+<ParamField path="orientation" type="string" required>
+    The orientation of the chart. It can be `vertical` or `horizontal`. Default `vertical`.
+</ParamField>
 
 <ParamField path="showColorGradient" type="boolean">
     Whether the color of each layer is a gradient or whether each layer is a different color.

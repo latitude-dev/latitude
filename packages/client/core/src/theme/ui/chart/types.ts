@@ -7,7 +7,8 @@ export enum ChartLayerType {
   funnel = 'funnel',
 }
 
-export type DBSourceRow = (string | number)[]
+export type DBSourceColumn = string | number
+export type DBSourceRow = DBSourceColumn[]
 export type DBSource = DBSourceRow[]
 export type EChartsSupportedType =
   | ChartLayerType.line

@@ -4,6 +4,7 @@ import { getDataset } from '../common/getDataset'
 import setLegend from '../common/setLegend'
 import { COLORS, FONT } from '../common/designTokens'
 import { THEMES } from '../../themes'
+import { AnimationEasing } from '../cartesian'
 
 const valuesRange = (values: number[]): number[] => {
   return values.reduce(
@@ -24,11 +25,12 @@ const valuesRange = (values: number[]): number[] => {
 }
 
 type FunnelDirection = 'ascending' | 'descending'
+type FunnelOrientation = 'vertical' | 'horizontal'
 
 const getColoredData = ({
   data,
   valuesIndex,
-  sort,
+  sort = 'descending',
   visualMapColor,
 }: {
   data: DBSource
@@ -79,23 +81,29 @@ const getColoredData = ({
 export type FunnelChartProps = {
   dataset: Dataset
   sort?: FunnelDirection
+  orientation?: FunnelOrientation
   showColorGradient?: boolean
-  animation?: boolean
   showDecal?: boolean
   showLegend?: boolean
   showLabels?: boolean
+  animation?: boolean
+  animationEasing?: AnimationEasing
+  animationEasingUpdate?: AnimationEasing
 }
 
 export default function generateFunnelConfig({
   dataset,
-  animation = false,
+  animation = true,
+  animationEasing = 'cubicInOut',
+  animationEasingUpdate = 'cubicInOut',
   sort = 'descending',
+  orientation = 'vertical',
   showColorGradient = false,
   showLabels = true,
   showDecal = false,
   showLegend = false,
 }: FunnelChartProps): EChartsOption {
-  const generatedDataset = getDataset({ dataset })
+  const { datasets } = getDataset({ dataset })
   const legend = setLegend({ show: showLegend })
   const data = showColorGradient
     ? getColoredData({
@@ -109,13 +117,17 @@ export default function generateFunnelConfig({
 
   return {
     animation,
-    dataset: [generatedDataset],
+    animationEasing,
+    animationEasingUpdate,
+    dataset: datasets,
     title: { show: false },
     series: [
       {
         type: 'funnel',
         data,
         sort,
+        orient:  orientation,
+        funnelAlign: 'center',
         left: 0,
         width: '100%',
         top: showLegend ? 30 : 0,
@@ -128,7 +140,7 @@ export default function generateFunnelConfig({
           minMargin: 5,
           distance: 10,
           lineHeight: FONT.sizes.h6.lineHeight,
-          formatter: '{b}\n{formattedValue|{@1}}',
+          formatter: '{b}\n{formattedValue|{@0}}',
           rich: {
             formattedValue: {
               fontSize: FONT.sizes.h6.fontSize,
