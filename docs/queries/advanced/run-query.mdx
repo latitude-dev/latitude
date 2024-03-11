@@ -11,17 +11,18 @@ The `runQuery` function allows you to dynamically execute SQL queries based on t
 
 The syntax is `runQuery` + `('query_file_name_to_run')`. This would return the whole query.
 
-``` sql payment_methods
--- The output of the query:
-id    | payment_method |
-1     | cash           |
-2     | credit_card    |
-3     | transfer       |
-4     | promotion      |
+The `payment_methods.sql` results are:
 
-```
+|id    | payment_method |
+| ---- | -------------- |
+|1     | cash           |
+|2     | credit_card    |
+|3     | transfer       |
+|4     | promotion      |
 
-You can run a query from another one. For instace in `purchases_validation` we are goint to run the `payment_methods` one.
+
+
+You can run a query from another one. For instace in `purchases_validation` we are going to run the `payment_methods` one.
 
 ``` sql purchases_validation
 {results = runQuery('payment_methods')}
@@ -35,7 +36,9 @@ WHERE payment_method IS NOT null
   OR payment_method = {payment_type = row['payment_method']}
 {/each}
 
----- ⬇️ After proccessing ⬇️ ----
+```
+It is transformed into:
+```
 SELECT *
 FROM table
 WHERE payment_method IS NOT null

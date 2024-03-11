@@ -27,7 +27,9 @@ SELECT *
 FROM table
 WHERE id = {sum}
 
----- ⬇️ After proccessing ⬇️ ----
+```
+It's transformed into:
+```
 
 SELECT *
 FROM database
@@ -42,14 +44,16 @@ SELECT *
 FROM table
 WHERE id != null
 AND (
-{#each [1, 2, 3] as products, i}
-  id = {counter}                       -- Print the value of the variable
-  {counter = counter + 10}             -- Increment the value of the variable
-  {#if i+1 < products.length} OR {/if} -- Add an OR to every element except the last one
-{/each}
+    {#each [1, 2, 3] as products, i}
+        id = {counter}                       -- Print the value of the variable
+        {counter = counter + 10}             -- Increment the value of the variable
+        {#if i+1 < products.length} OR {/if} -- Add an OR to every element except the last one
+    {/each}
 )
 
----- ⬇️ After proccessing ⬇️ ----
+```
+It is transformed into:
+```sql
 
 SELECT *
 FROM table
@@ -80,7 +84,9 @@ FROM table
 {/if}
 
 
----- ⬇️ After proccessing ⬇️ ----
+```
+It is transformed into:
+```
 
 '!Error: Cannot reassign a constant'
 ```

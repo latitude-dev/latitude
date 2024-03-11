@@ -1,0 +1,61 @@
+---
+title: 'Interpolation'
+description: 'Insert values into SQL queries without parametization'
+---
+
+## Introduction
+
+Interpolation refers to inserting values directly into the SQL code but without parametrization.
+
+By default, all of Latitude's logic is parametrized to independently send the query and values to the database and to detect possible SQL injection. Interpolating a value breaks the parametrization.
+
+<Warning>Direct interpolation can lead to SQL injection vulnerabilities, allowing users to perform critical actions such as deleting a table.</Warning>
+
+## Syntax
+
+`interpolate()` allows you to send any parenthesized logic directly to the database. Let's look at some examples:
+
+```
+interpolate({your_logic_here})
+```
+
+- **Variable without interpolation**
+
+    ``` sql variable.sql
+    {companyFiltered = 'Latitude'}
+
+    SELECT *
+    FROM table
+    WHERE company = {companyFiltered}
+    ```
+    Will send the query parametized:
+    ``` sql
+    SELECT *
+    FROM table
+    WHERE company = $1
+    ```
+    And the value of `$1` independently:
+    ``` js
+    $1 = 'Latitude'
+    ```
+    This allows databases to check the values and see if there is a security vulnerability.
+
+- **Variable with interpolation**
+
+    ``` sql variable.sql
+    {companyFiltered = 'Latitude'}
+
+    SELECT *
+    FROM table
+    WHERE company = {interpolate({companyFiltered})}
+    ```
+    Will send the query as it is:
+    ``` sql
+    SELECT *
+    FROM table
+    WHERE company = 'Latitude'
+    ```
+
+### Other uses
+
+You can use `interpolate()` with any logic, for example with `param()` which is an interesting use case to send the value from URL or inputs in the raw SQL code.
