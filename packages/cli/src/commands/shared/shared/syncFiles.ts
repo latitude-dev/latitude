@@ -12,6 +12,7 @@ export default function syncFiles({
   type,
   ready,
   strategy = 'copy',
+  silent = false,
 }: {
   srcPath: string
   relativePath: string
@@ -19,6 +20,7 @@ export default function syncFiles({
   type: 'add' | 'change' | 'unlink'
   ready: boolean
   strategy?: Strategy
+  silent?: boolean
 }) {
   if (type === 'add' || type === 'change') {
     // Make sure all directories in the path exist
@@ -26,6 +28,7 @@ export default function syncFiles({
 
     const onError = (err: unknown) => {
       if (err) {
+        if (silent) return
         return output(
           colors.red(
             `${relativePath} could not be symlinked to ${destPath}: ${err}`,
@@ -41,10 +44,12 @@ export default function syncFiles({
       fs.copyFile(srcPath, destPath, onError)
     }
 
+    if (silent) return
     console.log(`${colors.blue(relativePath)} ${colors.green(`was ${type}ed`)}`)
   } else if (type === 'unlink') {
     fs.unlink(destPath, (err) => {
       if (err) {
+        if (silent) return
         output(colors.red(`${destPath} could not be deleted: ${err}`), ready)
       }
     })

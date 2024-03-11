@@ -5,13 +5,13 @@ import syncFiles from '../shared/syncFiles'
 import watcher from '../shared/watcher'
 import config from '../../../config'
 
-export default async function syncQueries(
-  {
-    watch = false,
-  }: {
-    watch?: boolean
-  } = { watch: false },
-) {
+export default async function syncQueries({
+  watch = false,
+  silent = false
+}: {
+  watch?: boolean
+  silent?: boolean
+} = {}) {
   const rootDir = config.cwd
   const queriesPath = path.join(
     rootDir,
@@ -44,7 +44,7 @@ export default async function syncQueries(
       return
     }
 
-    syncFiles({ srcPath, relativePath, destPath, type, ready })
+    syncFiles({ srcPath, relativePath, destPath, type, ready, silent })
   }
 
   const queriesDir = path.join(rootDir, 'queries')

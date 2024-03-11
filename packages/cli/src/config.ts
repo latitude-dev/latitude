@@ -1,6 +1,7 @@
 import { exec } from 'child_process'
 import mri from 'mri'
 import {
+  APP_FOLDER,
   DEV_SITES_ROUTE_PREFIX,
   LATITUDE_CONFIG_FILE,
 } from './commands/constants'
@@ -197,6 +198,10 @@ class CLIConfig {
     if (this.pro) return naturalCwd
 
     return path.join(naturalCwd, DEV_SITES_ROUTE_PREFIX)
+  }
+
+  get appDir() {
+    return path.join(this.cwd, APP_FOLDER)
   }
 }
 
