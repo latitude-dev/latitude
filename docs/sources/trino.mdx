@@ -5,42 +5,35 @@ description: 'How to configure your Trino database'
 
 ## How to configure sources
 
-The sources files must be inside the `queries/` folder. 
-<Note>To know how it works the source hierarchy, please, visit [How to configure sources](../sources/how-to-configure-sources).</Note>
+The sources files must be inside the `queries/` folder.
+
+<Note>
+  To know how it works the source hierarchy, please, visit [How to configure
+  sources](../sources/how-to-configure-sources).
+</Note>
 
 ## Configuration
 
 To configure the connection with your your Trino database follow these steps:
 
 <Steps>
-    <Step title="Go to the source `.yaml` file within the `queries` folder">
-    </Step>
-    <Step title="Add the following code for your Trino connection">
-      ``` yaml
-      type: trino
-          details:
-            account: string
-            username?: string
-            password?: string
-            token?: string
-            privateKey?: string
-            privateKeyPath?: string
-            privateKeyPass?: string
-      ```
-    </Step>
-    <Step title="Replace the details section with your info and save">
-    </Step>
-    <Step title="Done, now you can test your connection">
-    </Step>
+  <Step title='Go to the source `.yaml` file within the `queries` folder'></Step>
+  <Step title='Add the following code for your Trino connection'>
+    ``` yaml type: trino details: account: string username: string password:
+    string token: string privateKey: string privateKeyPath: string
+    privateKeyPass: string ```
+  </Step>
+  <Step title='Replace the details section with your info and save'></Step>
+  <Step title='Done, now you can test your connection'></Step>
 </Steps>
 
 ## Attributes
 
-- **Account** → The unique identifier for your Trino account. It often includes your account name followed by a region and possibly a cloud platform identifier. 
+- **Account** → The unique identifier for your Trino account. It often includes your account name followed by a region and possibly a cloud platform identifier.
 - **Username** → (Optional) The username for logging into Trino.
-- **Password** → (Optional)  The password associated with your username for authentication.
+- **Password** → (Optional) The password associated with your username for authentication.
 - **Token** → (Optional) The authentication token used as an alternative to username/password authentication
-- **Private Key** → (Optional)  In key-pair authentication, this is the private key used to authenticate the connection. Trino supports RSA keys as a secure method of authentication without transmitting a password.
+- **Private Key** → (Optional) In key-pair authentication, this is the private key used to authenticate the connection. Trino supports RSA keys as a secure method of authentication without transmitting a password.
 - **Private Key Path** → (Optional) An alternative to directly providing the private key, this is the filesystem path to the file containing the private key. This method is used in environments where it's safer or more convenient to reference the key as a file rather than embedding it directly in the code or configuration.
 - **Private Key Pass** → (Optional) If the private key is encrypted, this is the passphrase used to decrypt it. This adds an additional layer of security to key-pair authentication by protecting the private key with a passphrase.
 
@@ -48,4 +41,4 @@ To configure the connection with your your Trino database follow these steps:
 
 To test the connection got to a file in `/queries/.../your_query_file.sql` and make a query using the new connection as source.
 
-You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data. 
+You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.

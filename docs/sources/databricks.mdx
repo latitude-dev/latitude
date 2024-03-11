@@ -5,8 +5,12 @@ description: 'How to configure your Databricks warehouse'
 
 ## How to configure sources
 
-The sources files must be inside the `queries/` folder. 
-<Note>To know how it works the source hierarchy, please, visit [How to configure sources](../sources/how-to-configure-sources).</Note>
+The sources files must be inside the `queries/` folder.
+
+<Note>
+  To know how it works the source hierarchy, please, visit [How to configure
+  sources](../sources/how-to-configure-sources).
+</Note>
 
 ## Configuration
 
@@ -23,12 +27,12 @@ To configure the connection with your your Databricks database follow these step
       type: databricks
           details:
             host: string
-            port?: number
+            port: number
             path: string
-            clientId?: string
-            token?: string
-            oauthClientId?: string
-            oauthClientSecret?: string
+            clientId: string
+            token: string
+            oauthClientId: string
+            oauthClientSecret: string
 
       ```
     </Step>
@@ -36,6 +40,7 @@ To configure the connection with your your Databricks database follow these step
     </Step>
     <Step title="Done, now you can test your connection">
     </Step>
+
 </Steps>
 
 ## Attributes
@@ -52,4 +57,4 @@ To configure the connection with your your Databricks database follow these step
 
 To test the connection got to a file in `/queries/.../your_query_file.sql` and make a query using the new connection as source.
 
-You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data. 
+You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.

@@ -5,8 +5,12 @@ description: 'How to configure your Microsoft SQL database'
 
 ## How to configure sources
 
-The sources files must be inside the `queries/` folder. 
-<Note>To know how it works the source hierarchy, please, visit [How to configure sources](../sources/how-to-configure-sources).</Note>
+The sources files must be inside the `queries/` folder.
+
+<Note>
+  To know how it works the source hierarchy, please, visit [How to configure
+  sources](../sources/how-to-configure-sources).
+</Note>
 
 ## Configuration
 
@@ -26,12 +30,12 @@ To configure the connection with your your Microsoft SQL database follow these s
             password: string
             database: string
             server: string
-            pool?: {
+            pool: {
                 max: number
                 min: number
                 idleTimeoutMillis: number
             }
-            options?: {
+            options: {
                 encrypt: boolean
                 trustServerCertificate: boolean
             }
@@ -53,10 +57,10 @@ To configure the connection with your your Microsoft SQL database follow these s
 - **Min** → (Optional) The minimum number of connections to maintain in the pool. This ensures that a certain number of connections are always ready and available.
 - **IdleTimeoutMillis** → (Optional) The amount of time, in milliseconds, a connection can remain idle in the pool before being closed. This helps manage and free up unused connections efficiently.
 - **Encrypt** → (Optional) A boolean setting that determines whether the data sent between the client and SQL Server should be encrypted. This is crucial for securing sensitive data in transit.
-- **TrustServerCertificate** → (Optional)  A boolean setting that, when true, indicates the client should trust the SQL Server's certificate without validating it. This is important for connections where SSL encryption is used but the server's certificate may not be verified by a known Certificate Authority (CA).
+- **TrustServerCertificate** → (Optional) A boolean setting that, when true, indicates the client should trust the SQL Server's certificate without validating it. This is important for connections where SSL encryption is used but the server's certificate may not be verified by a known Certificate Authority (CA).
 
 ## Test connection
 
 To test the connection got to a file in `/queries/.../your_query_file.sql` and make a query using the new connection as source.
 
-You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data. 
+You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.

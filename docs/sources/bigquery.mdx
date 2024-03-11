@@ -5,8 +5,12 @@ description: 'How to configure your Bigquery warehouse'
 
 ## How to configure sources
 
-The sources files must be inside the `queries/` folder. 
-<Note>To know how it works the source hierarchy, please, visit [How to configure sources](../sources/how-to-configure-sources).</Note>
+The sources files must be inside the `queries/` folder.
+
+<Note>
+  To know how it works the source hierarchy, please, visit [How to configure
+  sources](../sources/how-to-configure-sources).
+</Note>
 
 ## Configuration
 
@@ -23,8 +27,8 @@ To configure the connection with your your Bigquery database follow these steps:
       type: bigquery
           details:
             projectId: string
-            credentials?: Partial<BigQueryOptions>
-            token?: string
+            credentials: Partial<BigQueryOptions>
+            token: string
 
       ```
     </Step>
@@ -32,6 +36,7 @@ To configure the connection with your your Bigquery database follow these steps:
     </Step>
     <Step title="Done, now you can test your connection">
     </Step>
+
 </Steps>
 
 ## Attributes
@@ -44,4 +49,4 @@ To configure the connection with your your Bigquery database follow these steps:
 
 To test the connection got to a file in `/queries/.../your_query_file.sql` and make a query using the new connection as source.
 
-You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data. 
+You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.
