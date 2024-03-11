@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.19
+
+### Patch Changes
+
+- 586e9a3: Create latitude.json configuration file and manage app version
+
 ## 0.0.18
 
 ### Patch Changes
