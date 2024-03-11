@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.22
+
+### Patch Changes
+
+- 1bb3a5c: Fix issues related with the CLI build. Now is build in esm
+
 ## 0.0.21
 
 ### Patch Changes
