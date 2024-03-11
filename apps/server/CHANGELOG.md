@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.18
+
+### Patch Changes
+
+- fix reference to autoimport package
+
 ## 0.0.17
 
 ### Patch Changes
