@@ -8,7 +8,8 @@
     "test": "vitest run",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
-    "prettier": "prettier --write src/**/*.ts"
+    "prettier": "prettier --write src/**/*.ts",
+    "prepublishOnly": "pnpm run build"
   },
   "type": "module",
   "main": "dist/index.ts",

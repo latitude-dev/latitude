@@ -13,6 +13,7 @@
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
     "test:watch": "vitest",
+    "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {

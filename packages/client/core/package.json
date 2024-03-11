@@ -8,6 +8,7 @@
     "build:rollup": "rollup -c",
     "dev": "pnpm run build:rollup -w",
     "build": "pnpm run build:css && npm run build:rollup",
+    "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
@@ -27,11 +28,7 @@
     "./latitude.css": "./dist/latitude.css",
     "./theme/preset": "./tailwind.config.js"
   },
-  "files": [
-    "dist",
-    "tailwind.config.js",
-    "!dist/**/*.test.*"
-  ],
+  "files": ["dist", "tailwind.config.js", "!dist/**/*.test.*"],
   "dependencies": {
     "@latitude-data/custom_types": "workspace:^",
     "@latitude-data/query_result": "workspace:*",
