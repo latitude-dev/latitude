@@ -21,13 +21,13 @@ machine.
 
 Here’s a quick getting started guide to get the sample app up and running:
 
-1. \*\*Install Latitude
+### 1. Install Latitude
 
 Run the following command to install the Latitude CLI globally on your machine:
 
 `npm install -g @latitude-data/cli`
 
-2. **Create the starter project**
+### 2. Create the starter project
 
 Run this command to create a new Latitude project:
 
@@ -36,7 +36,7 @@ Run this command to create a new Latitude project:
 The CLI will ask you the project name. Once you’re done, you’ll have a new
 directory with a sample app that you can run and customize.
 
-3. **Navigate to the project and run the app**
+### 3. Navigate to the project and run the app
 
 `cd my-new-app`
 
