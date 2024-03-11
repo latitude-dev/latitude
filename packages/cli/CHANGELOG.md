@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.21
+
+### Patch Changes
+
+- minor: improve cli's build command with easier access to the production build
+
 ## 0.0.20
 
 ### Patch Changes
