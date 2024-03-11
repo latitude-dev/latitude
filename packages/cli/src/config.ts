@@ -64,7 +64,7 @@ const DEPLOY_PLATFORMS = {
   nodejs: 'nodejs',
 }
 
-type DeployPlatform = keyof typeof DEPLOY_PLATFORMS
+export type DeployPlatform = keyof typeof DEPLOY_PLATFORMS
 
 export type PartialLatitudeConfig = {
   projectName: string
@@ -74,7 +74,7 @@ export type PartialLatitudeConfig = {
 
 const INGORED_LOAD_CONFIG_COMMANDS = ['start']
 function getConfig(appDir: string) {
-  const config = findConfigFile(appDir)
+  const config = findConfigFile({ appDir, throws: true })
 
   if (!config) return null
 

@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url'
 import fs from 'fs'
 import path from 'path'
 import json from '@rollup/plugin-json'
+import { copy } from '@web/rollup-plugin-copy'
 import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 import commonjs from '@rollup/plugin-commonjs'
@@ -25,10 +26,11 @@ export default {
   input: 'src/index.ts',
   cache: false, // This is generating stale builds in watch mode
   output: {
-    file: 'dist/index.cjs.js',
-    format: 'cjs',
+    file: 'dist/index.js',
+    format: 'esm',
   },
   plugins: [
+    copy({ patterns: 'latitude-banner.txt' }),
     typescript(),
     commonjs(),
     // The preferBuiltins option is required to resolve the built-in modules in

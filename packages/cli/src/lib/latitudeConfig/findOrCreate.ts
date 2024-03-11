@@ -36,9 +36,9 @@ type ConfigFile = {
   data: object
   path: string
 }
-export function findConfigFile(appDir: string): ConfigFile {
+export function findConfigFile({ appDir, throws }: { appDir: string, throws: boolean}): ConfigFile {
   const configPath = `${appDir}/${LATITUDE_CONFIG_FILE}`
-  const data = fsExtra.readJsonSync(configPath, { throws: false })
+  const data = fsExtra.readJsonSync(configPath, { throws })
   return {
     path: configPath,
     data,
@@ -53,7 +53,7 @@ export default async function findOrCreateLatitudeConfig({
   pkgManager: PackageManagerWithFlags
 }): Promise<ConfigFile | null> {
   const projectName = path.basename(appDir)
-  const config = findConfigFile(appDir)
+  const config = findConfigFile({ appDir, throws: false })
 
   if (config.data) return config
 
