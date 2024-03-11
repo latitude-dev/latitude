@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 0.0.24
+
+### Patch Changes
+
+- - Adds the `latitude prepare` command to the cli
+  - Adds --docker flag to `latitude build` command
+
 ## 0.0.23
 
 ### Patch Changes

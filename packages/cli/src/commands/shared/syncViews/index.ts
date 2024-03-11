@@ -1,28 +1,27 @@
 import colors from 'picocolors'
 import fs from 'fs'
 import path from 'path'
-import { APP_FOLDER, DEV_SITES_ROUTE_PREFIX } from '../../constants'
+import { APP_FOLDER } from '../../constants'
 import config from '../../../config'
 import watcher from '../shared/watcher'
 import syncFiles from '../shared/syncFiles'
+import rootPath from '../../../lib/rootPath'
 
-function getRoutesFolderPath(cwd: string, routePath: string | null): string {
+function getRoutesFolderPath(cwd: string, rootPath: string | null): string {
   const basePath = path.join(cwd, APP_FOLDER, 'src', 'routes')
-  return routePath ? `${basePath}/${routePath}` : basePath
+  return rootPath ? `${basePath}/${rootPath}` : basePath
 }
 
 const copiedFiles = new Set<string>()
-export default async function syncViews({
-  dataAppDir,
-  appName,
-  watch = false,
-}: {
-  dataAppDir: string
-  appName: string
-  watch?: boolean
-}): Promise<void> {
-  const routePath = config.pro ? null : `/${DEV_SITES_ROUTE_PREFIX}/${appName}`
-  const destinationDir = getRoutesFolderPath(dataAppDir, routePath)
+export default async function syncViews(
+  {
+    watch = false,
+  }: {
+    watch?: boolean
+  } = { watch: false },
+): Promise<void> {
+  const dataAppDir = config.cwd
+  const destinationDir = getRoutesFolderPath(dataAppDir, rootPath())
   const views = path.join(dataAppDir, 'views')
 
   const syncFile = (
