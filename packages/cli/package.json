@@ -4,9 +4,9 @@
   "version": "0.0.21",
   "license": "LGPL",
   "bin": {
-    "latitude": "dist/index.cjs.js"
+    "latitude": "dist/index.js"
   },
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "rollup": "rollup -c",
@@ -31,11 +31,12 @@
     "@types/node": "^20.10.6",
     "@types/semver": "^7.5.8",
     "@types/tar": "^6.1.11",
+    "@web/rollup-plugin-copy": "^0.5.1",
     "prettier": "^3.1.1",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2"
   },
-  "author": "",
+  "type": "module",
   "keywords": [
     "analytics",
     "business-intelligence",
@@ -48,14 +49,15 @@
     "echarts"
   ],
   "dependencies": {
+    "@inquirer/prompts": "^4.2.1",
     "ajv": "^8.12.0",
     "axios": "^1.6.7",
     "boxen": "^7.1.1",
+    "chalk": "^5.3.0",
     "child_process": "^1.0.2",
     "chokidar": "^3.5.3",
     "degit": "^2.8.4",
     "dotenv": "^16.4.5",
-    "enquirer": "^2.4.1",
     "fs-extra": "^11.2.0",
     "mri": "^1.2.0",
     "picocolors": "^1.0.0",

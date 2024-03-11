@@ -1,12 +1,11 @@
 import colors from 'picocolors'
-import { prompt } from 'enquirer'
+import { select } from '@inquirer/prompts'
 import setupApp from '../../lib/setupApp'
 import { cleanTerminal, onError } from '../../utils'
 import { DEFAULT_VERSION_LIST } from '../constants'
 import config from '../../config'
 import { getLatitudeVersions } from '../../lib/getAppVersions'
 
-type Version = { version: string }
 async function askForAppVersion() {
   let versions: string[] = DEFAULT_VERSION_LIST
   try {
@@ -19,18 +18,13 @@ async function askForAppVersion() {
     // Already handled in onError
   }
 
-  return prompt<Version>([
-    {
-      type: 'select',
-      name: 'version',
-      message: 'Pick the Latitude version you want to use',
-      initial: 0, // Newest version by default
-      choices: versions.map((version, index) => ({
-        name: version,
-        message: `Latitude v${version}${index === 0 ? ' (latest)' : ''}`,
-      })),
-    },
-  ])
+  return select<string>({
+    message: 'Pick the Latitude version you want to use',
+    choices: versions.map((version, index) => ({
+      value: version,
+      name: `Latitude v${version}${index === 0 ? ' (latest)' : ''}`,
+    })),
+  })
 }
 
 export default async function updateCommand(args: { fix?: boolean }) {
@@ -42,9 +36,9 @@ export default async function updateCommand(args: { fix?: boolean }) {
     return setupApp({ appVersion: config.projectConfig.appVersion })
   }
 
-  let response: { version: string } | undefined
+  let appVersion = null
   try {
-    response = await askForAppVersion()
+    appVersion = await askForAppVersion()
   } catch (error) {
     if (!error) {
       console.log(
@@ -60,7 +54,7 @@ export default async function updateCommand(args: { fix?: boolean }) {
   }
 
   // Errors already handled
-  if (!response || !response.version) return
+  if (!appVersion) return
 
-  return setupApp({ appVersion: response.version })
+  return setupApp({ appVersion })
 }

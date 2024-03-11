@@ -42,7 +42,6 @@ cliDev.action(devCommand)
 
 CLI.command('build')
   .describe('Build data app for production')
-  .option('--target', 'Platform you want to build for. Default: vercel')
   .action(buildCommand)
 
 CLI.command('deploy')

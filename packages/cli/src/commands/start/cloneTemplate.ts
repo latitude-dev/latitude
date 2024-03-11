@@ -1,59 +1,67 @@
 import fs from 'fs'
 import colors from 'picocolors'
 import path from 'path'
-import enquirer from 'enquirer'
+import { input, confirm, select } from '@inquirer/prompts'
 import degit from 'degit'
 import { CommonProps } from './index.js'
 import { DEV_SITES_ROUTE_PREFIX, LATITUDE_GITHUB_SLUG } from '../constants.js'
 import config from '../../config'
 
-const REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/template`
-type Options = { dest: string | null; force: boolean }
+export enum TemplateUrl {
+  default = 'default',
+  netflix = 'netflix',
+}
+const TEMPLATE_URL: Record<TemplateUrl, string> = {
+  [TemplateUrl.default]: `${LATITUDE_GITHUB_SLUG}/template`,
+  [TemplateUrl.netflix]: `${LATITUDE_GITHUB_SLUG}/sample-netflix`,
+}
 
 async function askForDestination({ onError }: CommonProps) {
-  let options: Options = { dest: null, force: false }
-
+  let dest = null
+  let force = false
   try {
-    options = await enquirer.prompt<Options>([
-      {
-        type: 'input',
-        name: 'dest',
-        message: 'Whats the name of your project?',
-        initial: '.',
-      },
-    ])
+    dest = await input({ message: 'Whats the name of your project?' })
   } catch (err) {
     onError({
       error: err as Error,
       message: '😢 Creation stopped, ready when you are!',
       color: 'yellow',
     })
-    return options
+    return { dest, force }
   }
 
-  if (!options.dest) return options
+  if (!dest) return { dest, force }
 
-  options.dest = config.dev
-    ? `${DEV_SITES_ROUTE_PREFIX}/${options.dest}`
-    : options.dest
+  dest = config.dev ? `${DEV_SITES_ROUTE_PREFIX}/${dest}` : dest
 
   const isDestinationEmpty =
-    !fs.existsSync(options.dest) || fs.readdirSync(options.dest).length === 0
+    !fs.existsSync(dest) || fs.readdirSync(dest).length === 0
 
   if (isDestinationEmpty) {
-    options.force = true
+    force = true
   } else {
-    const { force } = await enquirer.prompt<{ force: boolean }>([
-      {
-        type: 'toggle',
-        name: 'force',
-        message: 'Directory is not empty. Do you want to continue?',
-      },
-    ])
-    options.force = force
+    force = await confirm({
+      message: 'Directory is not empty. Do you want to continue?',
+      default: false,
+    })
   }
 
-  return { ...options, dest: path.resolve(`./${options.dest}`) }
+  return { force, dest: path.resolve(`./${dest}`) }
+}
+
+async function askForTemplate(): Promise<TemplateUrl> {
+  try {
+    return select<TemplateUrl>({
+      message: 'Pick a template',
+      default: TemplateUrl.default,
+      choices: [
+        { value: TemplateUrl.default, name: 'Default (Empty project)' },
+        { value: TemplateUrl.netflix, name: 'Netflix (Some examples)' },
+      ],
+    })
+  } catch (err) {
+    process.exit(0)
+  }
 }
 
 export default async function cloneTemplate({ onError }: CommonProps) {
@@ -68,8 +76,9 @@ export default async function cloneTemplate({ onError }: CommonProps) {
     return
   }
 
+  const tmp = await askForTemplate()
   return new Promise<string>((resolve) => {
-    const template = degit(REPO_SLUG, { force })
+    const template = degit(TEMPLATE_URL[tmp], { force });
     console.log(colors.yellow(`📦 Cloning template to ${dest}`))
 
     template.on('info', () => {

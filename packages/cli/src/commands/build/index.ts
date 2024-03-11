@@ -70,7 +70,7 @@ export default async function build() {
     console.log(
       colors.gray(`
       To run your app, use the following commands:\n
-      $ cd build 
+      $ cd build
       $ node build
     `),
     )

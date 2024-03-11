@@ -11,7 +11,7 @@ export default async function updateVersion({
   appDir: string
   appVersion: string
 }) {
-  const data = findConfigFile(appDir)
+  const data = findConfigFile({ appDir, throws: true })
   const config = data.data as PartialLatitudeConfig
   const current = config?.appVersion
 
