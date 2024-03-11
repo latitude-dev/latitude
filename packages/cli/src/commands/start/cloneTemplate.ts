@@ -4,7 +4,7 @@ import path from 'path'
 import enquirer from 'enquirer'
 import degit from 'degit'
 import { CommonProps } from './index.js'
-import { LATITUDE_GITHUB_SLUG } from '../constants.js'
+import { DEV_SITES_ROUTE_PREFIX, LATITUDE_GITHUB_SLUG } from '../constants.js'
 import config from '../../config'
 
 const REPO_SLUG = `${LATITUDE_GITHUB_SLUG}/template`
@@ -33,7 +33,9 @@ async function askForDestination({ onError }: CommonProps) {
 
   if (!options.dest) return options
 
-  options.dest = config.dev ? `sites/${options.dest}` : options.dest
+  options.dest = config.dev
+    ? `${DEV_SITES_ROUTE_PREFIX}/${options.dest}`
+    : options.dest
 
   const isDestinationEmpty =
     !fs.existsSync(options.dest) || fs.readdirSync(options.dest).length === 0

@@ -1,6 +1,6 @@
 import colors from 'picocolors'
 
-const chokidar = require('chokidar')
+import chokidar from 'chokidar'
 
 export default function watcher(
   dir: string,

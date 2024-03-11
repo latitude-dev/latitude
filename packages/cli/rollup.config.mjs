@@ -17,8 +17,13 @@ const nodeEnv = process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
 const packageVersion =
   nodeEnv === 'development' ? 'development-0.0.0' : getPackageVersion()
 
+/**
+ * @typedef {import('rollup').RollupOptions} RollupOptions
+ * @type {RollupOptions}
+ */
 export default {
   input: 'src/index.ts',
+  cache: false, // This is generating stale builds in watch mode
   output: {
     file: 'dist/index.cjs.js',
     format: 'cjs',
@@ -28,12 +33,33 @@ export default {
     commonjs(),
     // The preferBuiltins option is required to resolve the built-in modules in
     // Node.js over any installed packages in node_modules directory
-    resolve({ preferBuiltins: true, browser: false }),
+    resolve({
+      preferBuiltins: true,
+      browser: false,
+      exportConditions: ['node'],
+    }),
     json(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),
       preventAssignment: true,
     }),
+  ],
+  external: [
+    'ajv',
+    'chalk',
+    'fs-extra',
+    'path',
+    'os',
+    'util',
+    'picocolors',
+    'rimraf',
+    'semver',
+    'tar',
+    'sade',
+    'mri',
+    'dotenv',
+    'degit',
+    'chokidar',
   ],
 }

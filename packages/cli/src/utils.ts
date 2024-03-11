@@ -1,8 +1,8 @@
-import colors from 'picocolors'
 import path from 'path'
 import fsExtra from 'fs-extra'
 import fs from 'fs'
 import { OnErrorProps } from './types'
+import boxedMessage from './lib/boxedMessage'
 
 /**
  * This ASCII log is generated using the following website:
@@ -45,8 +45,11 @@ export async function forceSymlink(
 }
 
 export function onError({ error, message, color = 'red' }: OnErrorProps) {
-  const colorFn = color === 'red' ? colors.red : colors.yellow
-  console.error(colorFn(`${message} \nERROR:\n${error}`))
+  boxedMessage({
+    text: `${message} \nERROR:\n${error}`,
+    title: 'Error',
+    color,
+  })
   process.exit(1)
 }
 

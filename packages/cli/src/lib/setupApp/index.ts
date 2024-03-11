@@ -1,24 +1,22 @@
 import path from 'path'
 import config from '../../config'
-import { OnErrorFn } from '../../types'
 import cloneAppFromNpm from './cloneAppFromNpm'
 import synlinkAppFromLocal from './synlinkAppFromLocal'
 import installAppDependencies from './installDependencies'
+import boxedMessage from '../boxedMessage'
+import updateVersion from '../latitudeConfig/updateVersion'
 
-export type Props = {
-  onError: OnErrorFn
-  appVersion?: string
-}
-
-export default async function setupApp(props: Props) {
+export type Props = { appVersion: string }
+export default async function setupApp({ appVersion }: Props) {
   let allGood = false
 
   const isPro = config.pro || config.simulatedPro
-  const dataAppDir = config.cwd
   const setup = isPro ? cloneAppFromNpm : synlinkAppFromLocal
-  await setup(props)
+  const isSetup = await setup({ appVersion })
 
-  process.chdir(path.resolve(dataAppDir))
+  if (!isSetup) return allGood
+
+  process.chdir(path.resolve(config.cwd))
 
   if (!isPro) {
     allGood = true
@@ -26,12 +24,30 @@ export default async function setupApp(props: Props) {
   }
 
   try {
-    await installAppDependencies({
-      appVersion: props.appVersion,
-    })
+    await installAppDependencies()
     allGood = true
   } catch {
-    // Ignore is handled by the installAppDependencies
+    boxedMessage({
+      color: 'red',
+      title: '🚨 Failed to install dependencies',
+      text: `
+      Update latitude and try again. If this does not solve the problem,
+      please open an issue on GitHub:
+      https://gitub.com/latitude-dev/latitude/issues
+      `,
+    })
+  }
+
+  if (allGood) {
+    try {
+      await updateVersion({ appDir: config.cwd, appVersion })
+    } catch (e) {
+      boxedMessage({
+        title: '🚨 Failed to update app version',
+        text: `Error updating latitude.json ${(e as Error).message}`,
+        color: 'red',
+      })
+    }
   }
 
   return allGood

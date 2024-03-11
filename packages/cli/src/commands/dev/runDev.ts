@@ -2,6 +2,8 @@ import colors from 'picocolors'
 import { spawn } from 'child_process'
 import config from '../../config'
 import { APP_FOLDER } from '../constants'
+import boxedMessage from '../../lib/boxedMessage'
+import { cleanTerminal } from '../../utils'
 
 export type DevServerProps = {
   appFolder?: string
@@ -10,6 +12,7 @@ export type DevServerProps = {
   host?: string
   open?: boolean
   verbose?: boolean
+  onReady?: () => void
 }
 
 export function runDevServer({
@@ -19,41 +22,60 @@ export function runDevServer({
   host = 'localhost',
   open = false,
   verbose = false,
+  onReady,
 }: DevServerProps) {
   let building = true
-  const logLevel = verbose ? 'debug' : 'silent'
   const hostUrl = `http://${host}:${port}${routePath ? routePath : ''}`
   let args = [
     'run',
     'dev',
+    '--strictPort', // This is to avoid the port conflict error
     `--port=${port}`,
     `--host=${host}`,
     open ? `--open=${hostUrl}` : '',
-    `--logLevel=${logLevel}`,
   ].filter((f) => f !== '')
 
   const serverProccess = spawn(config.pkgManager.command, args, {
-    detached: false,
     cwd: appFolder,
-    stdio: verbose ? 'inherit' : 'ignore',
+    stdio: 'pipe',
   })
 
-  serverProccess?.on('data', () => {
-    if (building) {
-      console.log(colors.green(`Latitude Dev Server running on port ${port}`))
+  console.log(colors.yellow('Starting Latitude ...'))
+
+  serverProccess.stdout?.on('data', (data) => {
+    const logmsg = data.toString()
+    if (verbose) {
+      console.log(logmsg)
+    }
+
+    if (building && logmsg.includes('ready in')) {
+      cleanTerminal()
+      if (onReady) {
+        onReady()
+      } else {
+        boxedMessage({
+          title: 'Latitude server',
+          text: `${colors.blue('Running in')} http://localhost:${port}`,
+          color: 'green',
+        })
+      }
       building = false
     }
   })
 
-  serverProccess.on('error', (err) => {
-    console.error(colors.red(`Latitude Dev Server error: ${err.message}`))
+  serverProccess.stderr?.on('error', (err) => {
+    boxedMessage({
+      text: `Latitude Dev Server error: ${err.message}`,
+      color: 'red',
+    })
     process.exit()
   })
 
-  serverProccess.on('close', (code, signal) => {
-    console.log(
-      colors.yellow(`Latitude Server closed... ${code} ${signal?.toString()}`),
-    )
+  serverProccess.stdout?.on('close', () => {
+    boxedMessage({
+      text: 'Latitude Server closed',
+      color: 'yellow',
+    })
     process.exit()
   })
 }

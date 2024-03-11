@@ -1,6 +1,12 @@
 import { exec } from 'child_process'
+import mri from 'mri'
+import {
+  DEV_SITES_ROUTE_PREFIX,
+  LATITUDE_CONFIG_FILE,
+} from './commands/constants'
 import path from 'path'
-import { DEV_SITES_ROUTE_PREFIX } from './commands/constants'
+import { findConfigFile } from './lib/latitudeConfig/findOrCreate'
+import validateFn from './lib/latitudeConfig/validate'
 
 enum PackageManager {
   pnpm = 'pnpm',
@@ -45,9 +51,34 @@ function checkPackageManager(
     }
   })
 }
-type PackageManagerWithFlags = {
+export type PackageManagerWithFlags = {
   command: PackageManager
   flags: PackageManagerFlags
+}
+
+const DEPLOY_PLATFORMS = {
+  vercel: 'vercel',
+  netlify: 'netlify',
+  aws: 'aws',
+  cloudflare: 'cloudflare',
+  nodejs: 'nodejs',
+}
+
+type DeployPlatform = keyof typeof DEPLOY_PLATFORMS
+
+export type PartialLatitudeConfig = {
+  projectName: string
+  appVersion: string
+  deployPlatform: DeployPlatform
+}
+
+const INGORED_LOAD_CONFIG_COMMANDS = ['start']
+function getConfig(appDir: string) {
+  const config = findConfigFile(appDir)
+
+  if (!config) return null
+
+  return config.data as unknown as PartialLatitudeConfig
 }
 
 class CLIConfig {
@@ -61,12 +92,30 @@ class CLIConfig {
     command: PackageManager.npm,
     flags: PACKAGE_FLAGS[PackageManager.npm],
   }
+  private _latitudeConfig: PartialLatitudeConfig | null = null
 
   public static getInstance(): CLIConfig {
     if (CLIConfig.instance) return this.instance
 
     this.instance = new CLIConfig()
     return this.instance
+  }
+
+  public async init(argv: string[]) {
+    const args = mri(argv.slice(2))
+    const requireConfig = this.hasToLoadConfig(args._[0])
+    this.debug = (args.debug as boolean | undefined) ?? false
+    this.addFolderToCwd(args.folder)
+    this.setDev({
+      dev: process.env.NODE_ENV === 'development',
+      simulatedPro: args['simulate-pro'] ?? false,
+    })
+
+    await this.setPkgManager()
+
+    if (requireConfig) {
+      this.loadConfig()
+    }
   }
 
   async setPkgManager() {
@@ -78,34 +127,64 @@ class CLIConfig {
     }
   }
 
-  setDev({ dev, args }: { dev: boolean; args: string[] }) {
-    const simulatedPro = this.isSimulatedPro(args)
+  public loadConfig() {
+    const latConfig = getConfig(this.cwd)
+
+    if (!latConfig) {
+      throw new Error(
+        `Failed to get ${LATITUDE_CONFIG_FILE} config. Make sure you are in a Latitude project`,
+      )
+    }
+
+    const validated = validateFn(latConfig)
+
+    if (!validated.valid) {
+      throw new Error(
+        `${validated.errors.message}: ${JSON.stringify(
+          validated.errors.errors,
+        )}`,
+      )
+    }
+
+    this._latitudeConfig = {
+      projectName: latConfig.projectName,
+      appVersion: latConfig.appVersion,
+      deployPlatform: latConfig.deployPlatform,
+    }
+  }
+
+  private hasToLoadConfig(command: string | undefined) {
+    if (!command) return false
+
+    return !INGORED_LOAD_CONFIG_COMMANDS.includes(command)
+  }
+
+  private setDev({
+    dev,
+    simulatedPro,
+  }: {
+    dev: boolean
+    simulatedPro: boolean
+  }) {
     this.dev = dev
-    this.pro = !this.dev
     this.simulatedPro = simulatedPro
+    this.pro = !this.dev
   }
 
-  setDebug(args: string[]) {
-    if (Array.isArray(args)) {
-      this.debug = !!(args[0] as unknown as { debug?: boolean })?.debug
-    }
+  get projectConfig(): PartialLatitudeConfig {
+    return this._latitudeConfig!
   }
 
-  setCwd(args: string[]) {
-    if (Array.isArray(args)) {
-      const folder = (args[0] as unknown as { folder?: string })?.folder
+  setCwd(cwd: string) {
+    if (!cwd) return
 
-      if (folder) this.cwd = path.join(this.getDefaultCwd(), folder)
-      else this.cwd = this.getDefaultCwd()
-    }
+    this.cwd = cwd
   }
 
-  private isSimulatedPro(args: string[]): boolean {
-    if (!Array.isArray(args)) return false
+  addFolderToCwd(folder: string | undefined) {
+    if (!folder) return
 
-    return !!(args[0] as unknown as { 'simulate-pro': boolean })?.[
-      'simulate-pro'
-    ]
+    this.cwd = path.join(this.cwd, folder)
   }
 
   private async getPackageManager(): Promise<PackageManager> {

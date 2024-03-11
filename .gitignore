@@ -32,4 +32,3 @@ yarn-error.log*
 *.pem
 
 sites
-!sites/README.md
