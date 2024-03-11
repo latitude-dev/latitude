@@ -25,7 +25,7 @@ To create a new data app, run the following command in your terminal:
 latitude start
 ```
 
-Type in the name of your app and press enter. This will create a new directory with the name of your app and a basic structure for your app.
+Type in the name of your app and press enter. This will create a new directory with the name of your app and a basic structure for it.
 
 After the app is created, navigate to the app's directory and start the development server by running the following commands:
 
@@ -42,49 +42,67 @@ To add a data source to your app, you'll need to create a new file in the `sourc
 
 For this guide, we'll use the CSV that comes with the sample project, but you can replace that with any other CSV or connect to a live database following [these instructions](/sources).
 
+Go ahead and download the [sample CSV](https://raw.githubusercontent.com/latitude-dev/sample-netflix/main/queries/netflix.csv) and save it in the `queries` directory as `source.csv`.
+
+<Card title="Download sample CSV" icon="link" iconType="duotone" href="https://raw.githubusercontent.com/latitude-dev/sample-netflix/main/queries/netflix.csv">
+  Visit the page and hit `Cmd + S` or `Ctrl + S` to save the file
+</Card>
+
 ## 3. Write your queries
 
 Now that you have a data source, you can write your first query. Create a new file named `sample.sql` in the `queries` directory and write the following query:
 
 ```sql sample.sql
-SELECT *
-FROM read_csv('queries/source.csv')
+select id,
+       title,
+       release_year,
+       type,
+       runtime,
+       imdb_score
+from read_csv_auto('queries/source.csv')
+order by release_year asc
 ```
 
-Now, create a new file named 'source.yml' and write the following:
+This query will select all the rows from the `source.csv` file using the DuckDB adapter that's configured by default in the `source.yml` file.
 
-```yaml
-type: duckdb
-```
-
-This query will select all the rows from the `source.csv` file using the DuckDB adapter that you configured in the `source.yml` file.
-
-Next, let's create a secondary query to aggregate some data. Create a new file
-named `sample_agg.sql` in the `queries` directory and write the following
-query:
+Next, let's create a secondary query to aggregate some data. Create a new file named `sample_agg.sql` in the `queries` directory and write the following query:
 
 ```sql sample_agg.sql
-SELECT
+select
   release_year,
-  COUNT(*) AS total_titles,
-FROM { ref('sample') }
-GROUP BY 1
-ORDER BY 1 ASC
+  count(*) as total_titles,
+from { ref('sample') }
+group by 1
+order by 1 asc
 ```
 
-This query will count the number of titles released each year. The `ref` function is used to interpolate the `sample.sql` query, and use its results as the input for this query. Latitude allows you to chain queries together very easily, find out more about this in the [queries reference](/queries).
+This query will count the number of titles released each year. The `ref` function is used to interpolate the `sample.sql` query, and use its results as the input for this query. Latitude allows you to chain queries together very easily, find out more about this in the [queries reference](/queries/advanced/reference-queries).
 
 ## 4. Define the layout and visualizations
 
-Now that you have your queries, you can define the layout and visualizations for your app. The sample project comes with a basic layout and visualization, but you can customize it to fit your needs. You can find it in the `views` folder, named `index.html`.
+Now that you have your queries, you can define the layout and visualizations for your app.
 
 Open the `index.html` file in your text editor and replace the content with the following:
 
-```
-TODO: add the actual sample layout here
+```html index.html
+<View class="gap-8 p-8">
+  <Row>
+    <Text.H2 class="font-bold">Netflix titles released over time</Text.H2>
+  </Row>
+  <Row>
+    <LineChart
+      query="sample-agg"
+      x="release_year"
+      y="total_titles"
+    />
+  </Row>
+  <Row>
+    <Table query="sample" />
+  </Row>
+</View>
 ```
 
-Once you're done, save the file and go to your browser to see the changes reflected in your app in real-time.
+Open your browser and navigate to [`http://localhost:3000`](http://localhost:3000) and you should see a working data app with a line chart displaying the number of titles released over time and a table with the raw data.
 
 ## 5. Next steps
 

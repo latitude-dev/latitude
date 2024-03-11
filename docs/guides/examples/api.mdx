@@ -9,7 +9,7 @@ The Latitude SDK automatically creates an API for you based on the queries you h
 
 In this tutorial, we will learn to:
 
-1. [Create a new data app in API-only mode](#1-create-a-new-data-app-in-api-only-mode)
+1. [Create a new data app](#1-create-a-new-data-app)
 2. [Add a data source](#2-add-a-data-source)
 3. [Write your queries](#3-write-your-queries)
 4. [Accessing the API endpoints](#4-accessing-the-api-endpoints)
@@ -19,15 +19,13 @@ In this tutorial, we will learn to:
 
 Before you begin, make sure you followed the [installation guide](/guides/getting-started/installation) to install Latitude.
 
-## 1. Create a new data app in API-only mode
+## 1. Create a new data app
 
-To create a new data app in API-only mode, run the following command in your terminal:
+To create a new data app, run the following command in your terminal:
 
 ```bash
-latitude start --api
+latitude start
 ```
-
-This will create a new project folder with a structure similar to a regular data app. Regular data apps also expose an API by default but since in this case we are only interested in the API, the `--api` flag skips the creation of the `views` folder.
 
 After the app is created, navigate to the app's directory and start the development server by running the following commands:
 
@@ -36,7 +34,7 @@ cd my-app
 latitude dev
 ```
 
-This will start the development server and open your app in your default browser.
+This will start the development server and open your app in your default browser. Since we're not interested in building a UI for this guide, you can close the browser tab and delete the `views` directory from your project.
 
 ## 2. Add a data source
 
@@ -44,13 +42,19 @@ To add a data source to your app, you'll need to create a new file in the `sourc
 
 For this guide, we'll use the CSV that comes with the sample project, but you can replace that with any other CSV or connect to a live database following [these instructions](/sources).
 
+Go ahead and download the [sample CSV](https://raw.githubusercontent.com/latitude-dev/sample-netflix/main/queries/netflix.csv) and save it in the `queries` directory as `source.csv`.
+
+<Card title="Download sample CSV" icon="link" iconType="duotone" href="https://raw.githubusercontent.com/latitude-dev/sample-netflix/main/queries/netflix.csv">
+  Visit the page and hit `Cmd + S` or `Ctrl + S` to save the file
+</Card>
+
 ## 3. Write your queries
 
 Now that you have a data source, you can write your first query. Create a new file named `sample.sql` in the `queries` directory and write the following query:
 
 ```sql sample.sql
-SELECT *
-FROM read_csv('queries/source.csv')
+select *
+from read_csv_auto('queries/source.csv')
 ```
 
 This query will select all the rows from the `source.csv` file using our default DuckDB adapter (you don't need to configure anything else to get this working).
@@ -58,12 +62,12 @@ This query will select all the rows from the `source.csv` file using our default
 Next, let's create a secondary query to aggregate some data. Create a new file named `sample_agg.sql` in the `queries` directory and write the following query:
 
 ```sql sample_agg.sql
-SELECT
+select
   release_year,
-  COUNT(*) AS total_titles,
-FROM { ref('sample') }
-GROUP BY 1
-ORDER BY 1 ASC
+  count(*) AS total_titles,
+from { ref('sample') }
+group by 1
+order by 1 asc
 ```
 
 This query will count the number of titles released each year. The `ref` function is used to interpolate the `sample.sql` query, and use its results as the input for this query. Latitude allows you to chain queries together very easily, find out more about this in the [queries reference](/queries).
@@ -95,15 +99,15 @@ This will return the results of the `sample_agg.sql` query in JSON format.
 You can also pass parameters to your queries by adding them to the URL. Let's edit our `sample_agg.sql` file to support a `year` parameter. Replace the contents of the file with the following and save it:
 
 ```plaintext sample_agg.sql
-SELECT
+select
   release_year,
-  COUNT(*) AS total_titles,
-FROM { ref('sample') }
+  count(*) as total_titles,
+from { ref('sample') }
 {#if param('year')}
-    WHERE release_year = {param('year')}
+    where release_year = {param('year')}
 {/if}
-GROUP BY 1
-ORDER BY 1 ASC
+group by 1
+order by 1 asc
 ```
 
 Now, you can pass the `year` parameter to the `/api/queries/sample_agg` endpoint. For example, to get the results for the year 2020, you can run the following command in your terminal:
