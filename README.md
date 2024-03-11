@@ -3,7 +3,7 @@
 
 # Latitude Framework
 
-Latitude is an open source framework to build interactive data apps on top of your database or data warehouse (or even static CSV files!) using code.
+Latitude is an open source full-stack framework to build interactive data apps on top of your database or data warehouse (or even static CSV files!) using code.
 
 With Latitude, you can write composable SQL queries with custom parameters at runtime to pull and transform your data, and use our simple frontend components to display it.
 
