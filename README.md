@@ -9,9 +9,9 @@ With Latitude, you can write composable SQL queries with custom parameters at ru
 
 The framework takes care of building the queries, running them on your data source, and returning them to the frontend, so you can focus on building the best possible data experience for your users.
 
-Check out our [live demo](https://netflix-sample.fly.dev) to see Latitude in action.
+Check out our [live demo](https://netflix-sample.fly.dev/?start_year=$text:2000&end_year=$num:2021) to see Latitude in action.
 
-[![Sample project](assets/hero.png)](https://netflix-sample.fly.dev)
+[![Sample project](assets/hero.png)](https://netflix-sample.fly.dev/?start_year=$text:2000&end_year=$num:2021)
 
 ## Use cases
 
