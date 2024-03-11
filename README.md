@@ -13,7 +13,7 @@ The framework takes care of building the queries, running them on your data sour
 
 ## Documentation
 
-Visit the [public docs](https://latitude-21.mintlify.app/) to view the full documentation.
+Visit the [public docs](https://docs.latitude.so/) to view the full documentation.
 
 ## Prerequisites
 
