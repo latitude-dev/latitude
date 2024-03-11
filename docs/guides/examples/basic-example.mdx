@@ -74,16 +74,6 @@ ORDER BY 1 ASC
 
 This query will count the number of titles released each year. The `ref` function is used to interpolate the `sample.sql` query, and use its results as the input for this query. Latitude allows you to chain queries together very easily, find out more about this in the [queries reference](/queries).
 
-To check that your queries are working as expected, you can run them locally using the `latitude run` command. For example:
-
-```bash
-latitude run sample_agg
-```
-
-This will run the `/queries/sample_agg.sql` query once and display the results in your terminal.
-
-Learn more about `latitude run` in the [CLI reference](/guides/development/latitude-cli#running-queries).
-
 ## 4. Define the layout and visualizations
 
 Now that you have your queries, you can define the layout and visualizations for your app. The sample project comes with a basic layout and visualization, but you can customize it to fit your needs. You can find it in the `views` folder, named `index.html`.
