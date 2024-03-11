@@ -54,15 +54,6 @@ directory with a sample app that you can run and customize.
 
 This will start the development server and open the sample app in your browser.
 
-## Install CLI
-
-To use the Latitude CLI, you need to have Node.js installed on your machine.
-You can download it from the [official website](https://nodejs.org/en).
-
-Run the following command to install the Latitude CLI globally:
-
-`npm install -g @latitude-data/cli`
-
 ## Community
 
 The Latitude community can be found on
