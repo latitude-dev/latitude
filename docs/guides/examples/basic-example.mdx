@@ -48,12 +48,20 @@ Now that you have a data source, you can write your first query. Create a new fi
 
 ```sql sample.sql
 SELECT *
-FROM read_csv('source.csv')
+FROM read_csv('queries/source.csv')
 ```
 
-This query will select all the rows from the `source.csv` file using our default DuckDB adapter (you don't need to configure anything else to get this working).
+Now, create a new file named 'source.yml' and write the following:
 
-Next, let's create a secondary query to aggregate some data. Create a new file named `sample_agg.sql` in the `queries` directory and write the following query:
+```yaml
+type: duckdb
+```
+
+This query will select all the rows from the `source.csv` file using the DuckDB adapter that you configured in the `source.yml` file.
+
+Next, let's create a secondary query to aggregate some data. Create a new file
+named `sample_agg.sql` in the `queries` directory and write the following
+query:
 
 ```sql sample_agg.sql
 SELECT
