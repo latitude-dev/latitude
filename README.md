@@ -11,6 +11,13 @@ The framework takes care of building the queries, running them on your data sour
 
 ![Sample project](assets/hero.png)
 
+## Use cases
+
+You can use Latitude for many things, but the most common use cases are:
+
+- **Data apps**: Build interactive data apps on top of your database or data warehouse.
+- **Embedded analytics**: Add data visualizations and dashboards to your existing app.
+
 ## Documentation
 
 Visit the [public docs](https://docs.latitude.so/) to view the full documentation.
