@@ -15,7 +15,7 @@ Check out the [live demo](https://netflix-sample.fly.dev/)
 
 You can use Latitude for many things, but the most common use cases are:
 
-- **Data apps**: Build interactive data apps on top of your database or data warehouse.
+- **Data apps**: Build interactive frontend applications on top of your data.
 - **Embedded analytics**: Add data visualizations and dashboards to your existing app.
 
 ## Documentation
