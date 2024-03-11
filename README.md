@@ -5,7 +5,7 @@
 
 Latitude is an open source full-stack framework to build interactive data apps on top of your data using code.
 
-With Latitude, you can write composable SQL queries with custom parameters at runtime to pull and transform your data, and use our simple frontend components to display it in a rich and interactive application.
+With Latitude, you can write composable SQL queries with custom parameters to pull and transform your data, and use simple frontend components to display it in a rich and interactive application.
 
 The framework takes care of building the queries, running them on your data source, and returning them to the frontend, so you can focus on building the best possible data experience for your users.
 
