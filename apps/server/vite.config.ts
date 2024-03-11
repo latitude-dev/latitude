@@ -2,7 +2,7 @@ import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
 // eslint-disable-next-line
 // @ts-ignore
-import autoImport from 'sveltekit-autoimport'
+import autoImport from '@latitude-data/sveltekit-autoimport'
 import latitudePlugin from './plugins/latitude'
 
 export default defineConfig({
