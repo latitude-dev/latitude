@@ -2,13 +2,14 @@ import colors from 'picocolors'
 import { getLatitudeBanner } from '../../utils'
 import cloneTemplate from './cloneTemplate'
 import config from '../../config'
-import runLatitudeServer from '../dev/runLatitudeServer'
 import { OnErrorFn } from '../../types'
 import setupApp from '../../lib/setupApp/index'
 import { onError } from '../../utils'
 import findOrCreateLatitudeConfig from '../../lib/latitudeConfig/findOrCreate'
+import { runDevServer } from '../dev/runDev'
 
 export type CommonProps = { onError: OnErrorFn }
+
 async function displayMessage() {
   const banner = await getLatitudeBanner()
   console.log(colors.green(banner))
@@ -29,7 +30,11 @@ async function displayMessage() {
   )
 }
 
-export default async function startDataProject() {
+export default async function startDataProject({
+  open = false,
+}: {
+  open: boolean
+}) {
   // Clone template
   const dataAppDir = (await cloneTemplate({ onError })) as string
   config.setCwd(dataAppDir)
@@ -53,7 +58,11 @@ export default async function startDataProject() {
   // Something went wrong. We already handled the error
   if (!installationComplete) return
 
-  displayMessage()
+  await displayMessage()
 
-  runLatitudeServer({ server: { appFolder: dataAppDir, open: true } })
+  if (open) {
+    runDevServer()
+  } else {
+    process.exit()
+  }
 }

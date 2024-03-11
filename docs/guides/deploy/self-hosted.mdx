@@ -25,8 +25,20 @@ node build
 
 ## Docker container
 
+You will need the [Docker CLI](https://www.docker.com/products/docker-desktop/) installed in your machine.
+
 Every Latitude project comes with a Dockerfile to streamline containerization. Use the command below to build a Docker container with your data app's production version:
 
 ```bash
-docker build .
+latitude build --docker
 ```
+
+Under the hood this command is preparing the data app for a production build and forwarding the build command to the docker CLI. If you want fine-grained control over
+the docker container build process you can directly call the `docker build` process with a previous `latitude prepare` step:
+
+```bash
+$ latitude prepare
+$ docker build .
+```
+
+See the [docker build](https://docs.docker.com/reference/cli/docker/image/build/) documentation for more details.

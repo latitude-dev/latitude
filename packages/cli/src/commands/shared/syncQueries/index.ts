@@ -3,14 +3,16 @@ import path from 'path'
 import { APP_FOLDER } from '../../constants'
 import syncFiles from '../shared/syncFiles'
 import watcher from '../shared/watcher'
+import config from '../../../config'
 
-export default async function syncQueries({
-  rootDir,
-  watch = false,
-}: {
-  rootDir: string
-  watch?: boolean
-}) {
+export default async function syncQueries(
+  {
+    watch = false,
+  }: {
+    watch?: boolean
+  } = { watch: false },
+) {
+  const rootDir = config.cwd
   const queriesPath = path.join(
     rootDir,
     APP_FOLDER,

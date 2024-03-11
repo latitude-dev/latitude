@@ -1,9 +1,11 @@
-import colors from 'picocolors'
-import { spawn } from 'child_process'
-import config from '../../config'
-import { APP_FOLDER } from '../constants'
 import boxedMessage from '../../lib/boxedMessage'
+import colors from 'picocolors'
+import config from '../../config'
+import path from 'path'
+import rootPath from '../../lib/rootPath'
+import { APP_FOLDER} from '../constants'
 import { cleanTerminal } from '../../utils'
+import { spawn } from 'child_process'
 
 export type DevServerProps = {
   appFolder?: string
@@ -15,17 +17,23 @@ export type DevServerProps = {
   onReady?: () => void
 }
 
-export function runDevServer({
-  appFolder = APP_FOLDER,
-  routePath = '',
-  port = 3000,
-  host = 'localhost',
-  open = false,
-  verbose = false,
-  onReady,
-}: DevServerProps) {
+export function runDevServer(
+  {
+    host = 'localhost',
+    open = false,
+    port = 3000,
+    verbose = false,
+    onReady,
+  }: DevServerProps = {
+    host: 'localhost',
+    open: false,
+    port: 3000,
+    verbose: false,
+  },
+) {
   let building = true
-  const hostUrl = `http://${host}:${port}${routePath ? routePath : ''}`
+  const appFolder = path.join(config.cwd, APP_FOLDER)
+  const hostUrl = `http://${host}:${port}${rootPath()}`
   let args = [
     'run',
     'dev',

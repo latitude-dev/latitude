@@ -7,6 +7,7 @@ import devCommand from './commands/dev'
 import sade from 'sade'
 import startDataProject from './commands/start/index'
 import updateCommand from './commands/update'
+import prepareCommand from './commands/prepare'
 import boxedMessage from './lib/boxedMessage'
 
 const CLI = sade('latitude')
@@ -49,6 +50,10 @@ CLI.command('deploy')
   .action(() => {
     console.log(colors.red('Not implemented yet'))
   })
+
+CLI.command('prepare')
+  .describe('Prepares data app for production build')
+  .action(prepareCommand)
 
 async function initCli() {
   const argv = process.argv

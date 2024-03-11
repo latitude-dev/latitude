@@ -1,11 +1,13 @@
 import config from '../../config'
-import runLatitudeServer from './runLatitudeServer'
 import { CommonCLIArgs } from '../../types'
 import maybeSetupApp from '../shared/maybeSetupApp'
 import InstalledVersionChecker from '../../lib/latitudeConfig/InstalledVersionChecker'
-import { DevServerProps } from './runDev'
+import { DevServerProps, runDevServer } from './runDev'
+import syncViews from '../shared/syncViews'
+import syncQueries from '../shared/syncQueries'
 
 type Args = CommonCLIArgs & { open?: string }
+
 export default async function devCommand(args: Args = {}) {
   const open = args?.open ?? 'yes'
 
@@ -32,5 +34,8 @@ export default async function devCommand(args: Args = {}) {
       }
     : server
 
-  runLatitudeServer({ server })
+  await syncViews({ watch: true })
+  await syncQueries({ watch: true })
+
+  runDevServer(server)
 }
