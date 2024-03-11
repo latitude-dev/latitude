@@ -1,7 +1,7 @@
 ![Linter](https://github.com/latitude-dev/latitude/actions/workflows/linter.yml/badge.svg)
 ![Tests](https://github.com/latitude-dev/latitude/actions/workflows/test.yml/badge.svg)
 
-# Latitude
+# Latitude Framework
 
 Latitude is an open-source full-stack framework to build interactive data apps
 on top of your database or data warehouse using SQL and React/Svelte.
