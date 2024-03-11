@@ -9,7 +9,9 @@ With Latitude, you can write composable SQL queries with custom parameters at ru
 
 The framework takes care of building the queries, running them on your data source, and returning them to the frontend, so you can focus on building the best possible data experience for your users.
 
-![Sample project](assets/hero.png)
+Check out our [live demo](https://netflix-sample.fly.dev) to see Latitude in action.
+
+[![Sample project](assets/hero.png)](https://netflix-sample.fly.dev)
 
 ## Use cases
 
@@ -54,7 +56,7 @@ directory with a sample app that you can run and customize.
 
 This will start the development server and open the sample app in your browser.
 
-## Install
+## Install CLI
 
 To use the Latitude CLI, you need to have Node.js installed on your machine.
 You can download it from the [official website](https://nodejs.org/en).
@@ -85,7 +87,7 @@ We use [changesets](https://github.com/changesets/changesets) for doing our
 releases. This package has 2 commands very handy.
 
 1. `pnpm changeset add`. It will ask what packages you want to publish and what
-   SEMVER version you want to pump. `MAYOR` `MINOR` or `PACTH`. When you pick
+   SEMVER version you want to pump. `MAYOR` `MINOR` or `PATCH`. When you pick
    what you want it will write a file with a random file in
    `./changsets/ramdom-name.md`. You can read [more about it here](https://github.com/changesets/changesets/blob/main/docs/detailed-explanation.md)
 2. If you do point (1) you can push the code to GitHub. Nothing will happen. Is
