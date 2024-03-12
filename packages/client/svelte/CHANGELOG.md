@@ -1,5 +1,11 @@
 # @latitude-data/svelte
 
+## 0.0.10
+
+### Patch Changes
+
+- fab5ed5: Fix table not reacting to data change
+
 ## 0.0.9
 
 ### Patch Changes

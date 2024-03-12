@@ -1,5 +1,12 @@
 # @latitude-data/server
 
+## 0.0.21
+
+### Patch Changes
+
+- Updated dependencies [fab5ed5]
+  - @latitude-data/svelte@0.0.10
+
 ## 0.0.20
 
 ### Patch Changes

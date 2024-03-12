@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.29
+
+### Patch Changes
+
+- Add telemetry to CLI
+
 ## 0.0.28
 
 ### Patch Changes
