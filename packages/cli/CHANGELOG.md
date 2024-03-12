@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.25
+
+### Patch Changes
+
+- 66b9bec: New `latitude run` CLI command
+
 ## 0.0.24
 
 ### Patch Changes
