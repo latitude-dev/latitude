@@ -23,22 +23,22 @@ To configure the connection with your your Microsoft SQL database follow these s
         ```
     </Step>
     <Step title="Add the following code for your Microsoft SQL connection">
-      ``` yaml
-      type: mssql
-          details:
-            user: string
-            password: string
-            database: string
-            server: string
-            pool: {
-                max: number
-                min: number
-                idleTimeoutMillis: number
-            }
-            options: {
-                encrypt: boolean
-                trustServerCertificate: boolean
-            }
+    ``` yaml
+    type: mssql
+    details:
+        user: string
+        password: string
+        database: string
+        server: string
+        pool: {
+            max: number
+            min: number
+            idleTimeoutMillis: number
+        }
+        options: {
+            encrypt: boolean
+            trustServerCertificate: boolean
+        }
       ```
     </Step>
     <Step title="Replace the details section with your info and save">

@@ -19,9 +19,17 @@ To configure the connection with your your Trino database follow these steps:
 <Steps>
   <Step title='Go to the source `.yaml` file within the `queries` folder'></Step>
   <Step title='Add the following code for your Trino connection'>
-    ``` yaml type: trino details: account: string username: string password:
-    string token: string privateKey: string privateKeyPath: string
-    privateKeyPass: string ```
+    ``` yaml 
+    type: trino 
+    details: 
+      account: string
+      username: string
+      password: string
+      token: string
+      privateKey: string
+      privateKeyPath: string
+      privateKeyPass: string
+    ```
   </Step>
   <Step title='Replace the details section with your info and save'></Step>
   <Step title='Done, now you can test your connection'></Step>

@@ -21,8 +21,14 @@ To configure the connection with your your Athena database follow these steps:
     ``` /sources/sources.yaml ```
   </Step>
   <Step title='Add the following code for your Athena connection'>
-    ``` yaml type: athena details: client: AthenaClientConfig database: string
-    catalog: string workgroup: string ```
+    ``` yaml
+    type: athena
+    details:
+      client: AthenaClientConfig
+      database: string
+      catalog: string
+      workgroup: string
+    ```
   </Step>
   <Step title='Replace the details section with your info and save'></Step>
   <Step title='Done, now you can test your connection'></Step>
