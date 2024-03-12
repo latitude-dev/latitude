@@ -684,6 +684,9 @@ importers:
       '@latitude-data/trino-connector':
         specifier: workspace:*
         version: link:../trino
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       yaml:
         specifier: ^2.3.4
         version: 2.3.4
@@ -9375,7 +9378,6 @@ packages:
   /dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
-    dev: false
 
   /duckdb-async@0.9.2:
     resolution: {integrity: sha512-o33zBds2asp20/Mcw4ZJ1G9InD1TnOJ0U3XyIElLzim4sjlmgHc4R8NnLxdqZa/X9bjhzn364cA0XZ2fEKHPfw==}
@@ -12252,7 +12254,7 @@ packages:
     engines: {node: '>=14.0.0'}
     dependencies:
       app-root-dir: 1.0.2
-      dotenv: 16.0.3
+      dotenv: 16.4.5
       dotenv-expand: 10.0.0
     dev: true
 

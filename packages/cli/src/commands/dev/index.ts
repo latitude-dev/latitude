@@ -3,8 +3,7 @@ import { CommonCLIArgs } from '../../types'
 import maybeSetupApp from '../shared/maybeSetupApp'
 import InstalledVersionChecker from '../../lib/latitudeConfig/InstalledVersionChecker'
 import { DevServerProps, runDevServer } from './runDev'
-import syncViews from '../shared/syncViews'
-import syncQueries from '../shared/syncQueries'
+import sync from '../../lib/sync'
 
 type Args = CommonCLIArgs & { open?: string }
 
@@ -34,8 +33,7 @@ export default async function devCommand(args: Args = {}) {
       }
     : server
 
-  await syncViews({ watch: true })
-  await syncQueries({ watch: true })
+  await sync({ watch: true })
 
   runDevServer(server)
 }

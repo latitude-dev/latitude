@@ -1,11 +1,11 @@
 import colors from 'picocolors'
+import config from '../../../config'
 import fs from 'fs'
 import path from 'path'
-import { APP_FOLDER } from '../../constants'
-import config from '../../../config'
-import watcher from '../shared/watcher'
-import syncFiles from '../shared/syncFiles'
 import rootPath from '../../../lib/rootPath'
+import syncFiles from '../shared/syncFiles'
+import { APP_FOLDER } from '../../../commands/constants'
+import watcher from '../shared/watcher'
 
 function getRoutesFolderPath(cwd: string, rootPath: string | null): string {
   const basePath = path.join(cwd, APP_FOLDER, 'src', 'routes')
