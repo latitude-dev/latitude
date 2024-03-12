@@ -63,5 +63,9 @@ export default {
     'dotenv',
     'degit',
     'chokidar',
+    'crypto',
+    'stream',
+    '@rudderstack/rudder-sdk-node',
+    'configstore',
   ],
 }

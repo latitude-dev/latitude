@@ -6,10 +6,13 @@ import { spawn } from 'child_process'
 import maybeSetupApp from '../shared/maybeSetupApp'
 import fs from 'fs-extra'
 import prepareCommand from '../prepare'
+import telemetry from '../../lib/telemetry'
 
 export default async function build(
   { docker = false }: { docker?: boolean } = { docker: false },
 ) {
+  await telemetry.track({ event: 'buildCommand' })
+
   const ready = await maybeSetupApp()
   if (!ready) process.exit(1)
 

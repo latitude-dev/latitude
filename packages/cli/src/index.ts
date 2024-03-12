@@ -10,6 +10,7 @@ import updateCommand from './commands/update'
 import prepareCommand from './commands/prepare'
 import runCommand from './commands/run'
 import boxedMessage from './lib/boxedMessage'
+import telemetryCommand from './commands/telemetry'
 
 const CLI = sade('latitude')
 
@@ -47,6 +48,13 @@ cliDev.action(devCommand)
 CLI.command('build')
   .describe('Build data app for production')
   .action(buildCommand)
+
+CLI.command('telemetry')
+  .describe('Allow enable or disable telemetry')
+  .option('--enable', 'Enable telemetry')
+  .option('--disable', 'Disable telemetry')
+  .option('--status', 'Check the status of telemetry')
+  .action(telemetryCommand)
 
 CLI.command('deploy')
   .describe('Deploy data app to production')

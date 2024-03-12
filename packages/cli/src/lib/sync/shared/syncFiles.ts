@@ -45,7 +45,7 @@ export default function syncFiles({
     }
 
     if (silent) return
-    console.log(`${colors.blue(relativePath)} ${colors.green(`was ${type}ed`)}`)
+    console.log(`${colors.blue(relativePath)} ${colors.green(`was ${type === 'add' ? 'added' : 'changed'}`)}`)
   } else if (type === 'unlink') {
     fs.unlink(destPath, (err) => {
       if (err) {

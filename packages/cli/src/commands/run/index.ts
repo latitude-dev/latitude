@@ -1,13 +1,17 @@
 import { spawn } from 'child_process'
 import config from '../../config'
 import syncQueries from '../../lib/sync/syncQueries'
+import telemetry from '../../lib/telemetry'
 
 export default async function run(queryName: string, opts: { param: string[] | string | undefined; watch: boolean }) {
+  await telemetry.track({ event: 'runCommand' })
+
   const watch = opts.watch || false
 
   let paramStrings = opts.param
   if (typeof paramStrings === 'string') paramStrings = [paramStrings]
   else if (!Array.isArray(paramStrings)) paramStrings = []
+
 
   const params: { [key: string]: unknown } = {}
   paramStrings.forEach((param) => {
@@ -32,7 +36,7 @@ export default async function run(queryName: string, opts: { param: string[] | s
   })
 
   await syncQueries({ watch, silent: true })
-  
+
   const args = [
     'run',
     'query',

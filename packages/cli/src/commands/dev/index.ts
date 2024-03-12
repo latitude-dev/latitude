@@ -4,10 +4,13 @@ import maybeSetupApp from '../shared/maybeSetupApp'
 import InstalledVersionChecker from '../../lib/latitudeConfig/InstalledVersionChecker'
 import { DevServerProps, runDevServer } from './runDev'
 import sync from '../../lib/sync'
+import telemetry from '../../lib/telemetry'
 
 type Args = CommonCLIArgs & { open?: string, port?: number }
 
 export default async function devCommand(args: Args = {}) {
+  await telemetry.track({ event: 'devCommand' })
+
   const open = args?.open ?? 'yes'
 
   const checker = new InstalledVersionChecker(
