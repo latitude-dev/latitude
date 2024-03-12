@@ -1,4 +1,4 @@
-import { RichDate } from './rich_date'
+import { DEFAULT_DATE_FORMAT, RichDate } from './rich_date'
 
 enum ValueType {
   NULL = 'null',
@@ -24,9 +24,11 @@ export function format(value: unknown): string {
     return `$${ValueType.BOOL}:${value ? 'true' : 'false'}`
   }
   if (value instanceof RichDate) {
-    return `$${ValueType.DATE}:${encodeURIComponent(
-      value.toString(),
-    )}:${encodeURIComponent(value.format)}`
+    const suffix =
+      value.format === DEFAULT_DATE_FORMAT
+        ? ''
+        : `:${encodeURIComponent(value.format)}`
+    return `$${ValueType.DATE}:${encodeURIComponent(value.toString())}${suffix}`
   }
 
   return encodeURIComponent(String(value))
@@ -47,7 +49,8 @@ export function parse(value: string): unknown {
   if (type === ValueType.BOOL) return rest.join(':') === 'true'
   if (type === ValueType.DATE) {
     const date = decodeURIComponent(rest[0]!)
-    const format = rest.length > 1 ? decodeURIComponent(rest[1]!) : 'yyyy-MM-dd'
+    const format =
+      rest.length > 1 ? decodeURIComponent(rest[1]!) : DEFAULT_DATE_FORMAT
     return RichDate.fromString(date, format)
   }
 
