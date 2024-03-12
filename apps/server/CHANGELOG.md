@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.1.1
+
+### Patch Changes
+
+- Fix flickering when updating view data
+
 ## 0.1.0
 
 ### Minor Changes

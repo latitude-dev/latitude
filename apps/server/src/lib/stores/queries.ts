@@ -140,7 +140,10 @@ export function useQuery({
     if (!(coreQueryKey in queryStore.getState().queries)) return
     const queryResultState = queryStore.getState().queries[coreQueryKey]
     if (queryResultState === get(queryResultStore)) return
-    queryResultStore.set(queryResultState)
+    queryResultStore.set({
+      ...queryResultState,
+      data: queryResultState.data ?? get(queryResultStore).data,
+    })
   }
 
   coreQueryKeyStore.subscribe(updateState) // Update state when coreQueryKey changes
