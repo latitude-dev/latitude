@@ -1,5 +1,17 @@
 # @latitude-data/client
 
+## 0.1.0
+
+### Minor Changes
+
+- Public release 0.1.0 🎉
+
+### Patch Changes
+
+- Updated dependencies
+  - @latitude-data/custom_types@0.1.0
+  - @latitude-data/query_result@0.1.0
+
 ## 0.0.9
 
 ### Patch Changes
