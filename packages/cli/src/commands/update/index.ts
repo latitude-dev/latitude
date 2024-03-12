@@ -4,7 +4,8 @@ import setupApp from '../../lib/setupApp'
 import { cleanTerminal, onError } from '../../utils'
 import { DEFAULT_VERSION_LIST } from '../constants'
 import config from '../../config'
-import { getLatitudeVersions } from '../../lib/getAppVersions'
+import { getInstalledVersion, getLatitudeVersions } from '../../lib/getAppVersions'
+import telemetry from '../../lib/telemetry'
 
 async function askForAppVersion() {
   let versions: string[] = DEFAULT_VERSION_LIST
@@ -27,18 +28,17 @@ async function askForAppVersion() {
   })
 }
 
-export default async function updateCommand(args: { fix?: boolean }) {
-  const fix = args.fix ?? false
-
+async function getVersions({ fix }: { fix: boolean }) {
   if (fix) {
-    // If --fix flag is passed, use the version defined in latitude.json
-    // This means user had installed a different version and wants to fix it
-    return setupApp({ appVersion: config.projectConfig.appVersion })
+    return {
+      oldVersion: getInstalledVersion(config.appDir),
+      newVersion: config.projectConfig.appVersion
+    }
   }
 
-  let appVersion = null
+  let newVersion = null
   try {
-    appVersion = await askForAppVersion()
+    newVersion = await askForAppVersion()
   } catch (error) {
     if (!error) {
       console.log(
@@ -53,8 +53,24 @@ export default async function updateCommand(args: { fix?: boolean }) {
     }
   }
 
-  // Errors already handled
-  if (!appVersion) return
+  return {
+    oldVersion: config.projectConfig.appVersion,
+    newVersion
+  }
+}
 
-  return setupApp({ appVersion })
+// If --fix flag is passed, use the version defined in latitude.json
+// This means user had installed a different version and wants to fix it
+export default async function updateCommand(args: { fix?: boolean }) {
+  const fix = args.fix ?? false
+  const { oldVersion, newVersion } = await getVersions({ fix })
+
+  // Errors already handled
+  if (!newVersion) return
+
+  await telemetry.track({
+    event: 'updateCommand',
+    properties: { fixingVersion: fix, oldVersion, newVersion }
+  })
+  return setupApp({ appVersion: newVersion })
 }

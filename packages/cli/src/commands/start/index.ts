@@ -8,6 +8,8 @@ import { onError } from '../../utils'
 import findOrCreateLatitudeConfig from '../../lib/latitudeConfig/findOrCreate'
 import { runDevServer } from '../dev/runDev'
 import path from 'path'
+import telemetry from '../../lib/telemetry'
+import startQuestions from './questions'
 
 export type CommonProps = { onError: OnErrorFn }
 
@@ -31,7 +33,6 @@ async function displayMessage() {
     `),
   )
 }
-
 export default async function startDataProject({
   open = false,
   port,
@@ -39,8 +40,21 @@ export default async function startDataProject({
   open: boolean,
   port?: number
 }) {
+  const { dest, template, force } = await startQuestions()
+
+  if (!dest) {
+    onError({
+      error: new Error('No destination'),
+      message: '🚧 No destination provided',
+      color: 'red',
+    })
+    return
+  }
+
+  await telemetry.track({ event: 'startCommand' })
+
   // Clone template
-  const dataAppDir = (await cloneTemplate({ onError })) as string
+  const dataAppDir = (await cloneTemplate({ dest, template, force })) as string
   config.setCwd(dataAppDir)
 
   // Setup Latitude configuration

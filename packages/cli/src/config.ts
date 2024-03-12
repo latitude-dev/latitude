@@ -73,7 +73,7 @@ export type PartialLatitudeConfig = {
   deployPlatform: DeployPlatform
 }
 
-const INGORED_LOAD_CONFIG_COMMANDS = ['start']
+const INGORED_LOAD_CONFIG_COMMANDS = ['start', 'telemetry']
 function getConfig(appDir: string) {
   const config = findConfigFile({ appDir, throws: true })
 
