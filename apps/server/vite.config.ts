@@ -38,12 +38,5 @@ export default defineConfig({
     rollupOptions: {
       external: ['@latitude-data/connector-factory'],
     },
-  },
-  optimizeDeps: {
-    include: [
-      '@latitude-data/client',
-      '@latitude-data/svelte',
-      '@latitude-data/custom_types',
-    ],
-  },
+  }
 })
