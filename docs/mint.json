@@ -63,7 +63,8 @@
       "group": "Development",
       "pages": [
         "guides/development/latitude-cli",
-        "guides/development/project-structure"
+        "guides/development/project-structure",
+        "guides/development/environment-variables"
       ]
     },
     {
@@ -76,12 +77,11 @@
     },
     {
       "group": "Embed",
-      "pages": [
-        "guides/embed/iframe"
-      ]
-    }, {
+      "pages": ["guides/embed/iframe"]
+    },
+    {
       "group": "Configuration",
-      "pages": ["sources/how-to-configure-sources"]
+      "pages": ["sources/how-to-configure-sources", "sources/credentials"]
     },
     {
       "group": "Sources",
@@ -150,10 +150,7 @@
     },
     {
       "group": "Advanced",
-      "pages": [
-        "views/advanced/svelte-syntax",
-        "views/advanced/head"
-      ]
+      "pages": ["views/advanced/svelte-syntax", "views/advanced/head"]
     },
     {
       "group": "Inputs",
@@ -183,9 +180,7 @@
     },
     {
       "group": "Tables",
-      "pages": [
-        "visualizations/tables/table"
-      ]
+      "pages": ["visualizations/tables/table"]
     },
     {
       "group": "Others",
