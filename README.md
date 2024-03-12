@@ -9,27 +9,35 @@ Latitude is an open-source full-stack framework to build interactive application
 2. Write composable SQL queries with custom parameters to pull and transform your data in real-time
 3. Use simple frontend components to display it in a rich and interactive application
 
-Check out the [live demo](https://netflix-sample.fly.dev/)
+Check out the [live demo 👉](https://netflix-sample.fly.dev/)
+
+(code available here: https://github.com/latitude-dev/sample-netflix)
 
 [![Sample project](assets/hero.png)](https://netflix-sample.fly.dev/)
 
-## Use cases
+## 💡 Use cases
 
 You can use Latitude for many things, but the most common use cases are:
 
 - **Data apps**: Build interactive frontend applications on top of your live data.
 - **Embedded analytics**: Add data visualizations and dashboards to your existing app.
 
-## Documentation
+<br />
+
+## 📚 Documentation
 
 Visit the [public docs](https://docs.latitude.so/) to view the full documentation.
 
-## Prerequisites
+<br />
+
+## 🛠️ Prerequisites
 
 You need to have [NodeJS >18.x](https://nodejs.org/en) installed in your
 machine.
 
-## Quick start
+<br />
+
+## ⚡ Quick start
 
 Here’s a quick getting started guide to get the sample app up and running:
 
@@ -56,14 +64,18 @@ directory with a sample app that you can run and customize.
 
 This will start the development server and open the sample app in your browser.
 
-## Community
+<br />
+
+## 👥 Community
 
 The Latitude community can be found on
 [Slack](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
 where you can ask questions, voice ideas, and share your projects with other
 people.
 
-## Contributing
+<br />
+
+## 🤝 Contributing
 
 Contributions to Latitude are welcome and highly appreciated.
 
@@ -72,7 +84,9 @@ community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2O
 open an [issue](https://github.com/evidence-dev/evidence/issues/new), or
 contribute a pull request.
 
-## Contact
+<br />
+
+## ✉️ Contact
 
 If you want to share ideas or have questions, [say
 hello](https://www.notion.so/4086e35ef7c14a6da14c1c9ce1c6be32?pvs=21).
