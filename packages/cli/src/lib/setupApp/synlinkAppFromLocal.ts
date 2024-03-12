@@ -1,13 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
-import { APP_FOLDER, APP_SERVER_FOLDER } from '../../commands/constants'
+import { APP_SERVER_FOLDER } from '../../commands/constants'
 import { forceSymlink, onError } from '../../utils'
 import config from '../../config'
 import { type Props } from './index'
 
 function createAppFolder() {
-  const target = path.resolve(`${config.cwd}/${APP_FOLDER}`)
+  const target = path.resolve(config.appDir)
   fs.mkdirSync(target, { recursive: true })
   return target
 }

@@ -1,10 +1,9 @@
 import colors from 'picocolors'
 import { spawn } from 'child_process'
-import { APP_FOLDER } from '../../commands/constants'
 import config from '../../config'
 
 export default async function installAppDependencies() {
-  const appFolder = `${config.cwd}/${APP_FOLDER}`
+  const appFolder = config.appDir
   let args = ['install', ...config.pkgManager.flags.mandatoryInstallFlags]
   args = config.pro
     ? [...args, config.pkgManager.flags.installFlags.silent]

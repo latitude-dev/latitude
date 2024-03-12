@@ -8,6 +8,7 @@ import sade from 'sade'
 import startDataProject from './commands/start/index'
 import updateCommand from './commands/update'
 import prepareCommand from './commands/prepare'
+import runCommand from './commands/run'
 import boxedMessage from './lib/boxedMessage'
 
 const CLI = sade('latitude')
@@ -54,6 +55,20 @@ CLI.command('deploy')
 CLI.command('prepare')
   .describe('Prepares data app for production build')
   .action(prepareCommand)
+
+CLI.command('run <query_name>')
+  .describe('Run a query from the data app.')
+  .option('--watch', 'Re-run the query each time the query file changes')
+  .option('--param', 'Add a parameter to the query. Use the format --param <name>=<value>')
+  .example("run --watch users")
+  .example("run users --param user_id=foo")
+  .action((query_name: string, opts: { param: string[] | string; watch: boolean }) => {
+    let params = opts.param
+    if (typeof params === 'string') params = [params]
+    else if (!Array.isArray(params)) params = []
+    const watch = opts.watch
+    runCommand(query_name, params, watch)
+  })
 
 async function initCli() {
   const argv = process.argv

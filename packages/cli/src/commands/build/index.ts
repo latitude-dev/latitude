@@ -1,7 +1,6 @@
 import colors from 'picocolors'
 import config from '../../config'
 import path from 'path'
-import { APP_FOLDER } from '../constants'
 import { onError } from '../../utils'
 import { spawn } from 'child_process'
 import maybeSetupApp from '../shared/maybeSetupApp'
@@ -18,7 +17,6 @@ export default async function build(
 
   await prepareCommand()
 
-  const buildCwd = path.join(cwd, APP_FOLDER)
   let buildProcess
 
   if (docker) {
@@ -29,7 +27,7 @@ export default async function build(
   } else {
     buildProcess = spawn(config.pkgManager.command, ['run', 'build'], {
       detached: false,
-      cwd: buildCwd,
+      cwd: config.appDir,
     })
   }
 
