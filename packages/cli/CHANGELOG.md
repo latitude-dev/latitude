@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.27
+
+### Patch Changes
+
+- 75914ef: Fixed server closing on port conflict.
+
 ## 0.0.26
 
 ### Patch Changes
