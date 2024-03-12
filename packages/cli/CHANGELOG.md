@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.0.26
+
+### Patch Changes
+
+- add .env syncing for build production
+
 ## 0.0.25
 
 ### Patch Changes

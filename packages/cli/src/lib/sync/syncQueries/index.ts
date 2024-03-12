@@ -1,9 +1,9 @@
 import config from '../../../config'
 import fs from 'fs'
 import path from 'path'
-import syncFiles from '../shared/syncFiles'
 import watcher from '../shared/watcher'
 import { APP_FOLDER } from '../../../commands/constants'
+import syncFiles from '../shared/syncFiles'
 
 export default async function syncQueries({
   watch = false,

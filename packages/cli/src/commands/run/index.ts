@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
 import config from '../../config'
-import syncQueries from '../shared/syncQueries'
+import syncQueries from '../../lib/sync/syncQueries'
 
 export default async function run(queryName: string, paramStrings: unknown[], watch: boolean) {
   const params: { [key: string]: unknown } = {}
