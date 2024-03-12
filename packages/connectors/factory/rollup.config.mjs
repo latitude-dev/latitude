@@ -28,5 +28,6 @@ export default {
     'yaml',
     'fs',
     'path',
+    'dotenv/config',
   ],
 }

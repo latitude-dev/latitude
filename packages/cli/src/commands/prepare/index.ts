@@ -1,6 +1,5 @@
-import syncQueries from '../shared/syncQueries'
-import syncViews from '../shared/syncViews'
+import sync from '../../lib/sync'
 
 export default function prepareCommand() {
-  return Promise.all([syncViews(), syncQueries()])
+  return sync()
 }

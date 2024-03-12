@@ -1,0 +1,47 @@
+---
+title: 'Environment variables'
+description: 'Learn how to declare environment variables for your Latitude projects'
+---
+
+## Introduction
+
+In order to declare env vars for local development add a `.env` file to the root of your project:
+
+```bash
+touch .env
+```
+
+Any env vars declared in this file will be accessible to your views.
+
+_TODO: Make env vars accessible to views also_
+
+## Environment variables in production
+
+Although it is possible to declare envs vars in the .env file for the
+production build, this is not a recommended practice. Instead declare env vars
+at runtime. Here's how to do it for both the node and docker builds of a
+Latitude project.
+
+_NOTE: If a .env file is present at the root of a Latitude project during a
+build step, we will include it in the final production build. This is to ensure
+that the local production build works the same way the dev build does._
+
+### Node build
+
+For a regular production node build, declare env vars and secrets at runtime like so:
+
+```bash
+LATITUDE__PASSWORD=my_password node build
+```
+
+### Docker build
+
+For a docker build, declare env vars and secrets at runtime like so:
+
+```
+docker run -e LATITUDE__PASSWORD=my_password <docker_image_id>
+```
+
+## Secrets
+
+You can read more on source credentials in the [sources](sources/credentials) section.

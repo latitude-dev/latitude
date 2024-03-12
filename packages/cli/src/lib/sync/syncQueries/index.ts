@@ -1,13 +1,13 @@
+import config from '../../../config'
 import fs from 'fs'
 import path from 'path'
-import { APP_FOLDER } from '../../constants'
 import syncFiles from '../shared/syncFiles'
 import watcher from '../shared/watcher'
-import config from '../../../config'
+import { APP_FOLDER } from '../../../commands/constants'
 
 export default async function syncQueries({
   watch = false,
-  silent = false
+  silent = false,
 }: {
   watch?: boolean
   silent?: boolean
