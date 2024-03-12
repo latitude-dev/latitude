@@ -25,6 +25,7 @@ export type QueryResultPayload = {
   rowCount: number
 }
 
+export type QueryResultRow = { [key: string]: unknown }
 export type QueryResultArray = {
   [key: string]: unknown
 }[]
@@ -76,13 +77,10 @@ export default class QueryResult {
 
   toArray() {
     return this.rows.map((row: unknown[]) =>
-      row.reduce(
-        (acc: Record<string, unknown>, value, i) => {
-          acc[this.fields[i]!.name] = value
-          return acc
-        },
-        {} as { [key: string]: unknown },
-      ),
+      row.reduce((acc: Record<string, unknown>, value, i) => {
+        acc[this.fields[i]!.name] = value
+        return acc
+      }, {} as QueryResultRow),
     )
   }
 }

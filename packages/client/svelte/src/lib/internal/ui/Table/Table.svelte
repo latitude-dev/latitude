@@ -6,10 +6,10 @@
 </script>
 
 <script lang="ts">
-  import { createTable, Render, Subscribe } from 'svelte-headless-table'
-  import { readable } from 'svelte/store'
   import * as Table from '$lib/internal/ui/_table'
   import QueryResult from '@latitude-data/query_result'
+  import { createTable, Render, Subscribe } from 'svelte-headless-table'
+  import { readable } from 'svelte/store'
 
   type $$Props = Props
 
@@ -18,16 +18,14 @@
   let className: $$Props['class'] = undefined
   export { className as class }
 
-  const table = createTable(readable(data.toArray()))
-
-  const columns = table.createColumns(
+  $: table = createTable(readable(data.toArray()))
+  $: columns = table.createColumns(
     data.fields.map((field) =>
       table.column({ accessor: field.name, header: field.name })
     )
   )
-
-  const { headerRows, pageRows, tableAttrs, tableBodyAttrs } =
-    table.createViewModel(columns)
+  $: ({ headerRows, pageRows, tableAttrs, tableBodyAttrs } =
+    table.createViewModel(columns))
 </script>
 
 <Table.Root {...$tableAttrs} class={className}>
