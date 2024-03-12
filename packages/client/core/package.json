@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/client",
   "description": "Core package of all Latitude client libraries",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
@@ -28,7 +28,11 @@
     "./latitude.css": "./dist/latitude.css",
     "./theme/preset": "./tailwind.config.js"
   },
-  "files": ["dist", "tailwind.config.js", "!dist/**/*.test.*"],
+  "files": [
+    "dist",
+    "tailwind.config.js",
+    "!dist/**/*.test.*"
+  ],
   "dependencies": {
     "@latitude-data/custom_types": "workspace:^",
     "@latitude-data/query_result": "workspace:*",

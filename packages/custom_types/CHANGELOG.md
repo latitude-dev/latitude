@@ -1,5 +1,11 @@
 # @latitude-data/type_parser
 
+## 0.1.0
+
+### Minor Changes
+
+- Public release 0.1.0 🎉
+
 ## 0.0.2
 
 ### Patch Changes
