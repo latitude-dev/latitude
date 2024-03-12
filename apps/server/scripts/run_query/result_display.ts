@@ -108,7 +108,7 @@ export function displayResults(results: QueryResult, loadTime: number) {
         bg: 'black',
       },
     },
-    align: 'center',
+    align: 'left',
   });
 
   const tableData: string[][] = [

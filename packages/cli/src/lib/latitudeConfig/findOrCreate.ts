@@ -32,13 +32,18 @@ async function getLatestVersion(pkgManager: PackageManagerWithFlags) {
   }
 }
 
+type ConfigData = {
+  appVersion?: string,
+  projectName: string,
+  deployPlatform?: string,
+}
 type ConfigFile = {
-  data: object
+  data: ConfigData,
   path: string
 }
 export function findConfigFile({ appDir, throws }: { appDir: string, throws: boolean}): ConfigFile {
   const configPath = `${appDir}/${LATITUDE_CONFIG_FILE}`
-  const data = fsExtra.readJsonSync(configPath, { throws })
+  const data = fsExtra.readJsonSync(configPath, { throws }) as ConfigData
   return {
     path: configPath,
     data,
@@ -55,11 +60,9 @@ export default async function findOrCreateLatitudeConfig({
   const projectName = path.basename(appDir)
   const config = findConfigFile({ appDir, throws: false })
 
-  if (config.data) return config
-
   let allGood = false
   try {
-    const appVersion = await getLatestVersion(pkgManager)
+    const appVersion = config.data?.appVersion || (await getLatestVersion(pkgManager))
     if (!appVersion) return null
 
     const data = { ...defaultConfig, projectName, appVersion }

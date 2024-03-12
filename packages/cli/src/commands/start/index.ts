@@ -7,11 +7,13 @@ import setupApp from '../../lib/setupApp/index'
 import { onError } from '../../utils'
 import findOrCreateLatitudeConfig from '../../lib/latitudeConfig/findOrCreate'
 import { runDevServer } from '../dev/runDev'
+import path from 'path'
 
 export type CommonProps = { onError: OnErrorFn }
 
 async function displayMessage() {
   const banner = await getLatitudeBanner()
+  const projectDir = path.basename(config.cwd).replace(/"/g, '\\"')
   console.log(colors.green(banner))
   console.log(
     colors.white(`
@@ -24,7 +26,7 @@ async function displayMessage() {
     You can start your project by running:
     --------------------------------------
 
-    $ cd ./${config.projectConfig.projectName}
+    $ cd ./${projectDir.includes(' ') ? `"${projectDir}"` : projectDir}
     $ ${config.dev ? 'pnpm latitude-dev dev' : 'latitude dev'}
     `),
   )

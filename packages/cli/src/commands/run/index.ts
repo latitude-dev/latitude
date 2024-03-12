@@ -2,7 +2,13 @@ import { spawn } from 'child_process'
 import config from '../../config'
 import syncQueries from '../../lib/sync/syncQueries'
 
-export default async function run(queryName: string, paramStrings: unknown[], watch: boolean) {
+export default async function run(queryName: string, opts: { param: string[] | string | undefined; watch: boolean }) {
+  const watch = opts.watch || false
+
+  let paramStrings = opts.param
+  if (typeof paramStrings === 'string') paramStrings = [paramStrings]
+  else if (!Array.isArray(paramStrings)) paramStrings = []
+
   const params: { [key: string]: unknown } = {}
   paramStrings.forEach((param) => {
     if (typeof param !== 'string') return

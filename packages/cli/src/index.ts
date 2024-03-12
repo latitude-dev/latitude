@@ -64,13 +64,7 @@ CLI.command('run <query_name>')
   .option('--param', 'Add a parameter to the query. Use the format --param <name>=<value>')
   .example("run --watch users")
   .example("run users --param user_id=foo")
-  .action((query_name: string, opts: { param: string[] | string; watch: boolean }) => {
-    let params = opts.param
-    if (typeof params === 'string') params = [params]
-    else if (!Array.isArray(params)) params = []
-    const watch = opts.watch
-    runCommand(query_name, params, watch)
-  })
+  .action(runCommand)
 
 async function initCli() {
   const argv = process.argv

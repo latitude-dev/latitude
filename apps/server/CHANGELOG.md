@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.0.20
+
+### Patch Changes
+
+- Latitude run: Align text to left on tables
+
 ## 0.0.19
 
 ### Patch Changes
