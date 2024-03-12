@@ -26,6 +26,7 @@ if (process.env.NODE_ENV === 'development') {
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')
+  .option('--port', 'Port to run the data app on')
   .action(startDataProject)
 
 CLI.command('update')
@@ -39,6 +40,7 @@ const cliDev = CLI.command('dev')
     '--open',
     'Open the data app in your browser, Default: yes. Options: yes, no',
   )
+  .option('--port', 'Port to run the data app on')
 
 cliDev.action(devCommand)
 

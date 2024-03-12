@@ -5,7 +5,7 @@ import InstalledVersionChecker from '../../lib/latitudeConfig/InstalledVersionCh
 import { DevServerProps, runDevServer } from './runDev'
 import sync from '../../lib/sync'
 
-type Args = CommonCLIArgs & { open?: string }
+type Args = CommonCLIArgs & { open?: string, port?: number }
 
 export default async function devCommand(args: Args = {}) {
   const open = args?.open ?? 'yes'
@@ -20,6 +20,7 @@ export default async function devCommand(args: Args = {}) {
 
   let server: DevServerProps = {
     open: open === 'yes',
+    port: args.port,
     appFolder: config.cwd,
     verbose: config.debug,
   }

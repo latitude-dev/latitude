@@ -32,8 +32,10 @@ async function displayMessage() {
 
 export default async function startDataProject({
   open = false,
+  port,
 }: {
-  open: boolean
+  open: boolean,
+  port?: number
 }) {
   // Clone template
   const dataAppDir = (await cloneTemplate({ onError })) as string
@@ -61,7 +63,7 @@ export default async function startDataProject({
   await displayMessage()
 
   if (open) {
-    runDevServer()
+    runDevServer({ open, port })
   } else {
     process.exit()
   }

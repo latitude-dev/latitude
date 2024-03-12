@@ -61,6 +61,7 @@
     "fs-extra": "^11.2.0",
     "mri": "^1.2.0",
     "picocolors": "^1.0.0",
+    "portfinder": "^1.0.32",
     "rimraf": "^5.0.5",
     "sade": "^1.8.1",
     "semver": "^7.6.0",
