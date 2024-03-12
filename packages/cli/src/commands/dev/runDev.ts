@@ -6,6 +6,7 @@ import rootPath from '../../lib/rootPath'
 import { APP_FOLDER} from '../constants'
 import { cleanTerminal } from '../../utils'
 import { spawn } from 'child_process'
+import portfinder from 'portfinder'
 
 export type DevServerProps = {
   appFolder?: string
@@ -17,28 +18,38 @@ export type DevServerProps = {
   onReady?: () => void
 }
 
-export function runDevServer(
+export async function runDevServer(
   {
     host = 'localhost',
     open = false,
-    port = 3000,
+    port,
     verbose = false,
     onReady,
   }: DevServerProps = {
     host: 'localhost',
     open: false,
-    port: 3000,
     verbose: false,
   },
 ) {
   let building = true
+
+  if (port && !(await isPortAvailable(port))) {
+    boxedMessage({
+      text: `Port ${port} is not available`,
+      color: 'red',
+    })
+    process.exit()
+  }
+
   const appFolder = path.join(config.cwd, APP_FOLDER)
-  const hostUrl = `http://${host}:${port}${rootPath()}`
+  const appPort: number = port || (await findFreePort(3000, 4000))
+
+  const hostUrl = `http://${host}:${appPort}${rootPath()}`
   let args = [
     'run',
     'dev',
-    '--strictPort', // This is to avoid the port conflict error
-    `--port=${port}`,
+    '--strictPort',
+    `--port=${appPort}`,
     `--host=${host}`,
     open ? `--open=${hostUrl}` : '',
   ].filter((f) => f !== '')
@@ -63,7 +74,7 @@ export function runDevServer(
       } else {
         boxedMessage({
           title: 'Latitude server',
-          text: `${colors.blue('Running in')} http://localhost:${port}`,
+          text: `${colors.blue('Running in')} http://localhost:${appPort}`,
           color: 'green',
         })
       }
@@ -85,5 +96,30 @@ export function runDevServer(
       color: 'yellow',
     })
     process.exit()
+  })
+}
+
+async function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    portfinder.getPort({ port }, (err, foundPort) => {
+      if (err) {
+        resolve(false)
+      }
+      resolve(foundPort === port)
+    })
+  })
+}
+
+async function findFreePort(startPort: number, endPort: number): Promise<number> {
+  return new Promise((resolve, reject) => {
+    portfinder.getPort({
+      port: startPort,
+      stopPort: endPort,
+    }, (err, foundPort) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(foundPort)
+    })
   })
 }
