@@ -77,7 +77,7 @@
 
   export function chartable(
     element: HTMLElement,
-    { options, theme, locale }: ChartableProps
+    { options, theme, locale }: ChartableProps,
   ) {
     let resizeObserver: ResizeObserver
     const echartsInstance = echarts.init(element, theme, {
