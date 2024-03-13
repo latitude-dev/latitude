@@ -36,7 +36,6 @@ async function run(query: string, options: { [key: string]: string }) {
 if (watch) {
   const watcher = chokidar.watch(ROOT_FOLDER, {
     ignored: /(^|[/\\])\../,
-    persistent: true,
   })
   
   watcher.on('change', () => {

@@ -1,7 +1,6 @@
-import sync from '../../lib/sync'
-import telemetry from '../../lib/telemetry'
+import sync from '$src/lib/sync'
+import syncDotenv from '$src/lib/sync/syncDotenv'
 
 export default async function prepareCommand() {
-  await telemetry.track({ event: 'prepareCommand' })
-  return sync()
+  return Promise.all([sync(), syncDotenv()])
 }

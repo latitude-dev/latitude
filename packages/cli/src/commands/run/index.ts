@@ -1,17 +1,47 @@
-import { spawn } from 'child_process'
-import config from '../../config'
-import syncQueries from '../../lib/sync/syncQueries'
-import telemetry from '../../lib/telemetry'
+import config from '$src/config'
+import spawn from '$src/lib/spawn'
+import syncQueries from '$src/lib/sync/syncQueries'
 
-export default async function run(queryName: string, opts: { param: string[] | string | undefined; watch: boolean }) {
-  await telemetry.track({ event: 'runCommand' })
+export default async function run(
+  queryName: string,
+  opts?: { param: string[] | string | undefined; watch: boolean },
+) {
+  const watch = opts?.watch || false
 
-  const watch = opts.watch || false
+  await syncQueries({ watch })
 
-  let paramStrings = opts.param
-  if (typeof paramStrings === 'string') paramStrings = [paramStrings]
-  else if (!Array.isArray(paramStrings)) paramStrings = []
+  const args = [
+    'run',
+    'query',
+    watch ? '--watch' : '',
+    queryName,
+    JSON.stringify(buildParams(opts?.param || [])),
+  ].filter(Boolean)
 
+  return spawn(
+    config.pkgManager.command,
+    args,
+    {
+      detached: false,
+      cwd: config.appDir,
+      stdio: 'inherit',
+    },
+    {
+      onError: (error: Error) => {
+        console.error('Error running query:', error)
+        process.exit(1)
+      },
+      onClose: (code: number) => {
+        process.exit(code)
+      },
+    },
+  )
+}
+
+const buildParams = (stdioParams?: string | string[]) => {
+  let paramStrings: string[] = Array.isArray(stdioParams) ? stdioParams : []
+  if (typeof stdioParams === 'string') paramStrings = [stdioParams]
+  else if (!Array.isArray(stdioParams)) paramStrings = []
 
   const params: { [key: string]: unknown } = {}
   paramStrings.forEach((param) => {
@@ -35,28 +65,5 @@ export default async function run(queryName: string, opts: { param: string[] | s
     params[key] = value
   })
 
-  await syncQueries({ watch, silent: true })
-
-  const args = [
-    'run',
-    'query',
-    watch ? '--watch' : '',
-    queryName,
-    JSON.stringify(params),
-  ].filter(Boolean)
-
-  const childProcess = spawn(config.pkgManager.command, args, {
-    detached: false,
-    cwd: config.appDir,
-    stdio: 'inherit',
-  })
-
-  childProcess.on('error', (error: Error) => {
-    console.error('Error running query:', error)
-    process.exit(1)
-  })
-
-  childProcess.on('exit', (code: number) => {
-    process.exit(code)
-  })
+  return params
 }

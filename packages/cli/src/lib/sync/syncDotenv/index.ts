@@ -1,7 +1,8 @@
-import config from '../../../config'
+import config from '$src/config'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
-import { APP_FOLDER } from '../../../commands/constants'
+import { APP_FOLDER } from '$src/commands/constants'
+import { existsSync } from 'fs'
 
 export default function syncDotenv(
   { watch = false }: { watch?: boolean } = { watch: false },
@@ -10,6 +11,10 @@ export default function syncDotenv(
 
   const destPath = path.join(config.cwd, APP_FOLDER, '.env')
   const srcPath = path.join(config.cwd, '.env')
+
+  // check if .env file exists before
+  // syncing it to the app folder
+  if (!existsSync(srcPath)) return
 
   syncFiles({
     srcPath,

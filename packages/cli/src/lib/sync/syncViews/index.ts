@@ -1,10 +1,10 @@
 import colors from 'picocolors'
-import config from '../../../config'
+import config from '$src/config'
 import fs from 'fs'
 import path from 'path'
-import rootPath from '../../../lib/rootPath'
+import rootPath from '$src/lib/rootPath'
 import syncFiles from '../shared/syncFiles'
-import { APP_FOLDER } from '../../../commands/constants'
+import { APP_FOLDER } from '$src/commands/constants'
 import watcher from '../shared/watcher'
 
 function getRoutesFolderPath(cwd: string, rootPath: string | null): string {
@@ -13,6 +13,7 @@ function getRoutesFolderPath(cwd: string, rootPath: string | null): string {
 }
 
 const copiedFiles = new Set<string>()
+
 export default async function syncViews(
   {
     watch = false,
@@ -20,17 +21,27 @@ export default async function syncViews(
     watch?: boolean
   } = { watch: false },
 ): Promise<void> {
-  const dataAppDir = config.cwd
-  const destinationDir = getRoutesFolderPath(dataAppDir, rootPath())
-  const views = path.join(dataAppDir, 'views')
+  const rootDir = config.cwd
+  const destinationDir = getRoutesFolderPath(rootDir, rootPath())
+  const viewsDir = path.join(rootDir, 'views')
+  const syncFn = syncFnFactory({ rootDir, destinationDir })
 
-  const syncFile = (
-    srcPath: string,
-    type: 'add' | 'change' | 'unlink',
-    ready: boolean,
-  ) => {
+  if (watch) {
+    await watcher(viewsDir, syncFn, {
+      ignored: /(?!.*\/index\.html$)(^|[/\\])\../, // ignore all files except index.html
+    })
+  } else {
+    syncDirectory(viewsDir, syncFn)
+  }
+
+  process.on('exit', onExit(watch))
+}
+
+export const syncFnFactory =
+  ({ rootDir, destinationDir }: { rootDir: string; destinationDir: string }) =>
+  (srcPath: string, type: 'add' | 'change' | 'unlink', ready: boolean) => {
     const relativeSrcPath = path
-      .relative(dataAppDir, srcPath)
+      .relative(rootDir, srcPath)
       .replace(/^views/, '')
     const relativePath = relativeSrcPath.replace(/[^/]*$/, '+page.svelte')
     const destPath = path.join(destinationDir, relativePath)
@@ -44,40 +55,30 @@ export default async function syncViews(
     syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
 
-  const syncDirectory = (directory: string): void => {
-    fs.readdirSync(directory).forEach((file: string) => {
-      const srcPath = path.join(directory, file)
+export const syncDirectory = (directory: string, syncFn: Function): void => {
+  fs.readdirSync(directory).forEach((file: string) => {
+    const srcPath = path.join(directory, file)
 
-      // Check if the srcPath is a directory, and recursively call syncDirectory if it is
-      if (fs.statSync(srcPath).isDirectory()) {
-        syncDirectory(srcPath)
-      } else {
-        // It's a file, perform the synchronization operation
-        syncFile(srcPath, 'add', true)
+    // Check if the srcPath is a directory, and recursively call syncDirectory if it is
+    if (fs.statSync(srcPath).isDirectory()) {
+      syncDirectory(srcPath, syncFn)
+    } else {
+      // It's a file, perform the synchronization operation
+      syncFn(srcPath, 'add', true)
+    }
+  })
+}
+
+const onExit = (watch: boolean) => () => {
+  if (!watch) return
+
+  for (const copiedFile of copiedFiles) {
+    fs.unlink(copiedFile, (err) => {
+      if (err) {
+        console.log(
+          colors.red(`File ${copiedFile} could not be deleted: ${err}`),
+        )
       }
     })
   }
-
-  if (watch) {
-    await watcher(views, syncFile, {
-      ignored: /(?!.*\/index\.html$)(^|[/\\])\../, // ignore all files except index.html
-      persistent: true,
-    })
-  } else {
-    syncDirectory(views)
-  }
-
-  process.on('exit', () => {
-    if (!watch) return
-
-    for (const copiedFile of copiedFiles) {
-      fs.unlink(copiedFile, (err) => {
-        if (err) {
-          console.log(
-            colors.red(`File ${copiedFile} could not be deleted: ${err}`),
-          )
-        }
-      })
-    }
-  })
 }

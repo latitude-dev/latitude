@@ -1,12 +1,12 @@
-import boxedMessage from '../../lib/boxedMessage'
+import boxedMessage from '$src/lib/boxedMessage'
 import colors from 'picocolors'
-import config from '../../config'
+import config from '$src/config'
 import path from 'path'
-import rootPath from '../../lib/rootPath'
-import { APP_FOLDER} from '../constants'
-import { cleanTerminal } from '../../utils'
-import { spawn } from 'child_process'
+import rootPath from '$src/lib/rootPath'
+import { APP_FOLDER } from '../constants'
+import { cleanTerminal } from '$src/utils'
 import portfinder from 'portfinder'
+import spawn from '$src/lib/spawn'
 
 export type DevServerProps = {
   appFolder?: string
@@ -17,6 +17,8 @@ export type DevServerProps = {
   verbose?: boolean
   onReady?: () => void
 }
+
+let building = true
 
 export async function runDevServer(
   {
@@ -31,21 +33,19 @@ export async function runDevServer(
     verbose: false,
   },
 ) {
-  let building = true
-
   if (port && !(await isPortAvailable(port))) {
     boxedMessage({
       text: `Port ${port} is not available`,
       color: 'red',
     })
+
     process.exit()
   }
 
   const appFolder = path.join(config.cwd, APP_FOLDER)
   const appPort: number = port || (await findFreePort(3000, 4000))
-
   const hostUrl = `http://${host}:${appPort}${rootPath()}`
-  let args = [
+  const args = [
     'run',
     'dev',
     '--strictPort',
@@ -54,14 +54,52 @@ export async function runDevServer(
     open ? `--open=${hostUrl}` : '',
   ].filter((f) => f !== '')
 
-  const serverProccess = spawn(config.pkgManager.command, args, {
-    cwd: appFolder,
-    stdio: 'pipe',
-  })
+  const handlers = {
+    onClose,
+    onError,
+    onStderr,
+    onStdout: onStdout({ verbose, onReady, appPort }),
+  }
+
+  spawn(config.pkgManager.command, args, { cwd: appFolder }, handlers)
 
   console.log(colors.yellow('Starting Latitude ...'))
+}
 
-  serverProccess.stdout?.on('data', (data) => {
+async function isPortAvailable(port: number): Promise<boolean> {
+  return new Promise((resolve) => {
+    portfinder.getPort({ port }, (err, foundPort) => {
+      if (err) {
+        resolve(false)
+      }
+      resolve(foundPort === port)
+    })
+  })
+}
+
+async function findFreePort(
+  startPort: number,
+  endPort: number,
+): Promise<number> {
+  return new Promise((resolve, reject) => {
+    portfinder.getPort(
+      {
+        port: startPort,
+        stopPort: endPort,
+      },
+      (err, foundPort) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(foundPort)
+      },
+    )
+  })
+}
+
+const onStdout =
+  ({ verbose, onReady, appPort }: DevServerProps & { appPort: number }) =>
+  (data: Buffer) => {
     const logmsg = data.toString()
     if (verbose) {
       console.log(logmsg)
@@ -78,48 +116,27 @@ export async function runDevServer(
           color: 'green',
         })
       }
+
       building = false
     }
-  })
+  }
 
-  serverProccess.stderr?.on('error', (err) => {
-    boxedMessage({
-      text: `Latitude Dev Server error: ${err.message}`,
-      color: 'red',
-    })
-    process.exit()
-  })
+const onStderr = (data: Buffer) => {
+  console.log(colors.yellow(data.toString()))
+}
 
-  serverProccess.stdout?.on('close', () => {
-    boxedMessage({
-      text: 'Latitude Server closed',
-      color: 'yellow',
-    })
-    process.exit()
+const onError = (error: Error) => {
+  boxedMessage({
+    text: `Server error: ${error.message}`,
+    color: 'red',
   })
 }
 
-async function isPortAvailable(port: number): Promise<boolean> {
-  return new Promise((resolve) => {
-    portfinder.getPort({ port }, (err, foundPort) => {
-      if (err) {
-        resolve(false)
-      }
-      resolve(foundPort === port)
-    })
+const onClose = (code?: number) => {
+  boxedMessage({
+    text: `Server closed with code: ${code}`,
+    color: 'yellow',
   })
-}
 
-async function findFreePort(startPort: number, endPort: number): Promise<number> {
-  return new Promise((resolve, reject) => {
-    portfinder.getPort({
-      port: startPort,
-      stopPort: endPort,
-    }, (err, foundPort) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(foundPort)
-    })
-  })
+  process.exit(code ?? 0)
 }

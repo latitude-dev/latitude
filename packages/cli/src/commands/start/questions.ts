@@ -3,8 +3,8 @@ import fs from 'fs'
 import path from 'path'
 
 import { DEV_SITES_ROUTE_PREFIX } from '../constants.js'
-import config from '../../config'
-import { onError } from '../../utils'
+import config from '$src/config'
+import { onError } from '$src/utils'
 
 async function askForDestination() {
   let dest = null
@@ -36,7 +36,7 @@ async function askForDestination() {
     })
   }
 
-  return { force, dest: path.resolve(`./${dest}`) }
+  return { force, empty: isDestinationEmpty, dest: path.resolve(`./${dest}`) }
 }
 
 export enum TemplateUrl {
@@ -62,13 +62,17 @@ const DEFAULT_RESPONSE = {
   dest: null,
   template: TemplateUrl.default,
   force: false,
-  telemetry: false
+  telemetry: false,
 }
 export default async function startQuestions() {
-  const { dest, force } = await askForDestination()
+  const { dest, empty, force } = await askForDestination()
 
   if (!dest) return DEFAULT_RESPONSE
+  if (!empty && !force) process.exit(0)
 
-  const template = await askForTemplate()
-  return { dest, force, template }
+  return {
+    dest,
+    force,
+    template: await askForTemplate(),
+  }
 }

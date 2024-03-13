@@ -1,14 +1,14 @@
 import colors from 'picocolors'
-import { getLatitudeBanner } from '../../utils'
+import { getLatitudeBanner } from '$src/utils'
 import cloneTemplate from './cloneTemplate'
-import config from '../../config'
-import { OnErrorFn } from '../../types'
-import setupApp from '../../lib/setupApp/index'
-import { onError } from '../../utils'
-import findOrCreateLatitudeConfig from '../../lib/latitudeConfig/findOrCreate'
+import config from '$src/config'
+import { OnErrorFn } from '$src/types'
+import setupApp from '$src/lib/setupApp/index'
+import { onError } from '$src/utils'
+import findOrCreateLatitudeConfig from '$src/lib/latitudeConfig/findOrCreate'
 import { runDevServer } from '../dev/runDev'
 import path from 'path'
-import telemetry from '../../lib/telemetry'
+import telemetry from '$src/lib/telemetry'
 import startQuestions from './questions'
 
 export type CommonProps = { onError: OnErrorFn }
@@ -33,11 +33,11 @@ async function displayMessage() {
     `),
   )
 }
-export default async function startDataProject({
+export default async function start({
   open = false,
   port,
 }: {
-  open: boolean,
+  open: boolean
   port?: number
 }) {
   const { dest, template, force } = await startQuestions()
@@ -48,6 +48,7 @@ export default async function startDataProject({
       message: '🚧 No destination provided',
       color: 'red',
     })
+
     return
   }
 
@@ -70,7 +71,7 @@ export default async function startDataProject({
 
   // Setup application server for running queries
   const installationComplete = await setupApp({
-    appVersion: config.projectConfig.appVersion,
+    version: config.projectConfig.version,
   })
 
   // Something went wrong. We already handled the error

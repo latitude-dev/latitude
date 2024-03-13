@@ -9,14 +9,17 @@ export default function watcher(
     type: 'add' | 'change' | 'unlink',
     ready: boolean,
   ) => void,
-  opts: {
+  {
+    ignored,
+    persistent = true,
+  }: {
     ignored?: RegExp
     persistent?: boolean
-  },
+  } = { persistent: true },
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     let ready = false
-    const watcher = chokidar.watch(dir, opts)
+    const watcher = chokidar.watch(dir, { ignored, persistent })
 
     // Event listeners.
     watcher
