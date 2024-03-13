@@ -1,0 +1,94 @@
+---
+title: 'Windows compatibility'
+description: 'How to start a Latitude app on Windows'
+---
+
+## Windows compatibility
+
+Latitude is not natively supported on Windows, but you can still create and run Latitude apps on Windows using the Windows Subsystem for Linux (WSL).
+
+### Install WSL
+
+To install WSL, follow the instructions on the [official Microsoft documentation](https://docs.microsoft.com/en-us/windows/wsl/install), compatible with with Windows 10 version 2004 and higher.
+
+If you're having problems with WSL installation or want a straightforward step-by-step guide, you can follow the steps below:
+
+<Steps>
+  <Step title="Enable WSL">
+    If you have not already enabled WSL, it may be necessary to enable it in the Windows Features settings. To do this, open PowerShell as an administrator and run the following command:
+    ```bash
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+    ```
+    Alternatively, you can enable WSL using the Windows Features settings. To do this, search for "Windows Features" in the Windows search bar, open the Windows Features settings, and check the box next to "Windows Subsystem for Linux". Click "OK" and restart your computer.
+  </Step>
+  <Step title="Enable Virtual Machine">
+    If you have not already enabled the Virtual Machine Platform, it may be necessary to enable it in the Windows Features settings. To do this, open PowerShell as an administrator and run the following command:
+    ```bash
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+    ```
+    Alternatively, you can enable the Virtual Machine Platform using the Windows Features settings. To do this, search for "Windows Features" in the Windows search bar, open the Windows Features settings, and check the box next to "Virtual Machine Platform". Click "OK" and restart your computer.
+  </Step>
+  <Step title="Download and install the Linux kernel update package">
+    Download the latest package from the [Microsoft WSL2 Linux kernel update package](https://aka.ms/wsl2kernel) and install it.
+  </Step>
+  <Step title="Set WSL 2 as the default version">
+    Open PowerShell as an administrator and run the following command to set WSL 2 as the default version:
+    ```bash
+    wsl --set-default-version 2
+    ```
+  </Step>
+  <Step title="Install a Linux distribution">
+    Now that WSL is installed, you can install any Linux distribution from the Microsoft Store. We recommend using Ubuntu.
+    Open the Microsoft Store and search for ["Ubuntu"](https://apps.microsoft.com/detail/9pdxgncfsczv?hl=en-us&gl=US). Click on the "Install" button to install it.
+  </Step>
+  <Step title="Set up Ubuntu">
+    Once Ubuntu is installed, it will appear as a regular app. Open it and follow the instructions to finish the installation and to set up your username and password. Do not forget that password, as you will need it to run commands with `sudo`.
+  </Step>
+</Steps>
+
+### Install Node
+
+Latitude requires `Node.js >18.x` to run, so after installing WSL, you will need to install Node.js on your Ubuntu distribution. To do so, we recommend [Node Version Manager (nvm)](https://github.com/nvm-sh/nvm?tab=readme-ov-file#).
+
+<Steps>
+  <Step title="Update Ubuntu packages and install curl">
+    Open the Ubuntu terminal and run the following command to update the package list and install curl:
+    ```bash
+    sudo apt update && sudo apt install curl
+    ```
+  </Step>
+  <Step title="Install nvm">
+    Now, you can install nvm by running the following command:
+    ```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    ```
+  </Step>
+  <Step title="Install Node.js v18.x">
+    After installing nvm, you can install the required version of Node.js by running the following command:
+    ```bash
+    nvm install 18
+    ```
+  </Step>
+  <Step title="Set Node.js v18.x as the default version">
+    To set Node.js v18.x as the default version, run the following command:
+    ```bash
+    nvm use 18
+    ```
+  </Step>
+</Steps>
+
+### Install Latitude
+
+Now that you have WSL and Node.js installed, you can follow the [installation guide](./installation) to install Latitude on your Ubuntu distribution.
+
+### Running Latitude apps
+
+After installing Latitude on WSL, you can create and run Latitude apps on your Windows machine through the WSL terminal.
+
+WSL terminal uses its own file system by default, so you need to navigate to your windows desired directory before running the Latitude commands. In order to do so, you can use the following command:
+
+```bash
+cd /mnt/c/Users/<your-username>
+```
+
+This will take you to your Windows user directory, same as `C:\Users\<your-username>`, where you can now navigate freely on your Windows file system and create or run Latitude apps!

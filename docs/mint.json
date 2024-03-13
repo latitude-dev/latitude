@@ -56,7 +56,8 @@
       "group": "Getting started",
       "pages": [
         "guides/getting-started/introduction",
-        "guides/getting-started/installation"
+        "guides/getting-started/installation",
+        "guides/getting-started/windows-compatibility"
       ]
     },
     {
