@@ -1,0 +1,6 @@
+[submodule "sample-netflix"]
+	path = examples/sample-netflix
+	url = https://github.com/latitude-dev/sample-netflix.git
+[submodule "sample-flyio"]
+	path = examples/sample-flyio
+	url = https://github.com/latitude-dev/sample-netflix-flyio.git
