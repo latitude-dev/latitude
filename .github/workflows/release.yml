@@ -20,8 +20,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Dependencies
-        run: pnpm install
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: true
 
       - name: Create Release Pull Request
         uses: changesets/action@v1
