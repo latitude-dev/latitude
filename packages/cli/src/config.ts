@@ -57,23 +57,14 @@ export type PackageManagerWithFlags = {
   flags: PackageManagerFlags
 }
 
-const DEPLOY_PLATFORMS = {
-  vercel: 'vercel',
-  netlify: 'netlify',
-  aws: 'aws',
-  cloudflare: 'cloudflare',
-  nodejs: 'nodejs',
-}
-
-export type DeployPlatform = keyof typeof DEPLOY_PLATFORMS
-
 export type PartialLatitudeConfig = {
-  projectName: string
-  appVersion: string
-  deployPlatform: DeployPlatform
+  name: string
+  version: string
 }
 
+// TODO: Review code smell tell don't ask
 const INGORED_LOAD_CONFIG_COMMANDS = ['start', 'telemetry']
+
 function getConfig(appDir: string) {
   const config = findConfigFile({ appDir, throws: true })
 
@@ -112,7 +103,7 @@ class CLIConfig {
     const args = mri(argv.slice(2))
     const requireConfig = this.hasToLoadConfig(args._[0])
     this.debug = (args.debug as boolean | undefined) ?? false
-    this.simulatedPro = args['simulate-pro'] ?? false,
+    this.simulatedPro = args['simulate-pro'] ?? false
     this.addFolderToCwd(args.folder)
 
     await this.setPkgManager()
@@ -151,12 +142,12 @@ class CLIConfig {
     }
 
     this._latitudeConfig = {
-      projectName: latConfig.projectName,
-      appVersion: latConfig.appVersion,
-      deployPlatform: latConfig.deployPlatform,
+      name: latConfig.name,
+      version: latConfig.version,
     }
   }
 
+  // TODO: Review code smell tell don't ask
   private hasToLoadConfig(command: string | undefined) {
     if (!command) return false
 

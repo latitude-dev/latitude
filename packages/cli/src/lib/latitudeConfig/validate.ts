@@ -1,9 +1,8 @@
 import Ajv from 'ajv'
-import type { ErrorObject } from 'ajv'
+import schema from '../../lib/v1.schema.json'
+import { LATITUDE_CONFIG_FILE } from '$src/commands/constants'
 
-// TODO: Load from ./schemas/v1.schema.json
-import configSchema from './configSchema'
-import { LATITUDE_CONFIG_FILE } from '../../commands/constants'
+import type { ErrorObject } from 'ajv'
 
 const ajv = new Ajv({ useDefaults: true, allErrors: true })
 
@@ -18,7 +17,7 @@ export type ValidationReturn<T extends unknown> = {
 export default function validateFn<T extends unknown>(
   data: T,
 ): ValidationReturn<T> {
-  const validate = ajv.compile(configSchema)
+  const validate = ajv.compile(schema)
 
   const valid = validate(data)
 

@@ -1,6 +1,6 @@
 import colors from 'picocolors'
 import { spawn } from 'child_process'
-import config from '../../config'
+import config from '$src/config'
 
 export default async function installAppDependencies() {
   const appFolder = config.appDir

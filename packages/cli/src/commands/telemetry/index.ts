@@ -1,8 +1,12 @@
 import colors from 'picocolors'
-import telemetry from '../../lib/telemetry';
-import { CommonCLIArgs } from '../../types'
+import telemetry from '$src/lib/telemetry'
+import { CommonCLIArgs } from '$src/types'
 
-type Args = CommonCLIArgs & { enable?: boolean; disable?: boolean; status?: unknown }
+type Args = CommonCLIArgs & {
+  enable?: boolean
+  disable?: boolean
+  status?: unknown
+}
 export default function telemetryCommand(args: Args = {}): void {
   const enable = args?.enable ?? false
   const disable = args?.disable ?? false
@@ -17,6 +21,10 @@ export default function telemetryCommand(args: Args = {}): void {
   } else if (showStatus) {
     telemetry.showStatus()
   } else {
-    console.log(colors.red('No valid option provided. Check with latitude telemetry --help'))
+    console.log(
+      colors.red(
+        'No valid option provided. Check with latitude telemetry --help',
+      ),
+    )
   }
 }

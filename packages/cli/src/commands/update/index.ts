@@ -1,11 +1,14 @@
 import colors from 'picocolors'
 import { select } from '@inquirer/prompts'
-import setupApp from '../../lib/setupApp'
-import { cleanTerminal, onError } from '../../utils'
+import setupApp from '$src/lib/setupApp'
+import { cleanTerminal, onError } from '$src/utils'
 import { DEFAULT_VERSION_LIST } from '../constants'
-import config from '../../config'
-import { getInstalledVersion, getLatitudeVersions } from '../../lib/getAppVersions'
-import telemetry from '../../lib/telemetry'
+import config from '$src/config'
+import {
+  getInstalledVersion,
+  getLatitudeVersions,
+} from '$src/lib/getAppVersions'
+import telemetry from '$src/lib/telemetry'
 
 async function askForAppVersion() {
   let versions: string[] = DEFAULT_VERSION_LIST
@@ -32,7 +35,7 @@ async function getVersions({ fix }: { fix: boolean }) {
   if (fix) {
     return {
       oldVersion: getInstalledVersion(config.appDir),
-      newVersion: config.projectConfig.appVersion
+      newVersion: config.projectConfig.version,
     }
   }
 
@@ -54,23 +57,23 @@ async function getVersions({ fix }: { fix: boolean }) {
   }
 
   return {
-    oldVersion: config.projectConfig.appVersion,
-    newVersion
+    oldVersion: config.projectConfig.version,
+    newVersion,
   }
 }
 
-// If --fix flag is passed, use the version defined in latitude.json
-// This means user had installed a different version and wants to fix it
+// If --fix flag is passed, use the version defined in latitude.json This means
+// user had installed a different version and wants to fix it
 export default async function updateCommand(args: { fix?: boolean }) {
   const fix = args.fix ?? false
   const { oldVersion, newVersion } = await getVersions({ fix })
 
-  // Errors already handled
-  if (!newVersion) return
+  if (!newVersion) process.exit(1)
 
   await telemetry.track({
     event: 'updateCommand',
-    properties: { fixingVersion: fix, oldVersion, newVersion }
+    properties: { fixingVersion: fix, oldVersion, newVersion },
   })
-  return setupApp({ appVersion: newVersion })
+
+  return setupApp({ version: newVersion })
 }

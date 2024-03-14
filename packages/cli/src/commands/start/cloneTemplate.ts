@@ -1,7 +1,7 @@
 import colors from 'picocolors'
 import degit from 'degit'
 import { LATITUDE_GITHUB_SLUG } from '../constants'
-import { onError } from '../../utils'
+import { onError } from '$src/utils'
 import { TemplateUrl } from './questions'
 
 const TEMPLATE_URL: Record<TemplateUrl, string> = {
@@ -9,13 +9,17 @@ const TEMPLATE_URL: Record<TemplateUrl, string> = {
   [TemplateUrl.netflix]: `${LATITUDE_GITHUB_SLUG}/sample-netflix`,
 }
 
-export default async function cloneTemplate({ dest, force, template }: {
+export default async function cloneTemplate({
+  dest,
+  force,
+  template,
+}: {
   dest: string
   force: boolean
   template: TemplateUrl
 }) {
   return new Promise<string>((resolve) => {
-    const gitTemplate = degit(TEMPLATE_URL[template], { force });
+    const gitTemplate = degit(TEMPLATE_URL[template], { force })
     console.log(colors.yellow(`📦 Cloning template to ${dest}`))
 
     gitTemplate.on('info', () => {

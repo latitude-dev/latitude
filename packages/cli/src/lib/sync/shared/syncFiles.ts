@@ -1,7 +1,7 @@
 import colors from 'picocolors'
-import fs from 'fs'
-import path from 'path'
 import output from '../../output'
+import path from 'path'
+import { copyFile, mkdirSync, symlink, unlink } from 'fs'
 
 type Strategy = 'copy' | 'symlink'
 
@@ -12,7 +12,6 @@ export default function syncFiles({
   type,
   ready,
   strategy = 'copy',
-  silent = false,
 }: {
   srcPath: string
   relativePath: string
@@ -20,15 +19,13 @@ export default function syncFiles({
   type: 'add' | 'change' | 'unlink'
   ready: boolean
   strategy?: Strategy
-  silent?: boolean
 }) {
   if (type === 'add' || type === 'change') {
     // Make sure all directories in the path exist
-    fs.mkdirSync(path.dirname(destPath), { recursive: true })
+    mkdirSync(path.dirname(destPath), { recursive: true })
 
     const onError = (err: unknown) => {
       if (err) {
-        if (silent) return
         return output(
           colors.red(
             `${relativePath} could not be symlinked to ${destPath}: ${err}`,
@@ -39,17 +36,13 @@ export default function syncFiles({
     }
 
     if (strategy === 'symlink') {
-      fs.symlink(srcPath, destPath, 'file', onError)
+      symlink(srcPath, destPath, 'file', onError)
     } else {
-      fs.copyFile(srcPath, destPath, onError)
+      copyFile(srcPath, destPath, onError)
     }
-
-    if (silent) return
-    console.log(`${colors.blue(relativePath)} ${colors.green(`was ${type === 'add' ? 'added' : 'changed'}`)}`)
   } else if (type === 'unlink') {
-    fs.unlink(destPath, (err) => {
+    unlink(destPath, (err) => {
       if (err) {
-        if (silent) return
         output(colors.red(`${destPath} could not be deleted: ${err}`), ready)
       }
     })

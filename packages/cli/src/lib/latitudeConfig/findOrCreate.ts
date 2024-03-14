@@ -1,12 +1,12 @@
 import colors from 'picocolors'
 import path from 'path'
 import fsExtra from 'fs-extra'
-import { LATITUDE_CONFIG_FILE } from '../../commands/constants'
+import { LATITUDE_CONFIG_FILE } from '$src/commands/constants'
 
 import defaultConfig from './defaultConfig.json'
 import { getLatitudeVersions } from '../getAppVersions'
 import validate from './validate'
-import { PackageManagerWithFlags } from '../../config'
+import { PackageManagerWithFlags } from '$src/config'
 import boxedMessage from '../boxedMessage'
 
 async function getLatestVersion(pkgManager: PackageManagerWithFlags) {
@@ -33,15 +33,20 @@ async function getLatestVersion(pkgManager: PackageManagerWithFlags) {
 }
 
 type ConfigData = {
-  appVersion?: string,
-  projectName: string,
-  deployPlatform?: string,
+  version?: string
+  name: string
 }
 type ConfigFile = {
-  data: ConfigData,
+  data: ConfigData
   path: string
 }
-export function findConfigFile({ appDir, throws }: { appDir: string, throws: boolean}): ConfigFile {
+export function findConfigFile({
+  appDir,
+  throws,
+}: {
+  appDir: string
+  throws: boolean
+}): ConfigFile {
   const configPath = `${appDir}/${LATITUDE_CONFIG_FILE}`
   const data = fsExtra.readJsonSync(configPath, { throws }) as ConfigData
   return {
@@ -50,22 +55,21 @@ export function findConfigFile({ appDir, throws }: { appDir: string, throws: boo
   }
 }
 
-export default async function findOrCreateLatitudeConfig({
+export default async function findOrCreateConfigFile({
   appDir,
   pkgManager,
 }: {
   appDir: string
   pkgManager: PackageManagerWithFlags
 }): Promise<ConfigFile | null> {
-  const projectName = path.basename(appDir)
   const config = findConfigFile({ appDir, throws: false })
 
   let allGood = false
   try {
-    const appVersion = config.data?.appVersion || (await getLatestVersion(pkgManager))
-    if (!appVersion) return null
+    const version = config.data?.version || (await getLatestVersion(pkgManager))
+    if (!version) return null
 
-    const data = { ...defaultConfig, projectName, appVersion }
+    const data = { ...defaultConfig, name: path.basename(appDir), version }
     const validated = validate(data)
 
     if (!validated.valid) {

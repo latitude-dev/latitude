@@ -40,12 +40,12 @@ export default {
       browser: false,
       exportConditions: ['node'],
     }),
-    json(),
     replace({
       'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),
       preventAssignment: true,
     }),
+    json(),
   ],
   external: [
     'ajv',

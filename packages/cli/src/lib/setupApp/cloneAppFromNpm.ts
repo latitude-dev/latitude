@@ -3,28 +3,28 @@ import axios from 'axios'
 import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
-import config from '../../config'
-import { LATITUDE_FOLDER, PACKAGE_NAME } from '../../commands/constants'
-import { onError } from '../../utils'
+import config from '$src/config'
+import { LATITUDE_FOLDER, PACKAGE_NAME } from '$src/commands/constants'
+import { onError } from '$src/utils'
 import { type Props } from './index'
 import { getInstalledVersion } from '../getAppVersions'
 import boxedMessage from '../boxedMessage'
 
 export default async function cloneAppFromNpm({
-  appVersion: updateVersion,
+  version: updateVersion,
 }: Props): Promise<boolean> {
   const latitudeFolder = `${config.cwd}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
-  const appVersion = updateVersion ?? config.projectConfig.appVersion
-  const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${appVersion} dist.tarball`
+  const version = updateVersion ?? config.projectConfig.version
+  const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${version} dist.tarball`
   const installedVersion = getInstalledVersion(config.cwd)
 
-  if (installedVersion === appVersion) {
+  if (installedVersion === version) {
     boxedMessage({
       title: 'Same version',
-      text: `${colors.blue('Version')} ${colors.green(
-        appVersion,
-      )} ${colors.blue('is already installed')}`,
+      text: `${colors.blue('Version')} ${colors.green(version)} ${colors.blue(
+        'is already installed',
+      )}`,
       color: 'green',
     })
     return false

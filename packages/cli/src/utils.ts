@@ -52,6 +52,7 @@ export function onError({ error, message, color = 'red' }: OnErrorProps) {
     title: 'Error',
     color,
   })
+
   process.exit(1)
 }
 
