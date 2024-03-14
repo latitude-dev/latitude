@@ -6,7 +6,16 @@ import {
   ResolvedParam,
 } from '@latitude-data/base-connector'
 import QueryResult, { DataType } from '@latitude-data/query_result'
-import pg from 'pg'
+import { DatabaseError, Pool, types as pgtypes } from 'pg'
+import { readFileSync } from 'fs'
+
+type SSLConfig = {
+  sslmode?: 'allow' | 'prefer' | 'require' | 'verify-ca' | 'verify-full'
+  ca?: string
+  key?: string
+  cert?: string
+  rejectUnauthorized?: boolean
+}
 
 export type ConnectionParams = {
   database: string
@@ -15,6 +24,7 @@ export type ConnectionParams = {
   host: string
   port: number
   schema?: string
+  ssl?: boolean | SSLConfig
 }
 
 export class PostgresConnector extends BaseConnector {
@@ -23,7 +33,7 @@ export class PostgresConnector extends BaseConnector {
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
 
-    this.pool = new pg.Pool(connectionParams)
+    this.pool = new Pool(this.buildConnectionParams(connectionParams))
 
     if (connectionParams.schema) {
       this.pool.on('connect', (client) => {
@@ -63,7 +73,7 @@ export class PostgresConnector extends BaseConnector {
         rows: result.rows.map((row) => Object.values(row)),
       })
     } catch (error) {
-      const errorObj = error as pg.DatabaseError
+      const errorObj = error as DatabaseError
       throw new QueryError(errorObj.message, errorObj)
     } finally {
       client.release()
@@ -84,36 +94,79 @@ export class PostgresConnector extends BaseConnector {
     fallbackType = DataType.Unknown,
   ): DataType {
     switch (dataTypeID) {
-      case pg.types.builtins.BOOL:
+      case pgtypes.builtins.BOOL:
         return DataType.Boolean
 
-      case pg.types.builtins.NUMERIC:
-      case pg.types.builtins.MONEY:
-      case pg.types.builtins.INT2:
-      case pg.types.builtins.INT4:
-      case pg.types.builtins.INT8:
+      case pgtypes.builtins.NUMERIC:
+      case pgtypes.builtins.MONEY:
+      case pgtypes.builtins.INT2:
+      case pgtypes.builtins.INT4:
+      case pgtypes.builtins.INT8:
         return DataType.Integer
 
-      case pg.types.builtins.FLOAT4:
-      case pg.types.builtins.FLOAT8:
+      case pgtypes.builtins.FLOAT4:
+      case pgtypes.builtins.FLOAT8:
         return DataType.Float
 
-      case pg.types.builtins.VARCHAR:
-      case pg.types.builtins.TEXT:
-      case pg.types.builtins.CHAR:
-      case pg.types.builtins.JSON:
-      case pg.types.builtins.XML:
+      case pgtypes.builtins.VARCHAR:
+      case pgtypes.builtins.TEXT:
+      case pgtypes.builtins.CHAR:
+      case pgtypes.builtins.JSON:
+      case pgtypes.builtins.XML:
         return DataType.String
 
-      case pg.types.builtins.DATE:
-      case pg.types.builtins.TIME:
-      case pg.types.builtins.TIMETZ:
-      case pg.types.builtins.TIMESTAMP:
-      case pg.types.builtins.TIMESTAMPTZ:
+      case pgtypes.builtins.DATE:
+      case pgtypes.builtins.TIME:
+      case pgtypes.builtins.TIMETZ:
+      case pgtypes.builtins.TIMESTAMP:
+      case pgtypes.builtins.TIMESTAMPTZ:
         return DataType.Datetime
 
       default:
         return fallbackType
     }
+  }
+
+  private buildConnectionParams(params: ConnectionParams): ConnectionParams {
+    const payload = {
+      ...params,
+      ssl:
+        params.ssl !== undefined ? this.buildSSLConfig(params.ssl) : undefined,
+    }
+
+    return this.compact(payload) as ConnectionParams
+  }
+
+  private buildSSLConfig(ssl: boolean | SSLConfig) {
+    if (typeof ssl === 'boolean') {
+      return ssl
+    }
+
+    const { sslmode, ca, key, cert, rejectUnauthorized } = ssl
+    const payload = {
+      sslmode,
+      rejectUnauthorized,
+      ca: ca ? this.readSecureFile(ca) : undefined,
+      key: key ? this.readSecureFile(key) : undefined,
+      cert: cert ? this.readSecureFile(cert) : undefined,
+    }
+
+    return this.compact(payload)
+  }
+
+  private readSecureFile(filePath: string) {
+    try {
+      return readFileSync(filePath).toString()
+    } catch (error) {
+      throw new Error(
+        `Failed to read file at ${filePath}: ${(error as Error).message}`,
+      )
+    }
+  }
+
+  private compact(obj: Record<string, unknown>) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([, value]) => value !== undefined),
+    )
   }
 }

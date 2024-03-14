@@ -8,6 +8,8 @@
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
     "build": "rollup -c",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts"
   },
@@ -20,9 +22,11 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/pg": "^8.11.0",
-    "rollup": "^4.10.0",
     "prettier": "^3.1.1",
-    "typescript": "^5.2.2"
+    "rollup": "^4.10.0",
+    "typescript": "^5.2.2",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.3.1"
   },
   "peerDependencies": {
     "@latitude-data/base-connector": "workspace:*",
