@@ -9,6 +9,7 @@ export const textColors = {
   foreground: 'text-foreground',
   link: 'text-link',
   inherit: 'text-inherit',
+  muted: 'text-muted-foreground',
 }
 
 export type TextColor = keyof typeof textColors
@@ -25,6 +26,7 @@ export const leadings = {
   h4: ' leading-6',
   h5: ' leading-5',
   h6: ' leading-4',
+  none: 'leading-none',
 }
 
 export const sizes = {
@@ -77,7 +79,7 @@ export type FontFamily = keyof typeof families
 export type TextProps = {
   as?: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   capitalize?: boolean
-  className?: string | undefined | null
+  class?: string | undefined | null
   centered?: boolean
   color?: TextColor
   ellipsis?: boolean
@@ -102,7 +104,7 @@ export function cssClass({
   family = 'sans',
   capitalize = false,
   centered = false,
-  className,
+  class: className,
   size = 'h4',
   leading = 'h4',
   color = 'foreground',

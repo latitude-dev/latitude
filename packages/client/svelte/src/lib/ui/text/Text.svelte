@@ -19,7 +19,7 @@
   export let whiteSpace: $$Props['whiteSpace'] = 'normal'
   export let wordBreak: $$Props['wordBreak'] = 'normal'
 
-  let className: $$Props['className'] = undefined
+  let className: $$Props['class'] = undefined
   export { className as class }
 
   $: classes = theme.ui.text.cssClass({
@@ -37,7 +37,7 @@
     weight,
     whiteSpace,
     wordBreak,
-    className,
+    class: className,
   })
 </script>
 

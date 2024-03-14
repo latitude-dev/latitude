@@ -5,6 +5,7 @@ import * as column from './column'
 import * as row from './row'
 import * as chart from './chart'
 import * as input from './input'
+import * as label from './label'
 import * as calendar from './calendar'
 import * as popover from './popover'
 import * as select from './select'
@@ -20,6 +21,7 @@ export {
   row,
   chart,
   input,
+  label,
   table,
   link,
   calendar,
