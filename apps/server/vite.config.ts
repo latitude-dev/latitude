@@ -11,6 +11,7 @@ export default defineConfig({
     autoImport({
       module: {
         '@latitude-data/svelte': [
+          'Alert',
           'Button',
           'Card',
           'Row',
@@ -38,5 +39,5 @@ export default defineConfig({
     rollupOptions: {
       external: ['@latitude-data/connector-factory'],
     },
-  }
+  },
 })
