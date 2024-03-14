@@ -51,6 +51,7 @@ To configure the connection with your your Snowflake database follow these steps
 
 ## Test connection
 
-To test the connection got to a file in `/queries/.../your_query_file.sql` and make a query using the new connection as source.
+To test the connection you can:
 
-You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.
+1. Create a query `.sql` in the `queries` directory that points to a table of your new connection in the `FROM` clause. See the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to learn more.
+2. Use the command line to run `latitude run query_file_name` where `query_file_name` is the name of your `.sql` file. This will display the results in your terminal. See the section [Running queries](../guides/development/latitude-cli#running-queries) to learn more about how to query your data.
