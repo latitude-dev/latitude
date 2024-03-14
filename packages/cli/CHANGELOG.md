@@ -6,7 +6,7 @@
 
 - c86e7b9: fix: .env syncing throwing an error when .env does not exist
   fix: properly exit when user tells us to and directory is not empty
-  minor: changed latitude.json default attribute names for more sensible ones
+  (BREAKING) major: changed latitude.json default attribute names for more sensible ones
 
 ## 0.1.0
 
