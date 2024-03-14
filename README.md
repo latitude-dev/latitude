@@ -21,6 +21,7 @@ You can use Latitude for many things, but the most common use cases are:
 
 - **Data apps**: Build interactive frontend applications on top of your live data.
 - **Embedded analytics**: Add data visualizations and dashboards to your existing app.
+- **Data APIs**: Expose your data through a REST API to integrate with other systems.
 
 <br />
 
