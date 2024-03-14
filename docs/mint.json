@@ -70,7 +70,11 @@
     },
     {
       "group": "Examples",
-      "pages": ["guides/examples/basic-example", "guides/examples/api"]
+      "pages": [
+        "guides/examples/basic-example",
+        "guides/examples/api",
+        "guides/examples/templates"
+      ]
     },
     {
       "group": "Deploy",
