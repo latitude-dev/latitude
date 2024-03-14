@@ -9,11 +9,15 @@ Views are a powerful way to create custom layouts for your data apps. They allow
 
 ## Routing
 
-In a Latitude data app, routes are inferred from the file structure of your app. For example, if you have a file called `views/index.html`, it will be accessible at the root of your app. If you have a file called `views/about.html`, it will be accessible at `/about`.
+In a Latitude data app, routes are inferred from the file structure of your app. For example, if you have a file called `views/index.html`, it will be accessible at the root of your app. 
 
-You can also create nested routes by creating a directory with the same name as the route you want to create. For example, if you have a file called `views/charts/index.html`, it will be accessible at `/charts`. Consequently, if you have a file called `views/charts/bar.html`, it will be accessible at `/charts/bar`.
+To create more pages you need nested routes. You can do this by creating a directory with the same name as the route or page you want to create. For example, if you have a file called `views/charts/index.html`, it will be accessible at `/charts`. Consequently, if you have a file called `views/charts/bar/index.html`, it will be accessible at `/charts/bar`.
 
-If you have both a file and a directory with the same name, the framework will throw an error. You can fix this by renaming one of the files.
+<Note>So view files must be named as `index.html` and the name of the route is determined by the directory or folder where it is placed.</Note>
+
+If you have a file named `views/about.html`, it won't be accessible because we only allow one file at root level and only files named `index`.
+
+If you have both a file and a directory with the same name, the framework will throw an error.
 
 ## Passing parameters
 
