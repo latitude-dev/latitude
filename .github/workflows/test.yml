@@ -56,9 +56,8 @@ jobs:
         run: |
           pnpm install
 
-          # tells Turbo to only run the script (build or test in this case) for the packages
       - name: Use Turbo to build affected packages
-        run: pnpm turbo run build --cache-dir=.turbo --filter=@latitude-data/*{./packages/*}[HEAD^1] --filter=@latitude-data/*{./apps/*}[HEAD^1]
+        run: pnpm turbo run build --cache-dir=.turbo
 
       - name: Run tests
-        run: pnpm turbo run test --filter=@latitude-data/*{./packages/*}[HEAD^1] --filter=@latitude-data/*{./apps/*}[HEAD^1]
+        run: pnpm turbo run test --filter=[HEAD^1] --filter=[HEAD^1]
