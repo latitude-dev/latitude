@@ -1,11 +1,21 @@
 <script lang="ts">
-  import { Input } from "@latitude-data/svelte";
+  import { Input, Label, Text } from "@latitude-data/svelte";
   import { setViewParam, useViewParam } from "$lib/stores/viewParams";
   import { createEventDispatcher } from "svelte";
 
-  export let param: string;
-  export let value: unknown = "";
-  export let type: string = "text";
+  type $$Props = {
+    param: string;
+    type: string;
+    value?: unknown;
+    label?: string;
+    description?: string;
+  }
+
+  export let param: $$Props["param"];
+  export let type: $$Props["type"] = "text";
+  export let value: $$Props["value"] = undefined;
+  export let label: $$Props["label"] = undefined;
+  export let description: $$Props["description"] = undefined;
 
   let inputStore = useViewParam(param, value);
 
@@ -25,10 +35,18 @@
   };
 </script>
 
-<Input
-  on:input={handleInput}
-  value={$inputStore}
-  type={type}
-  checked={type === "checkbox" && !!$inputStore}
-  {...$$restProps}
-/>
+<div class="grid w-full max-w-sm items-center gap-1.5">
+  {#if label}
+    <Label for={param}>{label}</Label>
+  {/if}
+  <Input
+    on:input={handleInput}
+    value={$inputStore}
+    type={type}
+    checked={type === "checkbox" && !!$inputStore}
+    {...$$restProps}
+  />
+  {#if description}
+    <Text size="h5" color='muted'>{description}</Text>
+  {/if}
+</div>
