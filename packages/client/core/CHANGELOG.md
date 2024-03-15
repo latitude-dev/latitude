@@ -1,5 +1,18 @@
 # @latitude-data/client
 
+## 0.2.0
+
+### Minor Changes
+
+- 4546334: Reworked DatePicker and added new RangeDatePicker
+- a3aab3b: Added label and description to Input component
+- 84cef1e: Implements the Alert component
+
+### Patch Changes
+
+- Updated dependencies [4546334]
+  - @latitude-data/custom_types@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

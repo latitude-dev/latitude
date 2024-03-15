@@ -1,5 +1,24 @@
 # @latitude-data/connector-factory
 
+## 0.1.1
+
+### Patch Changes
+
+- Updated dependencies [b9282fe]
+- Updated dependencies [ae29ce6]
+- Updated dependencies [d4bac9b]
+  - @latitude-data/postgresql-connector@1.1.0
+  - @latitude-data/databricks-connector@1.0.1
+  - @latitude-data/snowflake-connector@1.0.1
+  - @latitude-data/bigquery-connector@1.0.1
+  - @latitude-data/athena-connector@1.0.1
+  - @latitude-data/duckdb-connector@1.0.1
+  - @latitude-data/sqlite-connector@1.0.1
+  - @latitude-data/mssql-connector@1.0.1
+  - @latitude-data/mysql-connector@1.0.1
+  - @latitude-data/trino-connector@1.0.1
+  - @latitude-data/base-connector@1.0.1
+
 ## 0.1.0
 
 ### Minor Changes
