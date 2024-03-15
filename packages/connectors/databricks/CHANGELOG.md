@@ -1,5 +1,13 @@
 # @latitude-data/databricks-connector
 
+## 1.0.1
+
+### Patch Changes
+
+- ae29ce6: Moved latitude packages from peer to regular dependencies
+- Updated dependencies [ae29ce6]
+  - @latitude-data/base-connector@1.0.1
+
 ## 1.0.0
 
 ### Minor Changes

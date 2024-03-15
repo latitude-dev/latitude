@@ -1,5 +1,11 @@
 # @latitude-data/type_parser
 
+## 0.2.0
+
+### Minor Changes
+
+- 4546334: Reworked DatePicker and added new RangeDatePicker
+
 ## 0.1.0
 
 ### Minor Changes

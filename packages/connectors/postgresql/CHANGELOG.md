@@ -1,5 +1,17 @@
 # @latitude-data/postgresql-connector
 
+## 1.1.0
+
+### Minor Changes
+
+- b9282fe: Added ssl support to postgres connector
+
+### Patch Changes
+
+- ae29ce6: Moved latitude packages from peer to regular dependencies
+- Updated dependencies [ae29ce6]
+  - @latitude-data/base-connector@1.0.1
+
 ## 1.0.0
 
 ### Minor Changes
