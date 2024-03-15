@@ -11,7 +11,7 @@
     "prettier": "turbo prettier",
     "build": "turbo build",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "release": "pnpm run build && pnpm run changeset publish",
+    "release": "pnpm run build && changeset publish",
     "publish-packages": "turbo run build lint tc test && pnpm run changeset version && pnpm run changeset publish",
     "latitude-dev": "./node_modules/.bin/latitude"
   },
