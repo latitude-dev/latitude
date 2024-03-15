@@ -93,6 +93,7 @@
       "pages": [
         "sources/athena",
         "sources/bigquery",
+        "sources/clickhouse",
         "sources/databricks",
         "sources/duckdb",
         "sources/mysql",
