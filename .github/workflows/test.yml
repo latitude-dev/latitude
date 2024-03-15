@@ -3,18 +3,8 @@ name: Tests suite
 on:
   push:
     branches: ['main']
-    paths:
-      - 'apps/server/src/**/*.ts'
-      - 'apps/server/src/**/*.svelte'
-      - 'packages/client/svelte/src/*.svelte'
-      - 'packages/**/*.ts'
-
   pull_request:
-    paths:
-      - 'apps/server/src/**/*.svelte'
-      - 'apps/server/src/**/*.ts'
-      - 'packages/**/*.ts'
-      - 'packages/client/svelte/src/*.svelte'
+    branches: ['main']
 
 jobs:
   test:

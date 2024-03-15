@@ -24,9 +24,7 @@
     "vitest": "^1.2.2"
   },
   "dependencies": {
-    "@latitude-data/sql-compiler": "workspace:*"
-  },
-  "peerDependencies": {
+    "@latitude-data/sql-compiler": "workspace:*",
     "@latitude-data/query_result": "workspace:*"
   },
   "main": "dist/index.js",

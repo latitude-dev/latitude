@@ -3,18 +3,8 @@ name: Linter & Types
 on:
   push:
     branches: ['main']
-    paths:
-      - 'apps/server/src/**/*.ts'
-      - 'apps/server/src/**/*.svelte'
-      - 'packages/client/svelte/src/*.svelte'
-      - 'packages/**/*.ts'
-
   pull_request:
-    paths:
-      - 'apps/server/src/**/*.ts'
-      - 'apps/server/src/**/*.svelte'
-      - 'packages/client/svelte/src/*.svelte'
-      - 'packages/**/*.ts'
+    branches: ['main']
 
 jobs:
   test:

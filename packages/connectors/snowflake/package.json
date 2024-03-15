@@ -12,10 +12,6 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "peerDependencies": {
-    "@latitude-data/base-connector": "workspace:^",
-    "@latitude-data/query_result": "workspace:^"
-  },
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/typescript": "workspace:*",
@@ -24,6 +20,8 @@
     "rollup": "^4.10.0"
   },
   "dependencies": {
+    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/query_result": "workspace:^",
     "@types/snowflake-sdk": "^1.6.20",
     "snowflake-sdk": "^1.9.3"
   }

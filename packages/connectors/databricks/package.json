@@ -23,11 +23,9 @@
     "tslib": "^2.4.1",
     "typescript": "^5.2.2"
   },
-  "peerDependencies": {
-    "@latitude-data/base-connector": "workspace:*",
-    "@latitude-data/query_result": "workspace:*"
-  },
   "dependencies": {
+    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/query_result": "workspace:*",
     "@databricks/sql": "^1.8.1"
   },
   "main": "dist/index.js",
