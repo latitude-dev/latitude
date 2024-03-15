@@ -122,9 +122,10 @@ const onStdout =
   }
 
 const onStderr = (data: Buffer) => {
-  if (data.includes('WARNING')) return
+  const str = data.toString()
+  if (str.includes('WARNING')) return
 
-  console.log(colors.yellow(data.toString()))
+  console.log(colors.yellow(str))
 }
 
 const onError = (error: Error) => {
