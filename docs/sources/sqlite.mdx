@@ -19,11 +19,7 @@ To configure the connection with your your SQLite database follow these steps:
 <Steps>
   <Step title='Go to the source `.yaml` file within the `queries` folder'></Step>
   <Step title='Add the following code for your SQLite connection'>
-    ``` yaml
-    type: sqlite
-    details: 
-      url: string
-    ```
+    ``` yaml type: sqlite details: url: string ```
   </Step>
   <Step title='Replace the details section with your info and save'></Step>
   <Step title='Done, now you can test your connection'></Step>
@@ -31,10 +27,11 @@ To configure the connection with your your SQLite database follow these steps:
 
 ## Attributes
 
-- **URL** → The file path of the SQLite database on your system. SQLite is a file-based database, so instead of connecting to a server, you specify the path to the database file your application should use. This path can be absolute, pointing exactly where the file is located on the filesystem, or relative, based on the current working directory of your application.
+- **URL** → (Optional) The file path of the SQLite database on your system. SQLite is a file-based database, so instead of connecting to a server, you specify the path to the database file your application should use. This path can be absolute, pointing exactly where the file is located on the filesystem, or relative, based on the current working directory of your application. In its absence, SQLite starts a new database in memory that will not get persisted once the connection is closed.
 
 ## Test connection
 
-To test the connection got to a file in `/queries/.../your_query_file.sql` and make a query using the new connection as source.
+To test the connection you can:
 
-You can check the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to know how to query your data.
+1. Create a query `.sql` in the `queries` directory that points to a table of your new connection in the `FROM` clause. See the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to learn more.
+2. Use the command line to run `latitude run query_file_name` where `query_file_name` is the name of your `.sql` file. This will display the results in your terminal. See the section [Running queries](../guides/development/latitude-cli#running-queries) to learn more about how to query your data.

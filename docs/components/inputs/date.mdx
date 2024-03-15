@@ -1,4 +1,65 @@
 ---
 title: 'Date'
-description: 'description'
+description: 'Create a date input to control parameters in your queries'
 ---
+
+## Introduction
+
+Date inputs provide a way to set the date values of the [parameters in your queries](/queries/logic/parameters) from your views. Basically they let you provide a user interface to your queries.
+
+## Basic usage
+
+The most basic usage of a date input is to provide a date for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control.
+
+There are two types of date input [Single Date](#single-date) or [Date Range](#date-range).
+
+## Single Date
+
+```html
+<DatePicker param="my_date"/>
+```
+
+This will create a date input that is associated with the `my_date` parameter. If you load the page with the `my_date` parameter already in the URL, you will see the value from the URL in the input. You can also provide a default value for the input by using the `value` prop with the year-month-day `YYYY-mm-dd` format otherwise the default will be today.
+
+```html
+<DatePicker param="name" value="2024-03-12" />
+```
+
+<Note>Remember to use the `YYYY-mm-dd` format</Note>
+
+### Relative Dates
+
+You can also add relative dates instead of fixed dates. Relative dates vary depending on the current day, month and year. The values available at the moment are:
+
+- `_TODAY_`
+- `_TOMORROW_`
+- `_YESTERDAY_`
+- `_ONE_WEEK_AGO_`
+- `_ONE_WEEK_FROM_NOW_`
+- `_ONE_MONTH_AGO_`
+- `_ONE_MONTH_FROM_NOW_`
+
+### Value Type
+
+The value type of the data that comes from a `<DatePicker>` component is always **date** so if you want to make it work with strings for example you will need to cast the values to make them compatible.
+
+## Date Range
+
+In case you want to specify a range of dates, the start and the end of the date you are looking for to narrow your search, there is the RangeDatePicker.
+
+``` html
+<RangeDatePicker startParam="start_date" endParam="end_date"/>
+```
+
+Instead of one param you must to specify two params `startParam` and `endParam` which are the ones you will be able to use in your SQL code. It is mandatory to set both otherwise the component will return an error.
+
+For the default values you can use `startValue` and `endValue`.
+
+``` html
+<RangeDatePicker 
+    startParam="start_date" endParam="end_date"
+    startValue="2022-02-14" endValue="2024-03-12"
+/>
+```
+
+If one of them are empty then the defaults will be ignored. It only works with fixed dates instead of relative ones.
