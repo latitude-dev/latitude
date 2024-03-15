@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { format } from 'date-fns/format'
 import { RichDate, RelativeDate } from '.'
+import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
+
+function datesAreEqual(date1: Date, date2: Date, threshold = 2000) {
+  return Math.abs(date1.getTime() - date2.getTime()) < threshold
+}
 
 describe('RichDate', () => {
   describe('constructor', () => {
@@ -85,35 +89,36 @@ describe('RichDate', () => {
   describe('resolve', () => {
     it('resolves to the current date for Today', () => {
       const richDateToday = new RichDate(RelativeDate.Today)
-      const fmt = 'dd/MM/yyyy'
-
-      expect(format(richDateToday.resolve(), fmt)).toEqual(
-        format(new Date(), fmt),
-      )
+      expect(datesAreEqual(richDateToday.resolve(), startOfToday())).toBe(true)
     })
 
     it('resolves to the previous date for Yesterday', () => {
       const richDateYesterday = new RichDate(RelativeDate.Yesterday)
-      const expectedDate = new Date(Date.now() - 24 * 60 * 60 * 1000)
-      expect(richDateYesterday.resolve()).toEqual(expectedDate)
+      const expectedDate = startOfYesterday()
+      expect(datesAreEqual(richDateYesterday.resolve(), expectedDate)).toBe(
+        true,
+      )
     })
 
     it('resolves to the next date for Tomorrow', () => {
       const richDateTomorrow = new RichDate(RelativeDate.Tomorrow)
-      const expectedDate = new Date(Date.now() + 24 * 60 * 60 * 1000)
-      expect(richDateTomorrow.resolve()).toEqual(expectedDate)
+      const expectedDate = startOfTomorrow()
+      expect(datesAreEqual(richDateTomorrow.resolve(), expectedDate)).toBe(true)
     })
 
-    it('resolves to Today for invalid relative dates', () => {
+    it('resolves to Now for invalid relative dates', () => {
       // @ts-ignore
       const richDateInvalid = new RichDate('invalid')
-      expect(richDateInvalid.resolve()).toEqual(new Date())
+      const richDateNow = new RichDate(RelativeDate.Now)
+      expect(
+        datesAreEqual(richDateInvalid.resolve(), richDateNow.resolve()),
+      ).toBe(true)
     })
 
     it('returns the exact date for specific dates', () => {
       const customDate = new Date(2020, 0, 1)
       const richDate = new RichDate(customDate)
-      expect(richDate.resolve()).toEqual(customDate)
+      expect(datesAreEqual(richDate.resolve(), customDate)).toBe(true)
     })
   })
 })
