@@ -162,9 +162,7 @@
       "group": "Inputs",
       "pages": [
         "components/inputs/text",
-        "components/inputs/select",
-        "components/inputs/date",
-        "components/inputs/checkbox"
+        "components/inputs/date"
       ]
     },
     {
