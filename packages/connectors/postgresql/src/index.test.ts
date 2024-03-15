@@ -1,10 +1,12 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import { PostgresConnector } from './index'
 import { readFileSync } from 'fs'
-import { Pool } from 'pg'
+import pg from 'pg'
 
 vi.mock('pg', () => ({
-  Pool: vi.fn(),
+  default: {
+    Pool: vi.fn(),
+  },
 }))
 
 vi.mock('fs', () => ({
@@ -13,7 +15,7 @@ vi.mock('fs', () => ({
 
 describe('PostgresConnector SSL Configurations', () => {
   beforeEach(() => {
-    vi.mocked(Pool).mockClear()
+    vi.mocked(pg.Pool).mockClear()
   })
 
   it('passes boolean SSL config correctly', () => {
@@ -26,7 +28,7 @@ describe('PostgresConnector SSL Configurations', () => {
       ssl: true,
     })
 
-    const poolConfig = vi.mocked(Pool).mock.calls[0]?.[0]
+    const poolConfig = vi.mocked(pg.Pool).mock.calls[0]?.[0]
     expect(poolConfig?.ssl).toBe(true)
   })
 
@@ -49,7 +51,7 @@ describe('PostgresConnector SSL Configurations', () => {
     expect(readFileSync).toHaveBeenCalledWith('path/to/key')
     expect(readFileSync).toHaveBeenCalledWith('path/to/cert')
 
-    const poolConfig = vi.mocked(Pool).mock.calls[0]?.[0]?.ssl
+    const poolConfig = vi.mocked(pg.Pool).mock.calls[0]?.[0]?.ssl
 
     expect(poolConfig).toEqual({
       sslmode: 'require',
