@@ -122,6 +122,8 @@ const onStdout =
   }
 
 const onStderr = (data: Buffer) => {
+  if (data.includes('WARNING')) return
+
   console.log(colors.yellow(data.toString()))
 }
 
