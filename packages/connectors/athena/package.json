@@ -7,7 +7,6 @@
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
-    "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts"
   },
   "main": "dist/index.js",

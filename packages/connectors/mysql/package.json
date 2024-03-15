@@ -8,7 +8,6 @@
     "build": "rollup -c",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts"
   },
   "type": "module",

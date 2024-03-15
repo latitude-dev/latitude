@@ -14,7 +14,6 @@
     "package": "pnpm run prepare && svelte-package && publint",
     "prebuild": "node ./scripts/hack-svelte-package/prebuild.js",
     "prepare": "svelte-kit sync",
-    "prepublishOnly": "pnpm run package",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
     "tc": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",

@@ -10,7 +10,6 @@
     "tc": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts"
   },
   "type": "module",

@@ -9,7 +9,6 @@
     "build": "rollup -c",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepublishOnly": "pnpm run build",
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {

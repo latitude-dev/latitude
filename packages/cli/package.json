@@ -11,7 +11,6 @@
   "scripts": {
     "rollup": "rollup -c",
     "build": "NODE_ENV=production pnpm run rollup",
-    "prepublishOnly": "pnpm run build",
     "dev": "pnpm run rollup --watch",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
