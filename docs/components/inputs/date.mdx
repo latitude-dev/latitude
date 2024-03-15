@@ -11,7 +11,7 @@ Date inputs provide a way to set the date values of the [parameters in your quer
 
 The most basic usage of a date input is to provide a date for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control.
 
-There are two types of date input [Single Date](#single-date) or [Range Date](#date-range).
+There are two types of date input [Single Date](#single-date) or [Date Range](#date-range).
 
 ## Single Date
 
@@ -27,13 +27,9 @@ This will create a date input that is associated with the `my_date` parameter. I
 
 <Note>Remember to use the `YYYY-mm-dd` format</Note>
 
-If you load the page without the parameter `my_date` in the URL, the input will be set to the default value. 
-
-If you load the page with a different value for the `my_date` parameter in the URL, the input will be set to that value.
-
 ### Relative Dates
 
-Also you can add relative dates instead of fixed dates. Relative dates vary depending on the current day, month and year. The values available at the moment are:
+You can also add relative dates instead of fixed dates. Relative dates vary depending on the current day, month and year. The values available at the moment are:
 
 - `_TODAY_`
 - `_TOMORROW_`
