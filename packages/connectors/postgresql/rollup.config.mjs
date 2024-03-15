@@ -1,3 +1,4 @@
+import commonjs from '@rollup/plugin-commonjs'
 import typescript from '@rollup/plugin-typescript'
 
 export default {
@@ -9,6 +10,7 @@ export default {
     },
   ],
   plugins: [
+    commonjs(),
     typescript({
       exclude: ['**/__tests__', '**/*.test.ts'],
     }),

@@ -4,9 +4,11 @@ import { defineConfig } from 'vite'
 // @ts-ignore
 import autoImport from '@latitude-data/sveltekit-autoimport'
 import latitudePlugin from './plugins/latitude'
+import commonjs from '@rollup/plugin-commonjs';
 
 export default defineConfig({
   plugins: [
+    commonjs(),
     latitudePlugin(),
     autoImport({
       module: {

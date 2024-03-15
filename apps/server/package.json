@@ -23,6 +23,7 @@
     "@latitude-data/query_result": "workspace:*",
     "@latitude-data/sql-compiler": "workspace:^",
     "@latitude-data/sveltekit-autoimport": "^1.7.1",
+    "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/pluginutils": "^5.1.0",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/adapter-node": "^4.0.1",

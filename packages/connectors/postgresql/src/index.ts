@@ -6,10 +6,8 @@ import {
   ResolvedParam,
 } from '@latitude-data/base-connector'
 import QueryResult, { DataType } from '@latitude-data/query_result'
-import pg from 'pg'
+import { DatabaseError, Pool, types as pgtypes } from 'pg'
 import { readFileSync } from 'fs'
-
-const { Pool, types: pgtypes } = pg
 
 type SSLConfig = {
   sslmode?: 'allow' | 'prefer' | 'require' | 'verify-ca' | 'verify-full'
@@ -75,7 +73,7 @@ export class PostgresConnector extends BaseConnector {
         rows: result.rows.map((row) => Object.values(row)),
       })
     } catch (error) {
-      const errorObj = error as pg.DatabaseError
+      const errorObj = error as DatabaseError
       throw new QueryError(errorObj.message, errorObj)
     } finally {
       client.release()
