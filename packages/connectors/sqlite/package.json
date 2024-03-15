@@ -16,10 +16,6 @@
   "types": "dist/index.d.ts",
   "keywords": [],
   "author": "",
-  "peerDependencies": {
-    "@latitude-data/base-connector": "workspace:^",
-    "@latitude-data/query_result": "workspace:^"
-  },
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/typescript": "workspace:*",
@@ -28,6 +24,8 @@
     "rollup": "^4.10.0"
   },
   "dependencies": {
+    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/query_result": "workspace:^",
     "sqlite3": "^5.1.7"
   }
 }
