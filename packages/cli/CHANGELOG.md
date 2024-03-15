@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.1.2
+
+### Patch Changes
+
+- 59b5528: Ignore CLI spawn process warnings
+
 ## 0.1.1
 
 ### Patch Changes
