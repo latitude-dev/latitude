@@ -3,11 +3,11 @@
 
 # Latitude Framework
 
-Latitude is an open-source full-stack framework for building interactive applications on top of your live data using code.
+Latitude is an open-source full-stack framework for building UIs on top of your live data using code.
 
 1. Connect to your database or data warehouse
 2. Write composable SQL queries with custom parameters to pull and transform your data in real-time
-3. Use simple frontend components to display it in a rich and interactive application
+3. Use simple frontend components to display it in a rich and interactive application, which can be embedded or used as is.
 
 Check out the [live demo 👉](https://netflix-sample.fly.dev/)
 
@@ -19,9 +19,9 @@ https://github.com/latitude-dev/latitude/assets/5465249/370012dc-b417-462e-afb9-
 
 You can use Latitude for many things, but the most common use cases are:
 
-- **Data apps**: Build interactive frontend applications on top of your live data.
 - **Embedded analytics**: Add data visualizations and dashboards to your existing app.
 - **Data APIs**: Expose your data through a REST API to integrate with other systems.
+- **Data apps**: Build interactive frontend applications on top of your live data.
 
 <br />
 
