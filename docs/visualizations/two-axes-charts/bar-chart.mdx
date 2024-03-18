@@ -75,6 +75,12 @@ To configure and customize the chart, you can add properties, some of which are 
     [See the Config section](#config) to learn more about the options.
 </ParamField>
 
+<ParamField path="opts" type="array">
+    Includes options to control the behavior of the chart. For example, react to changes in the parameters to update the data immediately.
+    
+    [See the Reactive To Params section](#reactive-to-params) to learn more about it.
+</ParamField>
+
 ### Axis X and Y Options
 
 Both `x` and `y` can contain multiple data series, so instead of specifying just a column name, you need to create a list of series using the following properties:
@@ -181,3 +187,23 @@ Allows you to add more configuration and customize your chart.
     Add a visual pattern to each series to help colorblind people distinguish them.
 </ParamField>
 
+### Reactive To Params
+
+Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactiveToParams` option is available.
+
+<ParamField path="reactiveToParams" type="boolean">
+    If true, the chart will react to any change in the params to update the data displayed without the need to run the view manually.
+</ParamField>
+
+```js
+<BarChart
+    query='my_data'
+    x='release_year'
+    y='count_shows'
+    xTitle='Year'
+    yTitle='Titles'
+    opts={{
+        reactiveToParams: true
+    }}
+/>
+```
