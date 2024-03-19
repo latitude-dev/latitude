@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/client",
   "description": "Core package of all Latitude client libraries",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "LGPL",
   "scripts": {
     "build:css": "node ./scripts/buildCss.mjs",
