@@ -1,5 +1,22 @@
 # @latitude-data/server
 
+## 0.3.0
+
+### Minor Changes
+
+- 80f6456: - Add sort prop to charts
+  - Add title and description to charts
+  - Fix truncated label in charts
+  - Animate chart data changes
+  - Improve chart error display (will be changed in a future PR)
+  - Display generic error on charts when a query fails in production
+
+### Patch Changes
+
+- Updated dependencies [80f6456]
+  - @latitude-data/svelte@0.3.0
+  - @latitude-data/client@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
