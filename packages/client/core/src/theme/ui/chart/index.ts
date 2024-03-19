@@ -13,6 +13,5 @@ export function blankSlateCssContent() {
 }
 
 export const ERROR_CLASS = {
-  wrapper: 'w-full h-full flex',
-  content: 'h-full',
+  wrapper: 'w-full h-full flex justify-center items-center',
 }
