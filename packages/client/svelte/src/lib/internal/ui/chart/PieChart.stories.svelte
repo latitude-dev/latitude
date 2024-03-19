@@ -59,6 +59,7 @@
 
 <Template id="pie" let:args>
   <PieChart
+    height={400}
     data={args.data}
     isLoading={args.isLoading}
     displayName="Traffic Source"

@@ -33,10 +33,15 @@
 
 <Template id="line" let:args>
   <LineChart
+    height={400}
     data={args.data}
     isLoading={args.isLoading}
     x="event_month"
-    y={['node_events_sum', 'project_events_sum', 'workspace_events_sum']}
+    y={[
+      { name: 'node_events_sum' },
+      { name: 'project_events_sum' },
+      { name: 'workspace_events_sum' },
+    ]}
     xTitle={args.xTitle}
     yTitle={args.yTitle}
     swapAxis={args.swapAxis}

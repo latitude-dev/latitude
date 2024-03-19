@@ -1,65 +1,94 @@
+import { isNaN } from 'lodash-es'
 import type { DatasetOption } from 'echarts/types/dist/shared'
-import { DBSourceRow, Dataset } from '../../types'
-import { AxisType } from '../types'
+import { DBSource, DBSourceColumn, DBSourceRow, Dataset } from '../../types'
 
-const STARTING_DATA_INDEX = 1
+function calculatePercentage(row: DBSourceRow) {
+  const total = row.reduce(
+    (sum, value) => {
+      const maybeNum = Number(value)
+      if (isNaN(maybeNum)) return sum
 
-function calculateRowInPercentage(row: DBSourceRow) {
-  const rowData = row.slice(STARTING_DATA_INDEX)
-  const total = rowData.reduce(
-    (sum, value) => Number(sum) + Number(value),
+      return Number(sum) + maybeNum
+    },
     0,
   ) as number
 
   if (total === 0) {
-    return [row[0]].concat(rowData.map(() => 0))
+    return row.map((val) => {
+      const maybeNum = Number(val)
+      if (isNaN(maybeNum)) return val
+      return 0
+    })
   }
 
-  return [row[0]].concat(rowData.map((value) => Number(value) / total))
+  return row.map((value) => {
+    const maybeNum = Number(value)
+    if (isNaN(maybeNum)) return value
+
+    return maybeNum / total
+  })
 }
 
-type Value = string | number
+type BaseSortItem = {
+  order: 'asc' | 'desc'
+  incomparable?: 'min' | 'max'
+  parser?: 'time' | 'number' | 'trim'
+}
+type TransformedSort = BaseSortItem & { dimension: string }
+type SortItem = BaseSortItem & { column: string }
+
+export type Sort = string | SortItem | SortItem[]
 type Props = {
   dataset: Dataset
-  column?: string
-  axisType?: AxisType
-  usePercentage?: boolean
-}
-function calculateDatasetSource({
-  dataset,
-  column,
-  axisType,
-  usePercentage,
-}: Props) {
-  const forceSort = axisType === AxisType.time
-  const forceSortIndex = forceSort
-    ? dataset.fields.findIndex((field) => field === column)
-    : undefined
-
-  // Sort manually by date if axis scale is Temporal
-  const sortedDataset =
-    forceSort && forceSortIndex !== undefined
-      ? dataset.source.sort((a: Value[], b: Value[]) => {
-        const aVal = a[forceSortIndex]
-        const bVal = b[forceSortIndex]
-
-        if (typeof aVal !== 'string' || typeof bVal !== 'string') return 0
-
-        return new Date(aVal).getTime() - new Date(bVal).getTime()
-      })
-      : dataset.source
-
-  if (!usePercentage) return sortedDataset
-
-  // Use relative percentage instead of absolute values if usePercentage is true
-  return sortedDataset.map(calculateRowInPercentage)
+  normalizeValues?: boolean
+  sort?: Sort
 }
 
-export function getDataset(props: Props): DatasetOption {
+function convertToNumberMaybe(item: DBSourceColumn) {
+  return isNaN(Number(item)) ? item : Number(item)
+}
+
+function normalizeValues(source: DBSource, normalizeValues = false) {
+  if (!normalizeValues) return source.map((row) => row.map(convertToNumberMaybe))
+
+  return source.map(calculatePercentage)
+}
+
+function completeSortItem(sort: string | SortItem): TransformedSort {
+  if (typeof sort === 'string') return { dimension: sort, order: 'asc'}
+
   return {
-    sourceHeader: true,
-    source: [props.dataset.fields].concat(
-      calculateDatasetSource(props).map((row) => row.map(String)),
-    ),
+    dimension: sort.column,
+    order: sort.order,
+    parser: sort.parser,
+    incomparable: sort.incomparable
+  }
+}
+
+function parseSort(sort: Sort | undefined): TransformedSort[] {
+  if (!sort) return []
+  if (Array.isArray(sort)) return sort.map(completeSortItem)
+
+  return [completeSortItem(sort)]
+}
+
+export function getDataset(props: Props): { datasets: DatasetOption[], datasetIndex: number } {
+  const { fields, source } = props.dataset
+  const sort = parseSort(props.sort)
+  const dataset = {
+    dimensions: fields,
+    source: normalizeValues(source, props.normalizeValues),
+  }
+
+  if (!sort.length) return { datasets: [dataset], datasetIndex: 0 }
+
+  const datasets = [
+    dataset,
+    { transform: { type: 'sort', config: sort } }
+  ]
+
+  return {
+    datasets,
+    datasetIndex: datasets.length - 1,
   }
 }

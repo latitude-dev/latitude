@@ -55,7 +55,7 @@ describe('generateConfig', () => {
           ...testData.series[0],
           name: 'shows',
           xAxisIndex: 0,
-          encode: { x: 0, y: 2 },
+          encode: { x: 'country', y: 'shows' },
           label: {
             ...testData.series[0]?.label,
             formatter: '{@2}',
@@ -96,7 +96,7 @@ describe('generateConfig', () => {
         {
           ...testData.series[0],
           xAxisIndex: 0,
-          encode: { x: 0, y: 3 },
+          encode: { x: 'country', y: 'movies_2' },
           label: {
             ...testData.series[0]?.label,
             formatter: '{@3}',
@@ -107,7 +107,7 @@ describe('generateConfig', () => {
         {
           ...testData.series[0],
           name: 'shows',
-          encode: { x: 0, y: 2 },
+          encode: { x: 'country', y: 'shows' },
           label: {
             ...testData.series[0]?.label,
             formatter: '{@2}',
@@ -153,9 +153,10 @@ describe('generateConfig', () => {
   it('only line charts', () => {
     expect(
       generateConfig({
+        chartType: 'line',
         dataset: DATASET,
         x: 'country',
-        y: { name: 'movies_1', chartType: 'line' },
+        y: { name: 'movies_1' },
       }),
     ).toEqual({
       ...testData,
@@ -221,7 +222,7 @@ describe('generateConfig', () => {
         },
         {
           ...testData.series[0],
-          encode: { x: 0, y: 2 },
+          encode: { x: 'country', y: 'shows' },
           label: {
             ...testData.series[0]?.label,
             formatter: '{@2}',
@@ -252,54 +253,53 @@ describe('generateConfig', () => {
       ...testData,
       dataset: [
         {
-          sourceHeader: true,
+          dimensions: ['country', 'movies_1', 'shows', 'movies_2'],
           source: [
-            ['country', 'movies_1', 'shows', 'movies_2'],
-            ['CN', '0', '0.970873786407767', '0.02912621359223301'],
-            ['TW', '0', '0.970873786407767', '0.02912621359223301'],
+            ['CN', 0, 0.970873786407767, 0.02912621359223301],
+            ['TW', 0, 0.970873786407767, 0.02912621359223301],
             [
               'KR',
-              '0.019417475728155338',
-              '0.9514563106796117',
-              '0.02912621359223301',
+              0.019417475728155338,
+              0.9514563106796117,
+              0.02912621359223301,
             ],
             [
               'JP',
-              '0.09803921568627451',
-              '0.8725490196078431',
-              '0.029411764705882353',
+              0.09803921568627451,
+              0.8725490196078431,
+              0.029411764705882353,
             ],
             [
               'GB',
-              '0.12745098039215685',
-              '0.8431372549019608',
-              '0.029411764705882353',
+              0.12745098039215685,
+              0.8431372549019608,
+              0.029411764705882353,
             ],
             [
               'ES',
-              '0.1568627450980392',
-              '0.8137254901960784',
-              '0.029411764705882353',
+              0.1568627450980392,
+              0.8137254901960784,
+              0.029411764705882353,
             ],
             [
               'US',
-              '0.20588235294117646',
-              '0.7647058823529411',
-              '0.029411764705882353',
+              0.20588235294117646,
+              0.7647058823529411,
+              0.029411764705882353,
             ],
             [
               'CA',
-              '0.23148148148148148',
-              '0.6944444444444444',
-              '0.07407407407407407',
+              0.23148148148148148,
+              0.6944444444444444,
+              0.07407407407407407,
             ],
             [
               'AU',
-              '0.2616822429906542',
-              '0.6635514018691588',
-              '0.07476635514018691',
+              0.2616822429906542,
+              0.6635514018691588,
+              0.07476635514018691,
             ],
-            ['IN', '0.7090909090909091', '0.19090909090909092', '0.1'],
+            ['IN', 0.7090909090909091, 0.19090909090909092, 0.1],
           ],
         },
       ],
@@ -311,7 +311,7 @@ describe('generateConfig', () => {
         },
         {
           ...testData.series[0],
-          encode: { x: 0, y: 2 },
+          encode: { x: 'country', y: 'shows' },
           label: {
             ...testData.series[0]?.label,
             formatter: '{@2}',
@@ -344,7 +344,7 @@ describe('generateConfig', () => {
         {
           ...testData.series[0],
           yAxisIndex: 0,
-          encode: { x: 1, y: 0 },
+          encode: { x: 'movies_1', y: 'country' },
         },
       ],
       xAxis: [

@@ -15,14 +15,26 @@ const RAW_DATASET = [
   ['IN', '78', '21', '11'],
 ]
 const OUTPUT_DATASET = RAW_DATASET.map((row) =>
-  row.map((cell) => (cell === null ? 'null' : cell)),
+  row.map((cell) => {
+    if (cell === null) return 0
+
+    const cellVal = Number(cell)
+    if (isNaN(cellVal)) return cell
+
+    return cellVal
+  }),
 ) as DBSource
 export const FIELDS = RAW_DATASET[0] as string[]
 export const SOURCE = RAW_DATASET.slice(1) as DBSource
 export const DATASET = { fields: FIELDS, source: SOURCE }
 export const testData = {
   animation: true,
-  dataset: [{ sourceHeader: true, source: OUTPUT_DATASET }],
+  animationEasing: 'cubicInOut',
+  animationEasingUpdate: 'cubicInOut',
+  dataset: [{
+    dimensions: FIELDS,
+    source: OUTPUT_DATASET.slice(1)
+  }],
   xAxis: [
     {
       show: true,
@@ -124,7 +136,8 @@ export const testData = {
       areaStyle: { opacity: 0 },
       connectNulls: true,
       label: { position: 'top', show: false, formatter: '{@1}' },
-      encode: { x: 0, y: 1 },
+      datasetIndex: 0,
+      encode: { x: 'country', y: 'movies_1' },
     },
   ],
   dataZoom: [],
@@ -140,6 +153,6 @@ export const testData = {
     trigger: 'axis',
     axisPointer: { type: 'cross' },
   },
-  legend: { type: 'scroll', show: false, align: 'left', left: 40 },
-  grid: { containLabel: true, left: 40, right: 8, top: 8, bottom: 32 },
+  legend: { type: 'scroll', show: false, align: 'left', left: 48 },
+  grid: { containLabel: true, left: 48, right: 32, top: 48, bottom: 32 },
 }

@@ -42,6 +42,7 @@
 
 <Template id="line" let:args>
   <AreaChart
+    height={400}
     data={args.data}
     isLoading={args.isLoading}
     x="event_month"
