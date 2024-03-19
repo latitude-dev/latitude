@@ -30,6 +30,7 @@ To configure the connection with your your PostgreSQL database follow these step
       host: string
       port: number
       schema: string
+      ssl: boolean | SslConfig
     ```
   </Step>
   <Step title='Replace the details section with your info and save'></Step>
@@ -44,6 +45,15 @@ To configure the connection with your your PostgreSQL database follow these step
 - **Database** → The exact name of the database that contains the data you want to sync.
 - **Port** → The port number for the connection. In case you don’t have a port assigned the default port number of PostgreSQL is 5432.
 - **Schema** → (Optional) The schema within the database that you want to connect to. A PostgreSQL database can contain multiple schemas, each of which can hold tables and other database objects. If not specified, the default schema (usually "public") is used
+- **Ssl** -> (Optional) You can either pass a `true` boolean or an SslConfig object for a custom SSL implementation. Most implementations should work out of the box passing a `true` boolean.
+
+### SslConfig
+
+- **Sslmode** -> (Optional) One of the following ssl strategies: 'allow' | 'prefer' | 'require' | 'verify-ca' | 'verify-full'
+- **Ca** -> (Optional) Path to the CA certificate
+- **Key** -> (Optional) Path to the SSL key
+- **Cert** -> (Optional) Path to the SSL certificate
+- **RejectUnauthorized** -> (Optional) True or false if the connector should validate the SSL certificate
 
 ## Test connection
 
