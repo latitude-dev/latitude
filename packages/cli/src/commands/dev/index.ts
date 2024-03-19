@@ -13,7 +13,7 @@ export default async function devCommand(args: Props = {}) {
 }
 
 const buildServerProps = ({ open, port }: { open: string; port?: number }) => {
-  let server: DevServerProps = {
+  const server: DevServerProps = {
     open: open === 'yes',
     port: port,
     appFolder: config.cwd,

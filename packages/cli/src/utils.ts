@@ -1,5 +1,5 @@
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import fsExtra from 'fs-extra'
 import fs from 'fs'
 import { OnErrorProps } from './types'
@@ -10,8 +10,8 @@ import boxedMessage from './lib/boxedMessage'
  * https://patorjk.com/software/taag/#p=display&h=0&v=0&f=Larry%203D&t=Latitude
  */
 export async function getLatitudeBanner(): Promise<string | null> {
-  const dir = dirname(fileURLToPath(import.meta.url));
-  const logoPath = join(dir, 'latitude-banner.txt');
+  const dir = dirname(fileURLToPath(import.meta.url))
+  const logoPath = join(dir, 'latitude-banner.txt')
   return new Promise((resolve, reject) => {
     fs.readFile(logoPath, 'utf8', (err, data) => {
       if (err) {
@@ -46,16 +46,28 @@ export async function forceSymlink(
   })
 }
 
-export function onError({ error, message, color = 'red' }: OnErrorProps) {
+export function onError({
+  error,
+  message,
+  exit = true,
+  color = 'red',
+}: OnErrorProps) {
   boxedMessage({
     text: `${message} \nERROR:\n${error}`,
     title: 'Error',
     color,
   })
 
-  process.exit(1)
+  if (exit) process.exit(1)
 }
 
 export const cleanTerminal = () => {
   process.stdout.write('\x1bc')
+}
+
+export function onExit(fn: (...args: any) => void) {
+  process.on('exit', fn)
+  process.on('SIGINT', fn)
+  process.on('SIGQUIT', fn)
+  process.on('SIGTERM', fn)
 }

@@ -65,7 +65,8 @@
       "pages": [
         "guides/development/latitude-cli",
         "guides/development/project-structure",
-        "guides/development/environment-variables"
+        "guides/development/environment-variables",
+        "guides/development/installing-dependencies"
       ]
     },
     {
@@ -160,10 +161,7 @@
     },
     {
       "group": "Inputs",
-      "pages": [
-        "components/inputs/text",
-        "components/inputs/date"
-      ]
+      "pages": ["components/inputs/text", "components/inputs/date"]
     },
     {
       "group": "Interaction",

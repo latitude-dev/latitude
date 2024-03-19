@@ -1,0 +1,42 @@
+---
+title: 'Installing dependencies'
+description: 'Learn how to extend the functionality of Latitude projects installing any npm dependency'
+---
+
+## Introduction
+
+You might want to extend the functionality of your Latitude projects by using
+other npm packages. 
+
+Dependencies in Latitude can be installed like in any other npm project.
+
+<Steps>
+  <Step title='Initialize npm in your project'>
+    Run the following command to create a blank package.json:
+
+    ```npm init```
+
+    The CLI will ask some questions, feel free to disregard all of them as they are not really important for our purposes.
+  </Step>
+  <Step title='Install dependencies'>
+    You can now install any npm dependency with a regular npm install command. Example:
+
+    ```npm install lodash```
+
+    Latitude will keep any dependencies you install in sync with your project.
+  </Step>
+  <Step title='Use your dependencies'>
+    Latitude views are a superset of Svelte's template syntax. So you can use any JS dependency like you would in a [Svelte component](https://svelte.dev/docs/svelte-components). Following our example:
+    ```svelte
+      <script>
+        import { isNan } from 'lodash'
+      </script>
+
+      {#if !isNan(1)}
+        <p>Hello world</p>
+      {/if}
+    ```
+  </Step>
+</Steps>
+
+Check out the [examples section](/guides/examples/templates) to see some use cases using third-party npm dependencies in Latitude projects.

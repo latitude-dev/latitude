@@ -6,4 +6,3 @@ export const APP_SERVER_FOLDER = 'apps/server'
 export const PACKAGE_NAME = '@latitude-data/server'
 export const DEFAULT_VERSION_LIST = ['latest'] // If we fail to get the list
 export const LATITUDE_VERSION = process.env.PACKAGE_VERSION
-export const DEV_SITES_ROUTE_PREFIX = 'sites'
