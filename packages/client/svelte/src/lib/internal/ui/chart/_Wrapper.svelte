@@ -78,7 +78,7 @@
     }
   }
 
-  $: contentHeight = height
+  $: contentHeight = undefined
   $: {
     if (title) {
       contentHeight = height
