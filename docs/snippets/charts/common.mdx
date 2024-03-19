@@ -25,10 +25,10 @@ To configure and customize the chart, you can add properties, some of which are 
     You can add a brief description of your chart
 </ParamField>
 
-<ParamField path="order" type="string | object">
+<ParamField path="sort" type="string | object">
     Specify the order of the data returned by your query. It can be a string with the column name or an object with the column name and the order.
 
-    [See the section order](#order-options) to learn more about the order options
+    [See the sort section](#sort-options) to learn more about the sort options
 </ParamField>
 
 <ParamField path="xAxisFormat" type="array">
@@ -114,7 +114,7 @@ Example to add all columns starting wiht `sum_`:
     ]}
 ```
 
-### Order Options
+### Sort Options
 The order property can be a string with the column name or an object with the column name and the order.
 
 <ParamField path="column" type="string">
