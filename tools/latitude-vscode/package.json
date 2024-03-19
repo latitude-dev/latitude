@@ -1,0 +1,121 @@
+{
+  "name": "latitude-vscode",
+  "displayName": "Latitude for VS Code",
+  "description": "Official Latitude Framework support for VS Code",
+  "version": "0.0.3",
+  "icon": "static/icon.png",
+  "license": "LGPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/latitude-dev/latitude"
+  },
+  "publisher": "LatitudeData",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "latitude.dev",
+        "title": "Latitude: Start development server",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "latitude.run",
+        "title": "Latitude: Run query",
+        "icon": "$(play)"
+      },
+      {
+        "command": "latitude.runWatch",
+        "title": "Latitude: Run query (watch mode)",
+        "icon": "$(debug-alt)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "editorLangId == latitudeSql",
+          "group": "navigation",
+          "command": "latitude.run"
+        },
+        {
+          "when": "editorLangId == latitudeSql",
+          "group": "navigation",
+          "command": "latitude.runWatch"
+        }
+      ]
+    },
+    "languages": [
+      {
+        "id": "latitudeHtml",
+        "aliases": [
+          "LatitudeHTML"
+        ]
+      },
+      {
+        "id": "latitudeSql",
+        "aliases": [
+          "LatitudeSQL"
+        ]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "latitudeHtml",
+        "scopeName": "source.latitudeHtml",
+        "path": "./dist/syntaxes/latitudeHtml.tmLanguage.json"
+      },
+      {
+        "language": "latitudeSql",
+        "scopeName": "source.latitudeSql",
+        "path": "./dist/syntaxes/latitudeSql.tmLanguage.json"
+      }
+    ]
+  },
+  "activationEvents": [
+    "workspaceContains:**/latitude.json"
+  ],
+  "scripts": {
+    "vscode:prepublish": "pnpm run build",
+    "vscode:publish": "vsce publish",
+    "build": "vite build --mode production && npm run build:grammar ",
+    "build:dev": "vite build --mode development && npm run build:grammar ",
+    "build:grammar": "mkdir -p dist/syntaxes && for file in src/syntaxes/*.yaml; do npx js-yaml $file > dist/syntaxes/$(basename $file .yaml).json; done",
+    "build:vscode-test": "vite build --config vite.vscode-test-config.ts",
+    "dev": "vite --watch",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "prettier": "prettier --write src/**/*.ts",
+    "test": "vitest --run",
+    "test:vscode": "pnpm run build:vscode-test && vscode-test --run && rm -rf .vscode-test"
+  },
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-replace": "^5.0.5",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/chai": "^4.3.14",
+    "@types/eslint": "^8.56.1",
+    "@types/mocha": "^10.0.6",
+    "@types/mock-fs": "^4.13.4",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.87.0",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "chai": "^5.1.0",
+    "js-yaml": "^3.14.0",
+    "mocha": "^10.3.0",
+    "mock-fs": "^5.2.0",
+    "prettier": "^3.1.1",
+    "rollup": "^4.10.0",
+    "typescript": "^5.2.2",
+    "vite": "^2.0.0",
+    "vitest": "^1.4.0"
+  }
+}
