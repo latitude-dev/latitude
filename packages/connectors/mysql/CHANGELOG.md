@@ -1,5 +1,12 @@
 # @latitude-data/mysql-connector
 
+## 1.1.0
+
+### Minor Changes
+
+- 2c933ba: Fix: The connector was not correctly formatting results beforing instantiating the QueryResult resulting in most queries failing to complete.
+  Feature: Adds more SSL options. Notably the option to just pass a truthy boolean and also the option to pass cert and key params, similar to the Postgres connector.
+
 ## 1.0.1
 
 ### Patch Changes
