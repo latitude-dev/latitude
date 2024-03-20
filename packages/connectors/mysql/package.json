@@ -8,6 +8,8 @@
     "build": "rollup -c",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest",
     "prettier": "prettier --write src/**/*.ts"
   },
   "type": "module",
@@ -20,7 +22,9 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/mysql": "^2.15.25",
     "@types/node": "^20.10.6",
-    "rollup": "^4.10.0"
+    "rollup": "^4.10.0",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.4.0"
   },
   "dependencies": {
     "@latitude-data/base-connector": "workspace:^",

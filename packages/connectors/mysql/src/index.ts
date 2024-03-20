@@ -5,18 +5,25 @@ import {
   ResolvedParam,
   QueryError,
 } from '@latitude-data/base-connector'
-import QueryResult, { DataType, Field } from '@latitude-data/query_result'
+import { readFileSync } from 'fs'
 import { PoolConfig, Types, createPool } from 'mysql'
-import fs from 'fs'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
+
+export type SSLConfig = {
+  ca?: string
+  key?: string
+  cert?: string
+  rejectUnauthorized?: boolean
+}
+
+type SSLOptions = boolean | 'Amazon RDS' | SSLConfig
 
 export type ConnectionParams = {
   host: string
   user: string
   password: string
   database: string
-  ssl?: {
-    ca: string
-  }
+  ssl?: SSLOptions
 }
 
 export class MysqlConnector extends BaseConnector {
@@ -65,7 +72,9 @@ export class MysqlConnector extends BaseConnector {
                       type: this.convertDataType(field.type),
                     }) as Field,
                 ),
-                rows: results,
+                rows: results.map((row: Record<string, unknown>) =>
+                  row ? Object.values(row) : [],
+                ),
               }),
             )
           },
@@ -80,13 +89,45 @@ export class MysqlConnector extends BaseConnector {
       user: params.user,
       password: params.password,
       database: params.database,
+      ssl:
+        params.ssl !== undefined ? this.buildSSLConfig(params.ssl) : undefined,
     } as Partial<PoolConfig>
 
-    if (params.ssl) {
-      payload.ssl = { ca: fs.readFileSync(params.ssl.ca) }
+    return this.compact(payload)
+  }
+
+  private buildSSLConfig(ssl: SSLOptions) {
+    if (ssl === 'Amazon RDS') return 'Amazon RDS'
+    if (typeof ssl === 'boolean') {
+      if (ssl) return {}
+      else return undefined
     }
 
-    return payload
+    const { ca, key, cert, rejectUnauthorized } = ssl
+    const payload = {
+      rejectUnauthorized,
+      ca: ca ? this.readSecureFile(ca) : undefined,
+      key: key ? this.readSecureFile(key) : undefined,
+      cert: cert ? this.readSecureFile(cert) : undefined,
+    }
+
+    return this.compact(payload)
+  }
+
+  private readSecureFile(filePath: string) {
+    try {
+      return readFileSync(filePath).toString()
+    } catch (error) {
+      throw new Error(
+        `Failed to read file at ${filePath}: ${(error as Error).message}`,
+      )
+    }
+  }
+
+  private compact(obj: Record<string, unknown>) {
+    return Object.fromEntries(
+      Object.entries(obj).filter(([, value]) => value !== undefined),
+    )
   }
 
   private buildQueryParams(params: ResolvedParam[]) {

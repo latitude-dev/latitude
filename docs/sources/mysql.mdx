@@ -17,10 +17,8 @@ The sources files must be inside the `queries/` folder.
 To configure the connection with your your MySQL database follow these steps:
 
 <Steps>
-    <Step title="Go to the sources file in your Latitude project">
-        ```
-            /sources/sources.yaml
-        ```
+    <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
+      ``` /queries/source.yml ```
     </Step>
     <Step title="Add the following code for your MySQL connection">
       ``` yaml
@@ -30,9 +28,7 @@ To configure the connection with your your MySQL database follow these steps:
         user: string
         password: string
         database: string
-        ssl: {
-            ca: string
-        }
+        ssl: boolean | 'Amazon RDS' | SSLConfig
       ```
     </Step>
     <Step title="Replace the details section with your info and save">
@@ -48,6 +44,17 @@ To configure the connection with your your MySQL database follow these steps:
 - **User** → The username you use to log into your MySQL database. It's like your personal key that identifies you to the MySQL server, allowing you access to perform operations within the database.
 - **Password** → The password goes hand-in-hand with your username. It's the secret code that proves your identity to the MySQL server, ensuring that only authorized users can access the database.
 - **Database** → The name of the specific MySQL database you want to get data from.
+- **Ssl** -> (Optional) There are 3 options to configure SSL:
+  - A `true` boolean for the default SSL strategy. This should work most of the times
+  - An 'Amazon RDS' string to indicate a default profile included with the connector to connect to Amazon RDS instances
+  - An SSLConfig object
+
+### SslConfig
+
+- **Ca** -> (Optional) Path to the CA certificate
+- **Key** -> (Optional) Path to the SSL key
+- **Cert** -> (Optional) Path to the SSL certificate
+- **RejectUnauthorized** -> (Optional) True or false if the connector should validate the SSL certificate
 
 ## Test connection
 
