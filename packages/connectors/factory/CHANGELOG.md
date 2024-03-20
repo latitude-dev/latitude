@@ -1,5 +1,12 @@
 # @latitude-data/connector-factory
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [2c933ba]
+  - @latitude-data/mysql-connector@1.1.0
+
 ## 0.1.1
 
 ### Patch Changes
