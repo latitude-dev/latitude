@@ -14,7 +14,7 @@ function getArgs(): CommandArgs {
   const args = process.argv.slice(2)
   if (args.length < 1) {
     console.error(
-      'Usage: run <query> [parameters] <watch:true|false> <debug:true|false>'
+      'Usage: run <query> [parameters] <watch:true|false> <debug:true|false>',
     )
     process.exit(1)
   }
@@ -37,7 +37,7 @@ function getArgs(): CommandArgs {
 async function runQuery(
   query: string,
   params: { [key: string]: string },
-  debug = false
+  debug = false,
 ) {
   try {
     const { source, sourceFilePath } = await sourceManager.loadFromQuery(query)

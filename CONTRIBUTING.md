@@ -7,8 +7,8 @@ before contributing anything!**
 
 The [Open Source Guides](https://opensource.guide) website has a collection of resources for individuals, communities, and companies. These resources help people who want to learn how to run and contribute to open source projects. Contributors and people new to open source alike will find the following guides especially useful:
 
-- [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
-- [Building Welcoming Communities](https://opensource.guide/building-community/)
+-   [How to Contribute to Open Source](https://opensource.guide/how-to-contribute/)
+-   [Building Welcoming Communities](https://opensource.guide/building-community/)
 
 Thank you for your contribution to Latitude!
 
@@ -122,10 +122,39 @@ Changesets ensure that package versions are updated correctly before releasing o
 1. `cd` to the root of the monorepo
 2. `pnpm changeset`
 3. Follow the steps in the CLI to add some change notes:
-   1. Bump the packages that have changed (use space bar to select/deselect packages)
-   2. Most things are patch changes, not major or minor patch bumps
-   3. Unless you're making changes that will break someone's project, or change it in a really unexpected way, just do a patch release
+    1. Bump the packages that have changed (use space bar to select/deselect packages)
+    2. Most things are patch changes, not major or minor patch bumps
+    3. Unless you're making changes that will break someone's project, or change it in a really unexpected way, just do a patch release
 4. Commit the release notes to your branch so they'll be included as part of the PR
-   1. the file will be called three random words like `wild-eggs-drive.md`
+    1. the file will be called three random words like `wild-eggs-drive.md`
+
+### Release process
+
+We publish Latitude packages on npmjs.com and GitHub, using [semantic versioning](https://semver.org/) to manage our package versions.
+
+There are two types of publications: `latest`, representing stable versions, and `next`, for pre-release versions.
+
+#### How to Do Pre-releases
+
+Our [pre-release.yml](./.github/workflow/pre-release.yml) CI workflow automatically publishes to the `next` distribution tag on npmjs.com when changes are merged into the `next` branch.
+To make a pre-release, follow these steps:
+
+1. Switch to the `next` branch and run `git rebase main` to ensure it's up to date with the latest package versions.
+2. Branch off `next` for your changes.
+3. Create a changeset for your modifications using `pnpm changeset pre next`. The `next` tag specifies that this version will be published on npmjs.com.
+4. Open a pull request on GitHub targeting the `next` branch.
+
+Once the pull request is merged, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `dev`, triggering the publication of a pre-release.
+
+#### How to Do Releases
+
+Our [release.yml](./.github/workflow/release.yml) CI workflow publishes to the `latest` distribution tag on npmjs.com (the default) when changes are merged into the `main` branch.
+To make a release, you should:
+
+1. Create a new branch from `main` for your updates.
+2. Generate a changeset for your changes using `pnpm changeset add`.
+3. Submit a pull request on GitHub directed at the `main` branch.
+
+Following the merge of your pull request, the CI workflow will produce a PR containing the changesets. Eventually, an authorized individual will merge this PR into `main`, resulting in the release being published.
 
 Again, thank you for your contribution to Latitude! ❤️
