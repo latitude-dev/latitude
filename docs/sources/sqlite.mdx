@@ -17,9 +17,15 @@ The sources files must be inside the `queries/` folder.
 To configure the connection with your your SQLite database follow these steps:
 
 <Steps>
-  <Step title='Go to the source `.yaml` file within the `queries` folder'></Step>
+  <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
+    ``` /queries/source.yml ```
+  </Step>
   <Step title='Add the following code for your SQLite connection'>
-    ``` yaml type: sqlite details: url: string ```
+    ``` yaml 
+    type: sqlite 
+    details: 
+      url: string 
+    ```
   </Step>
   <Step title='Replace the details section with your info and save'></Step>
   <Step title='Done, now you can test your connection'></Step>
