@@ -1,6 +1,3 @@
-export * from './config';
+export * from './config'
 
-import sync from '$src/lib/sync'
-export {
-  sync,
-}
+export { default as sync } from '$src/lib/sync'

@@ -9,6 +9,7 @@ import trackedDecorator from '../lib/decorators/tracked'
 import { TelemetryEventType } from '../lib/telemetry/events'
 import { onError } from '../utils'
 import run from './run'
+import versionCheck from '$src/lib/decorators/versionCheck'
 
 export type Options = {
   tracked?: boolean
@@ -52,6 +53,7 @@ export default function command(
 
   if (tracked) commandFn = trackedDecorator(event, commandFn)
   if (setup) commandFn = setupDecorator(commandFn)
+  commandFn = versionCheck(commandFn)
 
   return commandFn
 }

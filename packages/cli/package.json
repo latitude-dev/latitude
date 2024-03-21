@@ -65,6 +65,7 @@
     "degit": "^2.8.4",
     "dotenv": "^16.4.5",
     "fs-extra": "^11.2.0",
+    "latest-version": "^9.0.0",
     "mri": "^1.2.0",
     "picocolors": "^1.0.0",
     "portfinder": "^1.0.32",

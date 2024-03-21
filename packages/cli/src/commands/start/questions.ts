@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import { input, confirm, select } from '@inquirer/prompts'
-import { onError } from '$src/utils'
 
 async function askForDestination({ name }: { name?: string }) {
   let dest = null
@@ -9,11 +8,6 @@ async function askForDestination({ name }: { name?: string }) {
   try {
     dest = name || (await input({ message: 'Whats the name of your project?' }))
   } catch (err) {
-    onError({
-      error: err as Error,
-      message: '😢 Creation stopped, ready when you are!',
-      color: 'yellow',
-    })
     return { dest, force }
   }
 
