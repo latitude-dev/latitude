@@ -1,6 +1,5 @@
 import {
   AthenaClient,
-  AthenaClientConfig,
   ColumnInfo,
   GetQueryExecutionCommand,
   GetQueryResultsCommand,
@@ -16,10 +15,16 @@ import {
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 
 interface AthenaQueryClientConfig {
-  client: AthenaClientConfig
+  client: {
+    region?: string
+    credentials?: {
+      accessKeyId: string
+      secretAccessKey: string
+    }
+  }
   database: string
   catalog: string
-  workgroup?: string
+  workgroup: string
   resultReuseConfiguration?: {
     ResultReuseByAgeConfiguration: {
       Enabled: boolean
@@ -87,7 +92,13 @@ export class AthenaConnector extends BaseConnector {
   }
 
   private buildQueryParams(params: ResolvedParam[]) {
-    return params.map((param) => String(param.value))
+    const payload = params.map((param) => String(param.value))
+
+    if (payload.length === 0) {
+      return undefined
+    } else {
+      return payload
+    }
   }
 
   private async checkQueryExequtionStateAndGetData(
