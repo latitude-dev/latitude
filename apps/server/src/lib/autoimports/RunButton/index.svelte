@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Button } from "@latitude-data/svelte"
-  import { computeQuery } from "$lib/stores/queries"
+  import { computeQueries } from "$lib/stores/queries"
   import { createEventDispatcher } from "svelte"
 
   export let query: string | undefined = undefined
@@ -10,7 +10,7 @@
 
   const handleClick = () => {
     const queriesToRun = query ? [query] : queries
-    computeQuery(queriesToRun)
+    computeQueries({ queryPaths: queriesToRun })
     
     dispatch("click")
   }

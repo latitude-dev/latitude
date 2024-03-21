@@ -4,6 +4,8 @@ import QueryResult, {
   type QueryResultPayload,
 } from '@latitude-data/query_result'
 
+export const FORCE_REFETCH_PARAMETER = '__force'
+
 type QueryRequest = {
   queryPath: string
   params?: Record<string, unknown>
@@ -94,10 +96,9 @@ export const store = createStore<StoreState>((set, get) => {
     forceRefetch: async ({ queryPath, params }) => {
       const queryKey = createQueryKey(queryPath, params || {})
       performQueryFetch(queryKey, async () => {
-        // TODO: Add force parameter or header when backend cache is implemented
         const response = await api.get<QueryResultPayload>(
           `api/queries/${queryPath}`,
-          params
+          { ...params, [FORCE_REFETCH_PARAMETER]: 'true' }
         )
 
         return new QueryResult(response)

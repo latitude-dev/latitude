@@ -48,8 +48,8 @@ describe('GET endpoint', () => {
         resolve({
           compiledQuery: 'SELECT * FROM winterfell',
           resolvedParams: [],
-        })
-      )
+        }),
+      ),
     )
   })
 
@@ -74,7 +74,7 @@ describe('GET endpoint', () => {
   it('should return the cached query if available', async () => {
     const queryResult = { toJSON: () => JSON.stringify(payload) }
     vi.spyOn(cache, 'find').mockReturnValueOnce(
-      queryResult as unknown as QueryResult
+      queryResult as unknown as QueryResult,
     )
     const response = await GET({
       params: { query: 'testQuery' },
@@ -96,7 +96,7 @@ describe('GET endpoint', () => {
     })
     mockRunQuery.mockResolvedValueOnce(queryResult)
     vi.spyOn(cache, 'find').mockReturnValueOnce(
-      queryResult as unknown as QueryResult
+      queryResult as unknown as QueryResult,
     )
     const response = await GET({
       params: { query: 'testQuery' },
@@ -123,7 +123,7 @@ describe('GET endpoint', () => {
   it('should return 404 status if the query file is not found', async () => {
     const findQueryFileMock = findQueryFile as Mock
     findQueryFileMock.mockRejectedValue(
-      new QueryNotFoundError('Query file not found')
+      new QueryNotFoundError('Query file not found'),
     )
     const response = await GET({
       params: { query: 'testQuery' },
@@ -146,5 +146,4 @@ describe('GET endpoint', () => {
     expect(response.status).toBe(500)
     expect(await response.text()).toBe('There was an error in this query')
   })
-
 })

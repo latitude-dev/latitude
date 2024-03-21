@@ -69,10 +69,12 @@ async function fetchQueryFromCore({
   query,
   inlineParams,
   force = false,
+  skipIfParamsUnchanged = true,
 }: {
   query: string
   inlineParams: InlineParams
-  force?: boolean
+  force?: boolean // Adds the 'force' flag to the request, to invalidate the backend cache
+  skipIfParamsUnchanged?: boolean // If true, it won't refetch if the params haven't changed
 }): Promise<void> {
   const queryKey = createMiddlewareKey(query, inlineParams)
   const computedParams = computeQueryParams(inlineParams)
@@ -86,7 +88,7 @@ async function fetchQueryFromCore({
   }))
 
   if (!browser || !loaded) return // Don't fetch queries until the page is fully loaded
-  if (!force && oldQueryKey === coreQueryKey) return // Don't refetch if there have been no changes to the params (unless force is true)
+  if (skipIfParamsUnchanged && oldQueryKey === coreQueryKey) return // Don't refetch if there have been no changes to the params
 
   if (force) {
     queryStore
@@ -189,16 +191,17 @@ export function runQuery(
   )
 }
 
-export async function computeQuery(queryPaths?: string[]): Promise<void> {
+export async function computeQueries({ queryPaths = [], force = true, skipIfParamsUnchanged = false }: { queryPaths: string[], force?: boolean, skipIfParamsUnchanged?: boolean }): Promise<void> {
   if (!browser) return
 
   const queriesInView = get(middlewareQueryStore)
   Object.values(queriesInView).map((queryInView) => {
-    if (queryPaths && !queryPaths.includes(queryInView.queryPath)) return
+    if (queryPaths.length && !queryPaths.includes(queryInView.queryPath)) return
     fetchQueryFromCore({
       query: queryInView.queryPath,
       inlineParams: queryInView.inlineParams,
-      force: true,
+      force,
+      skipIfParamsUnchanged,
     })
   })
 }
@@ -213,5 +216,5 @@ export async function computeQuery(queryPaths?: string[]): Promise<void> {
  */
 export function init() {
   loaded = true
-  computeQuery()
+  computeQueries({ queryPaths: [], force: false, skipIfParamsUnchanged: false })
 }
