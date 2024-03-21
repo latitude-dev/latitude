@@ -7,7 +7,7 @@ This project is an example of how to build an authentication system for your Lat
 To start developing in this project, first ensure you have Node.js >= 18 installed. Then, install the Latitude CLI:
 
 ```
-npm install -g latitude-cli
+npm install -g @latitude-data/cli
 ```
 
 After cloning the repository, run the following command to spin up the dev server:
