@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.2.2
+
+### Patch Changes
+
+- 3ea6ae1: hotfix: resolve promise in watch mode of syncDependencies
+
 ## 0.2.1
 
 ### Patch Changes
