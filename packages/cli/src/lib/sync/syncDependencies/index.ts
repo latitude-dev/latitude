@@ -41,12 +41,15 @@ export const sync =
   () =>
     new Promise<void>((resolve, reject) => {
       let install = false
+
       // First, check if the root package.json exists
       if (!existsSync(root)) {
         setDefaultDependencies(target, {
           dependencies: defaultDependencies,
           devDependencies: defaultDevDependencies,
         })
+
+        return
       }
 
       try {
