@@ -67,7 +67,7 @@ export class SnowflakeConnector extends BaseConnector {
             })
 
             stream.on('data', (row) => {
-              result.rows.push(row)
+              result.rows.push(Object.values(row))
             })
 
             stream.on('end', () => {
