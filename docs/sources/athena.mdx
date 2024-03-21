@@ -24,7 +24,11 @@ To configure the connection with your your Athena database follow these steps:
     ``` yaml
     type: athena
     details:
-      client: AthenaClientConfig
+      client: 
+        region: string
+        credentials:
+          accessKeyId: string
+          secretAccessKey: string
       database: string
       catalog: string
       workgroup: string
@@ -36,10 +40,18 @@ To configure the connection with your your Athena database follow these steps:
 
 ## Attributes
 
-- **Client** → The identifier for the application or service making requests to Athena. This specifies the interface or tool you are using to interact with Athena.
+- **Client** → The client configuration
+  - region (Optional) -> The AWS region where your Athena instance is located
+  - credentials (Optional)
+    - accessKeyId -> AWS Access Key
+    - secretAccessKey -> AWS Secret Key
 - **Database** → The name of the Athena database where your queries will be executed. This is the container for your tables and data in Athena.
 - **Catalog** → Identifies the data source catalog in Athena that organizes your databases and tables. It acts as a central repository for managing and accessing your diverse data sources.
-- **Workgroup** → (Optional) A logical grouping of queries under a common configuration for cost tracking and resource management. It allows you to organize queries for optimization and governance purposes. If not specified, the default workgroup is used.
+- **Workgroup** → The logical grouping of queries under a common configuration
+  for cost tracking and resource management. It allows you to organize queries
+  for optimization and governance purposes. If not specified, the default
+  workgroup is used. Remember that the workgroup must have an OutputLocation
+  configured in order for Athena to be able to execute queries.
 
 ## Test connection
 
