@@ -1,5 +1,17 @@
 # @latitude-data/server
 
+## 0.3.2
+
+### Patch Changes
+
+- f43a3cc: Fix RunButton didn't refetch all queries when no queries were specified, and the force tag was not included in forced requests.
+- Updated dependencies [f43a3cc]
+- Updated dependencies [85d57e2]
+- Updated dependencies [cdd2504]
+  - @latitude-data/client@0.4.0
+  - @latitude-data/connector-factory@0.1.3
+  - @latitude-data/svelte@0.4.0
+
 ## 0.3.1
 
 ### Patch Changes

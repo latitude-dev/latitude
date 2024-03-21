@@ -1,5 +1,15 @@
 # @latitude-data/client
 
+## 0.4.0
+
+### Minor Changes
+
+- cdd2504: Style alert component according to latitude's design system
+
+### Patch Changes
+
+- f43a3cc: Fix RunButton didn't refetch all queries when no queries were specified, and the force tag was not included in forced requests.
+
 ## 0.3.0
 
 ### Minor Changes
