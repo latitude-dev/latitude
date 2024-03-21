@@ -1,5 +1,11 @@
 # @latitude-data/bigquery-connector
 
+## 1.1.0
+
+### Minor Changes
+
+- 955fcf2: Fixes result parsing in bigquery connector. Clarifies authentication with service account and oauth in code and docs.
+
 ## 1.0.1
 
 ### Patch Changes

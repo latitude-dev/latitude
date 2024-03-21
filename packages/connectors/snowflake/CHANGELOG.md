@@ -1,5 +1,11 @@
 # @latitude-data/snowflake-connector
 
+## 1.0.2
+
+### Patch Changes
+
+- 5728564: fixes a bug that caused most results from snowflake to not get correctly parsed
+
 ## 1.0.1
 
 ### Patch Changes
