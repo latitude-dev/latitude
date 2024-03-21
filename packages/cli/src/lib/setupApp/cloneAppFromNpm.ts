@@ -12,7 +12,7 @@ import boxedMessage from '../boxedMessage'
 
 export default async function cloneAppFromNpm({
   version: updateVersion,
-}: Props): Promise<boolean> {
+}: Props): Promise<void> {
   const latitudeFolder = `${config.cwd}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
   const version = updateVersion ?? config.projectConfig.version
@@ -27,20 +27,22 @@ export default async function cloneAppFromNpm({
       )}`,
       color: 'green',
     })
-    return false
+
+    return
   }
 
   return new Promise((resolve) => {
     exec(command, (error, stdout, stderr) => {
       if (error) {
-        onError({ error, message: `Error cloning app from npm`, color: 'red' })
-        return false
+        onError({ error, message: `Error cloning app from npm` })
+
+        process.exit(1)
       }
 
       if (stderr) {
         // NOTE: NPM can output warnings to stderr, so we don't want to exit
         // the process, just inform the user.
-        console.error(stderr)
+        console.log(colors.yellow(stderr))
       }
 
       const tarballUrl = stdout.trim()
@@ -71,16 +73,17 @@ export default async function cloneAppFromNpm({
           )
           extractStream.on('finish', () => {
             console.log(colors.green('App server downloaded successfully 🎉'))
-            resolve(true)
+
+            resolve()
           })
         })
         .catch((error) => {
           onError({
             error,
             message: 'Error downloading latitude app',
-            color: 'red',
           })
-          resolve(false)
+
+          process.exit(1)
         })
     })
   })

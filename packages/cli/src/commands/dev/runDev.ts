@@ -2,7 +2,6 @@ import boxedMessage from '$src/lib/boxedMessage'
 import colors from 'picocolors'
 import config from '$src/config'
 import path from 'path'
-import rootPath from '$src/lib/rootPath'
 import { APP_FOLDER } from '../constants'
 import { cleanTerminal } from '$src/utils'
 import portfinder from 'portfinder'
@@ -44,7 +43,7 @@ export async function runDevServer(
 
   const appFolder = path.join(config.cwd, APP_FOLDER)
   const appPort: number = port || (await findFreePort(3000, 4000))
-  const hostUrl = `http://${host}:${appPort}${rootPath()}`
+  const hostUrl = `http://${host}:${appPort}`
   const args = [
     'run',
     'dev',

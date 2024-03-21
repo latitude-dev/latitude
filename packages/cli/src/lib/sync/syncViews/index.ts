@@ -1,15 +1,13 @@
-import colors from 'picocolors'
 import config from '$src/config'
-import fs from 'fs'
+import fs, { rmSync } from 'fs'
 import path from 'path'
-import rootPath from '$src/lib/rootPath'
 import syncFiles from '../shared/syncFiles'
 import { APP_FOLDER } from '$src/commands/constants'
 import watcher from '../shared/watcher'
+import { onExit } from '$src/utils'
 
-function getRoutesFolderPath(cwd: string, rootPath: string | null): string {
-  const basePath = path.join(cwd, APP_FOLDER, 'src', 'routes')
-  return rootPath ? `${basePath}/${rootPath}` : basePath
+function getRoutesFolderPath(cwd: string): string {
+  return path.join(cwd, APP_FOLDER, 'src', 'routes')
 }
 
 const copiedFiles = new Set<string>()
@@ -22,7 +20,7 @@ export default async function syncViews(
   } = { watch: false },
 ): Promise<void> {
   const rootDir = config.cwd
-  const destinationDir = getRoutesFolderPath(rootDir, rootPath())
+  const destinationDir = getRoutesFolderPath(rootDir)
   const viewsDir = path.join(rootDir, 'views')
   const syncFn = syncFnFactory({ rootDir, destinationDir })
 
@@ -34,7 +32,7 @@ export default async function syncViews(
     syncDirectory(viewsDir, syncFn)
   }
 
-  process.on('exit', onExit(watch))
+  onExit(clearFiles(watch))
 }
 
 export const syncFnFactory =
@@ -69,16 +67,14 @@ export const syncDirectory = (directory: string, syncFn: Function): void => {
   })
 }
 
-const onExit = (watch: boolean) => () => {
+const clearFiles = (watch: boolean) => () => {
   if (!watch) return
 
   for (const copiedFile of copiedFiles) {
-    fs.unlink(copiedFile, (err) => {
-      if (err) {
-        console.log(
-          colors.red(`File ${copiedFile} could not be deleted: ${err}`),
-        )
-      }
-    })
+    try {
+      rmSync(copiedFile, { recursive: true })
+    } catch (e) {
+      // do nothing
+    }
   }
 }

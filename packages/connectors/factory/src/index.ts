@@ -39,7 +39,11 @@ export function createConnector(sourcePath: string): BaseConnector {
   const config = yaml.parse(file, (_, value) => {
     // if key starts with 'LATITUDE__', replace it with the environment variable
     if (typeof value === 'string' && value.startsWith('LATITUDE__')) {
-      return process.env[value] || value
+      if (process.env[value]) return process.env[value]
+
+      throw new Error(`
+      Invalid configuration. Environment variable ${value} was not found in the environment. You can review how to set up secret source credentials in the documentation: https://docs.latitude.so/sources/credentials
+      `)
     } else {
       return value
     }

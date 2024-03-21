@@ -13,7 +13,7 @@ import startQuestions from './questions'
 
 export type CommonProps = { onError: OnErrorFn }
 
-async function displayMessage() {
+async function welcomeMessage() {
   const banner = await getLatitudeBanner()
   const projectDir = path.basename(config.cwd).replace(/"/g, '\\"')
   console.log(colors.green(banner))
@@ -29,7 +29,7 @@ async function displayMessage() {
     --------------------------------------
 
     $ cd ./${projectDir.includes(' ') ? `"${projectDir}"` : projectDir}
-    $ ${config.dev ? 'pnpm latitude-dev dev' : 'latitude dev'}
+    $ ${config.dev ? 'pnpm run latitude-dev' : 'latitude dev'}
     `),
   )
 }
@@ -69,15 +69,8 @@ export default async function start({
 
   config.loadConfig()
 
-  // Setup application server for running queries
-  const installationComplete = await setupApp({
-    version: config.projectConfig.version,
-  })
-
-  // Something went wrong. We already handled the error
-  if (!installationComplete) return
-
-  await displayMessage()
+  await setupApp({ version: config.projectConfig.version })
+  await welcomeMessage()
 
   if (open) {
     runDevServer({ open, port })

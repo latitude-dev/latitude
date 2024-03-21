@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "latitude-dev": "../node_modules/.bin/latitude"
+  }
+}
