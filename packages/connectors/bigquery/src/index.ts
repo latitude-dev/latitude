@@ -11,7 +11,10 @@ import { OAuth2Client } from 'google-auth-library'
 import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
 
 type ConnectionParams = {
-  credentials?: Partial<BigQueryOptions>
+  credentials?: {
+    client_email: string
+    private_key: string
+  }
   projectId: string
   token?: string
 }
@@ -58,7 +61,7 @@ export class BigQueryConnector extends BaseConnector {
       return new QueryResult({
         rowCount,
         fields,
-        rows,
+        rows: this.transformRows({ rows, fields }),
       })
     } catch (error) {
       throw new ConnectorError((error as Error).message)
@@ -71,7 +74,12 @@ export class BigQueryConnector extends BaseConnector {
     if (this.params.credentials) {
       return {
         ...credentials,
-        ...this.params.credentials,
+        credentials: {
+          client_email: this.params.credentials.client_email,
+          private_key: this.params.credentials.private_key
+            .replace(/\\n/g, '\n')
+            .trim(),
+        },
       }
     } else if (this.params.token) {
       const { token } = this.params
@@ -104,6 +112,27 @@ export class BigQueryConnector extends BaseConnector {
       const errorObj = error as Error
       throw new ConnectionError(errorObj.message, errorObj)
     }
+  }
+
+  private transformRows({
+    rows,
+    fields,
+  }: {
+    rows: Record<string, unknown>[]
+    fields: Field[]
+  }) {
+    return rows.map((row) => {
+      return Object.entries(row).map(([key, value]) => {
+        const field = fields.find((field) => field.name === key)
+        if (!field) return value
+
+        if (field.type === DataType.Datetime) {
+          return (value as { value: unknown })['value']
+        } else {
+          return value
+        }
+      })
+    })
   }
 
   private convertDataType(
