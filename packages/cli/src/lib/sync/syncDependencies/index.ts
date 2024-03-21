@@ -49,7 +49,7 @@ export const sync =
           devDependencies: defaultDevDependencies,
         })
 
-        return
+        return resolve()
       }
 
       try {
