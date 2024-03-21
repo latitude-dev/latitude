@@ -1,5 +1,17 @@
 # @latitude-data/svelte
 
+## 0.4.0
+
+### Minor Changes
+
+- cdd2504: Style alert component according to latitude's design system
+
+### Patch Changes
+
+- Updated dependencies [f43a3cc]
+- Updated dependencies [cdd2504]
+  - @latitude-data/client@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes
