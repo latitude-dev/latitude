@@ -60,6 +60,21 @@ const config = {
       fontFamily: {
         sans: [...fontFamily.sans],
       },
+      keyframes: {
+        gradient: {
+          '0%': {
+            'background-size': '200% 200%',
+            'background-position': '200% 50%',
+          },
+          '100%': {
+            'background-size': '200% 200%',
+            'background-position': '0% 50%',
+          },
+        },
+      },
+      animation: {
+        gradient: 'gradient 2s linear infinite',
+      },
     },
   },
 }

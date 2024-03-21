@@ -15,7 +15,7 @@ function createAppFolder() {
 export default async function synlinkAppFromLocal(_p: Props): Promise<boolean> {
   const serverFolderInMonorepo = path.resolve(
     process.cwd(),
-    `./${APP_SERVER_FOLDER}`,
+    `../${APP_SERVER_FOLDER}`,
   )
   const dataApp = createAppFolder()
 

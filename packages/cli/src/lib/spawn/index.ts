@@ -10,8 +10,8 @@ type Handlers = {
 export default function betterSpawn(
   command: string,
   args: string[],
-  options: SpawnOptions,
-  handlers: Handlers,
+  options: SpawnOptions = {},
+  handlers: Handlers = {},
 ) {
   const process = spawn(command, args, options)
 

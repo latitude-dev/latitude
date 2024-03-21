@@ -39,6 +39,7 @@ export default function transformCartesiansSeries({
   dataset,
   hiddenSeries,
   config,
+  datasetIndex
 }: {
   xColumns: FullColumn[]
   yColumns: FullColumn[]
@@ -47,6 +48,7 @@ export default function transformCartesiansSeries({
   dataset: Dataset
   hiddenSeries: string[]
   config: ConfigProps
+  datasetIndex: number
 }) {
   const fields = dataset.fields
   const dimension = xColumns[0]
@@ -85,6 +87,7 @@ export default function transformCartesiansSeries({
             dimension,
             swapAxis,
             axisIndex,
+            datasetIndex,
             source,
             config,
           })

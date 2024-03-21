@@ -1,0 +1,7 @@
+type: mysql
+details:
+  host: database_host
+  user: LATITUDE__USERNAME
+  password: LATITUDE__PASSWORD
+  database: database_name
+  ssl: true

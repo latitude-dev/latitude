@@ -19,6 +19,7 @@ type Props<T extends ChartType> = {
   axisIndex: number
   source: DBSource
   config: ConfigProps
+  datasetIndex: number
 }
 
 export default function setSerie<T extends ChartType>({
@@ -31,9 +32,9 @@ export default function setSerie<T extends ChartType>({
   dimension,
   source,
   config,
+  datasetIndex
 }: Props<T>) {
   const serieIndex = fields.findIndex((f) => f === serieColumn)
-  const dimensionIndex = fields.findIndex((f) => f === dimension.name)
   const isArea = chartType === 'area'
   let serie: EchartsCartesianSeriesOption<ChartType> = {
     name: serieDisplayName || serieColumn,
@@ -41,8 +42,9 @@ export default function setSerie<T extends ChartType>({
     areaStyle: { opacity: isArea ? 0.4 : 0 },
     [swapAxis ? 'yAxisIndex' : 'xAxisIndex']: axisIndex,
     encode: swapAxis
-      ? { y: dimensionIndex, x: serieIndex }
-      : { x: dimensionIndex, y: serieIndex },
+      ? { y: dimension.name, x: serieColumn }
+      : { x: dimension.name, y: serieColumn },
+    datasetIndex
   }
 
   serie = setLineChartStyle({ serie, serieIndex, config })

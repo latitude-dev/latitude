@@ -38,6 +38,7 @@
 
 <Template id="mixed" let:args>
   <MixedChart
+    height={400}
     data={args.data}
     isLoading={args.isLoading}
     x="event_month"

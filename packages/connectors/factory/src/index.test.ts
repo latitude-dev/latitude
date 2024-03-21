@@ -31,10 +31,10 @@ describe('createConnector', () => {
     vi.restoreAllMocks()
   })
 
-  it('should create a PostgresConnector instance', () => {
-    const connector = createConnector(sourcePath)
-
-    expect(connector).toBeInstanceOf(postgresConnector.PostgresConnector)
+  it('should fail because it does not find a required env var', () => {
+    expect(() => createConnector(sourcePath)).toThrowError(
+      `Invalid configuration. Environment variable LATITUDE__DB_PASSWORD was not found in the environment. You can review how to set up secret source credentials in the documentation: https://docs.latitude.so/sources/credentials`,
+    )
   })
 
   it('should correctly parse env vars', () => {

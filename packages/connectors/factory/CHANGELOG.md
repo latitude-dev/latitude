@@ -1,5 +1,19 @@
 # @latitude-data/connector-factory
 
+## 0.1.3
+
+### Patch Changes
+
+- 85d57e2: CLI (minor): Allow users to install custom npm dependencies to their Latitude projects with regular npm install
+  Connectors factory (patch): Raise an error if user tries to use a secret environment variable that we cannot find in the environment.
+
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [2c933ba]
+  - @latitude-data/mysql-connector@1.1.0
+
 ## 0.1.1
 
 ### Patch Changes

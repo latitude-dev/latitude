@@ -17,9 +17,10 @@ function buildColumnString(column: string, chartType: CartesianChartType) {
   }
 }
 
-function buildColumnObject(column: Column) {
+function buildColumnObject(column: Column, chartType: CartesianChartType) {
   return {
     ...column,
+    chartType: column?.chartType ?? chartType,
     displayName: column?.displayName ?? column.name,
     axisIndex: column?.axisIndex ?? 0,
   }
@@ -61,10 +62,10 @@ function completeColumn({
   if (typeof column === 'string') {
     return completeStringColumn({ column, chartType, fields })
   }
-  if (!isWildcard(column.name)) return buildColumnObject(column)
+  if (!isWildcard(column.name)) return buildColumnObject(column, chartType)
 
   return filterByWildcard(fields, column.name).map((name) => {
-    return buildColumnObject({ ...column, name })
+    return buildColumnObject({ ...column, name }, chartType)
   })
 }
 

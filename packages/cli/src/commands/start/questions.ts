@@ -1,9 +1,6 @@
-import { input, confirm, select } from '@inquirer/prompts'
 import fs from 'fs'
 import path from 'path'
-
-import { DEV_SITES_ROUTE_PREFIX } from '../constants.js'
-import config from '$src/config'
+import { input, confirm, select } from '@inquirer/prompts'
 import { onError } from '$src/utils'
 
 async function askForDestination() {
@@ -21,8 +18,6 @@ async function askForDestination() {
   }
 
   if (!dest) return { dest, force }
-
-  dest = config.dev ? `${DEV_SITES_ROUTE_PREFIX}/${dest}` : dest
 
   const isDestinationEmpty =
     !fs.existsSync(dest) || fs.readdirSync(dest).length === 0

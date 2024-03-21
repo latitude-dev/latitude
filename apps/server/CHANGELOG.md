@@ -1,5 +1,40 @@
 # @latitude-data/server
 
+## 0.3.2
+
+### Patch Changes
+
+- f43a3cc: Fix RunButton didn't refetch all queries when no queries were specified, and the force tag was not included in forced requests.
+- Updated dependencies [f43a3cc]
+- Updated dependencies [85d57e2]
+- Updated dependencies [cdd2504]
+  - @latitude-data/client@0.4.0
+  - @latitude-data/connector-factory@0.1.3
+  - @latitude-data/svelte@0.4.0
+
+## 0.3.1
+
+### Patch Changes
+
+- @latitude-data/connector-factory@0.1.2
+
+## 0.3.0
+
+### Minor Changes
+
+- 80f6456: - Add sort prop to charts
+  - Add title and description to charts
+  - Fix truncated label in charts
+  - Animate chart data changes
+  - Improve chart error display (will be changed in a future PR)
+  - Display generic error on charts when a query fails in production
+
+### Patch Changes
+
+- Updated dependencies [80f6456]
+  - @latitude-data/svelte@0.3.0
+  - @latitude-data/client@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

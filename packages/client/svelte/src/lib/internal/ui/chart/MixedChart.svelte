@@ -16,27 +16,45 @@
   export let isLoading: MixedChartProps['isLoading'] = false
   export let error: MixedChartProps['error'] = null
 
-  export let x: MixedChartProps['x']
-  export let y: MixedChartProps['y']
-  export let width: MixedChartProps['width'] = undefined
-  export let height: MixedChartProps['height'] = undefined
-  export let locale: MixedChartProps['locale'] = 'en'
-  export let animation: MixedChartProps['animation'] = false
-  export let swapAxis: MixedChartProps['swapAxis'] = false
-  export let yTitle: MixedChartProps['yTitle'] = ''
-  export let xTitle: MixedChartProps['xTitle'] = ''
-  export let xFormat: MixedChartProps['xFormat'] = undefined
-  export let yFormat: MixedChartProps['yFormat'] = undefined
-  export let config: MixedChartProps['config'] = undefined
+  type $$Props = MixedChartProps
+  export let x: $$Props['x']
+  export let y: $$Props['y']
+  export let title: $$Props['title'] = undefined
+  export let description: $$Props['description'] = undefined
+  export let bordered: $$Props['bordered'] = false
+  export let sort: $$Props['sort'] = undefined
+  export let width: $$Props['width'] = undefined
+  export let height: $$Props['height'] = undefined
+  export let locale: $$Props['locale'] = 'en'
+  export let animation: $$Props['animation'] = true
+  export let swapAxis: $$Props['swapAxis'] = false
+  export let yTitle: $$Props['yTitle'] = ''
+  export let xTitle: $$Props['xTitle'] = ''
+  export let xFormat: $$Props['xFormat'] = undefined
+  export let yFormat: $$Props['yFormat'] = undefined
+  export let config: $$Props['config'] = undefined
 </script>
 
-<Wrapper {data} {isLoading} {error} let:dataset>
+<Wrapper
+  {data}
+  {title}
+  {description}
+  {bordered}
+  {isLoading}
+  {error}
+  {width}
+  {height}
+  let:dataset
+  let:contentHeight
+>
   <Echart
+    height={contentHeight}
     options={generate({
       dataset,
       animation,
       x,
       y,
+      sort,
       yTitle,
       xTitle,
       swapAxis,
@@ -45,7 +63,6 @@
       config,
     })}
     {width}
-    {height}
     {locale}
   />
 </Wrapper>

@@ -1,10 +1,6 @@
 import { exec } from 'child_process'
 import mri from 'mri'
-import {
-  APP_FOLDER,
-  DEV_SITES_ROUTE_PREFIX,
-  LATITUDE_CONFIG_FILE,
-} from './commands/constants'
+import { APP_FOLDER, LATITUDE_CONFIG_FILE } from './commands/constants'
 import path from 'path'
 import { findConfigFile } from './lib/latitudeConfig/findOrCreate'
 import validateFn from './lib/latitudeConfig/validate'
@@ -89,7 +85,7 @@ class CLIConfig {
   constructor() {
     this.dev = process.env.NODE_ENV === 'development'
     this.pro = !this.dev
-    this.cwd = this.getDefaultCwd()
+    this.cwd = process.cwd()
   }
 
   public static getInstance(): CLIConfig {
@@ -181,14 +177,6 @@ class CLIConfig {
         })
       })
     })
-  }
-
-  private getDefaultCwd() {
-    const naturalCwd = process.cwd()
-
-    if (this.pro) return naturalCwd
-
-    return path.join(naturalCwd, DEV_SITES_ROUTE_PREFIX)
   }
 
   get appDir() {

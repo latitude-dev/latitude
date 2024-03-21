@@ -1,5 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite'
 import { defineConfig } from 'vite'
+
 // eslint-disable-next-line
 // @ts-ignore
 import autoImport from '@latitude-data/sveltekit-autoimport'

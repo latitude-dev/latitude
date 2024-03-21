@@ -11,6 +11,7 @@ import {
   statSync,
   unlinkSync,
 } from 'fs'
+import { onExit } from '$src/utils'
 
 export default async function syncQueries({
   watch = false,
@@ -42,7 +43,7 @@ export default async function syncQueries({
     syncDirectory(queriesDir, syncFn)
   }
 
-  process.on('exit', () => {
+  onExit(() => {
     if (!watch) return
 
     clearFolders([destinationQueriesDir, destinationCsvsDir])

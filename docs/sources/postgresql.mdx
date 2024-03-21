@@ -17,8 +17,8 @@ The sources files must be inside the `queries/` folder.
 To configure the connection with your your PostgreSQL database follow these steps:
 
 <Steps>
-  <Step title='Go to the sources file in your Latitude project'>
-    ``` /sources/sources.yaml ```
+  <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
+    ``` /queries/source.yml ```
   </Step>
   <Step title='Add the following code for your PostgreSQL connection'>
     ``` yaml
@@ -30,6 +30,7 @@ To configure the connection with your your PostgreSQL database follow these step
       host: string
       port: number
       schema: string
+      ssl: boolean | SslConfig
     ```
   </Step>
   <Step title='Replace the details section with your info and save'></Step>
@@ -44,6 +45,82 @@ To configure the connection with your your PostgreSQL database follow these step
 - **Database** → The exact name of the database that contains the data you want to sync.
 - **Port** → The port number for the connection. In case you don’t have a port assigned the default port number of PostgreSQL is 5432.
 - **Schema** → (Optional) The schema within the database that you want to connect to. A PostgreSQL database can contain multiple schemas, each of which can hold tables and other database objects. If not specified, the default schema (usually "public") is used
+- **Ssl** -> (Optional) You can either pass a `true` boolean or an SslConfig object for a custom SSL implementation. Most implementations should work out of the box passing a `true` boolean.
+
+### SslConfig
+
+- **Sslmode** -> (Optional) One of the following ssl strategies: 'allow' | 'prefer' | 'require' | 'verify-ca' | 'verify-full'
+- **Ca** -> (Optional) Path to the certificate authority(ies) to trust instead of the ones Node.js is configured to trust. This can either be the root CA of your OS or a CA you obtained from your DB provider.
+- **Key** -> (Optional) Path to the private keys in PEM format.
+- **Cert** -> (Optional) Path to the cert chains in PEM format.
+- **RejectUnauthorized** -> (Optional) True or false if the connector should validate the SSL certificate
+
+### Certificate Authorities (CAs)
+
+<Note>Most of the following documentation comes from [Panetscale's excellent
+docs](https://planetscale.com/docs/concepts/secure-connections#certificate-authorities).
+We copied and adapted some of their content here in the interest of simplicity
+for you, the reader, but it would be remiss not to mention their excellent
+work.</Note>
+
+#### What is a Certificate Authority (CA)?
+
+A Certificate Authority (CA) is a trusted party that signs digital certificates
+used to identify websites and other services. Their most well known use is
+signing the certificates used by websites serving content over HTTPS. Using a
+signed certificate means that you can trust that you really are communicating
+with the website that you think you are, without someone else listening in.
+
+#### Why is a Certificate Authority (CA) needed for TLS / SSL?
+Encryption alone won't provide trust, only confidentiality. Without a way to
+verify the entity at the other end of a secure connection, you risk
+establishing an encrypted connection to a malicious party. This means that TLS
+/ SSL only provides real security when certificates are validated against
+specific trusted Certificate Authorities.
+
+#### What is a CA root store?
+In day-to-day browsing you don't need to specify which CAs to trust, your
+operating system and / or browser come with a list of trusted authorities.
+These trusted authorities verify the identities of domain owners creating HTTPS
+certificates, and sign those certificates so that you can trust them as well.
+The root store of certificates from Certificate Authorities is a collection of
+certificates that are trusted to sign other certificates.
+
+Operating systems all come with CA root stores. Below we have listed common
+paths on which the CA root store can be found in various operating systems and
+distributions.
+
+#### CA root configuration
+**Linux**
+On Linux, the path to the system CA roots depends on the distribution that you are using.
+
+**Debian / Ubuntu / Gentoo / Arch / Slackware**
+This path also applies to Debian or Ubuntu derivatives. You need to make sure the ca-certificates package is installed.
+
+/etc/ssl/certs/ca-certificates.crt
+
+**RedHat / Fedora / CentOS / Mageia / Vercel / Netlify**
+This path also applies to RedHat or Fedora derivatives like Amazon Linux and Oracle Linux. This is the path to use for applications deployed on Vercel and Netlify.
+
+/etc/pki/tls/certs/ca-bundle.crt
+
+**Alpine**
+This is a commonly used distribution for Docker containers.
+
+/etc/ssl/cert.pem
+
+**OpenSUSE**
+This also applies to OpenSUSE derivatives.
+
+/etc/ssl/ca-bundle.pem
+
+**MacOS / FreeBSD / OpenBSD**
+MacOS provides an extracted version of the system roots on disk that can be used for the CA roots. On FreeBSD you need to install the ca_root_nss package for this path to be available.
+
+/etc/ssl/cert.pem
+
+**Windows**
+Windows does not provide a file with the CA roots. You'll need to obtain CAs either from your DB provider or others. The curl project provides an extracted bundle of root certificates from the Mozilla CA Certificate program. You can download the bundle at https://curl.se/docs/caextract.html. Once you download the file, you can point at it from the connectors' configuration.
 
 ## Test connection
 

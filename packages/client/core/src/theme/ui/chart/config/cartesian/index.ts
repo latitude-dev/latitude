@@ -15,13 +15,45 @@ import {
   xAxisFormat,
 } from './types'
 
-import { getDataset } from '../common/getDataset'
+import { Sort, getDataset } from '../common/getDataset'
 import setDataZoom from './setDatazoom'
 import setLegend from '../common/setLegend'
 import setGrid from './serieUtils/setGrid'
 import { transformXAxis, transformYAxis } from './transformAxis'
 import transformCartesiansSeries from './transformSeries'
 import { ColumnConfig, getColumns } from './getColumns'
+
+export type AnimationEasing = 'linear'
+  | 'quadraticIn'
+  | 'quadraticOut'
+  | 'quadraticInOut'
+  | 'cubicIn'
+  | 'cubicOut'
+  | 'cubicInOut'
+  | 'quarticIn'
+  | 'quarticOut'
+  | 'quarticInOut'
+  | 'quinticIn'
+  | 'quinticOut'
+  | 'quinticInOut'
+  | 'sinusoidalIn'
+  | 'sinusoidalOut'
+  | 'sinusoidalInOut'
+  | 'exponentialIn'
+  | 'exponentialOut'
+  | 'exponentialInOut'
+  | 'circularIn'
+  | 'circularOut'
+  | 'circularInOut'
+  | 'elasticIn'
+  | 'elasticOut'
+  | 'elasticInOut'
+  | 'backIn'
+  | 'backOut'
+  | 'backInOut'
+  | 'bounceIn'
+  | 'bounceOut'
+  | 'bounceInOut'
 
 function swapAxisFn({
   swapAxis,
@@ -86,9 +118,12 @@ const Y_FORMAT_DEFAULT = {
 
 export type Props = {
   animation?: boolean
+  animationEasing?: AnimationEasing
+  animationEasingUpdate?: AnimationEasing
   dataset: Dataset
   x: ColumnConfig
   y: ColumnConfig
+  sort?: Sort
   swapAxis?: boolean
   xTitle?: string
   yTitle?: string
@@ -107,6 +142,8 @@ type CartesianProps = Props & {
 export default function generateConfig({
   chartType = 'bar',
   animation = true,
+  animationEasing = 'cubicInOut',
+  animationEasingUpdate = 'cubicInOut',
   dataset,
   swapAxis = false,
   x,
@@ -115,6 +152,7 @@ export default function generateConfig({
   yTitle,
   xFormat = X_FORMAT_DEFAULT,
   yFormat = Y_FORMAT_DEFAULT,
+  sort,
   hiddenSeries = [],
   config = CONIFG_DEFAULTS,
 }: CartesianProps): EChartsOption | null | undefined {
@@ -125,16 +163,15 @@ export default function generateConfig({
   const xAxisList = Array.isArray(xFormat)
     ? xFormat.map(completeXAxis)
     : [completeXAxis(xFormat)]
-  const usePercentage = yAxisList[0]?.stack === 'normalized'
+  const normalizeValues = yAxisList[0]?.stack === 'normalized'
 
   const fields = dataset.fields
   const xColumns = getColumns({ column: x, chartType, fields })
   const yColumns = getColumns({ column: y, chartType, fields })
-  const generatedDataset = getDataset({
+  const { datasets, datasetIndex } = getDataset({
     dataset,
-    column: yColumns[0]?.name ?? '',
-    axisType: yAxisList[0]?.type ?? AxisType.value,
-    usePercentage,
+    normalizeValues,
+    sort
   })
   const dataZoom = setDataZoom({ swapAxis, showZoom })
   const grid = setGrid({
@@ -144,7 +181,6 @@ export default function generateConfig({
   })
 
   const legend = setLegend({ show: showLegend, left: grid.left ?? 0 })
-
   const { series, axisMetadata } = transformCartesiansSeries({
     config,
     swapAxis,
@@ -153,6 +189,7 @@ export default function generateConfig({
     yColumns,
     dataset,
     hiddenSeries,
+    datasetIndex
   })
 
   const rawXAxis = transformXAxis({
@@ -182,7 +219,9 @@ export default function generateConfig({
 
   return {
     animation,
-    dataset: [generatedDataset],
+    animationEasing,
+    animationEasingUpdate,
+    dataset: datasets,
     xAxis,
     yAxis,
     series,

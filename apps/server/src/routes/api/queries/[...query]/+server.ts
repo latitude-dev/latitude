@@ -1,8 +1,7 @@
 import handleError from '$lib/errors/handler'
 import findOrCompute from '$lib/query_service/find_or_compute'
 import { RichDate, parse } from '@latitude-data/custom_types'
-
-const FORCE_PARAM = '__force'
+import { FORCE_REFETCH_PARAMETER } from '@latitude-data/client'
 
 export async function GET({
   params,
@@ -32,12 +31,12 @@ function getQueryParams(url: URL) {
   const searchParams = url.searchParams
   const params: { [key: string]: IValue } = {}
   for (const [key, value] of searchParams) {
-    if (key !== FORCE_PARAM) {
+    if (key !== FORCE_REFETCH_PARAMETER) {
       params[key] = castValue(value)
     }
   }
 
-  return { params, force: searchParams.get(FORCE_PARAM) === 'true' }
+  return { params, force: searchParams.get(FORCE_REFETCH_PARAMETER) === 'true' }
 }
 
 function castValue(value: string): IValue {

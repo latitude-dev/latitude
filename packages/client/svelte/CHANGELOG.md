@@ -1,5 +1,33 @@
 # @latitude-data/svelte
 
+## 0.4.0
+
+### Minor Changes
+
+- cdd2504: Style alert component according to latitude's design system
+
+### Patch Changes
+
+- Updated dependencies [f43a3cc]
+- Updated dependencies [cdd2504]
+  - @latitude-data/client@0.4.0
+
+## 0.3.0
+
+### Minor Changes
+
+- 80f6456: - Add sort prop to charts
+  - Add title and description to charts
+  - Fix truncated label in charts
+  - Animate chart data changes
+  - Improve chart error display (will be changed in a future PR)
+  - Display generic error on charts when a query fails in production
+
+### Patch Changes
+
+- Updated dependencies [80f6456]
+  - @latitude-data/client@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

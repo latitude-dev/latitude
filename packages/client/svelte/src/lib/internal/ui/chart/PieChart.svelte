@@ -14,23 +14,45 @@
   import { theme } from '@latitude-data/client'
   const generatePieConfig = theme.ui.chart.generatePieConfig
 
-  export let data: PieChartProps['data'] = null
-  export let isLoading: PieChartProps['isLoading'] = false
-  export let error: PieChartProps['error'] = null
+  type $$Props = PieChartProps
+  export let data: $$Props['data'] = null
+  export let sort: $$Props['sort'] = undefined
+  export let isLoading: $$Props['isLoading'] = false
+  export let error: $$Props['error'] = null
 
-  export let displayName: PieChartProps['displayName'] = undefined
-  export let width: PieChartProps['width'] = undefined
-  export let height: PieChartProps['height'] = undefined
-  export let locale: PieChartProps['locale'] = 'en'
-  export let animation: PieChartProps['animation'] = false
-  export let config: PieChartProps['config'] = undefined
+  export let title: $$Props['title'] = undefined
+  export let description: $$Props['description'] = undefined
+  export let bordered: $$Props['bordered'] = false
+  export let displayName: $$Props['displayName'] = undefined
+  export let width: $$Props['width'] = undefined
+  export let height: $$Props['height'] = undefined
+  export let locale: $$Props['locale'] = 'en'
+  export let animation: $$Props['animation'] = true
+  export let config: $$Props['config'] = undefined
 </script>
 
-<Wrapper {data} {isLoading} {error} let:dataset>
+<Wrapper
+  {data}
+  {title}
+  {description}
+  {bordered}
+  {isLoading}
+  {error}
+  {width}
+  {height}
+  let:dataset
+  let:contentHeight
+>
   <Echart
-    options={generatePieConfig({ dataset, displayName, animation, config })}
+    height={contentHeight}
+    options={generatePieConfig({
+      dataset,
+      sort,
+      displayName,
+      animation,
+      config,
+    })}
     {width}
-    {height}
     {locale}
   />
 </Wrapper>

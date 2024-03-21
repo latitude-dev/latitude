@@ -13,28 +13,44 @@
   import Wrapper from './_Wrapper.svelte'
   const generate = theme.ui.chart.generateScatterConfig
 
-  export let data: ScatterChartProps['data'] = null
-  export let isLoading: ScatterChartProps['isLoading'] = false
-  export let error: ScatterChartProps['error'] = null
+  type $$Props = ScatterChartProps
+  export let data: $$Props['data'] = null
+  export let isLoading: $$Props['isLoading'] = false
+  export let error: $$Props['error'] = null
 
-  export let x: ScatterChartProps['x']
-  export let y: ScatterChartProps['y']
-  export let width: ScatterChartProps['width'] = undefined
-  export let height: ScatterChartProps['height'] = undefined
-  export let locale: ScatterChartProps['locale'] = 'en'
-  export let animation: ScatterChartProps['animation'] = false
-  export let sizeColumn: ScatterChartProps['sizeColumn']
-  export let style: ScatterChartProps['style'] = 'circle'
-  export let swapAxis: ScatterChartProps['swapAxis'] = false
-  export let yTitle: ScatterChartProps['yTitle'] = ''
-  export let xTitle: ScatterChartProps['xTitle'] = ''
-  export let xFormat: ScatterChartProps['xFormat'] = undefined
-  export let yFormat: ScatterChartProps['yFormat'] = undefined
-  export let config: ScatterChartProps['config'] = {}
+  export let title: $$Props['title'] = undefined
+  export let description: $$Props['description'] = undefined
+  export let bordered: $$Props['bordered'] = false
+  export let x: $$Props['x']
+  export let y: $$Props['y']
+  export let width: $$Props['width'] = undefined
+  export let height: $$Props['height'] = undefined
+  export let locale: $$Props['locale'] = 'en'
+  export let animation: $$Props['animation'] = true
+  export let sizeColumn: $$Props['sizeColumn']
+  export let style: $$Props['style'] = 'circle'
+  export let swapAxis: $$Props['swapAxis'] = false
+  export let yTitle: $$Props['yTitle'] = ''
+  export let xTitle: $$Props['xTitle'] = ''
+  export let xFormat: $$Props['xFormat'] = undefined
+  export let yFormat: $$Props['yFormat'] = undefined
+  export let config: $$Props['config'] = {}
 </script>
 
-<Wrapper {data} {isLoading} {error} let:dataset>
+<Wrapper
+  {data}
+  {title}
+  {description}
+  {bordered}
+  {isLoading}
+  {error}
+  {width}
+  {height}
+  let:dataset
+  let:contentHeight
+>
   <Echart
+    height={contentHeight}
     options={generate({
       dataset,
       animation,
@@ -50,7 +66,6 @@
       config,
     })}
     {width}
-    {height}
     {locale}
   />
 </Wrapper>
