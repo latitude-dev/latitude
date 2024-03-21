@@ -13,7 +13,7 @@ Check out the [live demo 👉](https://netflix-sample.fly.dev/)
 
 (code available here: https://github.com/latitude-dev/sample-netflix)
 
-https://github.com/latitude-dev/latitude/assets/5465249/370012dc-b417-462e-afb9-e92efd7a5092
+[![Sample project](assets/hero.png)](https://netflix-sample.fly.dev/)
 
 ## 💡 Use cases
 
