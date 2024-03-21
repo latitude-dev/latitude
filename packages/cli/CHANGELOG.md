@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.2.3
+
+### Patch Changes
+
+- 1331e27: fix: fixes related to the syncing of dependencies breaking when a package.json is not present, or present and malformed
+
 ## 0.2.2
 
 ### Patch Changes
