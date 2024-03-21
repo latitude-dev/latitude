@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/athena-connector",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "license": "LGPL",
   "description": "AWS Athena connector for Latitude",
   "type": "module",

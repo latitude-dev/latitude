@@ -1,5 +1,11 @@
 # @latitude-data/athena-connector
 
+## 1.1.0
+
+### Minor Changes
+
+- 4b49feb: Added option to indicate region and credentials. Made workgroup prop mandatory.
+
 ## 1.0.1
 
 ### Patch Changes

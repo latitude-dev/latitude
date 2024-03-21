@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.2.1
+
+### Patch Changes
+
+- 0c9befc: hotfix: defend against package.json not existing in watch mode
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @latitude-data/connector-factory
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [955fcf2]
+- Updated dependencies [5728564]
+- Updated dependencies [4b49feb]
+  - @latitude-data/bigquery-connector@1.1.0
+  - @latitude-data/snowflake-connector@1.0.2
+  - @latitude-data/athena-connector@1.1.0
+
 ## 0.1.3
 
 ### Patch Changes
