@@ -1,6 +1,10 @@
 import { format } from '@latitude-data/custom_types'
-type AnyObject = Record<string, unknown>
+import { FORCE_REFETCH_PARAMETER } from '../stores/queries';
+type AnyObject = { [key: string]: unknown }
 type ApiErrorItem = { title: string; detail: string }
+
+export const TOKEN_PARAM = '__token'
+export const SPECIAL_PARAMS = new Set([FORCE_REFETCH_PARAMETER, TOKEN_PARAM])
 
 type LatitudeApiConfig = {
   host?: string
@@ -17,10 +21,20 @@ export class ApiError extends Error {
   }
 }
 
-class LatitudeApi {
+export class LatitudeApi {
   private host?: string
   private cors: RequestMode = 'cors'
   private customHeaders: Record<string, string> = {}
+
+  static buildParams(params: AnyObject): string {
+    return Object.entries(params)
+      .map(([key, value]) => {
+        if (SPECIAL_PARAMS.has(key)) return `${key}=${value}`
+
+        return `${key}=${format(value)}`
+      })
+      .join('&')
+  }
 
   configure({ host, cors, customHeaders }: LatitudeApiConfig) {
     if (host !== undefined) this.host = host
@@ -49,9 +63,7 @@ class LatitudeApi {
 
   private buildUrl(urlStr: string, params: AnyObject = {}): URL {
     const url = new URL(`${this.safeHost}/${urlStr}`)
-    const formattedParams = Object.entries(params)
-      .map(([key, value]) => `${key}=${format(value)}`)
-      .join('&')
+    const formattedParams = LatitudeApi.buildParams(params)
     url.search = formattedParams
 
     return url

@@ -10,6 +10,7 @@ import { TelemetryEventType } from '../lib/telemetry/events'
 import { onError } from '../utils'
 import run from './run'
 import versionCheck from '$src/lib/decorators/versionCheck'
+import credentials from '$src/commands/credentials'
 
 export type Options = {
   tracked?: boolean
@@ -42,6 +43,9 @@ export default function command(
       break
     case 'runCommand':
       commandFn = run
+      break
+    case 'credentialsCommand':
+      commandFn = credentials
       break
     default:
       onError({

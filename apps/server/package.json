@@ -53,6 +53,7 @@
     "@latitude-data/connector-factory": "workspace:^",
     "@latitude-data/custom_types": "workspace:^",
     "@latitude-data/svelte": "workspace:*",
-    "@latitude-data/query_service": "workspace:*"
+    "@latitude-data/query_service": "workspace:*",
+    "@latitude-data/jwt": "workspace:*"
   }
 }

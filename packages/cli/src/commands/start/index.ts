@@ -1,15 +1,16 @@
+import path from 'path'
 import colors from 'picocolors'
 import { getLatitudeBanner } from '$src/utils'
-import cloneTemplate from './cloneTemplate'
 import { CLIConfig } from '$src/config'
 import { OnErrorFn } from '$src/types'
 import setupApp from '$src/lib/setupApp/index'
 import { onError } from '$src/utils'
 import findOrCreateLatitudeConfig from '$src/lib/latitudeConfig/findOrCreate'
-import { runDevServer } from '../dev/runDev'
-import path from 'path'
 import telemetry from '$src/lib/telemetry'
+import { runDevServer } from '$src/commands/dev/runDev'
+import cloneTemplate from './cloneTemplate'
 import startQuestions, { TemplateUrl } from './questions'
+import createDotEnv from './createDotEnv'
 
 export type CommonProps = { onError: OnErrorFn }
 
@@ -83,6 +84,7 @@ export default async function start({
 
   config.loadConfig()
 
+  createDotEnv({ config })
   await setupApp({ version: config.projectConfig.version })
   await welcomeMessage()
 

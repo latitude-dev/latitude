@@ -1,7 +1,8 @@
 import { writable, get, Writable, Readable, derived } from 'svelte/store'
 import { browser } from '$app/environment'
 import { replaceState } from '$app/navigation'
-import { parse, format } from '@latitude-data/custom_types'
+import { parse } from '@latitude-data/custom_types'
+import { LatitudeApi } from '@latitude-data/client'
 
 export type ViewParams = {
   [key: string]: unknown
@@ -9,6 +10,7 @@ export type ViewParams = {
 
 const getParamsFromUrl = () => {
   if (!browser) return {}
+
   const urlParams = new URLSearchParams(globalThis.location.search)
   const newParams: ViewParams = {}
   urlParams.forEach((value, key) => {
@@ -48,17 +50,15 @@ export const setViewParam = (key: string, value: unknown): void => {
 function setUrlParam(key: string, value: unknown) {
   if (!browser) return
 
-  // Parse all Params from the store to the URL format
-  const urlParams = new URLSearchParams(globalThis.location.search)
-  const urlParamsValues: Record<string, unknown> = {}
-  urlParams.forEach((value, key) => {
-    urlParamsValues[key] = parse(value)
-  })
-  if (value === undefined) delete urlParamsValues[key]
-  else urlParamsValues[key] = value
-  const newParamsString = Object.entries(urlParamsValues)
-    .map(([key, value]) => `${key}=${format(value)}`)
-    .join('&')
+  const urlParams = getAllViewParams()
+
+  if (value === undefined) {
+    delete urlParams[key]
+  } else {
+    urlParams[key] = value
+  }
+
+  const newParamsString = LatitudeApi.buildParams(urlParams)
 
   // There are two ways to update the url: the default window.location.replaceState and svelte's replaceState
   // When using the default window.location.replaceState, sveltekit will print a warning in the console recommending to use svelte's replaceState instead
