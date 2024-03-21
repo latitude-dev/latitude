@@ -9,54 +9,96 @@ vi.mock('$src/lib/spawn', () => ({
 }))
 
 describe('sync', () => {
-  async function runSyncTest(
-    rootContents: Record<string, unknown>,
-    targetContents: Record<string, unknown>,
-  ) {
+  it('successfully syncs dependencies when differences are present', () => {
     // @ts-expect-error mock
-    existsSync.mockImplementation((path: string) => {
+    existsSync.mockImplementationOnce((path: string) => {
       return path.includes('package.json')
     })
+
     readFileSync
       // @ts-expect-error mock
       .mockImplementation((path: string) => {
         if (path.endsWith('target/package.json')) {
-          return JSON.stringify(targetContents)
+          return JSON.stringify({ dependencies: {}, devDependencies: {} })
         }
         if (path.endsWith('root/package.json')) {
-          return JSON.stringify(rootContents)
+          return JSON.stringify({
+            dependencies: { react: '^17.0.0' },
+            devDependencies: {},
+          })
         }
         throw new Error('File not found')
       })
 
     // @ts-expect-error mock
-    writeFileSync.mockClear()
+    writeFileSync.mockReset()
     // @ts-expect-error mock
-    spawn.mockClear()
+    spawn.mockReset()
 
     sync({
       root: 'path/to/root/package.json',
       target: 'path/to/target/package.json',
-      defaultDependencies: {}, // Assume these are obtained correctly
-      defaultDevDependencies: {},
     })()
-  }
-
-  it('successfully syncs dependencies when differences are present', async () => {
-    runSyncTest(
-      { dependencies: { react: '^17.0.0' }, devDependencies: {} },
-      { dependencies: {}, devDependencies: {} },
-    )
 
     expect(writeFileSync).toHaveBeenCalled()
     expect(spawn).toHaveBeenCalled()
   })
 
-  it('does not sync when dependencies are the same', async () => {
-    runSyncTest(
-      { dependencies: { react: '^17.0.0' }, devDependencies: {} },
-      { dependencies: { react: '^17.0.0' }, devDependencies: {} },
-    )
+  it('does not sync when dependencies are the same', () => {
+    // @ts-expect-error mock
+    existsSync.mockImplementation((path: string) => {
+      return path.includes('package.json')
+    })
+
+    readFileSync
+      // @ts-expect-error mock
+      .mockImplementation((path: string) => {
+        if (path.endsWith('target/package.json')) {
+          return JSON.stringify({
+            dependencies: { react: '^17.0.0' },
+            devDependencies: {},
+          })
+        }
+
+        if (path.endsWith('root/package.json')) {
+          return JSON.stringify({
+            dependencies: { react: '^17.0.0' },
+            devDependencies: {},
+          })
+        }
+
+        throw new Error('File not found')
+      })
+
+    // @ts-expect-error mock
+    writeFileSync.mockReset()
+    // @ts-expect-error mock
+    spawn.mockReset()
+
+    sync({
+      root: 'path/to/root/package.json',
+      target: 'path/to/target/package.json',
+    })()
+
+    expect(writeFileSync).not.toHaveBeenCalled()
+    expect(spawn).not.toHaveBeenCalled()
+  })
+
+  it('does not sync if root package.json does not exist', () => {
+    // @ts-expect-error mock
+    existsSync.mockImplementation((path: string) => {
+      return !path.includes('root/package.json')
+    })
+
+    // @ts-expect-error mock
+    writeFileSync.mockReset()
+    // @ts-expect-error mock
+    spawn.mockReset()
+
+    sync({
+      root: 'path/to/root/package.json',
+      target: 'path/to/target/package.json',
+    })()
 
     expect(writeFileSync).not.toHaveBeenCalled()
     expect(spawn).not.toHaveBeenCalled()

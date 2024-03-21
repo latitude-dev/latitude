@@ -11,131 +11,55 @@ export default async function syncDependencies(
 ) {
   const root = path.join(config.cwd, 'package.json')
   const target = path.join(config.cwd, APP_FOLDER, 'package.json')
-  const {
-    dependencies: defaultDependencies = {},
-    devDependencies: defaultDevDependencies = {},
-  } = getDefaultDeps(target)
 
-  await sync({ root, target, defaultDependencies, defaultDevDependencies })()
+  await sync({ root, target })()
 
-  if (watch) {
-    await watcher(
-      root,
-      sync({ root, target, defaultDependencies, defaultDevDependencies }),
-    )
-  }
+  if (watch) await watcher(root, sync({ root, target }))
 }
 
 export const sync =
-  ({
-    root,
-    target,
-    defaultDependencies,
-    defaultDevDependencies,
-  }: {
-    root: string
-    target: string
-    defaultDependencies: Record<string, string>
-    defaultDevDependencies: Record<string, string>
-  }) =>
+  ({ root, target }: { root: string; target: string }) =>
   () =>
     new Promise<void>((resolve, reject) => {
       let install = false
 
-      // First, check if the root package.json exists
-      if (!existsSync(root)) {
-        setDefaultDependencies(target, {
-          dependencies: defaultDependencies,
-          devDependencies: defaultDevDependencies,
-        })
+      if (!existsSync(root)) return resolve()
 
-        return resolve()
-      }
+      const rootPackage = JSON.parse(readFileSync(root, 'utf8'))
+      const targetPackage = JSON.parse(readFileSync(target, 'utf8'))
+      const deps = ['dependencies', 'devDependencies']
 
-      try {
-        const rootPackage = JSON.parse(readFileSync(root, 'utf8'))
-        const targetPackage = JSON.parse(readFileSync(target, 'utf8'))
-        const deps = ['dependencies', 'devDependencies']
+      deps.forEach((dep) => {
+        const diff = computeDiff(rootPackage[dep], targetPackage[dep])
+        if (diff.length === 0) return
 
-        deps.forEach((dep) => {
-          const diff = computeDiff(rootPackage[dep], targetPackage[dep])
-          if (diff.length === 0) return
+        install = true
 
-          install = true
-
-          targetPackage[dep] = {
-            ...targetPackage[dep],
-            ...rootPackage[dep],
-          }
-
-          writeFileSync(target, JSON.stringify(targetPackage, null, 2))
-        })
-
-        if (install) {
-          console.log(colors.gray('Syncing dependencies with Latitude...'))
-
-          spawn(
-            config.pkgManager.command,
-            ['install'],
-            {},
-            {
-              onClose: () => {
-                console.log(colors.gray('Dependencies synced!'))
-                resolve()
-              },
-              onError: (error) => reject(error),
-            },
-          )
-        } else {
-          resolve()
+        targetPackage[dep] = {
+          ...targetPackage[dep],
+          ...rootPackage[dep],
         }
-      } catch (error) {
-        console.log(colors.red('Failed to sync dependencies:', error))
 
-        setDefaultDependencies(target, {
-          dependencies: defaultDependencies,
-          devDependencies: defaultDevDependencies,
-        })
+        writeFileSync(target, JSON.stringify(targetPackage, null, 2))
+      })
 
+      if (install) {
+        spawn(
+          config.pkgManager.command,
+          ['install'],
+          {},
+          {
+            onClose: () => {
+              console.log(colors.gray('Dependencies synced!'))
+              resolve()
+            },
+            onError: (error) => reject(error),
+          },
+        )
+      } else {
         resolve()
       }
     })
-
-const getDefaultDeps = (target: string) => {
-  if (!existsSync(target)) return {}
-
-  try {
-    const { dependencies, devDependencies } = JSON.parse(
-      readFileSync(target, 'utf8'),
-    )
-
-    return { dependencies, devDependencies }
-  } catch (_) {
-    // TODO: console.log if debug flag is true
-
-    return {}
-  }
-}
-
-const setDefaultDependencies = (
-  target: string,
-  {
-    dependencies,
-    devDependencies,
-  }: { dependencies: any; devDependencies: any },
-) => {
-  writeFileSync(
-    target,
-    JSON.stringify(
-      {
-        dependencies,
-        devDependencies,
-      },
-      null,
-      2,
-    ),
-  )
-}
 
 export const computeDiff = (
   root: Record<string, string> = {},
