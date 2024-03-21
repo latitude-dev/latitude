@@ -3,7 +3,7 @@ import axios from 'axios'
 import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import { LATITUDE_FOLDER, PACKAGE_NAME } from '$src/commands/constants'
 import { onError } from '$src/utils'
 import { type Props } from './index'
@@ -13,11 +13,12 @@ import boxedMessage from '../boxedMessage'
 export default async function cloneAppFromNpm({
   version: updateVersion,
 }: Props): Promise<void> {
-  const latitudeFolder = `${config.cwd}/${LATITUDE_FOLDER}`
+  const config = CLIConfig.getInstance()
+  const latitudeFolder = `${config.source}/${LATITUDE_FOLDER}`
   const appDir = `${latitudeFolder}/app`
   const version = updateVersion ?? config.projectConfig.version
   const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${version} dist.tarball`
-  const installedVersion = getInstalledVersion(config.cwd)
+  const installedVersion = getInstalledVersion(config.source)
 
   if (installedVersion === version) {
     boxedMessage({

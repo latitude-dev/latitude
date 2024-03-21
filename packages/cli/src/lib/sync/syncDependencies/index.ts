@@ -1,24 +1,24 @@
-import config from '$src/config'
 import path from 'path'
 import watcher from '../shared/watcher'
 import { APP_FOLDER } from '$src/commands/constants'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import colors from 'chalk'
 import spawn from '$src/lib/spawn'
+import { CLIConfig } from '$src/config'
 
 export default async function syncDependencies(
-  { watch }: { watch?: boolean } = { watch: false },
+  { config, watch }: { config: CLIConfig, watch?: boolean },
 ) {
-  const root = path.join(config.cwd, 'package.json')
-  const target = path.join(config.cwd, APP_FOLDER, 'package.json')
+  const root = path.join(config.source, 'package.json')
+  const target = path.join(config.source, APP_FOLDER, 'package.json')
 
-  await sync({ root, target })()
+  await sync({ config, root, target })()
 
-  if (watch) await watcher(root, sync({ root, target }))
+  if (watch) await watcher(root, sync({ config, root, target }))
 }
 
 export const sync =
-  ({ root, target }: { root: string; target: string }) =>
+  ({ config, root, target }: { config: CLIConfig, root: string; target: string }) =>
   () =>
     new Promise<void>((resolve, reject) => {
       let install = false

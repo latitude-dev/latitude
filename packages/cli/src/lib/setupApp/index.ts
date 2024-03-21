@@ -1,5 +1,5 @@
 import path from 'path'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import cloneAppFromNpm from './cloneAppFromNpm'
 import symlinkAppFromLocal from './symlinkAppFromLocal'
 import installAppDependencies from './installDependencies'
@@ -18,7 +18,8 @@ function addPackageJson() {
     },
   }
 
-  const packageJsonPath = path.resolve(config.cwd, 'package.json')
+  const config = CLIConfig.getInstance()
+  const packageJsonPath = path.resolve(config.source, 'package.json')
 
   try {
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
@@ -33,12 +34,13 @@ function addPackageJson() {
 }
 
 export default async function setupApp({ version }: Props) {
+  const config = CLIConfig.getInstance()
   const isPro = config.pro || config.simulatedPro
   const setup = isPro ? cloneAppFromNpm : symlinkAppFromLocal
 
   await setup({ version })
 
-  process.chdir(path.resolve(config.cwd))
+  process.chdir(path.resolve(config.source))
 
   if (!isPro) return addPackageJson()
 
@@ -60,7 +62,7 @@ export default async function setupApp({ version }: Props) {
   }
 
   try {
-    await updateVersion({ appDir: config.cwd, version })
+    await updateVersion({ appDir: config.source, version })
   } catch (e) {
     onError({
       error: e as Error,

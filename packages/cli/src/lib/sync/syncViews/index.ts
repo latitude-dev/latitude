@@ -1,4 +1,4 @@
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import fs, { rmSync } from 'fs'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
@@ -14,12 +14,14 @@ const copiedFiles = new Set<string>()
 
 export default async function syncViews(
   {
+    config,
     watch = false,
   }: {
+    config: CLIConfig
     watch?: boolean
-  } = { watch: false },
+  },
 ): Promise<void> {
-  const rootDir = config.cwd
+  const rootDir = config.source
   const destinationDir = getRoutesFolderPath(rootDir)
   const viewsDir = path.join(rootDir, 'views')
   const syncFn = syncFnFactory({ rootDir, destinationDir })

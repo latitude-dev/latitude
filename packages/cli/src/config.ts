@@ -69,9 +69,9 @@ function getConfig(appDir: string) {
   return config.data as unknown as PartialLatitudeConfig
 }
 
-class CLIConfig {
+export class CLIConfig {
   private static instance: CLIConfig
-  public cwd: string
+  public source: string
   public debug: boolean = false
   public dev: boolean = true
   public pro: boolean = false
@@ -82,16 +82,19 @@ class CLIConfig {
   }
   private _latitudeConfig: PartialLatitudeConfig | null = null
 
-  constructor() {
-    this.dev = process.env.NODE_ENV === 'development'
+  constructor({ source, dev }: { source: string, dev: boolean }) {
+    this.dev = dev
     this.pro = !this.dev
-    this.cwd = process.cwd()
+    this.source = source
   }
 
   public static getInstance(): CLIConfig {
     if (CLIConfig.instance) return this.instance
 
-    this.instance = new CLIConfig()
+    this.instance = new CLIConfig({
+      dev: process.env.NODE_ENV === 'development',
+      source: process.cwd(),
+    })
     return this.instance
   }
 
@@ -119,7 +122,7 @@ class CLIConfig {
   }
 
   public loadConfig() {
-    const latConfig = getConfig(this.cwd)
+    const latConfig = getConfig(this.source)
 
     if (!latConfig) {
       throw new Error(
@@ -157,13 +160,13 @@ class CLIConfig {
   setCwd(cwd: string) {
     if (!cwd) return
 
-    this.cwd = cwd
+    this.source = cwd
   }
 
   addFolderToCwd(folder: string | undefined) {
     if (!folder) return
 
-    this.cwd = path.join(this.cwd, folder)
+    this.source = path.join(this.source, folder)
   }
 
   private async getPackageManager(): Promise<PackageManager> {
@@ -180,8 +183,6 @@ class CLIConfig {
   }
 
   get appDir() {
-    return path.join(this.cwd, APP_FOLDER)
+    return path.join(this.source, APP_FOLDER)
   }
 }
-
-export default CLIConfig.getInstance()

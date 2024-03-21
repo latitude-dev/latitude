@@ -3,7 +3,7 @@ import { select } from '@inquirer/prompts'
 import setupApp from '$src/lib/setupApp'
 import { cleanTerminal, onError } from '$src/utils'
 import { DEFAULT_VERSION_LIST } from '../constants'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import {
   getInstalledVersion,
   getLatitudeVersions,
@@ -15,7 +15,7 @@ async function askForAppVersion() {
   try {
     console.log(colors.yellow('Fetching Latitude versions...'))
     versions = await getLatitudeVersions({
-      pkgManager: config.pkgManager,
+      pkgManager: CLIConfig.getInstance().pkgManager,
       onFetch: () => cleanTerminal(),
     })
   } catch {
@@ -32,6 +32,7 @@ async function askForAppVersion() {
 }
 
 async function getVersions({ fix }: { fix: boolean }) {
+  const config = CLIConfig.getInstance()
   if (fix) {
     return {
       oldVersion: getInstalledVersion(config.appDir),

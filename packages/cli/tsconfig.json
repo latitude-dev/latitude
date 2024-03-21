@@ -1,9 +1,10 @@
 {
   "extends": "@latitude-data/typescript/base.json",
   "compilerOptions": {
-    "rootDir": ".",
+    "rootDir": "src",
     "baseUrl": ".",
     "outDir": "dist",
+    "declarationDir": "dist",
     "paths": {
       "$src": ["src"],
       "$src/*": ["src/*"]

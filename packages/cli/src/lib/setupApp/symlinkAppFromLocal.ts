@@ -3,10 +3,11 @@ import path from 'path'
 import colors from 'picocolors'
 import { APP_SERVER_FOLDER } from '$src/commands/constants'
 import { forceSymlink, onError } from '$src/utils'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import { type Props } from './index'
 
 function createAppFolder() {
+  const config = CLIConfig.getInstance()
   const target = path.resolve(config.appDir)
   fs.mkdirSync(target, { recursive: true })
   return target

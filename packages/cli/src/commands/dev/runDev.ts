@@ -1,6 +1,6 @@
 import boxedMessage from '$src/lib/boxedMessage'
 import colors from 'picocolors'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import path from 'path'
 import { APP_FOLDER } from '../constants'
 import { cleanTerminal } from '$src/utils'
@@ -41,7 +41,8 @@ export async function runDevServer(
     process.exit()
   }
 
-  const appFolder = path.join(config.cwd, APP_FOLDER)
+  const config = CLIConfig.getInstance()
+  const appFolder = path.join(config.source, APP_FOLDER)
   const appPort: number = port || (await findFreePort(3000, 4000))
   const hostUrl = `http://${host}:${appPort}`
   const args = [
