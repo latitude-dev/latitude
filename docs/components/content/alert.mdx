@@ -12,13 +12,13 @@ Use the `<Alert>` component to display a message to the user. The component can 
 To use the `<Alert>` component, include it in your views as follows:
 
 ```html
-<Alert type="success">
-    <Alert.Title>
-        Success
-    </Alert.Title>
-    <Alert.Message>
-        Your changes have been saved.
-    </Alert.Message>
+<Alert
+  type='destructive'
+  secondary={true}
+  centerText={false}
+  fontWeight='medium'
+>
+  Your text here for the alert
 </Alert>
 ```
 
@@ -26,6 +26,27 @@ As you can see, the `<Alert>` component can contain a `<Alert.Title>` and a `<Al
 
 ## Properties
 
-<ResponseField name="type" type="string">
-  Change the style of the alert. Options are: `default`, `success`, `warning`, `error`.
+<ResponseField name="type" type="string" required>
+  Change the style of the alert. Options are:
+  - `primary`
+  - `green`
+  - `alert`
+  - `destructive`
+  - `muted`
+</ResponseField>
+
+<ResponseField name="secondary" type="boolean">
+  In combination with `type` it produce a different style for the alert with a softer background when is set to `true`
+</ResponseField>
+
+<ResponseField name="centerText" type="boolean">
+  By default text in the alert is centered. If you want to be left aligned set it to `false`
+</ResponseField>
+
+<ResponseField name="fontWeight" type="string">
+  Controls how the text inside the alert is presented. Options are:
+  - `normal`
+  - `medium`
+  - `bold`
+  By defaul is set to `normal`.
 </ResponseField>

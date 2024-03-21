@@ -112,7 +112,7 @@
       style="height: {contentHeight}px;"
     >
       {#if error}
-        <Error {error} height={contentHeight} />
+        <Error {error} />
       {:else if !data || (!data && isLoading)}
         <BlankSlate {isLoading} />
       {:else}

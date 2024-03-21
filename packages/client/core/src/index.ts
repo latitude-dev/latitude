@@ -14,7 +14,6 @@ export type ScatterChartProps = ScatterChartPropsOriginal
 export type { Dataset }
 export type {
   FontSize,
-  FontWeight,
   LetterSpacing,
   TextAlign,
   WordBreak,
@@ -23,3 +22,6 @@ export type {
   FontFamily,
   TextProps,
 } from './theme/ui/text'
+
+export * from './theme/ui/tokens'
+export type { ExtendsUnion } from './lib/commonTypes'

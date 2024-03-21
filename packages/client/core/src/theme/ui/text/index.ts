@@ -1,18 +1,5 @@
 import { cn } from '../../utils'
-
-export const textColors = {
-  primary: 'text-primary',
-  secondary: 'text-secondary',
-  destructive: 'text-destructive',
-  accent: 'text-accent',
-  background: 'text-background',
-  foreground: 'text-foreground',
-  link: 'text-link',
-  inherit: 'text-inherit',
-  muted: 'text-muted-foreground',
-}
-
-export type TextColor = keyof typeof textColors
+import { colors, weights, FontWeight, TextColor } from '../tokens'
 
 export const families = {
   sans: 'font-sans',
@@ -38,12 +25,6 @@ export const sizes = {
   h6: 'text-xs',
 }
 
-export const weights = {
-  normal: 'font-normal',
-  medium: 'font-medium',
-  semibold: 'font-semibold',
-  bold: 'font-bold',
-}
 export const spacings = {
   normal: 'tracking-normal',
   wide: 'tracking-wide',
@@ -68,7 +49,6 @@ export const whiteSpaces = {
 }
 
 export type FontSize = keyof typeof sizes
-export type FontWeight = keyof typeof weights
 export type LetterSpacing = keyof typeof spacings
 export type TextAlign = keyof typeof alignments
 export type WordBreak = keyof typeof wordBreaks
@@ -120,7 +100,7 @@ export function cssClass({
 }: TextProps) {
   const sizeClass = sizes[size]
   const leadingClass = leadings[leading]
-  const colorClass = textColors[color]
+  const colorClass = colors.textColors[color]
   const familyClass = families[family]
   const weightClass = weights[weight]
   const spacingClass = spacings[spacing]
