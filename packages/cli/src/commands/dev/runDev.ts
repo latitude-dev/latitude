@@ -112,7 +112,7 @@ const onStdout =
       } else {
         boxedMessage({
           title: 'Latitude server',
-          text: `${colors.blue('Running in')} http://localhost:${appPort}`,
+          text: `${colors.blue('Listening on')} http://localhost:${appPort}`,
           color: 'green',
         })
       }

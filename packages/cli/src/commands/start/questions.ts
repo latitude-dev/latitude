@@ -3,11 +3,11 @@ import path from 'path'
 import { input, confirm, select } from '@inquirer/prompts'
 import { onError } from '$src/utils'
 
-async function askForDestination() {
+async function askForDestination({ name }: { name?: string }) {
   let dest = null
   let force = false
   try {
-    dest = await input({ message: 'Whats the name of your project?' })
+    dest = name || (await input({ message: 'Whats the name of your project?' }))
   } catch (err) {
     onError({
       error: err as Error,
@@ -59,8 +59,14 @@ const DEFAULT_RESPONSE = {
   force: false,
   telemetry: false,
 }
-export default async function startQuestions() {
-  const { dest, empty, force } = await askForDestination()
+export default async function startQuestions({
+  name,
+  template,
+}: {
+  name?: string
+  template?: TemplateUrl
+}) {
+  const { dest, empty, force } = await askForDestination({ name })
 
   if (!dest) return DEFAULT_RESPONSE
   if (!empty && !force) process.exit(0)
@@ -68,6 +74,6 @@ export default async function startQuestions() {
   return {
     dest,
     force,
-    template: await askForTemplate(),
+    template: template || (await askForTemplate()),
   }
 }
