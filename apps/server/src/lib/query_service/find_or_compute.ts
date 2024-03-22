@@ -8,7 +8,7 @@ type Props = {
   force: boolean
 }
 
-const QUERIES_DIR = 'static/latitude/queries';
+export const QUERIES_DIR = 'static/latitude/queries';
 
 export default async function findOrCompute({
   query,

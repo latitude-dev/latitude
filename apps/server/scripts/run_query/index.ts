@@ -1,4 +1,5 @@
-import findQueryFile, { ROOT_FOLDER } from '../../src/lib/query_service/findQueryFile'
+import { QUERIES_DIR } from '../../src/lib/query_service/find_or_compute'
+import findQueryFile from '@latitude-data/query_service'
 import { createConnector } from '@latitude-data/connector-factory'
 import { render, displayResults, displayError } from './result_display'
 import chokidar from 'chokidar'
@@ -9,10 +10,10 @@ if (args.length < 1) {
   process.exit(1)
 }
 const watch = args[0] === '--watch'
-const queryPath = args[0 + Number(watch)]
+const queryPath = args[0 + Number(watch)]!
 let options
 try {
-  options = args[1 + Number(watch)] ? JSON.parse(args[1 + Number(watch)]) : {}
+  options = args[1 + Number(watch)] ? JSON.parse(args[1 + Number(watch)]!) : {}
 } catch (e) {
   console.error('Options must be a valid JSON string')
   process.exit(1)
@@ -20,7 +21,7 @@ try {
 
 async function run(query: string, options: { [key: string]: string }) {
   try {
-    const { sourcePath, queryPath } = await findQueryFile(query)
+    const { sourcePath, queryPath } = await findQueryFile(QUERIES_DIR, query)
     const connector = createConnector(sourcePath)
     
     const startTime = Date.now()
@@ -34,7 +35,7 @@ async function run(query: string, options: { [key: string]: string }) {
 }
 
 if (watch) {
-  const watcher = chokidar.watch(ROOT_FOLDER, {
+  const watcher = chokidar.watch(QUERIES_DIR, {
     ignored: /(^|[/\\])\../,
   })
   
