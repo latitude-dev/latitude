@@ -1,9 +1,11 @@
-import maybeSetupApp from '$src/lib/maybeSetupApp'
+import { CLIConfig } from '$src/config'
+import setupApp from '$src/lib/setupApp'
 
 export default function setup(commandFn: Function) {
   return async function (...args: any[]) {
-    const ready = await maybeSetupApp()
-    if (!ready) process.exit(1)
+    const config = CLIConfig.getInstance()
+
+    await setupApp({ version: config.projectConfig.version })
 
     return commandFn(...args)
   }

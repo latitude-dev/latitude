@@ -1,7 +1,7 @@
 import { CLIConfig } from '$src/config'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
-import { APP_FOLDER } from '$src/commands/constants'
+import { LATITUDE_SERVER_FOLDER } from '$src/commands/constants'
 import { existsSync, rmSync } from 'fs'
 import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
@@ -9,7 +9,7 @@ import { onExit } from '$src/utils'
 export default async function syncDotenv(
   { config, watch = false }: { config: CLIConfig, watch?: boolean },
 ) {
-  const destPath = path.join(config.source, APP_FOLDER, '.env')
+  const destPath = path.join(config.source, LATITUDE_SERVER_FOLDER, '.env')
   const srcPath = path.join(config.source, '.env')
 
   if (watch) {

@@ -5,7 +5,9 @@ import symlinkAppFromLocal from './symlinkAppFromLocal'
 import installAppDependencies from './installDependencies'
 import updateVersion from '../latitudeConfig/updateVersion'
 import { onError } from '$src/utils'
-import { writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
+import findOrCreateConfigFile from '../latitudeConfig/findOrCreate'
+import { LATITUDE_SERVER_FOLDER } from '$src/commands/constants'
 
 export type Props = { version: string }
 
@@ -35,11 +37,22 @@ function addPackageJson() {
 
 export default async function setupApp({ version }: Props) {
   const config = CLIConfig.getInstance()
+
+  await findOrCreateConfigFile({
+    appDir: config.source,
+    pkgManager: config.pkgManager,
+  })
+
+  config.loadConfig()
+
   const isPro = config.pro || config.simulatedPro
-  const setup = isPro ? cloneAppFromNpm : symlinkAppFromLocal
+  const installServer = isPro ? cloneAppFromNpm : symlinkAppFromLocal
 
-  await setup({ version })
+  if (!existsSync(`${config.source}/${LATITUDE_SERVER_FOLDER}`)) {
+    await installServer({ version })
+  }
 
+  // Change directory to the app folder
   process.chdir(path.resolve(config.source))
 
   if (!isPro) return addPackageJson()

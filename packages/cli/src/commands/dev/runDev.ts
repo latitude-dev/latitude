@@ -2,7 +2,7 @@ import boxedMessage from '$src/lib/boxedMessage'
 import colors from 'picocolors'
 import { CLIConfig } from '$src/config'
 import path from 'path'
-import { APP_FOLDER } from '../constants'
+import { LATITUDE_SERVER_FOLDER } from '../constants'
 import { cleanTerminal } from '$src/utils'
 import portfinder from 'portfinder'
 import spawn from '$src/lib/spawn'
@@ -33,16 +33,13 @@ export async function runDevServer(
   },
 ) {
   if (port && !(await isPortAvailable(port))) {
-    boxedMessage({
-      text: `Port ${port} is not available`,
-      color: 'red',
-    })
+    console.log(colors.red(`Port ${port} is not available`))
 
     process.exit(1)
   }
 
   const config = CLIConfig.getInstance()
-  const appFolder = path.join(config.source, APP_FOLDER)
+  const appFolder = path.join(config.source, LATITUDE_SERVER_FOLDER)
   const appPort: number = port || (await findFreePort(3000, 4000))
   const hostUrl = `http://${host}:${appPort}`
   const args = [
@@ -129,17 +126,9 @@ const onStderr = (data: Buffer) => {
 }
 
 const onError = (error: Error) => {
-  boxedMessage({
-    text: `Server error: ${error.message}`,
-    color: 'red',
-  })
+  console.log(colors.red(error.message))
 }
 
 const onClose = (code?: number) => {
-  boxedMessage({
-    text: `Server closed with code: ${code}`,
-    color: 'yellow',
-  })
-
   process.exit(code ?? 0)
 }

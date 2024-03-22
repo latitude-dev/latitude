@@ -1,6 +1,6 @@
 import path from 'path'
 import watcher from '../shared/watcher'
-import { APP_FOLDER } from '$src/commands/constants'
+import { LATITUDE_SERVER_FOLDER } from '$src/commands/constants'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import colors from 'chalk'
 import spawn from '$src/lib/spawn'
@@ -10,7 +10,7 @@ export default async function syncDependencies(
   { config, watch }: { config: CLIConfig, watch?: boolean },
 ) {
   const root = path.join(config.source, 'package.json')
-  const target = path.join(config.source, APP_FOLDER, 'package.json')
+  const target = path.join(config.source, LATITUDE_SERVER_FOLDER, 'package.json')
 
   await sync({ config, root, target })()
 

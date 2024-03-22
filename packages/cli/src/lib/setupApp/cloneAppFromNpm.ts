@@ -4,30 +4,29 @@ import colors from 'picocolors'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
 import { CLIConfig } from '$src/config'
-import { LATITUDE_FOLDER, PACKAGE_NAME } from '$src/commands/constants'
+import {
+  LATITUDE_SERVER_FOLDER,
+  LATITUDE_SERVER_PACKAGE_NAME,
+} from '$src/commands/constants'
 import { onError } from '$src/utils'
 import { type Props } from './index'
 import { getInstalledVersion } from '../getAppVersions'
-import boxedMessage from '../boxedMessage'
 
 export default async function cloneAppFromNpm({
   version: updateVersion,
 }: Props): Promise<void> {
   const config = CLIConfig.getInstance()
-  const latitudeFolder = `${config.source}/${LATITUDE_FOLDER}`
-  const appDir = `${latitudeFolder}/app`
+  const appDir = `${config.source}/${LATITUDE_SERVER_FOLDER}`
   const version = updateVersion ?? config.projectConfig.version
-  const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${version} dist.tarball`
+  const command = `${config.pkgManager.command} view ${LATITUDE_SERVER_PACKAGE_NAME}@${version} dist.tarball`
   const installedVersion = getInstalledVersion(config.source)
 
   if (installedVersion === version) {
-    boxedMessage({
-      title: 'Same version',
-      text: `${colors.blue('Version')} ${colors.green(version)} ${colors.blue(
-        'is already installed',
-      )}`,
-      color: 'green',
-    })
+    console.log(
+      colors.gray(
+        `Same version ${colors.green(version)} already installed. Skipping...`,
+      ),
+    )
 
     return
   }
@@ -53,6 +52,7 @@ export default async function cloneAppFromNpm({
 
       if (oldApp) {
         console.log(colors.yellow('Uninstalling old app version...'))
+
         fsExtra.removeSync(appDir)
       }
 

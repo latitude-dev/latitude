@@ -1,6 +1,9 @@
 import { exec } from 'child_process'
 import mri from 'mri'
-import { APP_FOLDER, LATITUDE_CONFIG_FILE } from './commands/constants'
+import {
+  LATITUDE_SERVER_FOLDER,
+  LATITUDE_CONFIG_FILE,
+} from './commands/constants'
 import path from 'path'
 import { findConfigFile } from './lib/latitudeConfig/findOrCreate'
 import validateFn from './lib/latitudeConfig/validate'
@@ -82,7 +85,7 @@ export class CLIConfig {
   }
   private _latitudeConfig: PartialLatitudeConfig | null = null
 
-  constructor({ source, dev }: { source: string, dev: boolean }) {
+  constructor({ source, dev }: { source: string; dev: boolean }) {
     this.dev = dev
     this.pro = !this.dev
     this.source = source
@@ -157,7 +160,7 @@ export class CLIConfig {
     return this._latitudeConfig!
   }
 
-  setCwd(cwd: string) {
+  setSource(cwd: string) {
     if (!cwd) return
 
     this.source = cwd
@@ -183,6 +186,6 @@ export class CLIConfig {
   }
 
   get appDir() {
-    return path.join(this.source, APP_FOLDER)
+    return path.join(this.source, LATITUDE_SERVER_FOLDER)
   }
 }

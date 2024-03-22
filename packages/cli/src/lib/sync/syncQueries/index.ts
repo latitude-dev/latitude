@@ -1,7 +1,7 @@
 import { CLIConfig } from '$src/config'
 import path from 'path'
 import watcher from '../shared/watcher'
-import { APP_FOLDER } from '$src/commands/constants'
+import { LATITUDE_SERVER_FOLDER } from '$src/commands/constants'
 import syncFiles from '../shared/syncFiles'
 import {
   existsSync,
@@ -22,10 +22,10 @@ export default async function syncQueries({
 }) {
   const rootDir = config.source
   const queriesDir = path.join(rootDir, 'queries')
-  const destinationCsvsDir = path.join(rootDir, APP_FOLDER, 'queries')
+  const destinationCsvsDir = path.join(rootDir, LATITUDE_SERVER_FOLDER, 'queries')
   const destinationQueriesDir = path.join(
     rootDir,
-    APP_FOLDER,
+    LATITUDE_SERVER_FOLDER,
     'static',
     'latitude',
     'queries',

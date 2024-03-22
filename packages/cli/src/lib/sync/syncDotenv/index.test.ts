@@ -21,7 +21,7 @@ vi.mock('../shared/syncFiles', () => ({
 }))
 vi.mock('../shared/watcher', () => ({ default: vi.fn() }))
 
-const APP_FOLDER = '.latitude/app'
+const LATITUDE_SERVER_FOLDER = '.latitude/app'
 
 describe('syncDotenv', () => {
   beforeEach(() => {
@@ -55,7 +55,7 @@ describe('syncDotenv', () => {
     syncDotenv({ config })
 
     const expectedSrcPath = path.join(config.source, '.env')
-    const expectedDestPath = path.join(config.source, APP_FOLDER, '.env')
+    const expectedDestPath = path.join(config.source, LATITUDE_SERVER_FOLDER, '.env')
 
     expect(fs.existsSync).toHaveBeenCalledWith(expectedSrcPath)
     expect(syncFiles).toHaveBeenCalledWith({

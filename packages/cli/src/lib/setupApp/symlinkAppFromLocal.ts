@@ -1,10 +1,12 @@
 import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
-import { APP_SERVER_FOLDER } from '$src/commands/constants'
 import { forceSymlink, onError } from '$src/utils'
 import { CLIConfig } from '$src/config'
+
 import { type Props } from './index'
+
+const APP_SERVER_FOLDER = 'apps/server'
 
 function createAppFolder() {
   const config = CLIConfig.getInstance()

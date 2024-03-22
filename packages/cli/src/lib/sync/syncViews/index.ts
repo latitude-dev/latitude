@@ -2,12 +2,12 @@ import { CLIConfig } from '$src/config'
 import fs, { rmSync } from 'fs'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
-import { APP_FOLDER } from '$src/commands/constants'
+import { LATITUDE_SERVER_FOLDER } from '$src/commands/constants'
 import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
 
 function getRoutesFolderPath(cwd: string): string {
-  return path.join(cwd, APP_FOLDER, 'src', 'routes')
+  return path.join(cwd, LATITUDE_SERVER_FOLDER, 'src', 'routes')
 }
 
 const copiedFiles = new Set<string>()

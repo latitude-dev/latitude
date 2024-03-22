@@ -7,28 +7,26 @@ import defaultConfig from './defaultConfig.json'
 import { getLatitudeVersions } from '../getAppVersions'
 import validate from './validate'
 import { PackageManagerWithFlags } from '$src/config'
-import boxedMessage from '../boxedMessage'
+import { onError } from '$src/utils'
 
 async function getLatestVersion(pkgManager: PackageManagerWithFlags) {
   try {
     const versions = await getLatitudeVersions({ pkgManager })
     const latestVersion = versions[0]
     if (!latestVersion) {
-      boxedMessage({
-        title: 'Failed to get Latitude version',
-        text: `Please try again later`,
-        color: 'red',
-      })
+      console.log(colors.red('🚨 Failed to get Latitude version'))
+
+      process.exit(1)
     }
 
     return latestVersion
   } catch (error) {
-    boxedMessage({
-      title: 'Failed to get Latitude version',
-      text: `There was an erorr ${(error as Error).message}`,
-      color: 'red',
+    onError({
+      error: error as Error,
+      message: '🚨 Failed to get Latitude version',
     })
-    return null
+
+    process.exit(1)
   }
 }
 
@@ -40,6 +38,7 @@ type ConfigFile = {
   data: ConfigData
   path: string
 }
+
 export function findConfigFile({
   appDir,
   throws,
@@ -64,29 +63,42 @@ export default async function findOrCreateConfigFile({
 }): Promise<ConfigFile | null> {
   const config = findConfigFile({ appDir, throws: false })
 
-  let allGood = false
   try {
     const version = config.data?.version || (await getLatestVersion(pkgManager))
-    if (!version) return null
+    if (!version) {
+      onError({
+        error: new Error('Failed to get latest version'),
+        message: '🚨 Failed to get latest version from npm',
+      })
+
+      process.exit(1)
+    }
 
     const data = { ...defaultConfig, name: path.basename(appDir), version }
     const validated = validate(data)
 
     if (!validated.valid) {
-      console.error(validated.errors.message, validated.errors)
-      return null
+      onError({
+        error: new Error('Invalid configuration'),
+        message: `🚨 Invalid configuration: ${JSON.stringify(
+          validated.errors,
+        )}`,
+      })
+
+      process.exit(1)
     }
 
     fsExtra.writeJsonSync(config.path, data, { spaces: 2 })
+
     console.log(colors.green(`✅ Created ${path.basename(config.path)}`))
-    allGood = true
   } catch (err) {
-    boxedMessage({
-      title: `Error creating Latitude ${path.basename(config.path)}}`,
-      text: (err as Error).message,
-      color: 'red',
+    onError({
+      error: err as Error,
+      message: '🚨 Failed to create config file',
     })
+
+    process.exit(1)
   }
 
-  return allGood ? config : null
+  return config
 }
