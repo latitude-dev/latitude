@@ -13,8 +13,6 @@ const spawned = spawn('node', [
   'test-project',
   '--template',
   'default',
-  '--telemetry',
-  'false',
   '--debug'
 ])
 

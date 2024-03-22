@@ -33,3 +33,4 @@ yarn-error.log*
 
 sites/**/*
 !sites/package.json
+test-project

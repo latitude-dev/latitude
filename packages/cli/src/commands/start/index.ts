@@ -34,20 +34,20 @@ async function welcomeMessage() {
     `),
   )
 }
-export default async function start({
-  name,
+export default async function startCommand({
   port,
-  template = TemplateUrl.default,
   open = false,
+  name = undefined,
+  template = undefined,
 }: {
-  open: boolean
-  port?: number
+  port: number
+  open?: boolean
   name?: string
   template?: TemplateUrl
 }) {
   const {
     dest,
-    template: choosenTemplate,
+    template: chosenTemplate,
     force,
   } = await startQuestions({ name, template })
   const config = CLIConfig.getInstance()
@@ -67,7 +67,7 @@ export default async function start({
   // Clone template
   const dataAppDir = (await cloneTemplate({
     dest,
-    template: choosenTemplate,
+    template: chosenTemplate,
     force,
   })) as string
   config.setCwd(dataAppDir)

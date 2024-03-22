@@ -1,8 +1,10 @@
 import { CLIConfig } from '$src/config'
+import setup from '$src/lib/decorators/setup';
+import tracked from '$src/lib/decorators/tracked';
 import spawn from '$src/lib/spawn'
 import syncQueries from '$src/lib/sync/syncQueries'
 
-export default async function run(
+async function run(
   queryName: string,
   opts?: { param: string[] | string | undefined; watch: boolean },
 ) {
@@ -68,3 +70,5 @@ const buildParams = (stdioParams?: string | string[]) => {
 
   return params
 }
+
+export default tracked('runCommand', setup(run))

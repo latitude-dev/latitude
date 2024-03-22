@@ -3,10 +3,12 @@ import { CLIConfig } from '$src/config'
 import sync from '$src/lib/sync'
 import { CommonCLIArgs } from '$src/types'
 import { DevServerProps, runDevServer } from './runDev'
+import tracked from '$src/lib/decorators/tracked'
+import setup from '$src/lib/decorators/setup'
 
 export type Props = CommonCLIArgs & { open?: string; port?: number }
 
-export default async function devCommand(args: Props = {}) {
+async function devCommand(args: Props = {}) {
   await sync({
     config: CLIConfig.getInstance(),
     watch: true
@@ -38,3 +40,5 @@ const buildServerProps = ({ open, port }: { open: string; port?: number }) => {
       }
     : server
 }
+
+export default tracked('devCommand', setup(devCommand))

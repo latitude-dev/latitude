@@ -7,7 +7,8 @@ async function askForDestination({ name }: { name?: string }) {
   let dest = null
   let force = false
   try {
-    dest = name || (await input({ message: 'Whats the name of your project?' }))
+    dest =
+      name || (await input({ message: "What's the name of your project?" }))
   } catch (err) {
     onError({
       error: err as Error,

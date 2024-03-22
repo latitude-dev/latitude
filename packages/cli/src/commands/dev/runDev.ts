@@ -38,7 +38,7 @@ export async function runDevServer(
       color: 'red',
     })
 
-    process.exit()
+    process.exit(1)
   }
 
   const config = CLIConfig.getInstance()
@@ -69,9 +69,8 @@ export async function runDevServer(
 async function isPortAvailable(port: number): Promise<boolean> {
   return new Promise((resolve) => {
     portfinder.getPort({ port }, (err, foundPort) => {
-      if (err) {
-        resolve(false)
-      }
+      if (err) return resolve(false)
+
       resolve(foundPort === port)
     })
   })
@@ -91,6 +90,7 @@ async function findFreePort(
         if (err) {
           reject(err)
         }
+
         resolve(foundPort)
       },
     )
