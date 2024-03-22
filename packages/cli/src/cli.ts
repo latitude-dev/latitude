@@ -20,6 +20,8 @@ if (process.env.NODE_ENV === 'development') {
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')
+  .option('--name', 'Name of the project')
+  .option('--template', 'Template to use for the data app')
   .option('--port', 'Port to run the data app on')
   .action(command('startCommand', { tracked: false, setup: false }))
 
@@ -68,6 +70,7 @@ async function init() {
 
   try {
     const config = CLIConfig.getInstance()
+
     await config.init(process.argv)
   } catch (error) {
     onError({

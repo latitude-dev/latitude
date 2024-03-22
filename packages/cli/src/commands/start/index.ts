@@ -9,7 +9,7 @@ import findOrCreateLatitudeConfig from '$src/lib/latitudeConfig/findOrCreate'
 import { runDevServer } from '../dev/runDev'
 import path from 'path'
 import telemetry from '$src/lib/telemetry'
-import startQuestions from './questions'
+import startQuestions, { TemplateUrl } from './questions'
 
 export type CommonProps = { onError: OnErrorFn }
 
@@ -35,13 +35,21 @@ async function welcomeMessage() {
   )
 }
 export default async function start({
-  open = false,
+  name,
   port,
+  template = TemplateUrl.default,
+  open = false,
 }: {
   open: boolean
   port?: number
+  name?: string
+  template?: TemplateUrl
 }) {
-  const { dest, template, force } = await startQuestions()
+  const {
+    dest,
+    template: choosenTemplate,
+    force,
+  } = await startQuestions({ name, template })
   const config = CLIConfig.getInstance()
 
   if (!dest) {
@@ -57,7 +65,11 @@ export default async function start({
   await telemetry.track({ event: 'startCommand' })
 
   // Clone template
-  const dataAppDir = (await cloneTemplate({ dest, template, force })) as string
+  const dataAppDir = (await cloneTemplate({
+    dest,
+    template: choosenTemplate,
+    force,
+  })) as string
   config.setCwd(dataAppDir)
 
   // Setup Latitude configuration

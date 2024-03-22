@@ -1,0 +1,71 @@
+name: E2E CLI test
+
+on:
+  push:
+    branches: ['main']
+    paths:
+      - 'packages/cli/**' # Only trigger when changes are made within the ./packages/cli/ folder
+  pull_request:
+    branches: ['main']
+    paths:
+      - 'packages/cli/**' # Only trigger when changes are made within the ./packages/cli/ folder
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x] # Specify node versions you want to test against
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2 # Checkout HEAD^
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Cache turbo build setup
+        uses: actions/cache@v3
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-
+
+      - name: Install dependencies
+        run: |
+          pnpm install
+
+      - name: Use Turbo to build affected packages
+        run: pnpm turbo run build --cache-dir=.turbo --filter='./packages/cli'
+
+      - name: ls dist folder
+        run: ls /home/runner/work/latitude/latitude/packages/cli/dist
+
+      - name: Run E2E tests
+        run: node ../packages/cli/tests/e2e/start.cjs
+        working-directory: ${{ github.workspace }}/sites
