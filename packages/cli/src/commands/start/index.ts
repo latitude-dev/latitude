@@ -1,7 +1,7 @@
 import colors from 'picocolors'
 import { getLatitudeBanner } from '$src/utils'
 import cloneTemplate from './cloneTemplate'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import { OnErrorFn } from '$src/types'
 import setupApp from '$src/lib/setupApp/index'
 import { onError } from '$src/utils'
@@ -14,8 +14,9 @@ import startQuestions from './questions'
 export type CommonProps = { onError: OnErrorFn }
 
 async function welcomeMessage() {
+  const config = CLIConfig.getInstance()
   const banner = await getLatitudeBanner()
-  const projectDir = path.basename(config.cwd).replace(/"/g, '\\"')
+  const projectDir = path.basename(config.source).replace(/"/g, '\\"')
   console.log(colors.green(banner))
   console.log(
     colors.white(`
@@ -29,7 +30,7 @@ async function welcomeMessage() {
     --------------------------------------
 
     $ cd ./${projectDir.includes(' ') ? `"${projectDir}"` : projectDir}
-    $ ${config.dev ? 'pnpm run latitude-dev' : 'latitude dev'}
+    $ ${config.dev ? 'pnpm latitude-dev dev' : 'latitude dev'}
     `),
   )
 }
@@ -41,6 +42,7 @@ export default async function start({
   port?: number
 }) {
   const { dest, template, force } = await startQuestions()
+  const config = CLIConfig.getInstance()
 
   if (!dest) {
     onError({

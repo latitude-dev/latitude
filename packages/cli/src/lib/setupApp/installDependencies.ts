@@ -1,8 +1,9 @@
 import colors from 'picocolors'
 import { spawn } from 'child_process'
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 
 export default async function installAppDependencies() {
+  const config = CLIConfig.getInstance()
   const appFolder = config.appDir
   let args = ['install', ...config.pkgManager.flags.mandatoryInstallFlags]
   args = config.pro

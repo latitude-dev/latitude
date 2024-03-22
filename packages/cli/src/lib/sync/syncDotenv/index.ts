@@ -1,4 +1,4 @@
-import config from '$src/config'
+import { CLIConfig } from '$src/config'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
 import { APP_FOLDER } from '$src/commands/constants'
@@ -7,10 +7,10 @@ import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
 
 export default async function syncDotenv(
-  { watch = false }: { watch?: boolean } = { watch: false },
+  { config, watch = false }: { config: CLIConfig, watch?: boolean },
 ) {
-  const destPath = path.join(config.cwd, APP_FOLDER, '.env')
-  const srcPath = path.join(config.cwd, '.env')
+  const destPath = path.join(config.source, APP_FOLDER, '.env')
+  const srcPath = path.join(config.source, '.env')
 
   if (watch) {
     await watcher(

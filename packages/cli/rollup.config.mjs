@@ -23,11 +23,15 @@ const packageVersion =
  * @type {RollupOptions}
  */
 export default {
-  input: 'src/index.ts',
+  input: {
+    index: 'src/index.ts',
+    cli: 'src/cli.ts',
+  },
   cache: false, // This is generating stale builds in watch mode
   output: {
-    file: 'dist/index.js',
+    dir: 'dist',
     format: 'esm',
+    entryFileNames: '[name].js',
   },
   plugins: [
     copy({ patterns: 'latitude-banner.txt' }),
