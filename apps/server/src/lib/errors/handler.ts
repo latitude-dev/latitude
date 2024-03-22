@@ -1,4 +1,4 @@
-import { NotFoundError } from '.'
+import { NotFoundError } from '@latitude-data/query_service'
 
 export default function handleError(e: Error) {
   const isPro = import.meta.env.PROD

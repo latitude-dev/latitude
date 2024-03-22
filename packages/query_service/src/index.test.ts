@@ -3,10 +3,11 @@ import { Dirent } from 'fs'
 import * as fs from 'fs/promises'
 import { vi } from 'vitest'
 import findQueryFile, {
-  ROOT_FOLDER,
   QueryNotFoundError,
   SourceFileNotFoundError,
-} from './findQueryFile' // Replace with the actual path to your module
+} from '.'
+
+const ROOT_FOLDER = 'path/to/queries';
 
 // Mocks fs module
 vi.mock('fs/promises', () => ({
@@ -29,7 +30,7 @@ describe('findQueryFile', () => {
       'anotherfile.txt' as unknown as Dirent,
     ])
 
-    const result = await findQueryFile(mockFilePath)
+    const result = await findQueryFile(ROOT_FOLDER, mockFilePath)
 
     expect(result).toEqual({
       queryPath: 'query.sql',
@@ -40,7 +41,7 @@ describe('findQueryFile', () => {
   it('should throw a QueryNotFoundError if the .sql file does not exist', async () => {
     vi.mocked(fs.access).mockRejectedValue(new Error('File not found'))
 
-    await expect(findQueryFile(mockFilePath)).rejects.toThrow(
+    await expect(findQueryFile(ROOT_FOLDER, mockFilePath)).rejects.toThrow(
       QueryNotFoundError,
     )
   })
@@ -51,7 +52,7 @@ describe('findQueryFile', () => {
       'anotherfile.txt' as unknown as Dirent,
     ]) // Pretending there's no YML file
 
-    await expect(findQueryFile(mockFilePath)).rejects.toThrow(
+    await expect(findQueryFile(ROOT_FOLDER, mockFilePath)).rejects.toThrow(
       SourceFileNotFoundError,
     )
   })
