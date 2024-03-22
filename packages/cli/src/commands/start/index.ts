@@ -72,7 +72,7 @@ export default async function startCommand({
 
   config.setSource(dataAppDir)
 
-  await setupApp({ version: config.projectConfig.version })
+  await setupApp()
   await welcomeMessage()
 
   if (open) {

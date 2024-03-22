@@ -9,7 +9,7 @@ import { existsSync, writeFileSync } from 'fs'
 import findOrCreateConfigFile from '../latitudeConfig/findOrCreate'
 import { LATITUDE_SERVER_FOLDER } from '$src/commands/constants'
 
-export type Props = { version: string }
+export type Props = { version?: string }
 
 // Adds a package.json file to the app directory in development environment so
 // that you can run the cli in development mode with `npm run latitude-dev`
@@ -35,7 +35,9 @@ function addPackageJson() {
   }
 }
 
-export default async function setupApp({ version }: Props) {
+export default async function setupApp({
+  version: requestedVersion,
+}: Props = {}) {
   const config = CLIConfig.getInstance()
 
   await findOrCreateConfigFile({
@@ -45,6 +47,7 @@ export default async function setupApp({ version }: Props) {
 
   config.loadConfig()
 
+  const version = requestedVersion || config.projectConfig.version
   const isPro = config.pro || config.simulatedPro
   const installServer = isPro ? cloneAppFromNpm : symlinkAppFromLocal
 

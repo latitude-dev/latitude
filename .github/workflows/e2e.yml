@@ -9,6 +9,8 @@ on:
     branches: ['main']
     paths:
       - 'packages/cli/**' # Only trigger when changes are made within the ./packages/cli/ folder
+    on:
+      types: [opened, synchronize, reopened, ready_for_review, edited]
 
 jobs:
   e2e:
