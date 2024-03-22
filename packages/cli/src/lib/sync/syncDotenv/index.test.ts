@@ -29,7 +29,7 @@ describe('syncDotenv', () => {
   })
 
   it('starts the watcher', () => {
-    syncDotenv({ config: CLIConfig.getInstance(), watch: true })
+    syncDotenv({ watch: true })
 
     expect(syncFiles).not.toHaveBeenCalled()
     expect(watcher).toHaveBeenCalledWith(
@@ -42,7 +42,7 @@ describe('syncDotenv', () => {
     // @ts-expect-error mock
     ;(fs.existsSync as vi.Mock).mockReturnValueOnce(false)
 
-    syncDotenv({ config: CLIConfig.getInstance() })
+    syncDotenv()
     expect(fs.existsSync).toHaveBeenCalled()
     expect(syncFiles).not.toHaveBeenCalled()
   })
@@ -52,10 +52,14 @@ describe('syncDotenv', () => {
     ;(fs.existsSync as vi.Mock).mockReturnValueOnce(true)
 
     const config = CLIConfig.getInstance()
-    syncDotenv({ config })
+    syncDotenv()
 
     const expectedSrcPath = path.join(config.source, '.env')
-    const expectedDestPath = path.join(config.source, LATITUDE_SERVER_FOLDER, '.env')
+    const expectedDestPath = path.join(
+      config.source,
+      LATITUDE_SERVER_FOLDER,
+      '.env',
+    )
 
     expect(fs.existsSync).toHaveBeenCalledWith(expectedSrcPath)
     expect(syncFiles).toHaveBeenCalledWith({

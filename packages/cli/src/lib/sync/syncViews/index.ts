@@ -12,15 +12,12 @@ function getRoutesFolderPath(cwd: string): string {
 
 const copiedFiles = new Set<string>()
 
-export default async function syncViews(
-  {
-    config,
-    watch = false,
-  }: {
-    config: CLIConfig
-    watch?: boolean
-  },
-): Promise<void> {
+export default async function syncViews({
+  watch = false,
+}: {
+  watch?: boolean
+}): Promise<void> {
+  const config = CLIConfig.getInstance()
   const rootDir = config.source
   const destinationDir = getRoutesFolderPath(rootDir)
   const viewsDir = path.join(rootDir, 'views')

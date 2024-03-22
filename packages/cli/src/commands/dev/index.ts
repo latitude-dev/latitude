@@ -9,10 +9,7 @@ import setup from '$src/lib/decorators/setup'
 export type Props = CommonCLIArgs & { open?: string; port?: number }
 
 async function devCommand(args: Props = {}) {
-  await sync({
-    config: CLIConfig.getInstance(),
-    watch: true
-  })
+  await sync({ watch: true })
 
   runDevServer(buildServerProps({ open: args?.open ?? 'yes', port: args.port }))
 }

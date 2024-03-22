@@ -14,15 +14,18 @@ import {
 import { onExit } from '$src/utils'
 
 export default async function syncQueries({
-  config,
   watch = false,
 }: {
-  config: CLIConfig
   watch?: boolean
 }) {
+  const config = CLIConfig.getInstance()
   const rootDir = config.source
   const queriesDir = path.join(rootDir, 'queries')
-  const destinationCsvsDir = path.join(rootDir, LATITUDE_SERVER_FOLDER, 'queries')
+  const destinationCsvsDir = path.join(
+    rootDir,
+    LATITUDE_SERVER_FOLDER,
+    'queries',
+  )
   const destinationQueriesDir = path.join(
     rootDir,
     LATITUDE_SERVER_FOLDER,

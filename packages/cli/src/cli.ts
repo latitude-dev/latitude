@@ -2,7 +2,7 @@
 
 import buildCommand from './commands/build'
 import devCommand from './commands/dev'
-import prepareCommand from './commands/prepare'
+import setupCommand from './commands/setup'
 import runCommand from './commands/run'
 import sade from 'sade'
 import startCommand from './commands/start'
@@ -47,9 +47,9 @@ CLI.command('build')
   .describe('Build data app for production')
   .action(buildCommand)
 
-CLI.command('prepare')
-  .describe('Prepares data app for production build')
-  .action(prepareCommand)
+CLI.command('setup')
+  .describe('Setup a Latitude project with everything it needs to run')
+  .action(setupCommand)
 
 CLI.command('dev')
   .describe('Launch the local Latitude development environment')

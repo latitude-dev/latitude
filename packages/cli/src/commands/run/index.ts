@@ -1,6 +1,6 @@
 import { CLIConfig } from '$src/config'
-import setup from '$src/lib/decorators/setup';
-import tracked from '$src/lib/decorators/tracked';
+import setup from '$src/lib/decorators/setup'
+import tracked from '$src/lib/decorators/tracked'
 import spawn from '$src/lib/spawn'
 import syncQueries from '$src/lib/sync/syncQueries'
 
@@ -11,7 +11,7 @@ async function run(
   const config = CLIConfig.getInstance()
   const watch = opts?.watch || false
 
-  await syncQueries({ config, watch })
+  await syncQueries({ watch })
 
   const args = [
     'run',

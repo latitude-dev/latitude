@@ -3,7 +3,7 @@ export type TelemetryEventType =
   | 'startCommand'
   | 'devCommand'
   | 'buildCommand'
-  | 'prepareCommand'
+  | 'setupCommand'
   | 'runCommand'
   | 'updateCommand'
   | 'telemetryCommand'

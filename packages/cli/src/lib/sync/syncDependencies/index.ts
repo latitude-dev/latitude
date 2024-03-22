@@ -6,11 +6,14 @@ import colors from 'chalk'
 import spawn from '$src/lib/spawn'
 import { CLIConfig } from '$src/config'
 
-export default async function syncDependencies(
-  { config, watch }: { config: CLIConfig, watch?: boolean },
-) {
+export default async function syncDependencies({ watch }: { watch?: boolean }) {
+  const config = CLIConfig.getInstance()
   const root = path.join(config.source, 'package.json')
-  const target = path.join(config.source, LATITUDE_SERVER_FOLDER, 'package.json')
+  const target = path.join(
+    config.source,
+    LATITUDE_SERVER_FOLDER,
+    'package.json',
+  )
 
   await sync({ config, root, target })()
 
@@ -18,7 +21,15 @@ export default async function syncDependencies(
 }
 
 export const sync =
-  ({ config, root, target }: { config: CLIConfig, root: string; target: string }) =>
+  ({
+    config,
+    root,
+    target,
+  }: {
+    config: CLIConfig
+    root: string
+    target: string
+  }) =>
   () =>
     new Promise<void>((resolve, reject) => {
       let install = false

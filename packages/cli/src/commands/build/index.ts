@@ -1,90 +1,68 @@
 import colors from 'picocolors'
-import { CLIConfig } from '$src/config'
-import path from 'path'
-import { onError as error } from '$src/utils'
 import fs from 'fs-extra'
-import prepareCommand from '../prepare'
+import path from 'path'
+import setup from '$src/lib/decorators/setup'
 import spawn from '$src/lib/spawn'
 import tracked from '$src/lib/decorators/tracked'
-import setup from '$src/lib/decorators/setup'
-import { TelemetryEventType } from '$src/lib/telemetry/events'
+import { CLIConfig } from '$src/config'
+import { onError as error } from '$src/utils'
+import sync from '$src/lib/sync'
 
-export type Props = { docker?: boolean }
+async function buildCommand() {
+  await sync()
 
-async function buildCommand(
-  { docker = false }: Props = { docker: false },
-) {
-  await prepareCommand()
   const config = CLIConfig.getInstance()
-
   const handlers = {
-    onClose: onClose(docker),
+    onClose: onClose(),
     onError,
     onStdout,
     onStderr,
   }
 
-  if (docker) {
-    spawn(
-      'docker',
-      ['build', '.'],
-      {
-        detached: false,
-        cwd: config.source,
-      },
-      handlers,
-    )
-  } else {
-    spawn(
-      config.pkgManager.command,
-      ['run', 'build'],
-      {
-        detached: false,
-        cwd: config.appDir,
-      },
-      handlers,
-    )
-  }
+  spawn(
+    config.pkgManager.command,
+    ['run', 'build'],
+    {
+      detached: false,
+      cwd: config.appDir,
+    },
+    handlers,
+  )
 }
 
-const onClose = (docker: boolean) => async (code?: number) => {
+const onClose = () => async (code?: number) => {
   if (code && code !== 0) {
     console.error(colors.red(`Build failed with code: ${code}`))
 
     process.exit(code)
   }
 
-  if (!docker) {
-    // symlink the .latitude/app folder to a ./build folder
-    // so that we can deploy the build folder
-    const config = CLIConfig.getInstance()
-    const targetPath = path.join(config.source, 'build')
-    const appPath = path.join(config.source, '.latitude', 'app')
+  // symlink the .latitude/app folder to a ./build folder
+  // so that we can deploy the build folder
+  const config = CLIConfig.getInstance()
+  const targetPath = path.join(config.source, 'build')
+  const appPath = path.join(config.source, '.latitude', 'app')
 
-    try {
-      const exists = await fs.pathExists(targetPath)
-      if (exists) await fs.remove(targetPath)
+  try {
+    const exists = await fs.pathExists(targetPath)
+    if (exists) await fs.remove(targetPath)
 
-      await fs.symlink(appPath, targetPath)
-    } catch (e) {
-      error({
-        error: e as Error,
-        message: 'Error creating symlink to build folder',
-      })
-    }
+    await fs.symlink(appPath, targetPath)
+  } catch (e) {
+    error({
+      error: e as Error,
+      message: 'Error creating symlink to build folder',
+    })
   }
 
   console.log(colors.green(`📦 Build completed!\n`))
-
-  if (!docker) {
-    console.log(
-      colors.gray(`
-        To run your app, use the following commands:\n
-        $ cd build
-        $ node build
-      `),
-    )
-  }
+  console.log(
+    colors.gray(`
+      To run your app, use the following commands:\n
+      $ cd build
+      $ node build
+    `),
+  )
 
   process.exit()
 }

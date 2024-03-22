@@ -7,8 +7,13 @@ import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
 
 export default async function syncDotenv(
-  { config, watch = false }: { config: CLIConfig, watch?: boolean },
+  {
+    watch = false,
+  }: {
+    watch?: boolean
+  } = { watch: false },
 ) {
+  const config = CLIConfig.getInstance()
   const destPath = path.join(config.source, LATITUDE_SERVER_FOLDER, '.env')
   const srcPath = path.join(config.source, '.env')
 
