@@ -1,8 +1,13 @@
-import { NotFoundError } from '$lib/errors'
 import * as fs from 'fs/promises'
 import * as path from 'path'
 
-export const ROOT_FOLDER = 'static/latitude/queries'
+export class NotFoundError {
+  message: string
+
+  constructor(message: string) {
+    this.message = message
+  }
+}
 
 type Result = {
   queryPath: string
@@ -21,9 +26,9 @@ export class SourceFileNotFoundError extends NotFoundError {
   }
 }
 
-export default async function findQueryFile(filePath: string): Promise<Result> {
+export default async function findQueryFile(queriesDir: string, filePath: string): Promise<Result> {
   let sourcePath
-  const queryPath = path.join(ROOT_FOLDER, filePath) + '.sql'
+  const queryPath = path.join(queriesDir, filePath) + '.sql'
 
   try {
     await fs.access(queryPath)
@@ -34,7 +39,7 @@ export default async function findQueryFile(filePath: string): Promise<Result> {
   // Start from the directory of the .sql file and iterate upwards.
   let currentDir = path.dirname(queryPath)
 
-  while (currentDir.includes(ROOT_FOLDER)) {
+  while (currentDir.includes(queriesDir)) {
     // Stop if the root directory is reached
     // Try to find a .yml file in the current directory
     const files = await fs.readdir(currentDir)

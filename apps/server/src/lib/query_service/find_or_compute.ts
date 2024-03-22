@@ -1,4 +1,4 @@
-import findQueryFile from './findQueryFile'
+import findQueryFile from '@latitude-data/query_service'
 import { createConnector } from '@latitude-data/connector-factory'
 import cache from './query_cache'
 
@@ -8,12 +8,14 @@ type Props = {
   force: boolean
 }
 
+const QUERIES_DIR = 'static/latitude/queries';
+
 export default async function findOrCompute({
   query,
   queryParams,
   force,
 }: Props) {
-  const { sourcePath } = await findQueryFile(query)
+  const { sourcePath } = await findQueryFile(QUERIES_DIR, query)
   const connector = createConnector(sourcePath)
   const { compiledQuery, resolvedParams } = await connector.compileQuery({
     queryPath: query,

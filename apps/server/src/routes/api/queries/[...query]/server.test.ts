@@ -1,14 +1,14 @@
 import cache from '$lib/query_service/query_cache'
 import findQueryFile, {
   QueryNotFoundError,
-} from '$lib/query_service/findQueryFile'
+} from '@latitude-data/query_service'
 import { GET } from './+server'
 import { createConnector } from '@latitude-data/connector-factory'
 import { describe, it, expect, vi, beforeAll, Mock } from 'vitest'
 import QueryResult from '@latitude-data/query_result'
 
 // Mocking external dependencies
-vi.mock('$lib/query_service/findQueryFile', async (importOriginal) => {
+vi.mock('@latitude-data/query_service', async (importOriginal) => {
   const actual = await importOriginal()
 
   return {
