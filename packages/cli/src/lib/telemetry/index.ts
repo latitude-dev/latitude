@@ -1,11 +1,11 @@
 import RudderAnalytics from '@rudderstack/rudder-sdk-node'
-import boxedMessage from '../boxedMessage'
 import configStore from '../configStore'
 import crypto from 'crypto'
 import os from 'os'
 import { select } from '@inquirer/prompts'
 
 import type { TelemetryEvent, TelemetryEventType } from './events'
+import chalk from 'chalk'
 
 const CLIENT_KEY = '2daExoSEzxW3lPbRFQVoYIGh0Rb'
 const ANALYTICS_URL = 'https://latitudecmggvg.dataplane.rudderstack.com'
@@ -34,11 +34,9 @@ class Telemetry {
   }
 
   showStatus() {
-    boxedMessage({
-      color: 'green',
-      title: 'Telemetry ',
-      text: `Telemetry is ${this.enabled ? 'enabled' : 'disabled'}`,
-    })
+    console.log(
+      chalk.green(`Telemetry is ${this.enabled ? 'enabled' : 'disabled'}`),
+    )
   }
 
   async track<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
