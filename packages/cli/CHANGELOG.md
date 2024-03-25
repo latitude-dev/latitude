@@ -1,5 +1,20 @@
 # @latitude-data/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- c38974c: Adds a prompt to update the cli if there is a new version available. It does it once per day.
+- 6f4d4fe: CLI package can now be used to sync project files programmatically
+- 3254d59: - Signed params. Allow users to sign params so they can be send encrypted to latitude server. This is helpful for embedding latitude in a client side application in a iframe
+  - Fix bug related with `__force` param not being interpreted correctly because
+    it was sent as `$text:true` instead of `true` so query was not recomputed
+
+### Patch Changes
+
+- 2ddf668: Minor UX changes and added e2e tests
+- 0a12f25: fix: do not hard crash when npm view process outputs to stderr
+
 ## 0.2.3
 
 ### Patch Changes

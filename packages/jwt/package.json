@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/jwt",
   "description": "JWT utility functions for Latitude Data",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "LGPL",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

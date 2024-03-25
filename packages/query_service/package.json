@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/query_service",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "LGPL",
   "scripts": {
     "dev": "rollup -c -w",
