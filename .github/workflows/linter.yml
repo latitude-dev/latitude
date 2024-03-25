@@ -7,7 +7,7 @@ on:
     branches: ['main']
 
 jobs:
-  test:
+  linter:
     runs-on: ubuntu-latest
 
     strategy:
