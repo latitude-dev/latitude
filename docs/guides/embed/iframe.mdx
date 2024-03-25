@@ -28,3 +28,11 @@ You can pass parameters to the Latitude data app using the URL query string. For
 This will pass the `country` parameter with the value `US` to the underlying queries in the data app.
 
 Passing parameters is useful when you want to filter the data displayed in the app based on the context of the page where the app is embedded, for example you can scope the data to a specific user by passing a `user_token` parameter (or any other parameter that makes sense for your use case).
+
+## Passing signed parameters
+If you want to pass sensitive information to a Latitude data app, you can use signed parameters. This allows you to pass parameters that are encrypted and signed by your server, so that they can't be tampered with by the user.
+The signed parameter has to be called `__token`
+```html
+<iframe src="https://url-to-your-app.latitude.so/?__token=[SECRET_TOKEN]
+```
+To learn more about how to generate a `[SECRET_TOKEN]` please refer to the [signed parameters](/queries/logic/parameters#signed-parameters) documentation.
