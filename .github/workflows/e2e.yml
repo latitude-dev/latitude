@@ -2,13 +2,11 @@ name: E2E CLI test
 
 on:
   push:
-    branches: ['main']
-    paths:
-      - 'packages/cli/**' # Only trigger when changes are made within the ./packages/cli/ folder
+    branches:
+      - main
   pull_request:
-    branches: ['main']
-    paths:
-      - 'packages/cli/**' # Only trigger when changes are made within the ./packages/cli/ folder
+    branches:
+      - main
 
 jobs:
   e2e:
