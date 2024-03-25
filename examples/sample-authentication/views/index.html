@@ -4,21 +4,36 @@
   import { onMount } from 'svelte'
 
   let user
+  let loading = true
 
-  onMount(() => {
-    const clerk = new Clerk(PUBLIC_CLERK_KEY);
+  onMount(async () => {
+    const clerk = new Clerk(PUBLIC_CLERK_API_KEY);
     await clerk.load();
 
     if (clerk.user) {
+      clerk.signOut()
+
       user = clerk.user
     } else {
-      clerk.redirectSignIn()
+      clerk.redirectToSignIn()
     }
   })
 </script>
 
+  <Row class='pt-24 items-center justify-center w-full h-full'>
+    <Column>
 {#if user} 
-  Welcome back, {user.fullName}! 
+      <Text.H1 weight='bold'>
+        Welcome back, {user.fullName}! 
+      </Text.H1>
+{:else if loading}
+      <Text.H1 weight='bold'>
+        Loading...
+      </Text.H1>
 {:else} 
-  Redirecting to sign in...
+      <Text.H1 weight='bold'>
+        Redirecting to sign in...
+      </Text.H1>
 {/if}
+    </Column>
+  </Row>
