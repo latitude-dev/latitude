@@ -4,9 +4,8 @@ import setupApp from '$src/lib/setupApp'
 import { cleanTerminal, onError } from '$src/utils'
 import { DEFAULT_VERSION_LIST } from '../constants'
 import { CLIConfig } from '$src/config'
-import {
+import getLatitudeVersions, {
   getInstalledVersion,
-  getLatitudeVersions,
 } from '$src/lib/getAppVersions'
 import telemetry from '$src/lib/telemetry'
 

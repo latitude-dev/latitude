@@ -1,8 +1,8 @@
+import colors from 'picocolors'
+import findConfigFile from './findConfigFile'
 import fsExtra from 'fs-extra'
 import path from 'path'
-import colors from 'picocolors'
 import { PartialLatitudeConfig } from '$src/config'
-import { findConfigFile } from './findOrCreate'
 
 export default async function updateVersion({
   appDir,
