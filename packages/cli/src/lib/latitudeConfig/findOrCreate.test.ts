@@ -1,9 +1,9 @@
 import getLatestVersion from './getLatestVersion'
 import findConfigFile from './findConfigFile'
 import findOrCreateConfigFile from './findOrCreate' // Adjust with the correct path
-import validate from './validate'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import fsExtra from 'fs-extra'
+import config from '$src/config'
 
 // Mock the fsExtra module
 vi.mock('fs-extra', () => {
@@ -21,12 +21,7 @@ vi.mock('../getAppVersions', () => ({
   getLatestVersions: vi.fn(),
 }))
 
-vi.mock('./validate')
-
 describe('findOrCreateConfigFile', () => {
-  const appDir = '/test/app'
-  const configPath = `${appDir}/config.json`
-
   beforeEach(() => {
     // Reset mocks before each test
     vi.resetAllMocks()
@@ -36,40 +31,35 @@ describe('findOrCreateConfigFile', () => {
   it('should use existing version from config file when present', async () => {
     // @ts-expect-error mock
     findConfigFile.mockImplementation(() => ({
-      path: configPath,
+      path: config.latitudeJsonPath,
       data: { version: '1.0.0', name: 'test-app' },
     }))
-    // @ts-expect-error mock
-    validate.mockReturnValue({ valid: true })
 
-    const result = await findOrCreateConfigFile({ appDir })
+    const result = await findOrCreateConfigFile()
 
-    expect(result).toBeTruthy()
-    expect(fsExtra.writeJsonSync).toHaveBeenCalledWith(
-      configPath,
-      expect.objectContaining({ version: '1.0.0' }),
-      { spaces: 2 },
-    )
+    expect(fsExtra.writeJsonSync).not.toHaveBeenCalled()
+    expect(result).toEqual({
+      path: config.latitudeJsonPath,
+      data: { version: '1.0.0', name: 'test-app' },
+    })
   })
 
   it('should fetch the latest version when version is not present in config file', async () => {
     // @ts-expect-error mock
     findConfigFile.mockImplementation(() => ({
-      path: configPath,
+      path: config.latitudeJsonPath,
       data: { name: 'test-app' },
     }))
 
     // @ts-expect-error mock
     getLatestVersion.mockResolvedValue('1.2.3')
-    // @ts-expect-error mock
-    validate.mockReturnValue({ valid: true })
 
-    const result = await findOrCreateConfigFile({ appDir })
+    const result = await findOrCreateConfigFile()
 
     expect(getLatestVersion).toHaveBeenCalled()
     expect(result).toBeTruthy()
     expect(fsExtra.writeJsonSync).toHaveBeenCalledWith(
-      configPath,
+      config.latitudeJsonPath,
       expect.objectContaining({ version: '1.2.3' }),
       { spaces: 2 },
     )
@@ -78,7 +68,7 @@ describe('findOrCreateConfigFile', () => {
   it('should process.exit with code 1 when version is not present in config file and getLatestVersion fails', async () => {
     // @ts-expect-error mock
     findConfigFile.mockImplementation(() => ({
-      path: configPath,
+      path: config.latitudeJsonPath,
       data: { name: 'test-app' },
     }))
 
@@ -89,7 +79,7 @@ describe('findOrCreateConfigFile', () => {
 
     const spy = vi.spyOn(process, 'exit').mockImplementation(vi.fn())
 
-    await findOrCreateConfigFile({ appDir })
+    await findOrCreateConfigFile()
 
     expect(spy).toHaveBeenCalledWith(1)
   })

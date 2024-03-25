@@ -1,5 +1,5 @@
 import colors from 'picocolors'
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import path from 'path'
 import { onError as error } from '$src/utils'
 import fs from 'fs-extra'
@@ -12,7 +12,6 @@ export default async function build(
   { docker = false }: Props = { docker: false },
 ) {
   await prepareCommand()
-  const config = CLIConfig.getInstance()
 
   const handlers = {
     onClose: onClose(docker),
@@ -27,7 +26,7 @@ export default async function build(
       ['build', '.'],
       {
         detached: false,
-        cwd: config.source,
+        cwd: config.rootDir,
       },
       handlers,
     )
@@ -54,9 +53,8 @@ const onClose = (docker: boolean) => async (code?: number) => {
   if (!docker) {
     // symlink the .latitude/app folder to a ./build folder
     // so that we can deploy the build folder
-    const config = CLIConfig.getInstance()
-    const targetPath = path.join(config.source, 'build')
-    const appPath = path.join(config.source, '.latitude', 'app')
+    const targetPath = path.join(config.rootDir, 'build')
+    const appPath = path.join(config.rootDir, '.latitude', 'app')
 
     try {
       const exists = await fs.pathExists(targetPath)
