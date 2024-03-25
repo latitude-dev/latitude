@@ -2,10 +2,10 @@ import { exec } from 'child_process'
 import mri from 'mri'
 import { APP_FOLDER, LATITUDE_CONFIG_FILE } from './commands/constants'
 import path from 'path'
-import { findConfigFile } from './lib/latitudeConfig/findOrCreate'
 import validateFn from './lib/latitudeConfig/validate'
+import findConfigFile from './lib/latitudeConfig/findConfigFile'
 
-enum PackageManager {
+export enum PackageManager {
   pnpm = 'pnpm',
   npm = 'npm',
 }
@@ -82,7 +82,7 @@ export class CLIConfig {
   }
   private _latitudeConfig: PartialLatitudeConfig | null = null
 
-  constructor({ source, dev }: { source: string, dev: boolean }) {
+  constructor({ source, dev }: { source: string; dev: boolean }) {
     this.dev = dev
     this.pro = !this.dev
     this.source = source

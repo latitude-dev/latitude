@@ -1,59 +1,12 @@
 import colors from 'picocolors'
-import path from 'path'
-import fsExtra from 'fs-extra'
-import { LATITUDE_CONFIG_FILE } from '$src/commands/constants'
-
 import defaultConfig from './defaultConfig.json'
-import { getLatitudeVersions } from '../getAppVersions'
+import findConfigFile, { ConfigFile } from './findConfigFile'
+import fsExtra from 'fs-extra'
+import getLatestVersion from './getLatestVersion'
+import path from 'path'
 import validate from './validate'
 import { PackageManagerWithFlags } from '$src/config'
-import boxedMessage from '../boxedMessage'
-
-async function getLatestVersion(pkgManager: PackageManagerWithFlags) {
-  try {
-    const versions = await getLatitudeVersions({ pkgManager })
-    const latestVersion = versions[0]
-    if (!latestVersion) {
-      boxedMessage({
-        title: 'Failed to get Latitude version',
-        text: `Please try again later`,
-        color: 'red',
-      })
-    }
-
-    return latestVersion
-  } catch (error) {
-    boxedMessage({
-      title: 'Failed to get Latitude version',
-      text: `There was an erorr ${(error as Error).message}`,
-      color: 'red',
-    })
-    return null
-  }
-}
-
-type ConfigData = {
-  version?: string
-  name: string
-}
-type ConfigFile = {
-  data: ConfigData
-  path: string
-}
-export function findConfigFile({
-  appDir,
-  throws,
-}: {
-  appDir: string
-  throws: boolean
-}): ConfigFile {
-  const configPath = `${appDir}/${LATITUDE_CONFIG_FILE}`
-  const data = fsExtra.readJsonSync(configPath, { throws }) as ConfigData
-  return {
-    path: configPath,
-    data,
-  }
-}
+import { onError } from '$src/utils'
 
 export default async function findOrCreateConfigFile({
   appDir,
@@ -62,10 +15,8 @@ export default async function findOrCreateConfigFile({
   appDir: string
   pkgManager: PackageManagerWithFlags
 }): Promise<ConfigFile | null> {
-  const config = findConfigFile({ appDir, throws: false })
-
-  let allGood = false
   try {
+    const config = findConfigFile({ appDir, throws: false })
     const version = config.data?.version || (await getLatestVersion(pkgManager))
     if (!version) return null
 
@@ -79,14 +30,14 @@ export default async function findOrCreateConfigFile({
 
     fsExtra.writeJsonSync(config.path, data, { spaces: 2 })
     console.log(colors.green(`✅ Created ${path.basename(config.path)}`))
-    allGood = true
-  } catch (err) {
-    boxedMessage({
-      title: `Error creating Latitude ${path.basename(config.path)}}`,
-      text: (err as Error).message,
-      color: 'red',
-    })
-  }
 
-  return allGood ? config : null
+    return config
+  } catch (error) {
+    onError({
+      error: error as Error,
+      message: 'Error finding or creating config file',
+    })
+
+    process.exit(1)
+  }
 }

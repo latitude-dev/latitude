@@ -7,19 +7,24 @@ import {
   PACKAGE_NAME,
 } from '../commands/constants'
 import { type PackageManagerWithFlags } from '../config'
+import chalk from 'chalk'
 
 export function getInstalledVersion(appDir: string) {
   let version = null
   try {
-    const packageJson = readFileSync(`${appDir}/${APP_FOLDER}/package.json`, 'utf-8')
-     version = JSON.parse(packageJson).version
+    const packageJson = readFileSync(
+      `${appDir}/${APP_FOLDER}/package.json`,
+      'utf-8',
+    )
+    version = JSON.parse(packageJson).version
   } catch (e) {
     // Do nothing
   }
+
   return version
 }
 
-export async function getLatitudeVersions({
+export default async function getLatitudeVersions({
   pkgManager,
   onFetch,
 }: {
@@ -27,16 +32,14 @@ export async function getLatitudeVersions({
   onFetch?: () => void
 }) {
   const command = `${pkgManager.command} view ${PACKAGE_NAME} versions --json`
+
   return new Promise<string[]>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
       onFetch?.()
 
-      if (error) {
-        reject(error)
-      }
-
+      if (error) reject(error)
       if (stderr) {
-        reject(stderr)
+        console.log(chalk.yellow(stderr))
       }
 
       let versions: string[] | undefined = undefined
