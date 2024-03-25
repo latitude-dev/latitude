@@ -62,3 +62,19 @@ To configure and customize the chart, you can add properties, some of which are 
     Add a visual pattern to each series to help colorblind people distinguish them.
 </ParamField>
 
+### Reactive To Params
+
+Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactiveToParams` option is available.
+
+<ParamField path="reactiveToParams" type="boolean">
+    If true, the chart will react to any change in the params to update the data displayed without the need to run the view manually.
+</ParamField>
+
+```js
+<FunnelChart
+	query='orders_evolution'
+    opts={{
+        reactiveToParams: true
+    }}
+/>
+```

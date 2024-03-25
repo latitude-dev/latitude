@@ -21,3 +21,26 @@ To configure and customize the table, simply reference the query from which you 
 <ParamField path="query" type="string" required>
     The name of your `.sql` file from which your chart will get the data. It's not necessary to specify the full path, just the name, because we will search all folders until we find it
 </ParamField>
+
+<ParamField path="opts" type="array">
+    Includes options to control the behavior of the chart. For example, react to changes in the parameters to update the data immediately.
+
+    [See the Reactive To Params section](#reactive-to-params) to learn more about it.
+</ParamField>
+
+### Reactive To Params
+
+Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactiveToParams` option is available.
+
+<ParamField path="reactiveToParams" type="boolean">
+    If true, the chart will react to any change in the params to update the data displayed without the need to run the view manually.
+</ParamField>
+
+```js
+<Table
+	query='orders_evolution'
+    opts={{
+        reactiveToParams: true
+    }}
+/>
+```

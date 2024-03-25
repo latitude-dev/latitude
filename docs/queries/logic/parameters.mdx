@@ -179,3 +179,22 @@ Suppose we want to compare the information of two users in the same view.
     | 91    | 2023       |  4,981   |  
     | 91    | 2022       |  2,904   |  
     | 91    | 2021       |  7,333   |  
+
+## Reactive To Parameters
+
+You can make some visualizations react immediately to any change in params with the `reactiveToParams` property, without having to run the view automatically. This is how it works in visualizations:
+
+```js
+<BarChart
+    query='my_data'
+    x='release_year'
+    y='count_shows'
+    xTitle='Year'
+    yTitle='Titles'
+    opts={{
+        reactiveToParams: true
+    }}
+/>
+```
+
+You can check the visualizations that accept `reactiveToParams` in the [visualizations section](/visualizations).

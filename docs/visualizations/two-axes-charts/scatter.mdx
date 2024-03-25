@@ -33,3 +33,23 @@ You can use `<ScatterChart ... />` to add it in your view. Within the tag you mu
 
 <CommonChartsDocs />
 
+### Reactive To Params
+
+Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactiveToParams` option is available.
+
+<ParamField path="reactiveToParams" type="boolean">
+    If true, the chart will react to any change in the params to update the data displayed without the need to run the view manually.
+</ParamField>
+
+```js
+<ScatterChart
+    query='my_data'
+    x='release_year'
+    y='count_shows'
+    xTitle='Year'
+    yTitle='Titles'
+    opts={{
+        reactiveToParams: true
+    }}
+/>
+```
