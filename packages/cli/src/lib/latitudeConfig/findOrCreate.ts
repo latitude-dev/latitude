@@ -1,17 +1,15 @@
 import colors from 'picocolors'
-import path from 'path'
-import fsExtra from 'fs-extra'
-import { LATITUDE_CONFIG_FILE } from '$src/commands/constants'
-
 import defaultConfig from './defaultConfig.json'
-import { getLatitudeVersions } from '../getAppVersions'
+import fsExtra from 'fs-extra'
+import path from 'path'
 import validate from './validate'
-import { PackageManagerWithFlags } from '$src/config'
+import { LATITUDE_CONFIG_FILE } from '$src/commands/constants'
+import { getLatitudeVersions } from '../getAppVersions'
 import { onError } from '$src/utils'
 
-async function getLatestVersion(pkgManager: PackageManagerWithFlags) {
+async function getLatestVersion() {
   try {
-    const versions = await getLatitudeVersions({ pkgManager })
+    const versions = await getLatitudeVersions()
     const latestVersion = versions[0]
     if (!latestVersion) {
       console.log(colors.red('🚨 Failed to get Latitude version'))
@@ -34,63 +32,37 @@ type ConfigData = {
   version?: string
   name: string
 }
-type ConfigFile = {
-  data: ConfigData
-  path: string
-}
 
 export function findConfigFile({
   appDir,
-  throws,
 }: {
   appDir: string
-  throws: boolean
-}): ConfigFile {
-  const configPath = `${appDir}/${LATITUDE_CONFIG_FILE}`
-  const data = fsExtra.readJsonSync(configPath, { throws }) as ConfigData
-  return {
-    path: configPath,
-    data,
-  }
+}): ConfigData | undefined {
+  return fsExtra.readJsonSync(`${appDir}/${LATITUDE_CONFIG_FILE}`)
 }
 
 export default async function findOrCreateConfigFile({
   appDir,
-  pkgManager,
 }: {
   appDir: string
-  pkgManager: PackageManagerWithFlags
-}): Promise<ConfigFile | null> {
-  const config = findConfigFile({ appDir, throws: false })
+}): Promise<ConfigData | null> {
+  const config = findConfigFile({ appDir })
+  validate!(config)
 
+  return await createConfigFile({ appDir })
+}
+
+async function createConfigFile({ appDir }: { appDir: string }) {
   try {
-    const version = config.data?.version || (await getLatestVersion(pkgManager))
-    if (!version) {
-      onError({
-        error: new Error('Failed to get latest version'),
-        message: '🚨 Failed to get latest version from npm',
-      })
+    const version = await getLatestVersion()
+    const newConfig = { ...defaultConfig, name: path.basename(appDir), version }
+    const destination = `${appDir}/${LATITUDE_CONFIG_FILE}`
 
-      process.exit(1)
-    }
+    fsExtra.writeJsonSync(destination, newConfig, { spaces: 2 })
 
-    const data = { ...defaultConfig, name: path.basename(appDir), version }
-    const validated = validate(data)
+    console.log(colors.green(`✅ Created ${LATITUDE_CONFIG_FILE}`))
 
-    if (!validated.valid) {
-      onError({
-        error: new Error('Invalid configuration'),
-        message: `🚨 Invalid configuration: ${JSON.stringify(
-          validated.errors,
-        )}`,
-      })
-
-      process.exit(1)
-    }
-
-    fsExtra.writeJsonSync(config.path, data, { spaces: 2 })
-
-    console.log(colors.green(`✅ Created ${path.basename(config.path)}`))
+    return newConfig
   } catch (err) {
     onError({
       error: err as Error,
@@ -99,6 +71,4 @@ export default async function findOrCreateConfigFile({
 
     process.exit(1)
   }
-
-  return config
 }

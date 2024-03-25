@@ -1,18 +1,21 @@
 import { exec } from 'child_process'
 import { readFileSync } from 'fs'
+import getPkgManager from './config/pkgManager'
 import semverSort from 'semver/functions/rsort'
 import {
   LATITUDE_SERVER_FOLDER,
   DEFAULT_VERSION_LIST,
   LATITUDE_SERVER_PACKAGE_NAME,
 } from '../commands/constants'
-import { type PackageManagerWithFlags } from '../config'
 
 export function getInstalledVersion(appDir: string) {
   let version = null
   try {
-    const packageJson = readFileSync(`${appDir}/${LATITUDE_SERVER_FOLDER}/package.json`, 'utf-8')
-     version = JSON.parse(packageJson).version
+    const packageJson = readFileSync(
+      `${appDir}/${LATITUDE_SERVER_FOLDER}/package.json`,
+      'utf-8',
+    )
+    version = JSON.parse(packageJson).version
   } catch (e) {
     // Do nothing
   }
@@ -20,12 +23,11 @@ export function getInstalledVersion(appDir: string) {
 }
 
 export async function getLatitudeVersions({
-  pkgManager,
   onFetch,
 }: {
-  pkgManager: PackageManagerWithFlags
   onFetch?: () => void
-}) {
+} = {}) {
+  const pkgManager = await getPkgManager()
   const command = `${pkgManager.command} view ${LATITUDE_SERVER_PACKAGE_NAME} versions --json`
   return new Promise<string[]>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
