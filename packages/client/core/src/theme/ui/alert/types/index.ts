@@ -15,7 +15,7 @@ const TYPES: Record<AlertyType, Type> = {
       foreground: 'muted',
     },
   },
-  primary: {
+  note: {
     normal: {
       background: 'primary',
       foreground: 'white',
@@ -25,7 +25,7 @@ const TYPES: Record<AlertyType, Type> = {
       foreground: 'primary',
     },
   },
-  alert: {
+  warning: {
     normal: {
       background: 'yellow50',
       foreground: 'yellow900',
@@ -35,17 +35,17 @@ const TYPES: Record<AlertyType, Type> = {
       foreground: 'yellow900',
     },
   },
-  destructive: {
+  error: {
     normal: {
-      background: 'destructive',
-      foreground: 'destructiveForeground',
+      background: 'yellow50',
+      foreground: 'yellow900',
     },
     secondary: {
       background: 'destructive20',
       foreground: 'destructive',
     },
   },
-  green: {
+  success: {
     normal: {
       background: 'green500',
       foreground: 'white',

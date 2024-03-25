@@ -8,19 +8,17 @@ description: 'Create a text input to control parameters in your queries'
 
 Inputs provide a straightforward way to set the values of the [parameters in your queries](/queries/logic/parameters) from your views. Basically they let you provide a user interface to your queries.
 
+<iframe class="rounded-xl" src="http://localhost:3003/components/input" width="100%" height="180"> </iframe>
+
 ## Basic usage
 
-The most basic usage of an input is to provide a text input for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control.
-
-```html
-<Input param="name" />
-```
-
-This will create a text input that is associated with the `name` parameter. If you load the page with the `name` parameter already in the URL, you will see the value from the URL in the input. You can also provide a default value for the input by using the `value` prop.
+The most basic usage of an input is to provide a text input for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control. `param` is mandatory so if you don't include it the app will return an error.
 
 ```html
 <Input param="name" value="Jon" />
 ```
+
+This will create a text input that is associated with the `name` parameter. If you load the page with the `name` parameter already in the URL, you will see the value from the URL in the input. You can also provide a default value for the input by using the `value` prop.
 
 If you load the page without the `name` parameter in the URL, the input will be set to the default value. If you load the page with a different value for the `name` parameter in the URL, the input will be set to that value.
 

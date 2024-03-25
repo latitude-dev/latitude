@@ -1,5 +1,8 @@
 {
   "scripts": {
     "latitude-dev": "../node_modules/.bin/latitude"
+  },
+  "dependencies": {
+    "@latitude-data/server": "^0.3.3"
   }
 }
