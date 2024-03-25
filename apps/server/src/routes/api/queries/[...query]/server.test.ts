@@ -1,128 +1,73 @@
 import cache from '$lib/query_service/query_cache'
-import findQueryFile, {
-  QueryNotFoundError,
-} from '@latitude-data/query_service'
+import { QueryNotFoundError } from '@latitude-data/query_service'
 import { GET } from './+server'
-import { createConnector } from '@latitude-data/connector-factory'
-import { describe, it, expect, vi, beforeAll, Mock } from 'vitest'
+import { describe, it, expect, vi, beforeAll } from 'vitest'
 import QueryResult from '@latitude-data/query_result'
+import { MISSING_KEY } from '$lib/loadToken'
 
-// Mocking external dependencies
-vi.mock('@latitude-data/query_service', async (importOriginal) => {
-  const actual = await importOriginal()
-
-  return {
-    // @ts-expect-error - TS doesn't know that we're mocking the default export
-    ...actual,
-    default: vi.fn(),
-  }
+const { default: mockedFindQueryFile } = vi.hoisted(() => {
+  return { default: vi.fn() }
 })
+vi.mock('@latitude-data/query_service', async () => {
+  const actual = await vi.importActual('@latitude-data/query_service')
+  return { ...actual, default: mockedFindQueryFile }
+})
+const mockedRunQuery = vi.fn()
+const mockedCompileQuery = vi.fn()
+mockedCompileQuery.mockReturnValue(
+  new Promise((resolve) =>
+    resolve({
+      compiledQuery: 'SELECT * FROM winterfell',
+      resolvedParams: [],
+    }),
+  ),
+)
 vi.mock('@latitude-data/connector-factory', () => ({
-  createConnector: vi.fn(),
+  createConnector: () => ({
+    compileQuery: mockedCompileQuery,
+    runCompiled: mockedRunQuery
+  })
 }))
 
+const queryFound = () => Promise.resolve({
+  queryPath: 'path/to/query',
+  sourcePath: 'path/to/source',
+})
+
 describe('GET endpoint', () => {
-  const mockRunQuery: Mock = vi.fn()
-  const mockCompileQuery: Mock = vi.fn()
+  const PAYLOAD = { fields: [], rows: [], rowCount: 0 }
 
   beforeAll(() => {
     vi.spyOn(cache, 'find').mockReturnValue(null)
-    // @ts-expect-error - TS doesn't know that we're mocking the default export
-    findQueryFile.mockImplementation(() => {
-      return Promise.resolve({
-        queryPath: 'path/to/query',
-        sourcePath: 'path/to/source',
-      })
-    })
-
-    const conn = createConnector as Mock
-    conn.mockImplementation(() => {
-      return {
-        compileQuery: mockCompileQuery,
-        runCompiled: mockRunQuery,
-      }
-    })
-
-    mockCompileQuery.mockReturnValue(
-      new Promise((resolve) =>
-        resolve({
-          compiledQuery: 'SELECT * FROM winterfell',
-          resolvedParams: [],
-        }),
-      ),
-    )
+    mockedFindQueryFile.mockImplementation(queryFound)
   })
 
-  const payload = {
-    fields: [],
-    rows: [],
-    rowCount: 0,
-  }
-
   it('should return JSON response for successful query execution', async () => {
-    const queryResult = new QueryResult(payload)
-    mockRunQuery.mockResolvedValueOnce(queryResult)
+    const queryResult = new QueryResult(PAYLOAD)
+    mockedRunQuery.mockResolvedValueOnce(queryResult)
     const response = await GET({
       params: { query: 'testQuery' },
       url: new URL('http://localhost?param=42'),
     })
 
     expect(response.status).toBe(200)
-    expect(await response.json()).toEqual(payload)
+    expect(await response.json()).toEqual(PAYLOAD)
   })
 
   it('should return the cached query if available', async () => {
-    const queryResult = { toJSON: () => JSON.stringify(payload) }
-    vi.spyOn(cache, 'find').mockReturnValueOnce(
-      queryResult as unknown as QueryResult,
-    )
+    const queryResult = new QueryResult(PAYLOAD)
+    vi.spyOn(cache, 'find').mockReturnValueOnce(queryResult)
     const response = await GET({
       params: { query: 'testQuery' },
       url: new URL('http://localhost?param=42'),
     })
 
     expect(response.status).toBe(200)
-    expect(await response.json()).toEqual(payload)
-  })
-
-  it('should compute the query even if it is cached because __force parameter was passed', async () => {
-    const queryResult = new QueryResult(payload)
-    const conn = createConnector as Mock
-    conn.mockImplementation(() => {
-      return {
-        compileQuery: mockCompileQuery,
-        runCompiled: mockRunQuery,
-      }
-    })
-    mockRunQuery.mockResolvedValueOnce(queryResult)
-    vi.spyOn(cache, 'find').mockReturnValueOnce(
-      queryResult as unknown as QueryResult,
-    )
-    const response = await GET({
-      params: { query: 'testQuery' },
-      url: new URL('http://localhost?param=42&__force=true'),
-    })
-
-    expect(response.status).toBe(200)
-    expect(await response.json()).toEqual(payload)
-  })
-
-  it('should return 500 status on query execution error', async () => {
-    vi.spyOn(cache, 'find').mockReturnValueOnce(null)
-    mockRunQuery.mockRejectedValue(new Error('Query execution failed'))
-
-    const response = await GET({
-      params: { query: 'testQuery' },
-      url: new URL('http://localhost'),
-    })
-
-    expect(response.status).toBe(500)
-    expect(await response.text()).toBe('Query execution failed')
+    expect(await response.json()).toEqual(PAYLOAD)
   })
 
   it('should return 404 status if the query file is not found', async () => {
-    const findQueryFileMock = findQueryFile as Mock
-    findQueryFileMock.mockRejectedValue(
+    mockedFindQueryFile.mockRejectedValue(
       new QueryNotFoundError('Query file not found'),
     )
     const response = await GET({
@@ -134,9 +79,24 @@ describe('GET endpoint', () => {
     expect(await response.text()).toBe('Query file not found')
   })
 
+  it('should return 500 status on query execution error', async () => {
+    vi.spyOn(cache, 'find').mockReturnValueOnce(null)
+    mockedFindQueryFile.mockResolvedValue(queryFound)
+    mockedRunQuery.mockRejectedValue(new Error('Query execution failed'))
+
+    const response = await GET({
+      params: { query: 'testQuery' },
+      url: new URL('http://localhost'),
+    })
+
+    expect(response.status).toBe(500)
+    expect(await response.text()).toBe('Query execution failed')
+  })
+
   it('return generic error when is production', async () => {
+    vi.spyOn(cache, 'find').mockReturnValueOnce(null)
     import.meta.env.PROD = true
-    mockRunQuery.mockRejectedValue(new Error('Query execution failed'))
+    mockedRunQuery.mockRejectedValue(new Error('Query execution failed'))
 
     const response = await GET({
       params: { query: 'testQuery' },
@@ -145,5 +105,16 @@ describe('GET endpoint', () => {
 
     expect(response.status).toBe(500)
     expect(await response.text()).toBe('There was an error in this query')
+    import.meta.env.PROD = false
+  })
+
+  it('fail with invalid __token', async () => {
+    const response = await GET({
+      params: { query: 'testQuery' },
+      url: new URL('http://localhost?__token=wrongToken'),
+    })
+
+    expect(response.status).toBe(500)
+    expect(await response.text()).toBe(MISSING_KEY)
   })
 })

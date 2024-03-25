@@ -65,6 +65,18 @@ CLI.command('run <query_name>')
   .example('run users --param user_id=foo')
   .action(command('runCommand'))
 
+CLI.command('credentials')
+  .describe('Manage credentials for the data app')
+  .option(
+    '--create-master-key',
+    'Create a master key for the data app. If you did\'t had one in your .env file',
+  )
+  .option(
+    '--overwrite-master-key',
+    'Create or update master key. Be careful with this option. If you were already using the old key you will need to change your code',
+  )
+  .action(command('credentialsCommand', { setup: false }))
+
 async function init() {
   const argv = CLI.parse(process.argv, { lazy: true })
 

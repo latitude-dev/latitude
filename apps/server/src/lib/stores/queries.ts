@@ -38,7 +38,7 @@ export const input = (key: string, defaultValue?: unknown): InlineParam => ({
 })
 
 function computeQueryParams(
-  inlineParams: InlineParams
+  inlineParams: InlineParams,
 ): Record<string, unknown> {
   const viewParams = getAllViewParams()
   const params: Record<string, unknown> = { ...viewParams }
@@ -50,7 +50,7 @@ function computeQueryParams(
 
 function createMiddlewareKey(
   queryPath: string,
-  inlineParams: InlineParams = {}
+  inlineParams: InlineParams = {},
 ): string {
   const hashedParams = Object.keys(inlineParams)
     .sort()
@@ -129,7 +129,7 @@ export function useQuery({
   }
 
   const coreQueryKeyStore = writable<string>(
-    get(middlewareQueryStore)[middlewareKey]!.coreQueryKey
+    get(middlewareQueryStore)[middlewareKey]!.coreQueryKey,
   )
   // Update coreQueryKey when middlewareQueryStore changes
   middlewareQueryStore.subscribe((state) => {
@@ -169,9 +169,9 @@ export function useQuery({
 export function runQuery(
   query: string,
   inlineParams: InlineParams = {},
-  opts: QuerySubscriptionOptions = {}
+  opts: QuerySubscriptionOptions = {},
 ): Readable<Promise<QueryResultArray>> {
-  const pendingPromise = () => new Promise<QueryResultArray>(() => {})
+  const pendingPromise = () => new Promise<QueryResultArray>(() => { })
   const resolvedPromise = (value: QueryResultArray) =>
     new Promise<QueryResultArray>((resolve) => resolve(value))
   const rejectedPromise = (reason?: Error) =>
@@ -187,16 +187,25 @@ export function runQuery(
     useQuery({ query, inlineParams, opts }),
     ($queryResultState, set) => {
       set(queryStateToPromise($queryResultState))
-    }
+    },
   )
 }
 
-export async function computeQueries({ queryPaths = [], force = true, skipIfParamsUnchanged = false }: { queryPaths: string[], force?: boolean, skipIfParamsUnchanged?: boolean }): Promise<void> {
+export async function computeQueries({
+  queryPaths = [],
+  force = true,
+  skipIfParamsUnchanged = false,
+}: {
+  queryPaths: string[]
+  force?: boolean
+  skipIfParamsUnchanged?: boolean
+}): Promise<void> {
   if (!browser) return
 
   const queriesInView = get(middlewareQueryStore)
   Object.values(queriesInView).map((queryInView) => {
     if (queryPaths.length && !queryPaths.includes(queryInView.queryPath)) return
+
     fetchQueryFromCore({
       query: queryInView.queryPath,
       inlineParams: queryInView.inlineParams,
@@ -210,7 +219,7 @@ export async function computeQueries({ queryPaths = [], force = true, skipIfPara
  * To avoid requesting multiple fetch requests to the server while the page is
  * loading and the params are still being added while the document loads, we
  * need to wait for the page to be fully loaded before fetching the queries.
- * 
+ *
  * TODO: Find a better way to detect when the page is fully loaded without having
  * to manually call init() in the page.
  */

@@ -40,7 +40,7 @@ export default async function syncQueries({
   })
 
   if (watch) {
-    await watcher(queriesDir, syncFn)
+    await watcher(queriesDir, syncFn, { debug: true })
   } else {
     syncDirectory(queriesDir, syncFn)
   }

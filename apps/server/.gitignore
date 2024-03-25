@@ -16,3 +16,4 @@ vite.config.ts.timestamp-*
 src/routes/**/*
 !src/routes/api/**/*
 !src/routes/+layout.svelte
+!src/routes/+layout.server.ts
