@@ -71,5 +71,6 @@ export default {
     'stream',
     '@rudderstack/rudder-sdk-node',
     'configstore',
+    'latest-version',
   ],
 }
