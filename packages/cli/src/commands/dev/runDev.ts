@@ -33,10 +33,7 @@ export async function runDevServer(
   },
 ) {
   if (port && !(await isPortAvailable(port))) {
-    boxedMessage({
-      text: `Port ${port} is not available`,
-      color: 'red',
-    })
+    console.log(colors.red(`Port ${port} is not available`))
 
     process.exit()
   }
@@ -129,17 +126,11 @@ const onStderr = (data: Buffer) => {
 }
 
 const onError = (error: Error) => {
-  boxedMessage({
-    text: `Server error: ${error.message}`,
-    color: 'red',
-  })
+  console.log(colors.red(`Server error: ${error.message}`))
 }
 
 const onClose = (code?: number) => {
-  boxedMessage({
-    text: `Server closed with code: ${code}`,
-    color: 'yellow',
-  })
+  console.log(colors.yellow(`Server closed with code: ${code}`))
 
   process.exit(code ?? 0)
 }
