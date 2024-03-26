@@ -1,6 +1,7 @@
 import findQueryFile from '@latitude-data/query_service'
 import { createConnector } from '@latitude-data/connector-factory'
 import cache from './query_cache'
+import path from 'path'
 
 type Props = {
   query: string
@@ -8,7 +9,7 @@ type Props = {
   force: boolean
 }
 
-export const QUERIES_DIR = 'static/latitude/queries';
+export const QUERIES_DIR = 'static/latitude/queries'
 
 export default async function findOrCompute({
   query,
@@ -18,7 +19,7 @@ export default async function findOrCompute({
   const { sourcePath } = await findQueryFile(QUERIES_DIR, query)
   const connector = createConnector(sourcePath)
   const { compiledQuery, resolvedParams } = await connector.compileQuery({
-    queryPath: query,
+    queryPath: computeRelativeQueryPath({ sourcePath, queryPath: query }),
     params: queryParams,
   })
   const request = { query: compiledQuery, params: resolvedParams }
@@ -41,4 +42,20 @@ export default async function findOrCompute({
 
     return compute()
   }
+}
+
+export function computeRelativeQueryPath({
+  sourcePath, // /static/latitude/queries/folder/source.yml
+  queryPath, // folder/query.sql
+}: {
+  sourcePath: string
+  queryPath: string
+}) {
+  const base = path
+    .dirname(sourcePath) // /static/latitude/queries/folder
+    .slice(sourcePath.indexOf(QUERIES_DIR) + QUERIES_DIR.length + 1) // folder
+
+  if (!base) return queryPath
+
+  return queryPath.slice(queryPath.indexOf(base) + base.length + 1) // query.sql
 }
