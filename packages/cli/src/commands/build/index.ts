@@ -33,7 +33,7 @@ export default async function build(
     )
   } else {
     spawn(
-      config.pkgManager.command,
+      'npm',
       ['run', 'build'],
       {
         detached: false,

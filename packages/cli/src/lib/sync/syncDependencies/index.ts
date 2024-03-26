@@ -18,7 +18,7 @@ export default async function syncDependencies(
 }
 
 export const sync =
-  ({ config, root, target }: { config: CLIConfig, root: string; target: string }) =>
+  ({ root, target }: { config: CLIConfig, root: string; target: string }) =>
   () =>
     new Promise<void>((resolve, reject) => {
       let install = false
@@ -45,7 +45,7 @@ export const sync =
 
       if (install) {
         spawn(
-          config.pkgManager.command,
+          'npm',
           ['install'],
           {},
           {

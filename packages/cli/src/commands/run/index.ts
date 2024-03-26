@@ -20,7 +20,7 @@ export default async function run(
   ].filter(Boolean)
 
   return spawn(
-    config.pkgManager.command,
+    'npm',
     args,
     {
       detached: false,

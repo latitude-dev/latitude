@@ -5,19 +5,16 @@ import fsExtra from 'fs-extra'
 import getLatestVersion from './getLatestVersion'
 import path from 'path'
 import validate from './validate'
-import { PackageManagerWithFlags } from '$src/config'
 import { onError } from '$src/utils'
 
 export default async function findOrCreateConfigFile({
   appDir,
-  pkgManager,
 }: {
   appDir: string
-  pkgManager: PackageManagerWithFlags
 }): Promise<ConfigFile | null> {
   try {
     const config = findConfigFile({ appDir, throws: false })
-    const version = config.data?.version || (await getLatestVersion(pkgManager))
+    const version = config.data?.version || (await getLatestVersion())
     if (!version) return null
 
     const data = { ...defaultConfig, name: path.basename(appDir), version }
