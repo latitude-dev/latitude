@@ -13,7 +13,7 @@ vite.config.ts.timestamp-*
 
 // Data apps generates routes in the SvelteKit app
 // We don't want to commit these routes
-src/routes/**/*
-!src/routes/api/**/*
+src/routes/*
+!src/routes/api/
 !src/routes/+layout.svelte
 !src/routes/+layout.server.ts
