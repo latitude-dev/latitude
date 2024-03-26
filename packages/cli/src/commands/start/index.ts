@@ -74,10 +74,7 @@ export default async function start({
   config.setCwd(dataAppDir)
 
   // Setup Latitude configuration
-  const latitudeConfig = await findOrCreateLatitudeConfig({
-    appDir: dataAppDir,
-    pkgManager: config.pkgManager,
-  })
+  const latitudeConfig = await findOrCreateLatitudeConfig({ appDir: dataAppDir })
 
   // We already handled the error
   if (!latitudeConfig) return

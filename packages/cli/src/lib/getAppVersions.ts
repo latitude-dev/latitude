@@ -6,7 +6,6 @@ import {
   DEFAULT_VERSION_LIST,
   PACKAGE_NAME,
 } from '../commands/constants'
-import { type PackageManagerWithFlags } from '../config'
 import chalk from 'chalk'
 
 export function getInstalledVersion(appDir: string) {
@@ -24,14 +23,8 @@ export function getInstalledVersion(appDir: string) {
   return version
 }
 
-export default async function getLatitudeVersions({
-  pkgManager,
-  onFetch,
-}: {
-  pkgManager: PackageManagerWithFlags
-  onFetch?: () => void
-}) {
-  const command = `${pkgManager.command} view ${PACKAGE_NAME} versions --json`
+export default async function getLatitudeVersions({ onFetch, }: { onFetch?: () => void } = {}) {
+  const command = `npm view ${PACKAGE_NAME} versions --json`
 
   return new Promise<string[]>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {

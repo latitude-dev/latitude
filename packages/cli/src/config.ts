@@ -1,57 +1,9 @@
-import { exec } from 'child_process'
 import mri from 'mri'
 import { APP_FOLDER, LATITUDE_CONFIG_FILE } from './commands/constants'
 import path from 'path'
 import validateFn from './lib/latitudeConfig/validate'
 import findConfigFile from './lib/latitudeConfig/findConfigFile'
 
-export enum PackageManager {
-  pnpm = 'pnpm',
-  npm = 'npm',
-}
-
-type PackageManagerFlags = {
-  mandatoryInstallFlags: string[]
-  installFlags: {
-    silent: string
-  }
-}
-const PACKAGE_FLAGS: Record<PackageManager, PackageManagerFlags> = {
-  npm: {
-    mandatoryInstallFlags: ['--legacy-peer-deps'],
-    installFlags: {
-      silent: '--silent',
-    },
-  },
-  pnpm: {
-    mandatoryInstallFlags: [
-      '--strict-peer-dependencies=false',
-      '--ignore-workspace',
-    ],
-    installFlags: {
-      silent: '--silent',
-    },
-  },
-}
-
-const DESIRED_PACKAGE_MANGERS = [PackageManager.pnpm, PackageManager.npm]
-
-function checkPackageManager(
-  packageManager: PackageManager,
-  callback: (arg0: boolean) => void,
-) {
-  exec(`${packageManager} --version`, (error) => {
-    if (error) {
-      callback(false) // Indicates that the package manager is not installed
-    } else {
-      callback(true) // Indicates that the package manager is installed
-    }
-  })
-}
-export type PackageManagerWithFlags = {
-  command: PackageManager
-  flags: PackageManagerFlags
-}
 
 export type PartialLatitudeConfig = {
   name: string
@@ -76,10 +28,6 @@ export class CLIConfig {
   public dev: boolean = true
   public pro: boolean = false
   public simulatedPro: boolean = false
-  public pkgManager: PackageManagerWithFlags = {
-    command: PackageManager.npm,
-    flags: PACKAGE_FLAGS[PackageManager.npm],
-  }
   private _latitudeConfig: PartialLatitudeConfig | null = null
 
   constructor({ source, dev }: { source: string; dev: boolean }) {
@@ -105,19 +53,8 @@ export class CLIConfig {
     this.simulatedPro = args['simulate-pro'] ?? false
     this.addFolderToCwd(args.folder)
 
-    await this.setPkgManager()
-
     if (requireConfig) {
       this.loadConfig()
-    }
-  }
-
-  async setPkgManager() {
-    const pkg = await this.getPackageManager()
-    const flags = PACKAGE_FLAGS[pkg]
-    this.pkgManager = {
-      command: pkg,
-      flags,
     }
   }
 
@@ -167,19 +104,6 @@ export class CLIConfig {
     if (!folder) return
 
     this.source = path.join(this.source, folder)
-  }
-
-  private async getPackageManager(): Promise<PackageManager> {
-    return new Promise((resolve) => {
-      DESIRED_PACKAGE_MANGERS.find((pm) => {
-        checkPackageManager(pm, (installed) => {
-          if (installed) {
-            resolve(pm)
-            return pm
-          }
-        })
-      })
-    })
   }
 
   get appDir() {

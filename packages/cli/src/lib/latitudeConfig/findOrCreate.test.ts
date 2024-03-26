@@ -2,7 +2,6 @@ import getLatestVersion from './getLatestVersion'
 import findConfigFile from './findConfigFile'
 import findOrCreateConfigFile from './findOrCreate' // Adjust with the correct path
 import validate from './validate'
-import { PackageManager, PackageManagerWithFlags } from '$src/config'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import fsExtra from 'fs-extra'
 
@@ -26,13 +25,6 @@ vi.mock('./validate')
 
 describe('findOrCreateConfigFile', () => {
   const appDir = '/test/app'
-  const pkgManager: PackageManagerWithFlags = {
-    command: PackageManager.npm,
-    flags: {
-      mandatoryInstallFlags: [],
-      installFlags: { silent: '--silent' },
-    },
-  }
   const configPath = `${appDir}/config.json`
 
   beforeEach(() => {
@@ -50,7 +42,7 @@ describe('findOrCreateConfigFile', () => {
     // @ts-expect-error mock
     validate.mockReturnValue({ valid: true })
 
-    const result = await findOrCreateConfigFile({ appDir, pkgManager })
+    const result = await findOrCreateConfigFile({ appDir })
 
     expect(result).toBeTruthy()
     expect(fsExtra.writeJsonSync).toHaveBeenCalledWith(
@@ -72,9 +64,9 @@ describe('findOrCreateConfigFile', () => {
     // @ts-expect-error mock
     validate.mockReturnValue({ valid: true })
 
-    const result = await findOrCreateConfigFile({ appDir, pkgManager })
+    const result = await findOrCreateConfigFile({ appDir })
 
-    expect(getLatestVersion).toHaveBeenCalledWith(pkgManager)
+    expect(getLatestVersion).toHaveBeenCalled()
     expect(result).toBeTruthy()
     expect(fsExtra.writeJsonSync).toHaveBeenCalledWith(
       configPath,
@@ -97,7 +89,7 @@ describe('findOrCreateConfigFile', () => {
 
     const spy = vi.spyOn(process, 'exit').mockImplementation(vi.fn())
 
-    await findOrCreateConfigFile({ appDir, pkgManager })
+    await findOrCreateConfigFile({ appDir })
 
     expect(spy).toHaveBeenCalledWith(1)
   })

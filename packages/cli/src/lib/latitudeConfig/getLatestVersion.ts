@@ -1,12 +1,9 @@
-import { PackageManagerWithFlags } from '$src/config'
 import { onError } from '$src/utils'
 import getLatitudeVersions from '../getAppVersions'
 
-export default async function getLatestVersion(
-  pkgManager: PackageManagerWithFlags,
-) {
+export default async function getLatestVersion() {
   try {
-    const versions = await getLatitudeVersions({ pkgManager })
+    const versions = await getLatitudeVersions()
     const latestVersion = versions[0]
     if (!latestVersion) {
       onError({
