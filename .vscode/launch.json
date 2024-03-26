@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Latitude Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/tools/latitude-vscode",
+        "--disable-extensions"
+      ],
+      "preLaunchTask": "Build Latitude Extension",
+      "outFiles": ["${workspaceFolder}/tools/latitude-vscode/out/**/*.js"],
+      "cwd": "${workspaceFolder}/tools/latitude-vscode"
+    }
+  ]
+}

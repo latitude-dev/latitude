@@ -1,0 +1,9 @@
+---
+name: Latitude HTML
+scopeName: source.latitudeHtml
+fileTypes: [html, latitudeHtml]
+patterns:
+  - include: 'text.html.basic'
+  - include: 'source.svelte'
+
+...

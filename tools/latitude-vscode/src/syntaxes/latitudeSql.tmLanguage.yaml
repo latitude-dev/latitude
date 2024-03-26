@@ -1,0 +1,8 @@
+---
+name: Latitude SQL
+scopeName: source.latitudeSql
+fileTypes: [sql, latitudeSql]
+patterns:
+  - include: 'source.sql'
+
+...
