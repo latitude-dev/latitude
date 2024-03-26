@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import command from './commands'
+import config from './config'
 import sade from 'sade'
 import { onError } from './utils'
-import { CLIConfig } from './config'
 
 const CLI = sade('latitude')
 
@@ -69,11 +69,11 @@ CLI.command('credentials')
   .describe('Manage credentials for the data app')
   .option(
     '--create-master-key',
-    'Create a master key for the data app. If you did\'t had one in your .env file',
+    "Create a master key for the data app. If you didn't had one in your .env file",
   )
   .option(
     '--overwrite-master-key',
-    'Create or update master key. Be careful with this option. If you were already using the old key you will need to change your code',
+    'Create or update a master key. Be careful with this option. If you were already using the old key you will need to change your code.',
   )
   .action(command('credentialsCommand', { setup: false }))
 
@@ -81,8 +81,6 @@ async function init() {
   const argv = CLI.parse(process.argv, { lazy: true })
 
   try {
-    const config = CLIConfig.getInstance()
-
     await config.init(process.argv)
   } catch (error) {
     onError({

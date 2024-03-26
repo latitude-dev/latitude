@@ -1,4 +1,4 @@
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import spawn from '$src/lib/spawn'
 import syncQueries from '$src/lib/sync/syncQueries'
 
@@ -6,10 +6,9 @@ export default async function run(
   queryName: string,
   opts?: { param: string[] | string | undefined; watch: boolean },
 ) {
-  const config = CLIConfig.getInstance()
   const watch = opts?.watch || false
 
-  await syncQueries({ config, watch })
+  await syncQueries({ watch })
 
   const args = [
     'run',

@@ -1,4 +1,4 @@
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import path from 'path'
 import watcher from '../shared/watcher'
 import { APP_FOLDER } from '$src/commands/constants'
@@ -14,13 +14,11 @@ import {
 import { onExit } from '$src/utils'
 
 export default async function syncQueries({
-  config,
   watch = false,
 }: {
-  config: CLIConfig
   watch?: boolean
 }) {
-  const rootDir = config.source
+  const rootDir = config.rootDir
   const queriesDir = path.join(rootDir, 'queries')
   const destinationCsvsDir = path.join(rootDir, APP_FOLDER, 'queries')
   const destinationQueriesDir = path.join(

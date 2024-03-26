@@ -1,39 +1,37 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import syncDotenv from '$src/lib/sync/syncDotenv'
 
 export const MASTER_KEY_NAME = 'LATITUDE_MASTER_KEY'
 
-function readEnvFile({ config }: { config: CLIConfig }) {
-  const filePath = path.join(config.source, '.env')
+function readEnvFile() {
+  const filePath = path.join(config.rootDir, '.env')
   const envExists = fs.existsSync(filePath)
   const content = envExists ? fs.readFileSync(filePath, 'utf8') : ''
   return { content, filePath }
 }
 
 function writeSecret({
-  config,
   writeCallback,
 }: {
-  config: CLIConfig
   writeCallback: (secretLine: string, envContent: string) => string
 }) {
-  const { content, filePath } = readEnvFile({ config })
+  const { content, filePath } = readEnvFile()
   const JWTSecret = crypto.randomBytes(64).toString('hex')
   const secretLine = `${MASTER_KEY_NAME}=${JWTSecret}`
   const envContent = writeCallback(secretLine, content)
 
   fs.writeFileSync(filePath, envContent, 'utf8')
-  syncDotenv({ config })
+
+  syncDotenv()
 
   return JWTSecret
 }
 
-function createSecret({ config }: { config: CLIConfig }) {
+function createSecret() {
   return writeSecret({
-    config,
     writeCallback: (secretLine: string, envContent: string) => {
       envContent += `\n${secretLine}\n`
       return envContent
@@ -45,9 +43,8 @@ function isMasterKeyLine(line: string) {
   return line.trim().startsWith(MASTER_KEY_NAME)
 }
 
-function overwriteSecret({ config }: { config: CLIConfig }) {
+function overwriteSecret() {
   return writeSecret({
-    config,
     writeCallback: (secretLine: string, envContent: string) => {
       const lines = envContent.split(/\r?\n/)
       const indices = lines
@@ -74,12 +71,8 @@ function overwriteSecret({ config }: { config: CLIConfig }) {
   })
 }
 
-export function readSecret({
-  config,
-}: {
-  config: CLIConfig
-}): string | undefined {
-  const { content } = readEnvFile({ config })
+export function readSecret(): string | undefined {
+  const { content } = readEnvFile()
   const existingSecret = content
     .split('\n')
     .find((line) => line.startsWith(`${MASTER_KEY_NAME}=`))
@@ -90,19 +83,19 @@ export function readSecret({
   return existingSecret.split('=')[1]
 }
 
-export function createMasterKey({
-  config,
-  overwriteKey = false,
-}: {
-  config: CLIConfig
-  overwriteKey?: boolean
-}) {
-  let secret = readSecret({ config })
+export function createMasterKey(
+  {
+    overwriteKey = false,
+  }: {
+    overwriteKey?: boolean
+  } = { overwriteKey: false },
+) {
+  let secret = readSecret()
 
   if (!secret && !overwriteKey) {
-    secret = createSecret({ config })
+    secret = createSecret()
   } else if (overwriteKey) {
-    secret = overwriteSecret({ config })
+    secret = overwriteSecret()
   }
 
   return secret
