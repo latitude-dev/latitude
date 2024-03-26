@@ -31,7 +31,7 @@ async function welcomeMessage() {
     `),
   )
 }
-export default async function start({
+export default async function startCommand({
   name,
   port,
   template = TemplateUrl.default,
