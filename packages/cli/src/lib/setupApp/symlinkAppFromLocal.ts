@@ -30,7 +30,7 @@ export default async function symlinkAppFromLocal(): Promise<boolean> {
   const dataApp = createAppFolder()
 
   try {
-    forceSymlink(serverFolderInMonorepo, dataApp)
+    await forceSymlink(serverFolderInMonorepo, dataApp)
 
     console.log(
       colors.green(
