@@ -41,6 +41,7 @@ export async function forceSymlink(
       if (err) {
         reject(err)
       }
+
       resolve()
     })
   })
