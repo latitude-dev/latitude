@@ -2,7 +2,6 @@ import { sync, computeDiff } from '.'
 import { describe, expect, it, vi } from 'vitest'
 import { existsSync, readFileSync, writeFileSync } from 'fs'
 import spawn from '$src/lib/spawn'
-import { CLIConfig } from '$src/config'
 
 vi.mock('fs')
 vi.mock('$src/lib/spawn', () => ({
@@ -37,7 +36,6 @@ describe('sync', () => {
     spawn.mockReset()
 
     sync({
-      config: CLIConfig.getInstance(),
       root: 'path/to/root/package.json',
       target: 'path/to/target/package.json',
     })()
@@ -78,7 +76,6 @@ describe('sync', () => {
     spawn.mockReset()
 
     sync({
-      config: CLIConfig.getInstance(),
       root: 'path/to/root/package.json',
       target: 'path/to/target/package.json',
     })()
@@ -99,7 +96,6 @@ describe('sync', () => {
     spawn.mockReset()
 
     sync({
-      config: CLIConfig.getInstance(),
       root: 'path/to/root/package.json',
       target: 'path/to/target/package.json',
     })()

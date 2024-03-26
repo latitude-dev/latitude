@@ -3,7 +3,7 @@ import getLatitudeVersions from './getAppVersions'
 import { vi, describe, it, expect } from 'vitest'
 
 vi.mock('child_process', async (importOriginal) => {
-  const actual = await importOriginal() as unknown as Object
+  const actual = (await importOriginal()) as unknown as Object
 
   return {
     ...actual,

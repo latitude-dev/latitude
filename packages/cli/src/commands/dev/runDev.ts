@@ -1,6 +1,6 @@
 import boxedMessage from '$src/lib/boxedMessage'
 import colors from 'picocolors'
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import path from 'path'
 import { APP_FOLDER } from '../constants'
 import { cleanTerminal } from '$src/utils'
@@ -38,8 +38,7 @@ export async function runDevServer(
     process.exit()
   }
 
-  const config = CLIConfig.getInstance()
-  const appFolder = path.join(config.source, APP_FOLDER)
+  const appFolder = path.join(config.rootDir, APP_FOLDER)
   const appPort: number = port || (await findFreePort(3000, 4000))
   const hostUrl = `http://${host}:${appPort}`
   const args = [
@@ -130,7 +129,7 @@ const onError = (error: Error) => {
 }
 
 const onClose = (code?: number) => {
-  console.log(colors.yellow(`Server closed with code: ${code}`))
+  console.log(colors.yellow(`\n Server closed with code: ${code || 0}`))
 
   process.exit(code ?? 0)
 }

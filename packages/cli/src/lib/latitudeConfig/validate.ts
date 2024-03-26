@@ -18,10 +18,9 @@ export default function validateFn<T extends unknown>(
   data: T,
 ): ValidationReturn<T> {
   const validate = ajv.compile(schema)
-
   const valid = validate(data)
-
   const errors = validate.errors ?? ([] as ErrorObject[])
+
   return {
     errors: {
       message: `Invalid ${LATITUDE_CONFIG_FILE}`,

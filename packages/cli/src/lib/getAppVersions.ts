@@ -23,7 +23,11 @@ export function getInstalledVersion(appDir: string) {
   return version
 }
 
-export default async function getLatitudeVersions({ onFetch, }: { onFetch?: () => void } = {}) {
+export default async function getLatitudeVersions({
+  onFetch,
+}: {
+  onFetch?: () => void
+} = {}) {
   const command = `npm view ${PACKAGE_NAME} versions --json`
 
   return new Promise<string[]>((resolve, reject) => {
