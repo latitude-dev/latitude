@@ -10,6 +10,7 @@ async function prepareCommand() {
       'DEPRECATED: This command is deprecated and will be removed in the next major release.',
     ),
   )
+
   return sync()
 }
 

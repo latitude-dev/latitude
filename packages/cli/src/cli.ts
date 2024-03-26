@@ -4,7 +4,6 @@ import buildCommand from './commands/build'
 import config from './config'
 import credentialsCommand from './commands/credentials'
 import devCommand from './commands/dev'
-import prepareCommand from './commands/prepare'
 import runCommand from './commands/run'
 import sade from 'sade'
 import startCommand from './commands/start'
@@ -47,10 +46,6 @@ CLI.command('telemetry')
 CLI.command('build')
   .describe('Build data app for production')
   .action(buildCommand)
-
-CLI.command('prepare')
-  .describe('Prepares data app for production build')
-  .action(prepareCommand)
 
 CLI.command('dev')
   .describe('Launch the local Latitude development environment')
