@@ -5,12 +5,12 @@ import { onError as error } from '$src/utils'
 import fs from 'fs-extra'
 import prepareCommand from '../prepare'
 import spawn from '$src/lib/spawn'
+import tracked from '$src/lib/decorators/tracked'
+import setup from '$src/lib/decorators/setup'
 
 export type Props = { docker?: boolean }
 
-export default async function build(
-  { docker = false }: Props = { docker: false },
-) {
+async function build({ docker = false }: Props = { docker: false }) {
   await prepareCommand()
 
   const handlers = {
@@ -100,3 +100,5 @@ const onStderr = (data: Buffer) => {
 
   console.error(colors.yellow(data.toString()))
 }
+
+export default tracked('buildCommand', setup(build))

@@ -6,6 +6,7 @@ import {
 } from '$src/commands/credentials/createMasterKey'
 import boxedMessage from '$src/lib/boxedMessage'
 import { CommonCLIArgs } from '$src/types'
+import tracked from '$src/lib/decorators/tracked'
 
 enum MessageStatus {
   existing,
@@ -53,7 +54,8 @@ export type Props = CommonCLIArgs & {
   'create-master-key'?: boolean
   'overwrite-master-key'?: boolean
 }
-export default async function credentialsCommand(args: Props) {
+
+async function credentialsCommand(args: Props) {
   let secret = readSecret()
   const alreadyCreated = !!secret
   const createKey = args['create-master-key'] ?? false
@@ -77,3 +79,5 @@ export default async function credentialsCommand(args: Props) {
           : MessageStatus.missing,
   })
 }
+
+export default tracked('credentialsCommand', credentialsCommand)

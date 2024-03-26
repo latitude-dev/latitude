@@ -4,10 +4,12 @@ import sync from '$src/lib/sync'
 import { CommonCLIArgs } from '$src/types'
 import { DevServerProps, runDevServer } from './runDev'
 import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
+import tracked from '$src/lib/decorators/tracked'
+import setup from '$src/lib/decorators/setup'
 
 export type Props = CommonCLIArgs & { open?: string; port?: number }
 
-export default async function devCommand(args: Props = {}) {
+async function devCommand(args: Props = {}) {
   await sync({
     watch: true,
   })
@@ -47,3 +49,5 @@ const buildServerProps = async ({
       }
     : server
 }
+
+export default tracked('devCommand', setup(devCommand))
