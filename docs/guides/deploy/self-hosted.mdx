@@ -3,42 +3,47 @@ title: 'Self-hosted'
 description: 'Deploy a Latitude data app on your own infrastructure'
 ---
 
-## Build for production
+The production version of your Latitude project can be built either as a
+standard NodeJS application or within a Docker container. We recommend the
+Docker approach, as it simplifies the deployment process later on.
 
-To build the production version of your data app run the following command:
+## Docker container
+
+<Note>
+  You will need the [Docker CLI](https://www.docker.com/products/docker-desktop/) installed in your machine.
+</Note>
+
+Every Latitude project is equipped with a Dockerfile to facilitate
+containerization. To build the Docker container for your Latitude project,
+proceed as you would with any other Docker project:
+
+```bash
+docker build . -t my-latitude-app
+```
+Once the build is complete, you can test your app locally with:
+
+```bash
+docker run -p 3000:3000 my-latitude-app
+```
+
+See the [docker build](https://docs.docker.com/reference/cli/docker/image/build/) documentation for more details.
+
+## NodeJS production build
+
+To build the NodeJS production version of Latitude projet app, run the following command:
 
 ```bash
 latitude build
 ```
 
-Once done, access it with:
+This command will build your app in a `build` directory at the root of your project. Once completed, access the build folder:
 
 ```bash
 cd build
 ```
 
-And run it with:
+And run your app:
 
 ```bash
 node build
 ```
-
-## Docker container
-
-You will need the [Docker CLI](https://www.docker.com/products/docker-desktop/) installed in your machine.
-
-Every Latitude project comes with a Dockerfile to streamline containerization. Use the command below to build a Docker container with your data app's production version:
-
-```bash
-latitude build --docker
-```
-
-Under the hood this command is preparing the data app for a production build and forwarding the build command to the docker CLI. If you want fine-grained control over
-the docker container build process you can directly call the `docker build` process with a previous `latitude prepare` step:
-
-```bash
-$ latitude prepare
-$ docker build .
-```
-
-See the [docker build](https://docs.docker.com/reference/cli/docker/image/build/) documentation for more details.
