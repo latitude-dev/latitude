@@ -1,8 +1,15 @@
 #!/usr/bin/env node
 
-import command from './commands'
+import buildCommand from './commands/build'
 import config from './config'
+import credentialsCommand from './commands/credentials'
+import devCommand from './commands/dev'
+import prepareCommand from './commands/prepare'
+import runCommand from './commands/run'
 import sade from 'sade'
+import startCommand from './commands/start'
+import telemetryCommand from './commands/telemetry'
+import updateCommand from './commands/update'
 import { onError } from './utils'
 
 const CLI = sade('latitude')
@@ -23,27 +30,27 @@ CLI.command('start')
   .option('--name', 'Name of the project')
   .option('--template', 'Template to use for the data app')
   .option('--port', 'Port to run the data app on')
-  .action(command('startCommand', { tracked: false, setup: false }))
+  .action(startCommand)
 
 CLI.command('update')
   .describe('Update latitude app.You can define the version with --version')
   .option('--fix', 'Installed the version in your latitude.json file')
-  .action(command('updateCommand', { tracked: false, setup: false }))
+  .action(updateCommand)
 
 CLI.command('telemetry')
   .describe('Allow enable or disable telemetry')
   .option('--enable', 'Enable telemetry')
   .option('--disable', 'Disable telemetry')
   .option('--status', 'Check the status of telemetry')
-  .action(command('telemetryCommand', { tracked: false, setup: false }))
+  .action(telemetryCommand)
 
 CLI.command('build')
   .describe('Build data app for production')
-  .action(command('buildCommand'))
+  .action(buildCommand)
 
 CLI.command('prepare')
   .describe('Prepares data app for production build')
-  .action(command('prepareCommand'))
+  .action(prepareCommand)
 
 CLI.command('dev')
   .describe('Launch the local Latitude development environment')
@@ -52,7 +59,7 @@ CLI.command('dev')
     'Open the data app in your browser, Default: yes. Options: yes, no',
   )
   .option('--port', 'Port to run the data app on')
-  .action(command('devCommand'))
+  .action(devCommand)
 
 CLI.command('run <query_name>')
   .describe('Run a query from the data app.')
@@ -63,7 +70,7 @@ CLI.command('run <query_name>')
   )
   .example('run --watch users')
   .example('run users --param user_id=foo')
-  .action(command('runCommand'))
+  .action(runCommand)
 
 CLI.command('credentials')
   .describe('Manage credentials for the data app')
@@ -75,7 +82,7 @@ CLI.command('credentials')
     '--overwrite-master-key',
     'Create or update a master key. Be careful with this option. If you were already using the old key you will need to change your code.',
   )
-  .action(command('credentialsCommand', { setup: false }))
+  .action(credentialsCommand)
 
 async function init() {
   const argv = CLI.parse(process.argv, { lazy: true })
