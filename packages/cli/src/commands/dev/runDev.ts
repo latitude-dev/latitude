@@ -58,7 +58,7 @@ export async function runDevServer(
     onStdout: onStdout({ verbose, onReady, appPort }),
   }
 
-  spawn(config.pkgManager.command, args, { cwd: appFolder }, handlers)
+  spawn('npm', args, { cwd: appFolder }, handlers)
 
   console.log(colors.yellow('Starting Latitude ...'))
 }

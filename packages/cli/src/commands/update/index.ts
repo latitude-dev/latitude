@@ -14,7 +14,6 @@ async function askForAppVersion() {
   try {
     console.log(colors.yellow('Fetching Latitude versions...'))
     versions = await getLatitudeVersions({
-      pkgManager: CLIConfig.getInstance().pkgManager,
       onFetch: () => cleanTerminal(),
     })
   } catch {

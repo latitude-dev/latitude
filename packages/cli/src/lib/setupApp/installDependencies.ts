@@ -5,15 +5,10 @@ import { CLIConfig } from '$src/config'
 export default async function installAppDependencies() {
   const config = CLIConfig.getInstance()
   const appFolder = config.appDir
-  let args = ['install', ...config.pkgManager.flags.mandatoryInstallFlags]
-  args = config.pro
-    ? [...args, config.pkgManager.flags.installFlags.silent]
-    : args
-
   console.log(colors.yellow('Installing dependencies...'))
 
   return new Promise<boolean>((resolve, reject) => {
-    const npmInstall = spawn(config.pkgManager.command, args, {
+    const npmInstall = spawn('npm', ['install'], {
       cwd: appFolder,
       shell: true,
       stdio: 'inherit',
