@@ -1,16 +1,16 @@
 FROM node:18
 
+RUN npm install -g @latitude-data/cli
+
 WORKDIR /usr/src/app
 
-COPY .latitude/app/package*.json ./
+COPY . .
 
-RUN npm install
-
-COPY .latitude/app .
-
-RUN npm run build
+RUN latitude build
 
 EXPOSE 3000
+
+WORKDIR /user/src/app/build
 
 CMD ["node", "build"]
 
