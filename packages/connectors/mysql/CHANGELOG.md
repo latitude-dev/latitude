@@ -1,5 +1,11 @@
 # @latitude-data/mysql-connector
 
+## 1.1.1
+
+### Patch Changes
+
+- c081f96: fix: properly close connection after running a query in mysql connector
+
 ## 1.1.0
 
 ### Minor Changes
