@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.5.0
+
+### Minor Changes
+
+- 37b9c34: Fix template selector not shown when starting a project
+
 ## 0.4.0
 
 ### Minor Changes
