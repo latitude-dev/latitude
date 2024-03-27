@@ -14,9 +14,13 @@ type TelemetryConfig = {
   anonymousUserId: string | undefined
 }
 
+type TelemetryCredentials = {
+  clientKey: string
+  clientUrl: string
+}
 export class Telemetry {
   private static instance: Telemetry
-  private client: RudderAnalytics
+  private client: RudderAnalytics | undefined = undefined
   private initialized: boolean = false
 
   public static getInstance(): Telemetry {
@@ -27,8 +31,10 @@ export class Telemetry {
   }
 
   constructor() {
-    this.client = new RudderAnalytics(CLIENT_KEY, {
-      dataPlaneUrl: ANALYTICS_URL,
+    if (!this.credentials) return
+
+    this.client = new RudderAnalytics(this.credentials.clientKey, {
+      dataPlaneUrl: this.credentials.clientUrl,
     })
   }
 
@@ -88,8 +94,10 @@ export class Telemetry {
     return enabled
   }
 
-  async trackWithoutCheck<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
-    this.client.track({
+  async trackWithoutCheck<T extends TelemetryEventType>(
+    event: TelemetryEvent<T>,
+  ) {
+    this.client?.track({
       anonymousId: this.anonymousId,
       event: event.event,
       properties: event.properties,
@@ -97,7 +105,7 @@ export class Telemetry {
   }
 
   private identifyAnonymous(enabled: boolean) {
-    this.client.identify({
+    this.client?.identify({
       anonymousId: this.anonymousId,
       context: {
         telemetry: { enabled },
@@ -129,6 +137,20 @@ export class Telemetry {
 
   private get config(): TelemetryConfig {
     return configStore.get('telemetry')
+  }
+
+  // TODO: Provision TELEMETRY_CLIENT_KEY and TELEMETRY_URL
+  // We don't want to use telemetry in development mode
+  // we will provision this for the published CLI
+  private get credentials(): TelemetryCredentials | undefined {
+    const clientKey = process.env.TELEMETRY_CLIENT_KEY ?? CLIENT_KEY
+    const clientUrl = process.env.TELEMETRY_URL ?? ANALYTICS_URL
+    if (!clientKey || !clientUrl) return undefined
+
+    return {
+      clientKey,
+      clientUrl,
+    }
   }
 }
 

@@ -34,7 +34,7 @@ async function welcomeMessage() {
 export default async function startCommand({
   name,
   port,
-  template = TemplateUrl.default,
+  template,
   open = false,
 }: {
   open: boolean
@@ -66,6 +66,7 @@ export default async function startCommand({
     template: choosenTemplate,
     force,
   })) as string
+
   config.rootDir = rootDir
 
   await setupApp()

@@ -34,19 +34,19 @@ const buildServerProps = async ({
   }
   const latitudeJson = await findOrCreateConfigFile()
 
-  const checker = new InstalledVersionChecker(
-    config.rootDir,
+  const checker = new InstalledVersionChecker({
+    cwd: config.rootDir,
     // TODO: Fix this. Version should never be undefined in reality.
-    latitudeJson.data.version as string,
-  )
+    configVersion: latitudeJson.data.version as string,
+  })
 
   return checker.isDifferent()
     ? {
         ...server,
-        onReady: () => {
-          checker.displayMessage()
+        onReady: (devUrl) => {
+          checker.displayMessage(devUrl)
         },
-      }
+      } as DevServerProps
     : server
 }
 
