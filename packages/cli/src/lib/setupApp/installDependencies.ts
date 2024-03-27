@@ -9,6 +9,8 @@ export default async function installAppDependencies() {
   if (!config.pro) return
   if (existsSync(path.join(config.appDir, 'node_modules'))) return
 
+  console.log(colors.yellow('Installing dependencies...'))
+
   return new Promise((resolve) => {
     spawn(
       'npm',
