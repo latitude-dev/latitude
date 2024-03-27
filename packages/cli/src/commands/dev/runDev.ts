@@ -14,7 +14,7 @@ export type DevServerProps = {
   host?: string
   open?: boolean
   verbose?: boolean
-  onReady?: () => void
+  onReady?: (devUrl: string) => void
 }
 
 let building = true
@@ -101,14 +101,15 @@ const onStdout =
       console.log(logmsg)
     }
 
+    const devUrl = `🚀 ${colors.blue('Server running on')} \n\nhttp://localhost:${appPort}`
     if (building && logmsg.includes('ready in')) {
       cleanTerminal()
       if (onReady) {
-        onReady()
+        onReady(devUrl)
       } else {
         boxedMessage({
           title: 'Latitude server',
-          text: `${colors.blue('Listening on')} http://localhost:${appPort}`,
+          text: devUrl,
           color: 'green',
         })
       }
