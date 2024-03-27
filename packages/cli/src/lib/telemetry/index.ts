@@ -1,21 +1,20 @@
 import RudderAnalytics from '@rudderstack/rudder-sdk-node'
-import configStore from '../configStore'
 import crypto from 'crypto'
 import os from 'os'
 import { select } from '@inquirer/prompts'
 
 import type { TelemetryEvent, TelemetryEventType } from './events'
 import chalk from 'chalk'
+import configStore from '$src/lib/configStore'
 
 const CLIENT_KEY = '2daExoSEzxW3lPbRFQVoYIGh0Rb'
 const ANALYTICS_URL = 'https://latitudecmggvg.dataplane.rudderstack.com'
-
 type TelemetryConfig = {
   enabled: boolean | undefined
   anonymousUserId: string | undefined
 }
 
-class Telemetry {
+export class Telemetry {
   private static instance: Telemetry
   private client: RudderAnalytics
   private initialized: boolean = false
@@ -41,33 +40,25 @@ class Telemetry {
 
   async track<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
     const canTrack = await this.setup()
+
     if (!canTrack) return
 
-    this.client.track({
-      anonymousId: this.anonymousId,
-      event: event.event,
-      properties: event.properties,
-    })
+    this.trackWithoutCheck(event)
   }
 
   enable() {
-    this.track({ event: 'telemetryEnabled' })
+    this.trackWithoutCheck({ event: 'telemetryEnabled' })
     configStore.set('telemetry.enabled', true)
   }
 
   disable() {
-    this.track({ event: 'telemetryDisabled' })
+    this.trackWithoutCheck({ event: 'telemetryDisabled' })
     configStore.set('telemetry.enabled', false)
   }
 
   private async setup() {
-    // Only do this one time one running the CLI
     if (this.initialized) return this.enabled
-
-    if (this.enabled !== undefined) {
-      this.initialized = true
-      return this.enabled
-    }
+    if (this.enabled !== undefined) return this.enabled
 
     let enabled = false
     try {
@@ -97,6 +88,14 @@ class Telemetry {
     return enabled
   }
 
+  async trackWithoutCheck<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
+    this.client.track({
+      anonymousId: this.anonymousId,
+      event: event.event,
+      properties: event.properties,
+    })
+  }
+
   private identifyAnonymous(enabled: boolean) {
     this.client.identify({
       anonymousId: this.anonymousId,
@@ -110,8 +109,6 @@ class Telemetry {
       },
     })
   }
-
-  // Private methods
 
   private get enabled() {
     return this.config.enabled
