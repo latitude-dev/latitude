@@ -1,5 +1,19 @@
 # @latitude-data/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- 740af6a: Remove pkgManager abstraction and always show npm install progress
+- f646207: Fix telemetry double question when starting a project and add test suite for Telemetry module
+
+### Patch Changes
+
+- edca3cc: General UX improvements and some minor bugfixes
+- 6dd4293: Reduce the number of boxed messages the CLI displays
+- 3bf61f7: Implements docker support with regular `docker build` command. Removes `--docker` flag from `latitude build` command.
+- 6e6b4ca: Adds warning about deprecation of `prepare` command
+
 ## 0.3.0
 
 ### Minor Changes
