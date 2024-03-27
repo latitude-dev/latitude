@@ -57,3 +57,53 @@ describe('MysqlConnector SSL Configurations', () => {
     })
   })
 })
+
+describe('runQuery', () => {
+  it('rejects with ConnectionError when pool.getConnection fails', async () => {
+    const poolMock = {
+      getConnection: vi
+        .fn()
+        .mockImplementationOnce((cb) => cb(new Error('connection error'))),
+    }
+    // @ts-expect-error - mock
+    vi.mocked(createPool).mockReturnValue(poolMock)
+
+    const connector = new MysqlConnector('rootPath', {
+      user: 'user',
+      password: 'password',
+      database: 'database',
+      host: 'host',
+    })
+
+    await expect(
+      connector.runQuery({ sql: 'sql', params: [] }),
+    ).rejects.toThrow('connection error')
+  })
+
+  it('releases the connection and ends the pool when connection.query completes', async () => {
+    const connectionMock = {
+      query: vi.fn().mockImplementationOnce((_, __, cb) => cb(null, [], [])),
+      release: vi.fn(),
+    }
+    const poolMock = {
+      end: vi.fn(),
+      getConnection: vi
+        .fn()
+        .mockImplementationOnce((cb) => cb(null, connectionMock)),
+    }
+    // @ts-expect-error - mock
+    vi.mocked(createPool).mockReturnValue(poolMock)
+
+    const connector = new MysqlConnector('rootPath', {
+      user: 'user',
+      password: 'password',
+      database: 'database',
+      host: 'host',
+    })
+
+    await connector.runQuery({ sql: 'sql', params: [] })
+
+    expect(connectionMock.release).toHaveBeenCalled()
+    expect(poolMock.end).toHaveBeenCalled()
+  })
+})
