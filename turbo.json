@@ -1,7 +1,13 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["NODE_ENV", "PACKAGE_VERSION", "LATITUDE_TARGET"],
+  "globalEnv": [
+    "NODE_ENV",
+    "PACKAGE_VERSION",
+    "LATITUDE_TARGET",
+    "TELEMETRY_CLIENT_KEY",
+    "TELEMETRY_URL"
+  ],
   "pipeline": {
     "prettier": {
       "dependsOn": ["^prettier"],
