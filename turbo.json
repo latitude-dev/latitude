@@ -6,7 +6,9 @@
     "PACKAGE_VERSION",
     "LATITUDE_TARGET",
     "TELEMETRY_CLIENT_KEY",
-    "TELEMETRY_URL"
+    "TELEMETRY_URL",
+    "CLI_SENTRY_ENABLED",
+    "CLI_SENTRY_DSN"
   ],
   "pipeline": {
     "prettier": {
