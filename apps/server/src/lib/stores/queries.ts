@@ -38,15 +38,14 @@ export const input = (key: string, defaultValue?: unknown): InlineParam => ({
     key in viewParams ? viewParams[key] : defaultValue,
 })
 
-function computeQueryParams(
-  inlineParams: InlineParams,
-): Record<string, unknown> {
-  const viewParams = getAllViewParams()
-  const params: Record<string, unknown> = { ...viewParams }
-  for (const key in inlineParams) {
-    params[key] = inlineParams[key].callback(viewParams)
-  }
-  return params
+function computeQueryParams(inlineParams: InlineParams): Record<string, unknown> {
+  const viewParams = getAllViewParams();
+  return Object.entries(inlineParams).reduce((params, [key, inlineParam]) => {
+    params[key] = (typeof inlineParam === 'object' && 'callback' in inlineParam)
+      ? inlineParam.callback(viewParams)
+      : inlineParam; // Inline params can be just a hardcoded value
+    return params;
+  }, { ...viewParams });
 }
 
 function createMiddlewareKey(
@@ -55,7 +54,7 @@ function createMiddlewareKey(
 ): string {
   const hashedParams = Object.keys(inlineParams)
     .sort()
-    .map((paramName) => `${paramName}=${inlineParams[paramName].key}`)
+    .map((paramName) => `${paramName}=${inlineParams[paramName].key ?? String(inlineParams[paramName])}`)
     .join('&')
   return `query:${queryPath}?${hashedParams}`
 }

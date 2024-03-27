@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Input, Label, Text } from "@latitude-data/svelte";
+  import { Input } from "@latitude-data/svelte";
   import { setViewParam, useViewParam } from "$lib/stores/viewParams";
   import { createEventDispatcher } from "svelte";
 
@@ -35,18 +35,13 @@
   };
 </script>
 
-<div class="grid w-full max-w-sm items-center gap-1.5">
-  {#if label}
-    <Label for={param}>{label}</Label>
-  {/if}
-  <Input
-    on:input={handleInput}
-    value={$inputStore}
-    type={type}
-    checked={type === "checkbox" && !!$inputStore}
-    {...$$restProps}
-  />
-  {#if description}
-    <Text size="h5" color='muted'>{description}</Text>
-  {/if}
-</div>
+<Input
+  on:input={handleInput}
+  value={$inputStore}
+  type={type}
+  name={param}
+  label={label}
+  description={description}
+  checked={type === "checkbox" && !!$inputStore}
+  {...$$restProps}
+/>
