@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.5.0
+
+### Minor Changes
+
+- 6afc286: reactiveToParams option now allows defining a debounce time between param updates
+
 ## 0.4.1
 
 ### Patch Changes
