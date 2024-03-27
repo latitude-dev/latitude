@@ -7,6 +7,7 @@ import {
 import { writable, get, derived, Readable } from 'svelte/store'
 import { ViewParams, getAllViewParams, useViewParams } from './viewParams'
 import { type QueryResultArray } from '@latitude-data/query_result'
+import { debounce } from 'lodash-es'
 
 let loaded = false
 
@@ -100,7 +101,7 @@ async function fetchQueryFromCore({
 }
 
 export type QuerySubscriptionOptions = {
-  reactiveToParams?: boolean
+  reactiveToParams?: boolean | number
 }
 
 export type QueryProps = {
@@ -151,9 +152,14 @@ export function useQuery({
   coreQueryKeyStore.subscribe(updateState) // Update state when coreQueryKey changes
   queryStore.subscribe(updateState) // Check for state updates when queryStore changes
   // Refetch when viewParams change
-  if (opts.reactiveToParams) {
-    useViewParams().subscribe(() => {
+  if (opts.reactiveToParams || opts.reactiveToParams === 0) {
+    const debounceTime = opts.reactiveToParams === true ? 0 : opts.reactiveToParams
+    const debouncedRefetch = debounce(() => {
       fetchQueryFromCore({ query, inlineParams })
+    }, debounceTime)
+
+    useViewParams().subscribe(() => {
+      debouncedRefetch()
     })
   }
 
