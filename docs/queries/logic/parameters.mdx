@@ -182,9 +182,11 @@ Suppose we want to compare the information of two users in the same view.
 
 ## Reactive To Parameters
 
-You can make some visualizations react immediately to any change in params with the `reactiveToParams` property, without having to run the view automatically. This is how it works in visualizations:
+You can make some visualizations react immediately to any change in params with the `reactiveToParams` property, without having to run the view automatically. To do this, just add the property `reactiveToParams: true` to the `opts` prop of the visualization component, and it will automatically update the visualization every time the parameters change.
+Refetching the data from the query every single time a parameter changes can be really expensive, so you can define a debounce time to avoid unnecessary requests. Just add the number of milliseconds instead of `true` in the `reactiveToParams` property.
+Let's see an example:
 
-```js
+```html
 <BarChart
     query='my_data'
     x='release_year'
@@ -192,7 +194,7 @@ You can make some visualizations react immediately to any change in params with 
     xTitle='Year'
     yTitle='Titles'
     opts={{
-        reactiveToParams: true
+        reactiveToParams: 500 // 500ms debounce time (0.5s)
     }}
 />
 ```

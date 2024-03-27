@@ -44,6 +44,9 @@ importers:
       '@latitude-data/svelte':
         specifier: workspace:*
         version: link:../../packages/client/svelte
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
     devDependencies:
       '@latitude-data/eslint-config':
         specifier: workspace:*
@@ -81,6 +84,9 @@ importers:
       '@types/estree':
         specifier: ^1.0.1
         version: 1.0.5
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
       '@types/mock-fs':
         specifier: ^4.13.4
         version: 4.13.4
@@ -125,7 +131,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: ^5.0.3
-        version: 5.0.12(@types/node@20.11.25)
+        version: 5.0.12(@types/node@18.19.15)
       vite-node:
         specifier: ^1.3.1
         version: 1.3.1
@@ -473,7 +479,7 @@ importers:
         version: 5.3.3
       vite:
         specifier: ^5.0.11
-        version: 5.0.12(@types/node@20.11.25)
+        version: 5.0.12(@types/node@18.19.15)
       vitest:
         specifier: ^1.2.0
         version: 1.2.2(jsdom@24.0.0)
@@ -6186,7 +6192,7 @@ packages:
       fs-extra: 11.2.0
       magic-string: 0.30.6
       svelte: 4.2.10
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - babel-plugin-macros
     dev: true
@@ -6295,7 +6301,7 @@ packages:
       magic-string: 0.30.6
       rollup: 3.29.4
       typescript: 5.3.3
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -6675,7 +6681,7 @@ packages:
       svelte-preprocess: 5.1.3(@babel/core@7.23.3)(postcss@8.4.35)(svelte@4.2.10)(typescript@5.3.3)
       sveltedoc-parser: 4.2.1
       ts-dedent: 2.2.0
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - '@babel/core'
       - '@preact/preset-vite'
@@ -6727,7 +6733,7 @@ packages:
       '@storybook/svelte': 7.6.17(svelte@4.2.10)
       '@storybook/svelte-vite': 7.6.17(@babel/core@7.23.3)(postcss@8.4.35)(svelte@4.2.10)(typescript@5.3.3)(vite@5.0.12)
       svelte: 4.2.10
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - '@babel/core'
       - '@preact/preset-vite'
@@ -6852,7 +6858,7 @@ packages:
       sirv: 2.0.4
       svelte: 4.2.10
       tiny-glob: 0.2.9
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     dev: true
 
   /@sveltejs/kit@2.5.0(@sveltejs/vite-plugin-svelte@3.0.0)(svelte@4.2.7)(vite@5.0.12):
@@ -6879,7 +6885,7 @@ packages:
       sirv: 2.0.4
       svelte: 4.2.7
       tiny-glob: 0.2.9
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     dev: true
 
   /@sveltejs/package@2.2.6(svelte@4.2.10)(typescript@5.3.3):
@@ -6910,7 +6916,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 2.5.3(svelte@4.2.10)(vite@5.0.12)
       debug: 4.3.4(supports-color@8.1.1)
       svelte: 4.2.10
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6926,7 +6932,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 3.0.0(svelte@4.2.10)(vite@5.0.12)
       debug: 4.3.4(supports-color@8.1.1)
       svelte: 4.2.10
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6942,7 +6948,7 @@ packages:
       '@sveltejs/vite-plugin-svelte': 3.0.0(svelte@4.2.7)(vite@5.0.12)
       debug: 4.3.4(supports-color@8.1.1)
       svelte: 4.2.7
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6961,7 +6967,7 @@ packages:
       magic-string: 0.30.6
       svelte: 4.2.10
       svelte-hmr: 0.15.3(svelte@4.2.10)
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
       vitefu: 0.2.5(vite@5.0.12)
     transitivePeerDependencies:
       - supports-color
@@ -6981,7 +6987,7 @@ packages:
       magic-string: 0.30.6
       svelte: 4.2.10
       svelte-hmr: 0.15.3(svelte@4.2.10)
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
       vitefu: 0.2.5(vite@5.0.12)
     transitivePeerDependencies:
       - supports-color
@@ -7001,7 +7007,7 @@ packages:
       magic-string: 0.30.6
       svelte: 4.2.7
       svelte-hmr: 0.15.3(svelte@4.2.7)
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
       vitefu: 0.2.5(vite@5.0.12)
     transitivePeerDependencies:
       - supports-color
@@ -18285,7 +18291,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -18327,7 +18333,7 @@ packages:
       debug: 4.3.4(supports-color@8.1.1)
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -18595,7 +18601,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
     dev: true
 
   /vitest@1.2.2(@types/node@20.10.6):
@@ -18699,7 +18705,7 @@ packages:
       strip-literal: 1.3.0
       tinybench: 2.6.0
       tinypool: 0.8.2
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
       vite-node: 1.2.2
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
@@ -18754,7 +18760,7 @@ packages:
       strip-literal: 2.0.0
       tinybench: 2.6.0
       tinypool: 0.8.2
-      vite: 5.0.12(@types/node@20.11.25)
+      vite: 5.0.12(@types/node@18.19.15)
       vite-node: 1.3.1
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
