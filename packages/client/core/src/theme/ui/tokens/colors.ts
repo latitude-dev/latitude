@@ -9,6 +9,7 @@ export const colors = {
     green100: 'bg-green-100',
     green500: 'bg-green-500',
     yellow50: 'bg-yellow-50',
+    yellow400: 'bg-yellow-400',
     muted: 'bg-muted',
     mutedForeground: 'bg-muted-foreground'
   },
