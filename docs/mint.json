@@ -147,8 +147,7 @@
       "group": "Content",
       "pages": [
         "components/content/text",
-        "components/content/alert",
-        "components/content/card"
+        "components/content/alert"
       ]
     },
     {
