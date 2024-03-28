@@ -27,7 +27,7 @@ You can also use any query result to conditionally render content. To do so, use
 
 ```html
 <View>
-    {#await run_query('sample')}
+    {#await runQuery('sample')}
         <Text>Loading...</Text>
     {:then data}
         {#if data.length > 0}

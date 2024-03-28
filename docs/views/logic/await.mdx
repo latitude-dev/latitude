@@ -12,7 +12,7 @@ The `await` block lets you run functions in a synchronous manner. This is useful
 There are three possible states for the `await` block: `pending`, `fulfilled` and `rejected`. You can use the `{:then}` and `{:catch}` blocks to handle the `fulfilled` and `rejected` states respectively.
 
 ```html
-{#await run_query('sample')}
+{#await runQuery('sample')}
     <p>Waiting...</p>
 {:then data}
     <p>There are {data.length} elements</p>
@@ -24,7 +24,7 @@ There are three possible states for the `await` block: `pending`, `fulfilled` an
 If you don't want to show a loading state or an error message, those parts can be omitted:
 
 ```html
-{#await run_query('sample') then data}
+{#await runQuery('sample') then data}
     <p>The value is {data}</p>
 {/await}
 ```
