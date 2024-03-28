@@ -4,3 +4,6 @@
 [submodule "examples/sample-netflix"]
 	path = examples/sample-netflix
 	url = https://github.com/latitude-dev/sample-netflix
+[submodule "examples/sample-clerk"]
+	path = examples/sample-clerk
+	url = https://github.com/latitude-dev/sample-authentication-clerk
