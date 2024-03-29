@@ -11,7 +11,7 @@
   },
   "publisher": "LatitudeData",
   "engines": {
-    "vscode": "^1.87.0"
+    "vscode": "^1.86.0"
   },
   "categories": [
     "Other"
@@ -105,7 +105,7 @@
     "@types/mocha": "^10.0.6",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "18.x",
-    "@types/vscode": "^1.87.0",
+    "@types/vscode": "^1.86.0",
     "@vscode/test-cli": "^0.0.6",
     "@vscode/test-electron": "^2.3.9",
     "chai": "^5.1.0",
