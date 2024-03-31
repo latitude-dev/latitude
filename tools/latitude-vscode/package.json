@@ -2,7 +2,7 @@
   "name": "latitude-vscode",
   "displayName": "Latitude for VS Code",
   "description": "Official Latitude Framework support for VS Code",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icon": "static/icon.png",
   "license": "LGPL",
   "repository": {
