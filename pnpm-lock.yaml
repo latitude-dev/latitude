@@ -1129,7 +1129,7 @@ importers:
         specifier: 18.x
         version: 18.19.15
       '@types/vscode':
-        specifier: ^1.87.0
+        specifier: ^1.86.0
         version: 1.87.0
       '@vscode/test-cli':
         specifier: ^0.0.6
@@ -16771,9 +16771,6 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
-    peerDependenciesMeta:
-      node-gyp:
-        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0
