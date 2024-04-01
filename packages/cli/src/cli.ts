@@ -6,6 +6,7 @@ import credentialsCommand from './commands/credentials'
 import devCommand from './commands/dev'
 import runCommand from './commands/run'
 import sade from 'sade'
+import setupCommand from './commands/setup'
 import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
@@ -20,15 +21,15 @@ CLI.version(process.env.PACKAGE_VERSION ?? 'development')
 if (process.env.NODE_ENV === 'development') {
   CLI.option(
     '--folder',
-    'Use in development to specify the data app folder to run',
+    'Use in development to specify the Latitude app folder to run',
   )
 }
 
 CLI.command('start')
   .describe('Setup you data project with an example data source')
   .option('--name', 'Name of the project')
-  .option('--template', 'Template to use for the data app')
-  .option('--port', 'Port to run the data app on')
+  .option('--template', 'Template to use for the Latitude app')
+  .option('--port', 'Port to run the Latitude app on')
   .action(startCommand)
 
 CLI.command('update')
@@ -44,20 +45,20 @@ CLI.command('telemetry')
   .action(telemetryCommand)
 
 CLI.command('build')
-  .describe('Build data app for production')
+  .describe('Build Latitude app for production')
   .action(buildCommand)
 
 CLI.command('dev')
   .describe('Launch the local Latitude development environment')
   .option(
     '--open',
-    'Open the data app in your browser, Default: yes. Options: yes, no',
+    'Open the Latitude app in your browser, Default: yes. Options: yes, no',
   )
-  .option('--port', 'Port to run the data app on')
+  .option('--port', 'Port to run the Latitude app on')
   .action(devCommand)
 
 CLI.command('run <query_name>')
-  .describe('Run a query from the data app.')
+  .describe('Run a query from the Latitude app.')
   .option('--watch', 'Re-run the query each time the query file changes')
   .option(
     '--param',
@@ -67,11 +68,15 @@ CLI.command('run <query_name>')
   .example('run users --param user_id=foo')
   .action(runCommand)
 
+CLI.command('setup')
+  .describe('Setup the current directory as a Latitude app')
+  .action(setupCommand)
+
 CLI.command('credentials')
-  .describe('Manage credentials for the data app')
+  .describe('Manage credentials for the Latitude app')
   .option(
     '--create-master-key',
-    "Create a master key for the data app. If you didn't had one in your .env file",
+    "Create a master key for the Latitude app. If you didn't had one in your .env file",
   )
   .option(
     '--overwrite-master-key',
