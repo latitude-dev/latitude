@@ -1,5 +1,6 @@
 import type { apiObject } from '@rudderstack/rudder-sdk-node'
 export type TelemetryEventType =
+  | 'setupCommand'
   | 'startCommand'
   | 'devCommand'
   | 'buildCommand'
