@@ -1,5 +1,15 @@
 # @latitude-data/cli
 
+## 0.6.0
+
+### Minor Changes
+
+- 8bfd41a: added setup command
+
+### Patch Changes
+
+- 6cbfd9b: fix: misleading telemetry command log
+
 ## 0.5.0
 
 ### Minor Changes
