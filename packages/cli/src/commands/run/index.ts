@@ -15,8 +15,8 @@ async function run(
   const args = [
     'run',
     'query',
-    watch ? '--watch' : '',
     queryName,
+    watch ? 'true' : 'false',
     JSON.stringify(buildParams(opts?.param || [])),
   ].filter(Boolean)
 
