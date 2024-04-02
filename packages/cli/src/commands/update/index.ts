@@ -10,6 +10,7 @@ import updateApp from '$src/lib/updateApp'
 import { DEFAULT_VERSION_LIST } from '../constants'
 import { cleanTerminal, onError } from '$src/utils'
 import { select } from '@inquirer/prompts'
+import setRootDir from '$src/lib/decorators/setRootDir'
 
 async function askForAppVersion() {
   let versions: string[] = DEFAULT_VERSION_LIST
@@ -66,7 +67,7 @@ async function getVersions({ fix }: { fix: boolean }) {
 
 // If --fix flag is passed, use the version defined in latitude.json This means
 // user had installed a different version and wants to fix it
-export default async function updateCommand(args: { fix?: boolean }) {
+async function updateCommand(args: { fix?: boolean }) {
   const fix = args.fix ?? false
   const { oldVersion, newVersion } = await getVersions({ fix })
 
@@ -79,3 +80,5 @@ export default async function updateCommand(args: { fix?: boolean }) {
 
   return updateApp({ version: newVersion })
 }
+
+export default setRootDir(updateCommand)
