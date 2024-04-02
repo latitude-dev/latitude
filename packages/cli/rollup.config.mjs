@@ -54,6 +54,8 @@ export default {
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),
       'process.env.CLI_SENTRY_ENABLED': JSON.stringify(process.env.CLI_SENTRY_ENABLED),
       'process.env.CLI_SENTRY_DSN': JSON.stringify(process.env.CLI_SENTRY_DSN),
+      'process.env.TELEMETRY_URL': JSON.stringify(process.env.TELEMETRY_URL),
+      'process.env.TELEMETRY_CLIENT_KEY': JSON.stringify(process.env.TELEMETRY_CLIENT_KEY),
       preventAssignment: true,
     }),
     json(),
