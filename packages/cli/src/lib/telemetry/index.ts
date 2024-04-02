@@ -7,8 +7,6 @@ import type { TelemetryEvent, TelemetryEventType } from './events'
 import chalk from 'chalk'
 import configStore from '$src/lib/configStore'
 
-const CLIENT_KEY = '2daExoSEzxW3lPbRFQVoYIGh0Rb'
-const ANALYTICS_URL = 'https://latitudecmggvg.dataplane.rudderstack.com'
 type TelemetryConfig = {
   enabled: boolean | undefined
   anonymousUserId: string | undefined
@@ -105,8 +103,10 @@ export class Telemetry {
   }
 
   private identifyAnonymous(enabled: boolean) {
+    const anonymousId = this.anonymousId
+
     this.client?.identify({
-      anonymousId: this.anonymousId,
+      anonymousId,
       context: {
         telemetry: { enabled },
         cliVersion: process.env.PACKAGE_VERSION,
@@ -139,12 +139,9 @@ export class Telemetry {
     return configStore.get('telemetry')
   }
 
-  // TODO: Provision TELEMETRY_CLIENT_KEY and TELEMETRY_URL
-  // We don't want to use telemetry in development mode
-  // we will provision this for the published CLI
   private get credentials(): TelemetryCredentials | undefined {
-    const clientKey = process.env.TELEMETRY_CLIENT_KEY ?? CLIENT_KEY
-    const clientUrl = process.env.TELEMETRY_URL ?? ANALYTICS_URL
+    const clientKey = process.env.TELEMETRY_CLIENT_KEY
+    const clientUrl = process.env.TELEMETRY_URL
     if (!clientKey || !clientUrl) return undefined
 
     return {

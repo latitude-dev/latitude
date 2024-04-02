@@ -11,6 +11,9 @@ import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import { onError } from './utils'
+import initSentry from '$src/integrations/sentry'
+
+initSentry()
 
 const CLI = sade('latitude')
 
