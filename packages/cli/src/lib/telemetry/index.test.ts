@@ -60,6 +60,8 @@ const consoleMock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
 describe('Telemetry', () => {
   beforeEach(() => {
+    vi.stubEnv('TELEMETRY_CLIENT_KEY', 'secret-telemetry-key')
+    vi.stubEnv('TELEMETRY_URL', 'telemetry-url')
     mockedStoreGet.mockReturnValue({
       enabled: undefined,
       anonymousUserId: undefined,
@@ -68,6 +70,7 @@ describe('Telemetry', () => {
 
   afterEach(() => {
     consoleMock.mockReset()
+    vi.unstubAllEnvs()
   })
 
   it('should create an instance', () => {
@@ -77,10 +80,8 @@ describe('Telemetry', () => {
   it('initialize rudderstack', () => {
     new Telemetry()
     expect(MockedRudderStack).toHaveBeenCalledWith(
-      '2daExoSEzxW3lPbRFQVoYIGh0Rb',
-      {
-        dataPlaneUrl: 'https://latitudecmggvg.dataplane.rudderstack.com',
-      },
+      'secret-telemetry-key',
+      { dataPlaneUrl: 'telemetry-url' },
     )
   })
 

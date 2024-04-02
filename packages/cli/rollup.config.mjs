@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'url'
 import fs from 'fs'
+import { config as dotenvConfig } from 'dotenv'
 import path from 'path'
+import { dirname, resolve as resolvePath } from 'path'
 import json from '@rollup/plugin-json'
 import { copy } from '@web/rollup-plugin-copy'
 import resolve from '@rollup/plugin-node-resolve'
@@ -8,15 +10,18 @@ import typescript from '@rollup/plugin-typescript'
 import commonjs from '@rollup/plugin-commonjs'
 import replace from '@rollup/plugin-replace'
 
+const DIRNAME = dirname(fileURLToPath(import.meta.url))
 function getPackageVersion() {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url))
-  const pkgPath = path.join(__dirname, 'package.json')
+  const pkgPath = path.join(DIRNAME, 'package.json')
   return JSON.parse(fs.readFileSync(pkgPath, 'utf8')).version
 }
 
 const nodeEnv = process.env.NODE_ENV ? process.env.NODE_ENV : 'development'
 const packageVersion =
   nodeEnv === 'development' ? 'development-0.0.0' : getPackageVersion()
+
+const workspaceDotEnvPath = resolvePath(DIRNAME, '..', '..', '.env')
+dotenvConfig({ path: workspaceDotEnvPath })
 
 /**
  * @typedef {import('rollup').RollupOptions} RollupOptions
@@ -47,6 +52,10 @@ export default {
     replace({
       'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),
+      'process.env.CLI_SENTRY_ENABLED': JSON.stringify(process.env.CLI_SENTRY_ENABLED),
+      'process.env.CLI_SENTRY_DSN': JSON.stringify(process.env.CLI_SENTRY_DSN),
+      'process.env.TELEMETRY_URL': JSON.stringify(process.env.TELEMETRY_URL),
+      'process.env.TELEMETRY_CLIENT_KEY': JSON.stringify(process.env.TELEMETRY_CLIENT_KEY),
       preventAssignment: true,
     }),
     json(),
@@ -72,5 +81,7 @@ export default {
     '@rudderstack/rudder-sdk-node',
     'configstore',
     'latest-version',
+    '@sentry/node',
+    '@sentry/profiling-node',
   ],
 }
