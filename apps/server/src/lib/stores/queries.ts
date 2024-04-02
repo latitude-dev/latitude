@@ -159,6 +159,12 @@ export function useQuery({
     }, debounceTime)
 
     useViewParams().subscribe(() => {
+      const newComputedParams = computeQueryParams(inlineParams)
+      const newCoreQueryKey = createKeyForQueryStore(query, newComputedParams)
+      if (debounceTime === 0 || newCoreQueryKey in queryStore.getState().queries) {
+        fetchQueryFromCore({ query, inlineParams })
+        return
+      }
       debouncedRefetch()
     })
   }
