@@ -15,5 +15,6 @@ export function getProjectSource(fileUri: vscode.Uri): string | undefined {
   if (parentDirectory === '/') {
     return undefined
   }
+
   return getProjectSource(vscode.Uri.file(parentDirectory))
 }

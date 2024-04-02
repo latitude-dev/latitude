@@ -7,6 +7,8 @@ import {
 import boxedMessage from '$src/lib/boxedMessage'
 import { CommonCLIArgs } from '$src/types'
 import tracked from '$src/lib/decorators/tracked'
+import setup from '$src/lib/decorators/setup'
+import assertLatitudeProject from '$src/lib/decorators/assertLatitudeProject'
 
 enum MessageStatus {
   existing,
@@ -80,4 +82,7 @@ async function credentialsCommand(args: Props) {
   })
 }
 
-export default tracked('credentialsCommand', credentialsCommand)
+export default tracked(
+  'credentialsCommand',
+  assertLatitudeProject(setup(credentialsCommand)),
+)
