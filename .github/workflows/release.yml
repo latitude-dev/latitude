@@ -38,12 +38,11 @@ jobs:
         uses: changesets/action@v1
         with:
           # This expects us to have a script called release which does a build for our packages and calls changeset publish
-          publish: |
-            TELEMETRY_URL=${{ secrets.TELEMETRY_URL }} \
-              TELEMETRY_CLIENT_KEY=${{ secrets.TELEMETRY_CLIENT_KEY }} \
-              CLI_SENTRY_DSN=${{ secrets.CLI_SENTRY_DSN }} \
-              CLI_SENTRY_ENABLED='true' \
-              pnpm release
+          publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TELEMETRY_URL: ${{ secrets.TELEMETRY_URL }}
+          TELEMETRY_CLIENT_KEY: ${{ secrets.TELEMETRY_CLIENT_KEY }}
+          CLI_SENTRY_DSN: ${{ secrets.CLI_SENTRY_DSN }}
+          CLI_SENTRY_ENABLED: 'true'
