@@ -1,9 +1,9 @@
 import config from '$src/config'
-import assertLatitudeProject from '$src/lib/decorators/assertLatitudeProject'
+import setRootDir from '$src/lib/decorators/setRootDir'
 import setup from '$src/lib/decorators/setup'
-import tracked from '$src/lib/decorators/tracked'
 import spawn from '$src/lib/spawn'
 import syncQueries from '$src/lib/sync/syncQueries'
+import tracked from '$src/lib/decorators/tracked'
 
 async function run(
   queryName: string,
@@ -71,4 +71,4 @@ const buildParams = (stdioParams?: string | string[]) => {
   return params
 }
 
-export default tracked('runCommand', assertLatitudeProject(setup(run)))
+export default tracked('runCommand', setRootDir(setup(run)))
