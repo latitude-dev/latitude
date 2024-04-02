@@ -1,5 +1,17 @@
 # @latitude-data/cli
 
+## 0.7.0
+
+### Minor Changes
+
+- bc90dba: allow users to run CLI from project subfolders
+- 3e4f9ec: Added pre step to check we are in a latitude project when running a CLI command
+- 7b32cc4: Add Sentry to CLI to track errors better
+
+### Patch Changes
+
+- 02fcca9: Fix: CLI run command was ignoring --watch flag.
+
 ## 0.6.0
 
 ### Minor Changes

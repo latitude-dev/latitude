@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.5.1
+
+### Patch Changes
+
+- 02fcca9: Fix: CLI run command was ignoring --watch flag.
+
 ## 0.5.0
 
 ### Minor Changes
