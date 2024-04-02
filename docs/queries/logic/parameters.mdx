@@ -92,10 +92,27 @@ SELECT first_name
 FROM table
 ```
 
+### URL Parameters
+
+Each parameter configuration is represented in the URL allowing you to point to a specific data result.
+
+Imagine two inputs with the parameters `start_year` and `end_year`, their configuration will be automatically added to the URL as:
+
+```
+yourapp.com/?start_year=$text:2000&end_year=$text:2024
+```
+
+The parameters start with `?` and you can concat multiple of them with `&`.
+
+### Force Cache Refresh
+
+There is a parameter type `__force` that allows you to invalidate the cache results and get a fresh version.
+
+See the [Cache page](/queries/basics/cache) to learn how it works.
+
 ## Inline Parameters
 
 `inlineParams` help to modify the data for a specific component in views while `param()` only works in `.sql` files. All components that receive data with the property `query` can accept the `inlineParams`.
-
 
 ``` js comparison_view.html
 <Input param="customer_id"/>
@@ -239,5 +256,3 @@ Now you can use this token in your URL like this
 ```
 http://localhost:3000/some/latitude/view?__token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VfaWQiOjEyM30.1JZ
 ```
-
-

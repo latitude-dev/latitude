@@ -109,7 +109,8 @@
       "group": "Basics",
       "pages": [
         "queries/basics/file-structure",
-        "queries/basics/sql-syntax-basics"
+        "queries/basics/sql-syntax-basics",
+        "queries/basics/cache"
       ]
     },
     {

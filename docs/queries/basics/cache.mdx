@@ -1,0 +1,29 @@
+---
+title: 'Cache Layer'
+description: 'Learn how the cache layer works when executing your queries and views.'
+---
+
+## Introduction
+
+To make things faster and minimize wait times, Latitude stores the results of your queries in a cache layer.
+
+##  How It Works
+
+ - **Cached by default**
+   
+    The first time you run a query, the results are automatically cached. This means that the next time you visit the view, it will load almost instantly.
+
+ - **You can refresh data by**:
+ 
+   - Running the query using the RunButton in a view. See the page [Run Button](/components/interaction/run-button) for more information.
+   - Forcing a view to run by query parameters in the URL. See the section [Forcing Refresh with Query Param](#forcing-refresh-with-query-param) for more information.
+
+ - **No Expiration**
+
+    The cached data doesn't expire. It remains stored until you either click the Run button or use a special URL parameter that updates and overwrites the cached data.
+   
+ ## Forcing Refresh With Query Param
+
+You can use the `__force` parameter to force a refresh of results on a specific page. 
+
+See the page [parameters](/queries/logic/parameters) to learn how queyr params work.
