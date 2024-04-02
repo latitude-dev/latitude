@@ -6,6 +6,7 @@ import { DevServerProps, runDevServer } from './runDev'
 import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
 import tracked from '$src/lib/decorators/tracked'
 import setup from '$src/lib/decorators/setup'
+import assertLatitudeProject from '$src/lib/decorators/assertLatitudeProject'
 
 export type Props = CommonCLIArgs & { open?: string; port?: number }
 
@@ -41,13 +42,13 @@ const buildServerProps = async ({
   })
 
   return checker.isDifferent()
-    ? {
+    ? ({
         ...server,
         onReady: (devUrl) => {
           checker.displayMessage(devUrl)
         },
-      } as DevServerProps
+      } as DevServerProps)
     : server
 }
 
-export default tracked('devCommand', setup(devCommand))
+export default tracked('devCommand', assertLatitudeProject(setup(devCommand)))

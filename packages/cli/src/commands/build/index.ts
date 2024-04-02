@@ -7,6 +7,7 @@ import spawn from '$src/lib/spawn'
 import tracked from '$src/lib/decorators/tracked'
 import setup from '$src/lib/decorators/setup'
 import sync from '$src/lib/sync'
+import assertLatitudeProject from '$src/lib/decorators/assertLatitudeProject'
 
 async function build() {
   await sync()
@@ -83,4 +84,4 @@ const onStderr = (data: Buffer) => {
   console.error(colors.yellow(data.toString()))
 }
 
-export default tracked('buildCommand', setup(build))
+export default tracked('buildCommand', assertLatitudeProject(setup(build)))
