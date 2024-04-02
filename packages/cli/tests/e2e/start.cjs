@@ -4,7 +4,15 @@ const { spawn, spawnSync } = require('child_process')
 
 let ok = false
 
-spawnSync('node', [path.join(__dirname, '../../dist/cli.js'), 'telemetry', '--disable'])
+// Disable telemetry
+spawnSync(
+  'node',
+  [
+    path.join(__dirname, '../../dist/cli.js'),
+    'telemetry',
+    '--disable'
+  ]
+)
 
 const spawned = spawn('node', [
   path.join(__dirname, '../../dist/cli.js'),
@@ -13,8 +21,6 @@ const spawned = spawn('node', [
   'test-project',
   '--template',
   'default',
-  '--telemetry',
-  'false',
   '--debug'
 ])
 
@@ -41,4 +47,4 @@ setTimeout(() => {
 
   spawned.kill()
   process.exit(1)
-}, 60000)
+}, 120000)

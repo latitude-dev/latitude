@@ -3,7 +3,7 @@ title: 'Parameters'
 description: 'Insert values dynamically into SQL queries from the URL or view inputs'
 ---
 
-## Introduction 
+## Introduction
 In some cases, we want to retrieve data based on some dynamic input, for example, when a user requests data for the past year. This is something we can't guess in our SQL code, so we allow some parts of the code to change.
 
 The function of introducing values from external inputs into the SQL code is parameters.
@@ -41,7 +41,7 @@ WHERE id != {param('company_id')} -- This is where the data from Input is insert
     To use the input parameter within an SQL query, use the `param()` function. This function retrieves the value specified by the user and inserts it directly into the query.
 
     ```sql my_query.sql
-    SELECT 
+    SELECT
         first_name,
         last_name
     FROM users
@@ -49,9 +49,9 @@ WHERE id != {param('company_id')} -- This is where the data from Input is insert
     ```
 
     In this example, the `param()` function is used to insert the user's input (as specified by `custom_input_name`) into the SELECT statement. This dynamically modifies the query based on user input.
-    
+
     ```sql my_query.sql result
-    SELECT 
+    SELECT
         first_name,
         last_name
     FROM users
@@ -136,7 +136,7 @@ Inside `inlineParams` we make the match between `query_param_name` and `input_pa
 Suppose we want to compare the information of two users in the same view.
 
 1. **Query and view setup**
-    
+
     We have the following query as base:
 
     ```sql users.sql
@@ -154,12 +154,12 @@ Suppose we want to compare the information of two users in the same view.
     <LineChart query="user_data" />
     <LineChart query="user_data" />
     ```
-    
+
     This will fail because our query is expecting the param `user_id` but the inputs name in the view are sending the data to `first_user_id` and `second_user_id` params.
 
-2. **Adding inlineParams** 
+2. **Adding inlineParams**
 
-    What we can do is send `first_user_id` and `second_user_id` params as the `user_id` to the query and then retrieve two results, one for each input. 
+    What we can do is send `first_user_id` and `second_user_id` params as the `user_id` to the query and then retrieve two results, one for each input.
 
     ``` js comparison_view.html
     <Input param="first_user_id" />
@@ -182,26 +182,28 @@ Suppose we want to compare the information of two users in the same view.
     This way we use `users.sql` as template and return two different results based on the two inputs to show two different charts.
 
     `first_user_id` = 24
-    | id    | created_at | amount   |  
-    | ----- | ---------- | -------- |  
-    | 24    | 2024       |  4,159   |  
-    | 24    | 2023       |  3,780   |  
-    | 24    | 2022       |  5,211   |  
-    | 24    | 2021       |  9,864   |  
+    | id    | created_at | amount   |
+    | ----- | ---------- | -------- |
+    | 24    | 2024       |  4,159   |
+    | 24    | 2023       |  3,780   |
+    | 24    | 2022       |  5,211   |
+    | 24    | 2021       |  9,864   |
 
     `second_user_id` = 91
-    | id    | created_at | amount   |  
-    | ----- | ---------- | -------- |  
-    | 91    | 2024       |  6,205   |  
-    | 91    | 2023       |  4,981   |  
-    | 91    | 2022       |  2,904   |  
-    | 91    | 2021       |  7,333   |  
+    | id    | created_at | amount   |
+    | ----- | ---------- | -------- |
+    | 91    | 2024       |  6,205   |
+    | 91    | 2023       |  4,981   |
+    | 91    | 2022       |  2,904   |
+    | 91    | 2021       |  7,333   |
 
 ## Reactive To Parameters
 
-You can make some visualizations react immediately to any change in params with the `reactiveToParams` property, without having to run the view automatically. This is how it works in visualizations:
+You can make some visualizations react immediately to any change in params with the `reactiveToParams` property, without having to run the view automatically. To do this, just add the property `reactiveToParams: true` to the `opts` prop of the visualization component, and it will automatically update the visualization every time the parameters change.
+Refetching the data from the query every single time a parameter changes can be really expensive, so you can define a debounce time to avoid unnecessary requests. Just add the number of milliseconds instead of `true` in the `reactiveToParams` property.
+Let's see an example:
 
-```js
+```html
 <BarChart
     query='my_data'
     x='release_year'
@@ -209,10 +211,48 @@ You can make some visualizations react immediately to any change in params with 
     xTitle='Year'
     yTitle='Titles'
     opts={{
-        reactiveToParams: true
+        reactiveToParams: 500 // 500ms debounce time (0.5s)
     }}
 />
 ```
 
 You can check the visualizations that accept `reactiveToParams` in the [visualizations section](/visualizations).
 
+## Signed parameters
+If you need to obfuscate the parameters in the URL, you can sign the parameter `__token` in the URL of your view as a [JWT token](https://jwt.io/introduction). This parameter has to be signed with your `LATITUDE_MASTER_KEY` that you will find in the `.env` file in the root of your latitude project.
+
+If you don't see a `.env` file in your project you can run:
+```bash
+latitude credentials --create-master-key
+```
+This command will create `LATITUDE_MASTER_KEY` in an `.env` file
+```sh
+LATITUDE_MASTER_KEY=SOME_SECRET_TOKEN
+```
+### Example
+Imagine you want to obfuscate the parameter `workspace_id` to be used in your query like this:
+```sql
+SELECT * FROM table WHERE workspace_id = {param('workspace_id')}
+```
+Normally you would have a URL like this:
+```
+http://localhost:3000/view?workspace_id=123
+```
+But this way anyone can see the name of this secret `workspace_id` parameter and try to send a different value. To avoid this you can sign the parameter `workspace_id` with the `LATITUDE_MASTER_KEY` like this:
+
+This example is using our own JS implementation of JWT but you can easily do this in your server side language.
+```javascript
+import { signJwt } from '@latitude-data/jwt'
+const masterKey = process.env['LATITUDE_MASTER_KEY']
+const signedParams = { workspace_id: 123 }
+const token = await signJwt({ secretKey: masterKey, payload: signedParams  })
+
+// Now this token will look something like this
+// console.log(token) -> eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VfaWQiOjEyM30.1JZ
+```
+
+Now you can use this token in your URL like this
+
+```
+http://localhost:3000/some/latitude/view?__token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VfaWQiOjEyM30.1JZ
+```

@@ -1,36 +1,26 @@
-import { exec } from 'child_process'
 import axios from 'axios'
 import colors from 'picocolors'
+import config from '$src/config'
+import findOrCreateConfigFile from '../latitudeConfig/findOrCreate'
 import fsExtra from 'fs-extra'
 import tar from 'tar'
-import { CLIConfig } from '$src/config'
-import { LATITUDE_FOLDER, PACKAGE_NAME } from '$src/commands/constants'
-import { onError } from '$src/utils'
-import { type Props } from './index'
+import { PACKAGE_NAME } from '$src/commands/constants'
+import { exec } from 'child_process'
 import { getInstalledVersion } from '../getAppVersions'
-import boxedMessage from '../boxedMessage'
+import { onError } from '$src/utils'
+
+import { type Props } from './index'
+import { existsSync } from 'fs'
 
 export default async function cloneAppFromNpm({
-  version: updateVersion,
+  version,
 }: Props): Promise<void> {
-  const config = CLIConfig.getInstance()
-  const latitudeFolder = `${config.source}/${LATITUDE_FOLDER}`
-  const appDir = `${latitudeFolder}/app`
-  const version = updateVersion ?? config.projectConfig.version
-  const command = `${config.pkgManager.command} view ${PACKAGE_NAME}@${version} dist.tarball`
-  const installedVersion = getInstalledVersion(config.source)
+  const latitudeJson = await findOrCreateConfigFile()
+  version = version ?? latitudeJson.data.version
+  const command = `npm view ${PACKAGE_NAME}@${version} dist.tarball`
+  const installedVersion = getInstalledVersion(config.rootDir)
 
-  if (installedVersion === version) {
-    boxedMessage({
-      title: 'Same version',
-      text: `${colors.blue('Version')} ${colors.green(version)} ${colors.blue(
-        'is already installed',
-      )}`,
-      color: 'green',
-    })
-
-    return
-  }
+  if (installedVersion === version && existsSync(config.appDir)) return
 
   return new Promise((resolve) => {
     exec(command, (error, stdout, stderr) => {
@@ -49,15 +39,15 @@ export default async function cloneAppFromNpm({
       const tarballUrl = stdout.trim()
       console.log(colors.yellow(`Downloading from: ${tarballUrl}`))
 
-      const oldApp = fsExtra.existsSync(appDir)
+      const oldApp = fsExtra.existsSync(config.appDir)
 
       if (oldApp) {
         console.log(colors.yellow('Uninstalling old app version...'))
-        fsExtra.removeSync(appDir)
+        fsExtra.removeSync(config.appDir)
       }
 
       // Make sure the app directory exists
-      fsExtra.ensureDirSync(appDir)
+      fsExtra.ensureDirSync(config.appDir)
 
       axios({
         method: 'get',
@@ -69,7 +59,7 @@ export default async function cloneAppFromNpm({
           const extractStream = tarStream.pipe(
             tar.x({
               strip: 1,
-              cwd: appDir,
+              cwd: config.appDir,
             }),
           )
           extractStream.on('finish', () => {

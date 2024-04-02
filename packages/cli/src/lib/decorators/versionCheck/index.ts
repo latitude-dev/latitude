@@ -2,7 +2,6 @@ import boxedMessage from '$src/lib/boxedMessage'
 import chalk from 'chalk'
 import configStore from '$src/lib/configStore'
 import latestVersion from 'latest-version'
-import { CLIConfig } from '$src/config'
 import { CLI_PACKAGE_NAME } from '$src/commands/constants'
 
 const ONE_DAY = 1000 * 60 * 60 * 24
@@ -27,16 +26,12 @@ export default function versionCheck(commandFn: Function) {
           color: 'yellow',
           textAlignment: 'center',
           text: `
-A new version of @latitude-data/cli is available. 
+A new version of @latitude-data/cli is available.
 
 Current: ${chalk.red(process.env.PACKAGE_VERSION)}
 Latest: ${chalk.green(latest)}
 
-Run ${chalk.cyan(
-            `${
-              CLIConfig.getInstance().pkgManager.command
-            } i -g @latitude-data/cli`,
-          )} to update.
+Run ${chalk.cyan('npm i -g @latitude-data/cli')} to update.
           `,
         })
       }

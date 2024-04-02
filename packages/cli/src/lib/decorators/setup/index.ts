@@ -1,9 +1,8 @@
-import maybeSetupApp from '$src/lib/maybeSetupApp'
+import setupApp from '$src/lib/setupApp'
 
 export default function setup(commandFn: Function) {
   return async function (...args: any[]) {
-    const ready = await maybeSetupApp()
-    if (!ready) process.exit(1)
+    await setupApp()
 
     return commandFn(...args)
   }

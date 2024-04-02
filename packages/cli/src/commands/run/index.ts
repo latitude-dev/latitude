@@ -1,15 +1,16 @@
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
+import setup from '$src/lib/decorators/setup'
+import tracked from '$src/lib/decorators/tracked'
 import spawn from '$src/lib/spawn'
 import syncQueries from '$src/lib/sync/syncQueries'
 
-export default async function run(
+async function run(
   queryName: string,
   opts?: { param: string[] | string | undefined; watch: boolean },
 ) {
-  const config = CLIConfig.getInstance()
   const watch = opts?.watch || false
 
-  await syncQueries({ config, watch })
+  await syncQueries({ watch })
 
   const args = [
     'run',
@@ -20,7 +21,7 @@ export default async function run(
   ].filter(Boolean)
 
   return spawn(
-    config.pkgManager.command,
+    'npm',
     args,
     {
       detached: false,
@@ -68,3 +69,5 @@ const buildParams = (stdioParams?: string | string[]) => {
 
   return params
 }
+
+export default tracked('runCommand', setup(run))

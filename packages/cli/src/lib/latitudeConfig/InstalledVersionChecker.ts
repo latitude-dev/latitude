@@ -6,7 +6,13 @@ export default class InstalledVersionChecker {
   public installed: string | null = null
   public config: string | null = null
 
-  constructor(cwd: string, configVersion: string) {
+  constructor({
+    cwd,
+    configVersion,
+  }: {
+    cwd: string
+    configVersion: string
+  }) {
     this.installed = getInstalledVersion(cwd)
     this.config = configVersion
   }
@@ -15,18 +21,25 @@ export default class InstalledVersionChecker {
     return this.installed !== this.config
   }
 
-  displayMessage() {
+  displayMessage(devUrl: string) {
     const message = `
+      ${devUrl}
+
+      ---------
+
+      You're using a different version of Latitude server.
       Your machine: ${colors.red(this.installed)}
-      This project: ${colors.green(this.config)}
+      This project (latitude.json): ${colors.green(this.config)}
 
       Please run to fix this issue:
       ${colors.blue('latitude update --fix')}
+
+
     `
     boxedMessage({
       text: message,
-      title: 'Different Latitude version detected',
-      color: 'yellow',
+      title: 'Latitude server',
+      color: 'green',
     })
   }
 }

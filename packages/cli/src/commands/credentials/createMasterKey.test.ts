@@ -1,27 +1,21 @@
+import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as crypto from 'crypto'
-import { describe, it, expect, vi, afterEach } from 'vitest'
 import * as syncDotenvModule from '$src/lib/sync/syncDotenv'
+import config from '$src/config'
 import { createMasterKey, MASTER_KEY_NAME } from './createMasterKey'
-import { CLIConfig } from '$src/config'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 
 vi.mock('fs')
 vi.mock('path')
 vi.mock('crypto')
 vi.mock('$src/lib/sync/syncDotenv')
-const mockCLIConfig = vi.fn(() => ({
-  source: '/mock/source/path',
-}))
 vi.mock('$src/config', () => {
   return {
-    CLIConfig: {
-      getInstance: () => mockCLIConfig,
-    },
+    default: { source: '/mock/source/path' },
   }
 })
 
-const config = CLIConfig.getInstance()
 const MOCK_SECRET = 'mock-secret-value'
 const mockCrypto = {
   randomBytes: vi.fn().mockReturnValue({ toString: () => MOCK_SECRET }),
@@ -44,36 +38,34 @@ describe('createMasterKey', () => {
   it('creates .env file and secret key', () => {
     vi.mocked(fs).existsSync.mockReturnValue(false)
 
-    const secret = createMasterKey({ config })
+    const secret = createMasterKey()
 
     expect(mockCrypto.randomBytes).toHaveBeenCalledWith(64)
     expect(secret).toBe(MOCK_SECRET)
     expect(mockedWriteFileSync).toHaveBeenCalledWith(
-      path.join(config.source, '.env'),
+      path.join(config.rootDir, '.env'),
       expect.stringContaining(`${MASTER_KEY_NAME}=${MOCK_SECRET}`),
       'utf8',
     )
-    expect(mockedSyncDotenv.syncDotenv).toHaveBeenCalledWith({ config })
+    expect(mockedSyncDotenv.syncDotenv).toHaveBeenCalled()
   })
 
   it('creates secret key with existing .env', () => {
     vi.mocked(fs).existsSync.mockReturnValue(true)
     vi.mocked(fs).readFileSync.mockReturnValue(`# This is a comment`)
 
-    const secret = createMasterKey({ config })
+    const secret = createMasterKey()
 
     expect(mockCrypto.randomBytes).toHaveBeenCalledWith(64)
     expect(secret).toBe(MOCK_SECRET)
     expect(mockedWriteFileSync).toHaveBeenCalledWith(
-      path.join(config.source, '.env'),
+      path.join(config.rootDir, '.env'),
       expect.stringContaining(
         `# This is a comment\n${MASTER_KEY_NAME}=${MOCK_SECRET}`,
       ),
       'utf8',
     )
-    expect(mockedSyncDotenv.syncDotenv).toHaveBeenCalledWith({
-      config: mockCLIConfig,
-    })
+    expect(mockedSyncDotenv.syncDotenv).toHaveBeenCalled()
   })
 
   it('does not overwrite the existing key when not requested', () => {
@@ -83,7 +75,7 @@ describe('createMasterKey', () => {
       `${MASTER_KEY_NAME}=${existingSecret}\n`,
     )
 
-    const secret = createMasterKey({ config })
+    const secret = createMasterKey()
 
     expect(mockCrypto.randomBytes).not.toHaveBeenCalled()
     expect(secret).toBe(existingSecret)
@@ -101,9 +93,9 @@ SOME_VALUE=123
 ${MASTER_KEY_NAME}=existing-secret
 SOME_OTHER_VALUE=456`)
 
-    createMasterKey({ config, overwriteKey: true })
+    createMasterKey({ overwriteKey: true })
     expect(mockedWriteFileSync).toHaveBeenCalledWith(
-      path.join(config.source, '.env'),
+      path.join(config.rootDir, '.env'),
       expect.stringContaining(`
 HELLO=from.env.dot.file
 # ${MASTER_KEY_NAME}=I_WANT_TO_KEEP_THIS_COMMENTED_SECRET
@@ -111,7 +103,7 @@ HELLO=from.env.dot.file
 SOME_VALUE=123
 ${MASTER_KEY_NAME}=${MOCK_SECRET}
 SOME_OTHER_VALUE=456`),
-'utf8',
+      'utf8',
     )
   })
 })

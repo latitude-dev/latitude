@@ -24,7 +24,7 @@ In the example above, the `each` block helper iterates over the array `[1, 2, 3]
 The `each` block helper is often used to iterate over the results of a query. For example, you might want to display a list of blog posts, or a table of users. Since we have to run the query first, similar to the `if` block helper, we can use the `await` block helper to wait for the query to complete before rendering the results.
 
 ```html
-{#await run_query('users') then users}
+{#await runQuery('users') then users}
   {#each users as user}
     <Card>
       <h2>{user.name}</h2>
@@ -34,7 +34,7 @@ The `each` block helper is often used to iterate over the results of a query. Fo
 {/await}
 ```
 
-In the example above, we use the `await` block helper to wait for the `run_query` function to complete. Once the query is complete, the `users` variable will contain the results, and we can use the `each` block helper to iterate over the results and render a `Card` component for each user.
+In the example above, we use the `await` block helper to wait for the `runQuery` function to complete. Once the query is complete, the `users` variable will contain the results, and we can use the `each` block helper to iterate over the results and render a `Card` component for each user.
 
 ## Learn more
 

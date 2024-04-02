@@ -1,10 +1,10 @@
-import { CLIConfig } from '$src/config'
 import fs, { rmSync } from 'fs'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
 import { APP_FOLDER } from '$src/commands/constants'
 import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
+import config from '$src/config'
 
 function getRoutesFolderPath(cwd: string): string {
   return path.join(cwd, APP_FOLDER, 'src', 'routes')
@@ -12,16 +12,12 @@ function getRoutesFolderPath(cwd: string): string {
 
 const copiedFiles = new Set<string>()
 
-export default async function syncViews(
-  {
-    config,
-    watch = false,
-  }: {
-    config: CLIConfig
-    watch?: boolean
-  },
-): Promise<void> {
-  const rootDir = config.source
+export default async function syncViews({
+  watch = false,
+}: {
+  watch?: boolean
+}): Promise<void> {
+  const rootDir = config.rootDir
   const destinationDir = getRoutesFolderPath(rootDir)
   const viewsDir = path.join(rootDir, 'views')
   const syncFn = syncFnFactory({ rootDir, destinationDir })

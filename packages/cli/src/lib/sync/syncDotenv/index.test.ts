@@ -1,5 +1,5 @@
 import * as fs from 'fs'
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import path from 'path'
 import syncDotenv from '.'
 import syncFiles from '../shared/syncFiles'
@@ -10,11 +10,7 @@ vi.mock('fs', () => ({
   existsSync: vi.fn(),
 }))
 vi.mock('$src/config', () => ({
-  CLIConfig: {
-    getInstance: vi.fn(() => ({
-      source: '/mocked/path',
-    })),
-  },
+  default: { rootDir: '/mocked/path' },
 }))
 vi.mock('../shared/syncFiles', () => ({
   default: vi.fn(),
@@ -29,7 +25,7 @@ describe('syncDotenv', () => {
   })
 
   it('starts the watcher', () => {
-    syncDotenv({ config: CLIConfig.getInstance(), watch: true })
+    syncDotenv({ watch: true })
 
     expect(syncFiles).not.toHaveBeenCalled()
     expect(watcher).toHaveBeenCalledWith(
@@ -42,7 +38,7 @@ describe('syncDotenv', () => {
     // @ts-expect-error mock
     ;(fs.existsSync as vi.Mock).mockReturnValueOnce(false)
 
-    syncDotenv({ config: CLIConfig.getInstance() })
+    syncDotenv()
     expect(fs.existsSync).toHaveBeenCalled()
     expect(syncFiles).not.toHaveBeenCalled()
   })
@@ -51,11 +47,10 @@ describe('syncDotenv', () => {
     // @ts-expect-error mock
     ;(fs.existsSync as vi.Mock).mockReturnValueOnce(true)
 
-    const config = CLIConfig.getInstance()
-    syncDotenv({ config })
+    syncDotenv()
 
-    const expectedSrcPath = path.join(config.source, '.env')
-    const expectedDestPath = path.join(config.source, APP_FOLDER, '.env')
+    const expectedSrcPath = path.join(config.rootDir, '.env')
+    const expectedDestPath = path.join(config.rootDir, APP_FOLDER, '.env')
 
     expect(fs.existsSync).toHaveBeenCalledWith(expectedSrcPath)
     expect(syncFiles).toHaveBeenCalledWith({

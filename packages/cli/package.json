@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/cli",
   "description": "CLI for Latitude",
-  "version": "0.3.0",
+  "version": "0.6.0",
   "license": "LGPL",
   "bin": {
     "latitude": "dist/cli.js"

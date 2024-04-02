@@ -1,20 +1,21 @@
 import colors from 'picocolors'
-import { select } from '@inquirer/prompts'
-import setupApp from '$src/lib/setupApp'
-import { cleanTerminal, onError } from '$src/utils'
-import { DEFAULT_VERSION_LIST } from '../constants'
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
+import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
+import getLatestVersion from '$src/lib/latitudeConfig/getLatestVersion'
 import getLatitudeVersions, {
   getInstalledVersion,
 } from '$src/lib/getAppVersions'
 import telemetry from '$src/lib/telemetry'
+import updateApp from '$src/lib/updateApp'
+import { DEFAULT_VERSION_LIST } from '../constants'
+import { cleanTerminal, onError } from '$src/utils'
+import { select } from '@inquirer/prompts'
 
 async function askForAppVersion() {
   let versions: string[] = DEFAULT_VERSION_LIST
   try {
     console.log(colors.yellow('Fetching Latitude versions...'))
     versions = await getLatitudeVersions({
-      pkgManager: CLIConfig.getInstance().pkgManager,
       onFetch: () => cleanTerminal(),
     })
   } catch {
@@ -31,11 +32,12 @@ async function askForAppVersion() {
 }
 
 async function getVersions({ fix }: { fix: boolean }) {
-  const config = CLIConfig.getInstance()
+  const latitudeJson = await findOrCreateConfigFile()
+
   if (fix) {
     return {
       oldVersion: getInstalledVersion(config.appDir),
-      newVersion: config.projectConfig.version,
+      newVersion: await getLatestVersion(),
     }
   }
 
@@ -57,7 +59,7 @@ async function getVersions({ fix }: { fix: boolean }) {
   }
 
   return {
-    oldVersion: config.projectConfig.version,
+    oldVersion: latitudeJson.data.version,
     newVersion,
   }
 }
@@ -75,5 +77,5 @@ export default async function updateCommand(args: { fix?: boolean }) {
     properties: { fixingVersion: fix, oldVersion, newVersion },
   })
 
-  return setupApp({ version: newVersion })
+  return updateApp({ version: newVersion })
 }

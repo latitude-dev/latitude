@@ -1,6 +1,6 @@
 import boxedMessage from '$src/lib/boxedMessage'
 import colors from 'picocolors'
-import { CLIConfig } from '$src/config'
+import config from '$src/config'
 import path from 'path'
 import { APP_FOLDER } from '../constants'
 import { cleanTerminal } from '$src/utils'
@@ -14,7 +14,7 @@ export type DevServerProps = {
   host?: string
   open?: boolean
   verbose?: boolean
-  onReady?: () => void
+  onReady?: (devUrl: string) => void
 }
 
 let building = true
@@ -38,8 +38,7 @@ export async function runDevServer(
     process.exit()
   }
 
-  const config = CLIConfig.getInstance()
-  const appFolder = path.join(config.source, APP_FOLDER)
+  const appFolder = path.join(config.rootDir, APP_FOLDER)
   const appPort: number = port || (await findFreePort(3000, 4000))
   const hostUrl = `http://${host}:${appPort}`
   const args = [
@@ -58,7 +57,7 @@ export async function runDevServer(
     onStdout: onStdout({ verbose, onReady, appPort }),
   }
 
-  spawn(config.pkgManager.command, args, { cwd: appFolder }, handlers)
+  spawn('npm', args, { cwd: appFolder }, handlers)
 
   console.log(colors.yellow('Starting Latitude ...'))
 }
@@ -102,14 +101,15 @@ const onStdout =
       console.log(logmsg)
     }
 
+    const devUrl = `🚀 ${colors.blue('Server running on')} \n\nhttp://localhost:${appPort}`
     if (building && logmsg.includes('ready in')) {
       cleanTerminal()
       if (onReady) {
-        onReady()
+        onReady(devUrl)
       } else {
         boxedMessage({
           title: 'Latitude server',
-          text: `${colors.blue('Listening on')} http://localhost:${appPort}`,
+          text: devUrl,
           color: 'green',
         })
       }
@@ -130,7 +130,7 @@ const onError = (error: Error) => {
 }
 
 const onClose = (code?: number) => {
-  console.log(colors.yellow(`Server closed with code: ${code}`))
+  console.log(colors.yellow(`\n Server closed with code: ${code || 0}`))
 
   process.exit(code ?? 0)
 }

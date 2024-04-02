@@ -19,20 +19,21 @@ mockedCompileQuery.mockReturnValue(
     resolve({
       compiledQuery: 'SELECT * FROM winterfell',
       resolvedParams: [],
-    }),
-  ),
+    })
+  )
 )
 vi.mock('@latitude-data/connector-factory', () => ({
   createConnector: () => ({
     compileQuery: mockedCompileQuery,
-    runCompiled: mockedRunQuery
-  })
+    runCompiled: mockedRunQuery,
+  }),
 }))
 
-const queryFound = () => Promise.resolve({
+const MOCK_QUERY_FILE = {
   queryPath: 'path/to/query',
   sourcePath: 'path/to/source',
-})
+}
+const queryFound = () => Promise.resolve(MOCK_QUERY_FILE)
 
 describe('GET endpoint', () => {
   const PAYLOAD = { fields: [], rows: [], rowCount: 0 }
@@ -68,7 +69,7 @@ describe('GET endpoint', () => {
 
   it('should return 404 status if the query file is not found', async () => {
     mockedFindQueryFile.mockRejectedValue(
-      new QueryNotFoundError('Query file not found'),
+      new QueryNotFoundError('Query file not found')
     )
     const response = await GET({
       params: { query: 'testQuery' },
@@ -81,7 +82,7 @@ describe('GET endpoint', () => {
 
   it('should return 500 status on query execution error', async () => {
     vi.spyOn(cache, 'find').mockReturnValueOnce(null)
-    mockedFindQueryFile.mockResolvedValue(queryFound)
+    mockedFindQueryFile.mockResolvedValueOnce(MOCK_QUERY_FILE)
     mockedRunQuery.mockRejectedValue(new Error('Query execution failed'))
 
     const response = await GET({

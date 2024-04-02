@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "latitude-dev": "../../node_modules/.bin/latitude"
-  },
-  "dependencies": {
-    "@clerk/clerk-js": "^4.70.5"
-  }
-}

@@ -1,6 +1,5 @@
-import { createMasterKey } from "$src/commands/credentials/createMasterKey";
-import { CLIConfig } from "$src/config";
+import { createMasterKey } from '$src/commands/credentials/createMasterKey'
 
-export default function createDotEnv({ config }: { config: CLIConfig }) {
-  createMasterKey({ config })
+export default function createDotEnv() {
+  createMasterKey()
 }

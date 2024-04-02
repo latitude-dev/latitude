@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/server",
   "description": "Backend for Latitude",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "license": "LGPL",
   "type": "module",
   "scripts": {
@@ -30,6 +30,7 @@
     "@testing-library/svelte": "^4.1.0",
     "@types/blessed": "^0.1.25",
     "@types/estree": "^1.0.1",
+    "@types/lodash-es": "^4.17.12",
     "@types/mock-fs": "^4.13.4",
     "autoprefixer": "^10.4.17",
     "blessed": "^0.1.81",
@@ -52,8 +53,9 @@
     "@latitude-data/client": "workspace:*",
     "@latitude-data/connector-factory": "workspace:^",
     "@latitude-data/custom_types": "workspace:^",
-    "@latitude-data/svelte": "workspace:*",
+    "@latitude-data/jwt": "workspace:*",
     "@latitude-data/query_service": "workspace:*",
-    "@latitude-data/jwt": "workspace:*"
+    "@latitude-data/svelte": "workspace:*",
+    "lodash-es": "^4.17.21"
   }
 }

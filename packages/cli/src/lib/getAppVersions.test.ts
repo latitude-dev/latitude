@@ -1,10 +1,9 @@
 import { exec } from 'child_process'
 import getLatitudeVersions from './getAppVersions'
-import { PackageManager, PackageManagerWithFlags } from '$src/config'
 import { vi, describe, it, expect } from 'vitest'
 
 vi.mock('child_process', async (importOriginal) => {
-  const actual = await importOriginal() as unknown as Object
+  const actual = (await importOriginal()) as unknown as Object
 
   return {
     ...actual,
@@ -15,16 +14,8 @@ vi.mock('child_process', async (importOriginal) => {
 })
 
 describe('getAppVersions', () => {
-  const pkgManager: PackageManagerWithFlags = {
-    command: PackageManager.npm,
-    flags: {
-      mandatoryInstallFlags: [],
-      installFlags: { silent: '--silent' },
-    },
-  }
-
   it('should return a list of semver versions', async () => {
-    const results = await getLatitudeVersions({ pkgManager })
+    const results = await getLatitudeVersions()
 
     expect(results).toBeInstanceOf(Array)
     expect(results.length).toBeGreaterThan(0)
@@ -36,7 +27,7 @@ describe('getAppVersions', () => {
       callback(new Error('Error'), null, null)
     })
 
-    expect(getLatitudeVersions({ pkgManager })).rejects.toThrow('Error')
+    expect(getLatitudeVersions()).rejects.toThrow('Error')
   })
 
   it('should not throw if the node exec command outputs to stderr but contains no Error', () => {
@@ -45,6 +36,6 @@ describe('getAppVersions', () => {
       callback(null, null, 'Error')
     })
 
-    expect(getLatitudeVersions({ pkgManager })).resolves.toBeDefined()
+    expect(getLatitudeVersions()).resolves.toBeDefined()
   })
 })

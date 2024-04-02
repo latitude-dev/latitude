@@ -58,6 +58,8 @@ export class MysqlConnector extends BaseConnector {
           (error, results, fields) => {
             connection.release()
 
+            this.pool.end()
+
             if (error) {
               return reject(new QueryError(error.message))
             }

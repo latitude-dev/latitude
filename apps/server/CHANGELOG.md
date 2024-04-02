@@ -1,5 +1,18 @@
 # @latitude-data/server
 
+## 0.5.0
+
+### Minor Changes
+
+- 6afc286: reactiveToParams option now allows defining a debounce time between param updates
+
+## 0.4.1
+
+### Patch Changes
+
+- af148b0: Fixes query resolution algorithm for queries and sources stored in nested folders
+  - @latitude-data/connector-factory@0.1.5
+
 ## 0.4.0
 
 ### Minor Changes
