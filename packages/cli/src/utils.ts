@@ -54,7 +54,7 @@ export function onError({
   color = 'red',
 }: OnErrorProps) {
   boxedMessage({
-    text: `${message} \nERROR:\n${error}`,
+    text: error ? `${message} \nERROR:\n${error}` : message,
     title: 'Error',
     color,
   })
