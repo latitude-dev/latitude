@@ -1,4 +1,5 @@
 import config from '$src/config'
+import assertLatitudeProject from '$src/lib/decorators/assertLatitudeProject'
 import setup from '$src/lib/decorators/setup'
 import tracked from '$src/lib/decorators/tracked'
 import spawn from '$src/lib/spawn'
@@ -70,4 +71,4 @@ const buildParams = (stdioParams?: string | string[]) => {
   return params
 }
 
-export default tracked('runCommand', setup(run))
+export default tracked('runCommand', assertLatitudeProject(setup(run)))
