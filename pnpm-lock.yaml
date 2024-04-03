@@ -90,6 +90,9 @@ importers:
       '@types/mock-fs':
         specifier: ^4.13.4
         version: 4.13.4
+      '@types/uuid':
+        specifier: ^9.0.8
+        version: 9.0.8
       autoprefixer:
         specifier: ^10.4.17
         version: 10.4.17(postcss@8.4.35)
@@ -129,6 +132,9 @@ importers:
       typescript:
         specifier: ^5.0.0
         version: 5.3.3
+      uuid:
+        specifier: ^9.0.1
+        version: 9.0.1
       vite:
         specifier: ^5.0.3
         version: 5.0.12(@types/node@18.19.15)
@@ -17134,6 +17140,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0
