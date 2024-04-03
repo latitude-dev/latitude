@@ -25,7 +25,7 @@
     <slot />
   {:else}
     <div class="mt-20 container flex justify-center">
-      <Alert type="destructive" secondary>{tokenError}</Alert>
+      <Alert type="error" secondary>{tokenError}</Alert>
     </div>
   {/if}
 </div>

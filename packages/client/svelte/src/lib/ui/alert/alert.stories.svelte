@@ -24,7 +24,7 @@
     },
     args: {
       text: 'This is an alert message. Please be careful',
-      type: 'primary',
+      type: 'note',
       fontWeight: 'normal',
       secondary: false,
       centerText: true,
