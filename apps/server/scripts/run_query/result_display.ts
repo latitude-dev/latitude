@@ -132,7 +132,7 @@ export default class QueryDisplay {
     ]
 
     let horizontalScrollOffset = 0
-    function scrollTable(offset: number) {
+    const scrollTable = (offset: number) => {
       horizontalScrollOffset = Math.max(
         0,
         Math.min(horizontalScrollOffset + offset, tableData[0].length - 1),
