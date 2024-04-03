@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 0.5.2
+
+### Patch Changes
+
+- eb539ab: Fix latitude run command not working
+
 ## 0.5.1
 
 ### Patch Changes
