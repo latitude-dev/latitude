@@ -27,7 +27,7 @@ const TYPES: Record<AlertyType, Type> = {
   },
   warning: {
     normal: {
-      background: 'yellow50',
+      background: 'yellow400',
       foreground: 'yellow900',
     },
     secondary: {

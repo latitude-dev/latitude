@@ -5,7 +5,7 @@
 </script>
 
 <div class={theme.ui.chart.ERROR_CLASS.wrapper}>
-  <Alert scrollable type="destructive" secondary>
+  <Alert scrollable type="error" secondary>
     {error.message}
   </Alert>
 </div>

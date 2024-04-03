@@ -3,10 +3,10 @@ import { BackgroundColor, TextColor, colors } from '../tokens/colors'
 import { useType } from './types'
 
 export const ALERT_TYPES = {
-  note: 'primary',
-  success: 'green',
-  warning: 'alert',
-  error: 'destructive',
+  note: 'note',
+  success: 'success',
+  warning: 'warning',
+  error: 'error',
   muted: 'muted',
 }
 export type AlertyType = keyof typeof ALERT_TYPES
