@@ -22,31 +22,46 @@
 
 <script lang="ts">
   import { theme } from "@latitude-data/client"
+  import { Label, Text } from "$lib"
   import type { HTMLInputAttributes } from "svelte/elements";
 
-  type $$Props = HTMLInputAttributes;
+  type $$Props = HTMLInputAttributes & {
+    label?: string;
+    description?: string;
+  }
 
   let className: $$Props["class"] = undefined;
   export let value: $$Props["value"] = undefined;
+  export let name: $$Props["name"] = undefined;
+  export let label: $$Props["label"] = undefined;
+  export let description: $$Props["description"] = undefined;
   export { className as class };
 </script>
 
-<input
-  class={theme.ui.input.cssClass({ className })}
-  bind:value
-  on:blur
-  on:change
-  on:click
-  on:focus
-  on:focusin
-  on:focusout
-  on:keydown
-  on:keypress
-  on:keyup
-  on:mouseover
-  on:mouseenter
-  on:mouseleave
-  on:paste
-  on:input
-  {...$$restProps}
-/>
+<div class={theme.ui.input.WRAPPER_CSS_CLASS}>
+  {#if label}
+    <Label for={name}>{label}</Label>
+  {/if}
+  <input
+    class={theme.ui.input.cssClass({ className })}
+    bind:value
+    on:blur
+    on:change
+    on:click
+    on:focus
+    on:focusin
+    on:focusout
+    on:keydown
+    on:keypress
+    on:keyup
+    on:mouseover
+    on:mouseenter
+    on:mouseleave
+    on:paste
+    on:input
+    {...$$restProps}
+  />
+  {#if description}
+    <Text size="h5" color='muted'>{description}</Text>
+  {/if}
+</div>

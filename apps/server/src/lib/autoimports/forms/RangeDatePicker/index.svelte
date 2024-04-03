@@ -9,11 +9,15 @@
     endParam: string;
     startValue?: string;
     endValue?: string;
+    label?: string
+    description?: string
   }
   export let startParam: $$Props["startParam"]
   export let endParam: $$Props["endParam"]
   export let startValue: $$Props["startValue"] = undefined
   export let endValue: $$Props["endValue"] = undefined
+  export let label: $$Props["label"] = undefined
+  export let description: $$Props["description"] = undefined
 
   const defaultRange = RELATIVE_RANGES['Current month'];
   const defaultValue = startValue && endValue
@@ -37,6 +41,9 @@
  
 <RangeDatePicker
   value={actualValue}
+  name={startParam}
+  label={label}
+  description={description}
   lang={lang}
   dateStyle={dateStyle}
   onValueChange={onChange}

@@ -1,4 +1,122 @@
 ---
 title: 'Select'
-description: 'description'
+description: 'Create a dropdown with options for a parameter.'
 ---
+
+## Introduction
+
+The `Select` component is used to create a dropdown with predefined options for a parameter. This can be useful when you want to provide a list of options for a parameter that the user can choose from, either to limit the possible values or to make it easier for the user to select a value.
+This component can be used both with predefined options and with dynamic options that are loaded from a query result.
+
+## Options
+
+### Predefined options
+
+The most basic usage of a `Select` is to provide a list of options that the user can choose from. You can do this by using the `options` prop to specify an array of options.
+
+```jsx
+<Select
+	param="user_name"
+	options={["Alice", "Bob", "Charlie"]}
+/>
+```
+
+You can also use different values for the options than what is displayed in the dropdown by using an array of objects with `value` and `label` properties.
+
+```jsx
+<Select
+	param="user_id"
+	options={[
+		{ value: 1, label: "Alice" },
+		{ value: 2, label: "Bob" },
+		{ value: 3, label: "Charlie" }
+	]}
+/>
+```
+
+In this example, the `value` property is what will be used when running any queries using the parameter, while the `label` property is just what will be displayed in the dropdown.
+
+### Dynamic options
+
+You can also use a query to load the options dynamically. This can be useful when you have a large number of options, when the options change frequently or when you want to filter the options based on other parameters.
+
+```jsx
+<Select
+	param="user_id"
+	query="users"
+/>
+```
+
+Here, `query_name` is the name of a query that will be ran to load the options. If the results of the query contain a `value` and a `label` property, those will be used as the value and label for the options. Otherwise, the first column will be used as both.
+
+If you want to use a different column as the value, you can specify the `values` and `labels` props to do so.
+
+```jsx
+<Select
+	param="user_id"
+	query="users"
+	values="id"
+	labels="name"
+/>
+```
+
+Like with any visualization, where you use a query to load information, you can also use [Inline Params](/queries/logic/parameters#inline-parameters) and [Reactive Params](/queries/logic/parameters#reactive-to-parameters) options to modify how the query behaves. For more information on how the query is configured, check out [Queries Parameters](/queries/logic/parameters).
+
+### Mixed options
+
+You can mix both predefined and dynamic options by using the `options` and `query` props together. The dropdown will first show the predefined options and then load the dynamic options.
+
+```jsx
+<Select
+	param="category_filter"
+	options={[
+		{ value: false, label: "Any category" }
+	]}
+	query="categories"
+/>
+```
+
+### Default value
+
+You can also add a default value to the dropdown by using the `value` prop. This will preselect the option with the given value when the page is loaded, if it is not overridden by a value in the URL.
+
+```jsx
+<Select
+	param="user_id"
+	options={[
+		{ value: 1, label: "Alice" },
+		{ value: 2, label: "Bob" },
+		{ value: 3, label: "Charlie" }
+	]}
+	value={2}
+/>
+```
+
+## Search box
+
+If you have a large number of options, you can enable a search box to make it easier for the user to find the option they are looking for. You can do this by adding the `searchable` prop.
+
+```jsx
+<Select
+	param="city_id"
+	query="cities"
+	searchable
+/>
+```
+
+## Text customization
+
+You can customize the text that is displayed in the dropdown with the following options: `label`, `description` and `placeholder`.
+ - `label` is the text that is displayed above the dropdown.
+ - `description` is the text that is displayed below the dropdown.
+ - `placeholder` is the text that is displayed in the dropdown when no option is selected.
+
+```jsx
+<Select
+	param="city_id"
+	query="cities"
+	label="Select a city"
+	description="Choose the city you want to filter by."
+	placeholder="Select a city..."
+/>
+```

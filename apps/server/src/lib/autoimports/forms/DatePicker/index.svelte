@@ -4,9 +4,11 @@
   import { setViewParam, useViewParam } from "$lib/stores/viewParams"
   import { type Readable } from "svelte/store"
 
-  type $$Props = Omit<DatePickerProps, 'value'> & { param: string, value?: string }
+  type $$Props = Omit<DatePickerProps, 'value'> & { param: string, value?: string, label?: string, description?: string }
   export let param: $$Props["param"]
   export let value: $$Props["value"] = undefined
+  export let label: $$Props["label"] = undefined
+  export let description: $$Props["description"] = undefined
 
   const defaultValue = value ? RichDate.fromString(value) : new RichDate(RELATIVE_DATES.Today);
   const actualValue = useViewParam(param, defaultValue) as Readable<RichDate>;
@@ -22,6 +24,9 @@
  
 <DatePicker
   value={$actualValue}
+  name={param}
+  label={label}
+  description={description}
   lang={lang}
   dateStyle={dateStyle}
   onValueChange={onChange}

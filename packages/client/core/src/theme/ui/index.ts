@@ -14,6 +14,10 @@ import * as select from './select'
 import * as text from './text'
 import * as toggle from './toggle'
 import * as toggleGroup from './toggle-group'
+import * as command from './command'
+import * as dialog from './dialog'
+import * as combobox from './combobox'
+import * as scrollArea from './scroll-area'
 import table from './table'
 
 export {
@@ -34,4 +38,8 @@ export {
   popover,
   select,
   datePicker,
+  command,
+  dialog,
+  combobox,
+  scrollArea,
 }
