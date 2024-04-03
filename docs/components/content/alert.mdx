@@ -13,7 +13,7 @@ To use the `<Alert>` component, include it in your views as follows:
 
 ```html
 <Alert
-  type='destructive'
+  type='note'
   secondary={true}
   centerText={false}
   fontWeight='medium'
@@ -26,11 +26,10 @@ To use the `<Alert>` component, include it in your views as follows:
 
 <ResponseField name="type" type="string" required>
   Change the style of the alert. Options are:
-  - `primary`
-  - `green`
-  - `alert`
-  - `destructive`
-  - `muted`
+  - `note`
+  - `success`
+  - `warning`
+  - `error`
 </ResponseField>
 
 <ResponseField name="secondary" type="boolean">
