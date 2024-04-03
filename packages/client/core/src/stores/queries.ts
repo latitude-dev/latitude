@@ -1,19 +1,16 @@
 import { createStore } from 'zustand/vanilla'
 import { api } from '../data/api'
-import QueryResult, {
-  type QueryResultPayload,
-} from '@latitude-data/query_result'
-
-export const FORCE_REFETCH_PARAMETER = '__force'
+import QueryResult, { QueryResultPayload } from '@latitude-data/query_result'
 
 type QueryRequest = {
   queryPath: string
   params?: Record<string, unknown>
 }
 
+export type QueryParams = Record<string, unknown>
 export const createQueryKey = (
   queryPath: string,
-  params: Record<string, unknown>
+  params: QueryParams,
 ): string => {
   const hashedParams = Object.keys(params)
     .sort()
@@ -37,7 +34,7 @@ interface StoreState {
 export const store = createStore<StoreState>((set, get) => {
   const performQueryFetch = async (
     queryKey: string,
-    fetchFn: () => Promise<QueryResult>
+    fetchFn: () => Promise<QueryResultPayload>,
   ) => {
     set((state) => ({
       queries: {
@@ -55,7 +52,7 @@ export const store = createStore<StoreState>((set, get) => {
       const data = new QueryResult({
         fields: response.fields,
         rows: response.rows,
-        rowCount: response.rows?.length,
+        rowCount: response.rowCount
       })
 
       set((state) => ({
@@ -85,32 +82,20 @@ export const store = createStore<StoreState>((set, get) => {
       const queryKey = createQueryKey(queryPath, params || {})
       if (get().queries[queryKey]) return
 
-      performQueryFetch(queryKey, async () => {
-        const response = await api.get<QueryResultPayload>(
-          `api/queries/${queryPath}`,
-          params
-        )
-        return new QueryResult(response)
-      })
+      performQueryFetch(queryKey, async () =>
+        api.getQuery({ queryPath, params, force: false }),
+      )
     },
     forceRefetch: async ({ queryPath, params }) => {
       const queryKey = createQueryKey(queryPath, params || {})
-      performQueryFetch(queryKey, async () => {
-        const response = await api.get<QueryResultPayload>(
-          `api/queries/${queryPath}`,
-          { ...params, [FORCE_REFETCH_PARAMETER]: 'true' }
-        )
-
-        return new QueryResult(response)
-      })
+      performQueryFetch(queryKey, async () =>
+        api.getQuery({ queryPath, params, force: true }),
+      )
     },
   }
 })
 
-export const useFetchQuery = (
-  queryPath: string,
-  params: Record<string, unknown> = {}
-) => {
+export const useFetchQuery = (queryPath: string, params: QueryParams) => {
   const queryKey = createQueryKey(queryPath, params)
   const state = store.getState()
 
@@ -121,9 +106,6 @@ export const useFetchQuery = (
   return store.subscribe((state) => state.queries[queryKey])
 }
 
-export const useRunQuery = (
-  queryPath: string,
-  params: Record<string, unknown>
-) => {
+export const useRunQuery = (queryPath: string, params: QueryParams) => {
   store.getState().forceRefetch({ queryPath, params })
 }

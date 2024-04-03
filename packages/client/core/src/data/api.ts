@@ -1,12 +1,14 @@
 import { format } from '@latitude-data/custom_types'
-import { FORCE_REFETCH_PARAMETER } from '../stores/queries';
+import { QueryParams } from '../stores/queries'
+import { QueryResultPayload } from '@latitude-data/query_result'
+import { FORCE_REFETCH_PARAMETER } from '../constants'
 type AnyObject = { [key: string]: unknown }
 type ApiErrorItem = { title: string; detail: string }
 
 export const TOKEN_PARAM = '__token'
 export const SPECIAL_PARAMS = new Set([FORCE_REFETCH_PARAMETER, TOKEN_PARAM])
 
-type LatitudeApiConfig = {
+export type LatitudeApiConfig = {
   host?: string
   cors?: RequestMode
   customHeaders?: Record<string, string>
@@ -36,10 +38,25 @@ export class LatitudeApi {
       .join('&')
   }
 
-  configure({ host, cors, customHeaders }: LatitudeApiConfig) {
+  constructor({ host, cors, customHeaders }: LatitudeApiConfig = {}) {
     if (host !== undefined) this.host = host
     if (cors !== undefined) this.cors = cors
     if (customHeaders) this.customHeaders = customHeaders
+  }
+
+  async getQuery({
+    queryPath,
+    params = {},
+    force = false,
+  }: {
+    queryPath: string
+    params?: QueryParams
+    force?: boolean
+  }) {
+    const queryParams = force
+      ? { ...params, [FORCE_REFETCH_PARAMETER]: 'true' }
+      : params
+    return this.get<QueryResultPayload>(`api/queries/${queryPath}`, queryParams)
   }
 
   async get<T>(
