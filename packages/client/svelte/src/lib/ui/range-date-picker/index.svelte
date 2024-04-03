@@ -20,12 +20,16 @@
 <script lang="ts">
   import { Calendar as CalendarIcon, LightningBolt as LightningBoltIcon } from "radix-icons-svelte";
   import { type DateValue, DateFormatter, fromDate, getLocalTimeZone } from "@internationalized/date";
-  import { Button, RangeCalendar, Popover, Select, ToggleGroup } from "$lib";
+  import { Button, RangeCalendar, Popover, Select, ToggleGroup, Text, Label } from "$lib";
   import { theme } from "@latitude-data/client";
   import { writable } from "svelte/store"
   import { createEventDispatcher } from "svelte"
 
-  type $$Props = RangeDatePickerProps;
+  type $$Props = RangeDatePickerProps & {
+    name?: string;
+    label?: string;
+    description?: string;
+  }
 
   const defaultRange = RELATIVE_RANGES['Current month'];
   const defaultValue = {
@@ -39,6 +43,9 @@
   export let onValueChange: $$Props["onValueChange"] = () => {};
   let className: $$Props["class"] = "";
   export { className as class };
+  export let name: $$Props["name"] = "";
+  export let label: $$Props["label"] = undefined;
+  export let description: $$Props["description"] = undefined;
 
   const df = new DateFormatter(lang, { dateStyle });
   
@@ -112,45 +119,55 @@
   };
 </script>
 
-<div class={theme.ui.datePicker.cssClass({ className })}>
-  {#if isRelative}
-    <Select.Root
-      items={selectorItems}
-      selected={selectorValue}
-      onSelectedChange={onSelectChange}
-      bind:open={isSelectorOpen}
-    >
-      <Select.Trigger class={theme.ui.datePicker.selectCssClass({ isRange: true })}>
-        <Select.Value placeholder="Select Date" />
-      </Select.Trigger>
-      <Select.Content>
-        {#each selectorItems as item}
-          <Select.Item value={item.value}>{item.label}</Select.Item>
-        {/each}
-      </Select.Content>
-    </Select.Root>
-  {:else}
-    <Popover.Root openFocus bind:open={isCalendarOpen}>
-      <Popover.Trigger asChild let:builder>
-        <Button
-          variant="outline"
-          class={theme.ui.datePicker.buttonCssClass({ isRange: true })}}
-          builders={[builder]}
-        >
-          {calendarLabel}
-        </Button>
-      </Popover.Trigger>
-      <Popover.Content class={theme.ui.datePicker.POPOVER_CONTENT_CSS_CLASS}>
-        <RangeCalendar onValueChange={onDateChange} value={calendarValue} />
-      </Popover.Content>
-    </Popover.Root>
+<div class={theme.ui.input.WRAPPER_CSS_CLASS}>
+  {#if label}
+    <Label for={name}>{label}</Label>
   {/if}
-  <ToggleGroup.Root type="single" value={toggleValue} onValueChange={onToggleChange} class={theme.ui.datePicker.TOGGLE_GROUP_CSS_CLASS}>
-    <ToggleGroup.Item value={ToggleValue.Relative} class={theme.ui.datePicker.TOGGLE_BUTTON_CSS_CLASS}>
-      <LightningBoltIcon class={theme.ui.datePicker.TOGGLE_ICON_CSS_CLASS} aria-label="Relative" />
-    </ToggleGroup.Item>
-    <ToggleGroup.Item value={ToggleValue.Absolute} class={theme.ui.datePicker.TOGGLE_BUTTON_CSS_CLASS}>
-      <CalendarIcon class={theme.ui.datePicker.TOGGLE_ICON_CSS_CLASS} aria-label="Absolute" />
-    </ToggleGroup.Item>
-  </ToggleGroup.Root>
+  
+  <div class={theme.ui.datePicker.cssClass({ className })}>
+    {#if isRelative}
+      <Select.Root
+        items={selectorItems}
+        selected={selectorValue}
+        onSelectedChange={onSelectChange}
+        bind:open={isSelectorOpen}
+      >
+        <Select.Trigger class={theme.ui.datePicker.selectCssClass({ isRange: true })}>
+          <Select.Value placeholder="Select Date" />
+        </Select.Trigger>
+        <Select.Content>
+          {#each selectorItems as item}
+            <Select.Item value={item.value}>{item.label}</Select.Item>
+          {/each}
+        </Select.Content>
+      </Select.Root>
+    {:else}
+      <Popover.Root openFocus bind:open={isCalendarOpen}>
+        <Popover.Trigger asChild let:builder>
+          <Button
+            variant="outline"
+            class={theme.ui.datePicker.buttonCssClass({ isRange: true })}}
+            builders={[builder]}
+          >
+            {calendarLabel}
+          </Button>
+        </Popover.Trigger>
+        <Popover.Content class={theme.ui.datePicker.POPOVER_CONTENT_CSS_CLASS}>
+          <RangeCalendar onValueChange={onDateChange} value={calendarValue} />
+        </Popover.Content>
+      </Popover.Root>
+    {/if}
+    <ToggleGroup.Root type="single" value={toggleValue} onValueChange={onToggleChange} class={theme.ui.datePicker.TOGGLE_GROUP_CSS_CLASS}>
+      <ToggleGroup.Item value={ToggleValue.Relative} class={theme.ui.datePicker.TOGGLE_BUTTON_CSS_CLASS}>
+        <LightningBoltIcon class={theme.ui.datePicker.TOGGLE_ICON_CSS_CLASS} aria-label="Relative" />
+      </ToggleGroup.Item>
+      <ToggleGroup.Item value={ToggleValue.Absolute} class={theme.ui.datePicker.TOGGLE_BUTTON_CSS_CLASS}>
+        <CalendarIcon class={theme.ui.datePicker.TOGGLE_ICON_CSS_CLASS} aria-label="Absolute" />
+      </ToggleGroup.Item>
+    </ToggleGroup.Root>
+  </div>
+
+  {#if description}
+    <Text size="h5" color='muted'>{description}</Text>
+  {/if}
 </div>
