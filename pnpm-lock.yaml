@@ -1089,6 +1089,10 @@ importers:
         version: 5.4.3
 
   packages/query_result:
+    dependencies:
+      json-2-csv:
+        specifier: ^5.5.1
+        version: 5.5.1
     devDependencies:
       '@latitude-data/eslint-config':
         specifier: workspace:*
@@ -1105,6 +1109,9 @@ importers:
       rollup:
         specifier: ^4.10.0
         version: 4.10.0
+      vitest:
+        specifier: ^1.4.0
+        version: 1.4.0(jsdom@24.0.0)
 
   packages/query_service:
     devDependencies:
@@ -10457,6 +10464,11 @@ packages:
         optional: true
     dev: true
 
+  /deeks@3.1.0:
+    resolution: {integrity: sha512-e7oWH1LzIdv/prMQ7pmlDlaVoL64glqzvNgkgQNgyec9ORPHrT2jaOqMtRyqJuwWjtfb6v+2rk9pmaHj+F137A==}
+    engines: {node: '>= 16'}
+    dev: false
+
   /deep-eql@4.1.3:
     resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}
     engines: {node: '>=6'}
@@ -10685,6 +10697,11 @@ packages:
 
   /dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
+
+  /doc-path@4.1.1:
+    resolution: {integrity: sha512-h1ErTglQAVv2gCnOpD3sFS6uolDbOKHDU1BZq+Kl3npPqroU3dYL42lUgMfd5UimlwtRgp7C9dLGwqQ5D2HYgQ==}
+    engines: {node: '>=16'}
+    dev: false
 
   /doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -13850,6 +13867,14 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
     dev: true
+
+  /json-2-csv@5.5.1:
+    resolution: {integrity: sha512-KgAtAXTQopRwe90gh8SgjRSxgt9bUWbGAPMo9W0TZLA8SqiQH7khtagFfeEUjG3NBPwJu/+9uX5pMvunKaPvrQ==}
+    engines: {node: '>= 16'}
+    dependencies:
+      deeks: 3.1.0
+      doc-path: 4.1.1
+    dev: false
 
   /json-bigint@1.0.0:
     resolution: {integrity: sha512-SiPv/8VpZuWbvLSMtTDU8hEfrZWg/mH/nV/b4o0CYbSxu1UIQPLdwKOCIyLQX+VIPO5vrLX3i8qtqFyhdPSUSQ==}

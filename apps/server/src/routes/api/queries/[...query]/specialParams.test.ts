@@ -21,7 +21,7 @@ describe('Special params', async () => {
     mockedFindOrCompute.mockRestore()
   })
 
-  it('compute query when __force is passed', async () => {
+  it('computes query when __force is passed', async () => {
     mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
     const response = await GET({
       params: { query: 'testQuery' },
@@ -30,14 +30,14 @@ describe('Special params', async () => {
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
       query: 'testQuery',
       queryParams: { param: 42 },
-      force: true
+      force: true,
     })
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual(PAYLOAD)
   })
 
-  it('compute query when __force=$text:force is passed', async () => {
+  it('computes query when __force=$text:force is passed', async () => {
     mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
     const response = await GET({
       params: { query: 'testQuery' },
@@ -46,19 +46,19 @@ describe('Special params', async () => {
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
       query: 'testQuery',
       queryParams: { param: 42 },
-      force: true
+      force: true,
     })
 
     expect(response.status).toBe(200)
     expect(await response.json()).toEqual(PAYLOAD)
   })
 
-  it('parse a valid __token', async () => {
+  it('parses a valid __token', async () => {
     const secretKey = 'SECRET_MASTER_KEY'
     process.env['LATITUDE_MASTER_KEY'] = secretKey
     const token = await signJwt({
       payload: { company_id: 33 },
-      secretKey
+      secretKey,
     })
     mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
 
@@ -69,8 +69,24 @@ describe('Special params', async () => {
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
       query: 'testQuery',
       queryParams: { company_id: 33 },
-      force: false
+      force: false,
     })
   })
-})
 
+  it('returns a csv file when __download is passed', async () => {
+    mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
+    const response = await GET({
+      params: { query: 'testQuery' },
+      url: new URL('http://localhost?param=42&__download=true'),
+    })
+    expect(mockedFindOrCompute).toHaveBeenCalledWith({
+      query: 'testQuery',
+      queryParams: { param: 42 },
+      force: false,
+    })
+
+    expect(response.status).toBe(200)
+    expect(response.headers.get('Content-Type')).toBe('text/csv')
+    expect(await response.text()).toBe(queryResult.toCSV())
+  })
+})

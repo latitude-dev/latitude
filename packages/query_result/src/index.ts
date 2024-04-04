@@ -1,3 +1,5 @@
+import { json2csv } from 'json-2-csv'
+
 export enum DataType {
   Boolean = 'boolean',
   Datetime = 'datetime',
@@ -60,18 +62,20 @@ export default class QueryResult {
 
   toJSON() {
     const { fields, rows, rowCount } = this.serialize()
+
     return JSON.stringify({
       fields,
-      rows: rows.map((row) => {
-        return row.map((value) => {
-          if (typeof value === 'bigint') {
-            return Number(value)
-          } else {
-            return value
-          }
-        })
-      }),
+      rows: rows.map((row) => row.map(this.serializeValue)),
       rowCount,
+    })
+  }
+
+  toCSV() {
+    const arr = this.toArray()
+    return json2csv(arr, {
+      keys: arr[0] ? Object.keys(arr[0]) : [],
+      expandArrayObjects: false,
+      expandNestedObjects: false,
     })
   }
 
@@ -82,5 +86,13 @@ export default class QueryResult {
         return acc
       }, {} as QueryResultRow),
     )
+  }
+
+  private serializeValue(value: unknown) {
+    if (typeof value === 'bigint') {
+      return Number(value)
+    } else {
+      return value
+    }
   }
 }
