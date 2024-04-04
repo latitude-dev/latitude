@@ -1,0 +1,32 @@
+---
+title: 'Building your app'
+description: 'Build a Latitude project in a Docker container'
+---
+
+## Introduction
+
+The recommended way to build the production version of your Latitude project is as a Docker
+container. This approach is useful if you want to deploy your app on your own
+infrastructure or you want to use one of the many Docker-based PaaS providers
+as your deployment target.
+
+## Docker container
+<Note>
+  You will need the [Docker CLI](https://www.docker.com/products/docker-desktop/) installed in your machine.
+</Note>
+
+Every Latitude project is equipped with a Dockerfile to facilitate
+containerization. To build the Docker container for your Latitude project,
+proceed as you would with any other Docker project:
+
+```bash
+docker build . -t my-latitude-app
+```
+
+Once the build is complete, you can test your app locally with:
+
+```bash
+docker run -p 3000:3000 my-latitude-app
+```
+
+See the [docker build](https://docs.docker.com/reference/cli/docker/image/build/) documentation for more details.

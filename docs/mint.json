@@ -78,8 +78,11 @@
       ]
     },
     {
-      "group": "Deploy",
-      "pages": ["guides/deploy/self-hosted"]
+      "group": "Build and deploy",
+      "pages": [
+        "guides/deploy/docker",
+        "guides/deploy/nodejs"
+      ]
     },
     {
       "group": "Embed",
@@ -162,7 +165,11 @@
     },
     {
       "group": "Inputs",
-      "pages": ["components/inputs/text", "components/inputs/select", "components/inputs/date"]
+      "pages": [
+        "components/inputs/text",
+        "components/inputs/select",
+        "components/inputs/date"
+      ]
     },
     {
       "group": "Interaction",

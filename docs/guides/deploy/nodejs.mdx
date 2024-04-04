@@ -1,0 +1,32 @@
+---
+title: 'NodeJS build'
+description: 'Build a Latitude project as a NodeJS application'
+---
+
+## Introduction
+
+You can build the production version of your Latitude project as a standalone
+NodeJS application. This approach is useful if you want to avoid the
+complexities of Docker, but it complicates deployment if you are not used to
+deploying to bare metal servers or other non-containerized environments.
+
+## Build
+
+To build the NodeJS production version of Latitude projet app, run the following command:
+
+```bash
+latitude build
+```
+
+This command will build your app in a `build` directory at the root of your
+project. Once completed, access the build folder:
+
+```bash
+cd build
+```
+
+And run your app:
+
+```bash
+node build
+```
