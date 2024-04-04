@@ -1,5 +1,20 @@
 # @latitude-data/server
 
+## 0.6.0
+
+### Minor Changes
+
+- 718e488: Changed naming for alert types and fixed some styles
+- f6baac6: New Select component
+
+### Patch Changes
+
+- 3a22321: Adding a reactiveToParams time will no longer wait to debounce if the data is already cached.
+- Updated dependencies [718e488]
+- Updated dependencies [f6baac6]
+  - @latitude-data/svelte@0.5.0
+  - @latitude-data/client@0.6.0
+
 ## 0.5.2
 
 ### Patch Changes
