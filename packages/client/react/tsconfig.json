@@ -1,0 +1,20 @@
+{
+  "extends": "@latitude-data/typescript/base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx", // enable support for JSX
+    "rootDir": "./src",
+    "declarationDir": "./dist",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "$src": ["src"],
+      "$src/*": ["src/*"]
+    },
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+

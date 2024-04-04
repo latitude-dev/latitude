@@ -86,7 +86,10 @@
     },
     {
       "group": "Embed",
-      "pages": ["guides/embed/iframe"]
+      "pages": [
+        "guides/embed/iframe",
+        "guides/embed/react-components"
+      ]
     },
     {
       "group": "Configuration",
