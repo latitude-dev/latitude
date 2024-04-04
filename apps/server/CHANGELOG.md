@@ -1,5 +1,13 @@
 # @latitude-data/server
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [7d6d945]
+  - @latitude-data/client@0.6.1
+  - @latitude-data/svelte@0.5.1
+
 ## 0.6.0
 
 ### Minor Changes

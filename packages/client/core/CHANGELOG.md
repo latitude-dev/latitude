@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.6.1
+
+### Patch Changes
+
+- 7d6d945: Remove max width in input components
+
 ## 0.6.0
 
 ### Minor Changes
