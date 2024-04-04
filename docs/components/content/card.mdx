@@ -3,6 +3,8 @@ title: 'Card'
 description: 'Use Card to display content in a flexible and extensible container'
 ---
 
+<iframe class="rounded-xl" src="https://docs-charts-examples.fly.dev/components/card" width="100%" height="240"></iframe>
+
 ## Introduction
 
 The `<Card>` component is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options.
@@ -16,15 +18,15 @@ There are three main parts to the card component: the header, the body, and the 
 Here's a basic example of a card with a header, body, and footer:
 
 ```html
-<Card>
+<Card.Root>
   <Card.Header>
-    <Text.H3>Card title</Text>
+    <Text.H2 class='font-bold'>Card title</Text.H2>
   </Card.Header>
-  <Card.Body>
-    <Text>Card content</Text>
-  </Card.Body>
-  <Card.Footer>
-    <Text>Card footer</Text>
+  <Card.Content>
+    <Text>The content of the card can be anything. Here's some arbitrary text.</Text>
+  </Card.Content>
+  <Card.Footer class='px-6 py-2'>
+    <Text color='text-muted'>This is a card footer with a long explainer</Text>
   </Card.Footer>
-</Card>
+</Card.Root>
 ```
