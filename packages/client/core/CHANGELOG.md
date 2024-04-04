@@ -1,5 +1,12 @@
 # @latitude-data/client
 
+## 0.6.0
+
+### Minor Changes
+
+- 718e488: Changed naming for alert types and fixed some styles
+- f6baac6: New Select component
+
 ## 0.5.0
 
 ### Minor Changes

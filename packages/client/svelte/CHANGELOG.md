@@ -1,5 +1,18 @@
 # @latitude-data/svelte
 
+## 0.5.0
+
+### Minor Changes
+
+- 718e488: Changed naming for alert types and fixed some styles
+- f6baac6: New Select component
+
+### Patch Changes
+
+- Updated dependencies [718e488]
+- Updated dependencies [f6baac6]
+  - @latitude-data/client@0.6.0
+
 ## 0.4.1
 
 ### Patch Changes
