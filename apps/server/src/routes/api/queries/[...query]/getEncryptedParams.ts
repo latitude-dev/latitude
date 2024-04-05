@@ -1,4 +1,5 @@
 import loadToken from '$lib/loadToken'
+import { IValue } from './castValue'
 
 export default async function getEncryptedParams({ url }: { url: URL }) {
   const token = await loadToken({ url })
@@ -7,5 +8,5 @@ export default async function getEncryptedParams({ url }: { url: URL }) {
     throw new Error(token.errorMessage)
   }
 
-  return (token.token?.payload ?? {}) as Record<string, unknown>
+  return (token.token?.payload ?? {}) as { [key: string]: IValue }
 }

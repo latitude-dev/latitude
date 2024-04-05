@@ -1,19 +1,34 @@
-import { FORCE_REFETCH_PARAMETER, TOKEN_PARAM } from '@latitude-data/client'
+import {
+  DOWNLOAD_PARAM,
+  FORCE_REFETCH_PARAM,
+  PRIVATE_PARAMS,
+} from '@latitude-data/client'
 import castValue, { IValue } from './castValue'
+import getEncryptedParams from './getEncryptedParams'
 
-export default function getQueryParams(url: URL) {
+export default async function getQueryParams(url: URL) {
   const searchParams = url.searchParams
-  const params: { [key: string]: IValue } = {}
+  let params: { [key: string]: IValue } = {}
+
   for (const [key, value] of searchParams) {
-    if (TOKEN_PARAM === key) continue
+    if (PRIVATE_PARAMS.has(key)) continue
+
     params[key] = castValue(value)
   }
 
-  const forceParam = params[FORCE_REFETCH_PARAMETER]
-  let force = false
-  if (forceParam) {
-    force = delete params[FORCE_REFETCH_PARAMETER]
+  const privateParams: { [key: string]: IValue } = {}
+  for (const key of PRIVATE_PARAMS) {
+    if (searchParams.has(key)) {
+      privateParams[key] = castValue(searchParams.get(key) as string)
+    }
   }
 
-  return { params, force }
+  const encrypted = await getEncryptedParams({ url })
+  params = { ...params, ...encrypted }
+
+  return {
+    params,
+    download: privateParams[DOWNLOAD_PARAM] === true,
+    force: privateParams[FORCE_REFETCH_PARAM] === true,
+  }
 }
