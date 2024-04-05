@@ -1,5 +1,16 @@
 # @latitude-data/react
 
+## 0.2.0
+
+### Minor Changes
+
+- f456dc4: Introduce webcomponents to share code with different frameworks like react, vue or svelte
+
+### Patch Changes
+
+- Updated dependencies [f456dc4]
+  - @latitude-data/webcomponents@0.1.0
+
 ## 0.1.1
 
 ### Patch Changes
