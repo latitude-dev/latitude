@@ -126,7 +126,7 @@ export default function generateFunnelConfig({
         type: 'funnel',
         data,
         sort,
-        orient:  orientation,
+        orient: orientation,
         funnelAlign: 'center',
         left: 0,
         width: '100%',

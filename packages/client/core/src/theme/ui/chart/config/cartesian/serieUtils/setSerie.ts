@@ -32,7 +32,7 @@ export default function setSerie<T extends ChartType>({
   dimension,
   source,
   config,
-  datasetIndex
+  datasetIndex,
 }: Props<T>) {
   const serieIndex = fields.findIndex((f) => f === serieColumn)
   const isArea = chartType === 'area'
@@ -44,7 +44,7 @@ export default function setSerie<T extends ChartType>({
     encode: swapAxis
       ? { y: dimension.name, x: serieColumn }
       : { x: dimension.name, y: serieColumn },
-    datasetIndex
+    datasetIndex,
   }
 
   serie = setLineChartStyle({ serie, serieIndex, config })

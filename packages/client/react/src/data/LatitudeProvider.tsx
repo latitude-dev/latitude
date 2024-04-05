@@ -1,5 +1,9 @@
 import { JSX, useContext, ReactNode, createContext } from 'react'
-import { QueryClient, QueryClientProvider, type QueryClientConfig } from '@tanstack/react-query'
+import {
+  QueryClient,
+  QueryClientProvider,
+  type QueryClientConfig,
+} from '@tanstack/react-query'
 import { LatitudeApi } from '@latitude-data/client'
 
 type ILatitude = { api: LatitudeApi }
@@ -16,7 +20,9 @@ export const useLatitude = () => {
   const latitude = useContext(LatitudeContext)
 
   if (!latitude) {
-    throw new Error('No LatitudeProvider found. Make sure to wrap your component with LatitudeProvider.')
+    throw new Error(
+      'No LatitudeProvider found. Make sure to wrap your component with LatitudeProvider.',
+    )
   }
 
   return latitude

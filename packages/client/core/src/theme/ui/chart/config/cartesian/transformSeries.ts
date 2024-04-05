@@ -18,12 +18,12 @@ function findLongest(list: string[]) {
 
 export function findLongestValue(
   source: DBSource,
-  sourceIndex: number
+  sourceIndex: number,
 ): string {
   return findLongest(
     source
       .filter((row) => !!row[sourceIndex])
-      .map((row) => String(row[sourceIndex]))
+      .map((row) => String(row[sourceIndex])),
   )
 }
 
@@ -39,7 +39,7 @@ export default function transformCartesiansSeries({
   dataset,
   hiddenSeries,
   config,
-  datasetIndex
+  datasetIndex,
 }: {
   xColumns: FullColumn[]
   yColumns: FullColumn[]
@@ -72,7 +72,7 @@ export default function transformCartesiansSeries({
         : null
       axisMetadata[axisIndex] = { longestValue: '', seriesNames: [] }
       const measurements = yColumns.filter(
-        (column) => column.axisIndex === axisIndex
+        (column) => column.axisIndex === axisIndex,
       )
       return compact(
         measurements.map((measurement) => {
@@ -119,9 +119,9 @@ export default function transformCartesiansSeries({
           axisMetadata[axisIndex] = meta
 
           return serie
-        })
+        }),
       )
-    })
+    }),
   )
 
   return {

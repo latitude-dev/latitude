@@ -26,9 +26,5 @@ export {
   default as MixedChart,
   type MixedChartProps,
 } from './ui/chart/MixedChart.svelte'
-export {
-  default as Table
-} from './ui/Table/Table.svelte'
-export {
-  default as TableBlankSlate
-} from './ui/Table/BlankSlate.svelte'
+export { default as Table } from './ui/Table/Table.svelte'
+export { default as TableBlankSlate } from './ui/Table/BlankSlate.svelte'

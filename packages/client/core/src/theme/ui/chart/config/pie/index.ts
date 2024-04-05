@@ -67,7 +67,7 @@ export default function generatePieConfig({
       top: 'center',
       textVerticalAlign: 'top',
       text: String(
-        Number.isInteger(totalValues) ? totalValues : totalValues.toFixed(2)
+        Number.isInteger(totalValues) ? totalValues : totalValues.toFixed(2),
       ),
       textStyle: {
         fontFamily: FONT.fontFamily.sans,
@@ -121,7 +121,7 @@ export default function generatePieConfig({
           value: DEFAULT_VALUE_INDEX,
           itemName: DEFAULT_LABEL_INDEX,
         },
-        datasetIndex
+        datasetIndex,
       },
     ],
     aria: { enabled: showDecal, decal: { show: showDecal } },

@@ -11,14 +11,13 @@ export function mockServerRequest({
   path,
   payload = EMPTY_PAYLOAD,
   status = 200,
-  callback
+  callback,
 }: {
   path: string
   payload?: QueryResultPayload
   status?: number
   callback?: (wasForced: boolean) => void
 }) {
-
   let wasForced = false
   server.use(
     http.get(`${MOCKED_HOST}/api/queries/${path}`, (req) => {

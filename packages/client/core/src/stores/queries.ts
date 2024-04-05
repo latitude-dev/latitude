@@ -52,7 +52,7 @@ export const store = createStore<StoreState>((set, get) => {
       const data = new QueryResult({
         fields: response.fields,
         rows: response.rows,
-        rowCount: response.rowCount
+        rowCount: response.rowCount,
       })
 
       set((state) => ({

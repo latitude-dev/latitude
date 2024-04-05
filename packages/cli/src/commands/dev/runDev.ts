@@ -101,7 +101,9 @@ const onStdout =
       console.log(logmsg)
     }
 
-    const devUrl = `🚀 ${colors.blue('Server running on')} \n\nhttp://localhost:${appPort}`
+    const devUrl = `🚀 ${colors.blue(
+      'Server running on',
+    )} \n\nhttp://localhost:${appPort}`
     if (building && logmsg.includes('ready in')) {
       cleanTerminal()
       if (onReady) {

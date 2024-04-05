@@ -5,11 +5,4 @@ import * as header from './header'
 import * as overlay from './overlay'
 import * as title from './title'
 
-export {
-  content,
-  description,
-  footer,
-  header,
-  overlay,
-  title,
-}
+export { content, description, footer, header, overlay, title }

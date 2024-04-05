@@ -79,10 +79,9 @@ describe('Telemetry', () => {
 
   it('initialize rudderstack', () => {
     new Telemetry()
-    expect(MockedRudderStack).toHaveBeenCalledWith(
-      'secret-telemetry-key',
-      { dataPlaneUrl: 'telemetry-url' },
-    )
+    expect(MockedRudderStack).toHaveBeenCalledWith('secret-telemetry-key', {
+      dataPlaneUrl: 'telemetry-url',
+    })
   })
 
   describe('#showStatus', () => {
@@ -170,10 +169,7 @@ describe('Telemetry', () => {
 
       it('stores config', async () => {
         await telemetry.track({ event: 'startCommand' })
-        expect(mockedStoreSet).toHaveBeenCalledWith(
-          'telemetry.enabled',
-          false
-        )
+        expect(mockedStoreSet).toHaveBeenCalledWith('telemetry.enabled', false)
         expect(mockedStoreSet).toHaveBeenCalledWith(
           'telemetry.anonymousUserId',
           'mocked-random-user-id',
@@ -233,10 +229,7 @@ describe('Telemetry', () => {
 
       it('stores config', async () => {
         await telemetry.track({ event: 'startCommand' })
-        expect(mockedStoreSet).toHaveBeenCalledWith(
-          'telemetry.enabled',
-          true
-        )
+        expect(mockedStoreSet).toHaveBeenCalledWith('telemetry.enabled', true)
         expect(mockedStoreSet).toHaveBeenCalledWith(
           'telemetry.anonymousUserId',
           'mocked-random-user-id',

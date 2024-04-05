@@ -9,9 +9,9 @@ const cardRootVariants = tv({
   variants: {
     type: {
       normal: 'border shadow',
-      invisible: ''
+      invisible: '',
     },
-  }
+  },
 })
 
 const cardHeaderVariants = tv({
@@ -19,9 +19,9 @@ const cardHeaderVariants = tv({
   variants: {
     type: {
       normal: NORMAL_PADDING,
-      invisible: 'pb-6'
-    }
-  }
+      invisible: 'pb-6',
+    },
+  },
 })
 
 const cardContentVariants = tv({
@@ -29,9 +29,9 @@ const cardContentVariants = tv({
   variants: {
     type: {
       normal: 'p-6 pt-0',
-      invisible: ''
-    }
-  }
+      invisible: '',
+    },
+  },
 })
 
 type ClassProps = { className?: string | null | undefined }
@@ -42,7 +42,7 @@ export function rootCssClass({ type = 'normal', className }: CardProps) {
 }
 
 export function headerCssClass({ type = 'normal', className }: CardProps) {
-  return cn(cardHeaderVariants({ type }) , className)
+  return cn(cardHeaderVariants({ type }), className)
 }
 
 export function titleCssClass({ className }: ClassProps) {

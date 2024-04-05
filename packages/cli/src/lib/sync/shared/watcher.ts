@@ -9,14 +9,12 @@ const EVENT_VERB: Record<EventType, string> = {
 }
 
 function logEvent(event: EventType, path: string) {
-  console.log(colors.blue(`${path} has been ${colors.green(EVENT_VERB[event])}`))
+  console.log(
+    colors.blue(`${path} has been ${colors.green(EVENT_VERB[event])}`),
+  )
 }
 
-type SyncFileFn = (
-  srcPath: string,
-  type: EventType,
-  ready: boolean,
-) => void
+type SyncFileFn = (srcPath: string, type: EventType, ready: boolean) => void
 type WatcherOptions = {
   ignored?: RegExp
   persistent?: boolean
@@ -25,11 +23,10 @@ type WatcherOptions = {
 export default function watcher(
   dir: string,
   syncFile: SyncFileFn,
-  {
-    ignored,
-    persistent = true,
-    debug = false,
-  }: WatcherOptions = { persistent: true, debug: false },
+  { ignored, persistent = true, debug = false }: WatcherOptions = {
+    persistent: true,
+    debug: false,
+  },
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     let ready = false
@@ -38,13 +35,12 @@ export default function watcher(
     // Event listeners.
     watcher
       .on('add', (path: string) => {
-        if (debug){
+        if (debug) {
           logEvent('add', path)
         }
         syncFile(path, 'add', ready)
       })
       .on('change', (path: string) => {
-
         if (debug) {
           logEvent('change', path)
         }

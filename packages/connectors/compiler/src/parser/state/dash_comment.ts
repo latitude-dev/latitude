@@ -1,15 +1,15 @@
-import { Parser } from "..";
+import { Parser } from '..'
 
 export function dashComment(parser: Parser) {
-  const start = parser.index;
+  const start = parser.index
 
-  let data = '';
+  let data = ''
 
   while (parser.index < parser.template.length) {
     if (parser.matchRegex(/\n/)) {
-      break;
+      break
     }
-    data += parser.template[parser.index++];
+    data += parser.template[parser.index++]
   }
 
   const node = {
@@ -17,8 +17,8 @@ export function dashComment(parser: Parser) {
     end: parser.index,
     type: 'Comment',
     raw: data,
-    data: data.substring(2)
-  };
+    data: data.substring(2),
+  }
 
-  parser.current().children!.push(node);
+  parser.current().children!.push(node)
 }

@@ -22,7 +22,7 @@ export default async function loadToken({
   if (!secretKey) {
     return {
       valid: false,
-      errorMessage: isProd ? GENERIC_MSG : MISSING_KEY
+      errorMessage: isProd ? GENERIC_MSG : MISSING_KEY,
     }
   }
 
@@ -32,7 +32,7 @@ export default async function loadToken({
   if (hasError) {
     return {
       valid: false,
-      errorMessage: isProd ? GENERIC_MSG : response.message
+      errorMessage: isProd ? GENERIC_MSG : response.message,
     }
   }
 

@@ -31,10 +31,12 @@ export const testData = {
   animation: true,
   animationEasing: 'cubicInOut',
   animationEasingUpdate: 'cubicInOut',
-  dataset: [{
-    dimensions: FIELDS,
-    source: OUTPUT_DATASET.slice(1)
-  }],
+  dataset: [
+    {
+      dimensions: FIELDS,
+      source: OUTPUT_DATASET.slice(1),
+    },
+  ],
   xAxis: [
     {
       show: true,

@@ -30,27 +30,21 @@ export async function signJwt({
   }
 }
 
-const JWT_CLAIMS = [
-  'iss',
-  'sub',
-  'aud',
-  'jti',
-  'nbf',
-  'exp',
-  'iat'
-] as const
+const JWT_CLAIMS = ['iss', 'sub', 'aud', 'jti', 'nbf', 'exp', 'iat'] as const
 
 function splitMetadataFromPayload(token: JWTPayload) {
-  return Object.keys(token).reduce((acc, key) => {
-    if (JWT_CLAIMS.includes(key as any)) {
-      acc.metadata[key] = token[key]
-    } else {
-      acc.payload[key] = token[key]
-    }
+  return Object.keys(token).reduce(
+    (acc, key) => {
+      if (JWT_CLAIMS.includes(key as any)) {
+        acc.metadata[key] = token[key]
+      } else {
+        acc.payload[key] = token[key]
+      }
 
-    return acc
-  },
-  { metadata: {} as JWTPayload, payload: {} as JWTPayload })
+      return acc
+    },
+    { metadata: {} as JWTPayload, payload: {} as JWTPayload },
+  )
 }
 
 export type ValidTokenResponse = {
@@ -60,13 +54,19 @@ export type ValidTokenResponse = {
 }
 type Response = ValidTokenResponse | Error
 
-export async function verifyJWT({ secretKey, token }: { secretKey: string; token: string }): Promise<Response> {
+export async function verifyJWT({
+  secretKey,
+  token,
+}: {
+  secretKey: string
+  token: string
+}): Promise<Response> {
   try {
     const secret = createSecret(secretKey)
     const { payload: allData, protectedHeader } = await jose.jwtVerify(
       token,
       secret,
-      { algorithms: [ALGORITHM] }
+      { algorithms: [ALGORITHM] },
     )
     const { payload, metadata } = splitMetadataFromPayload(allData)
 

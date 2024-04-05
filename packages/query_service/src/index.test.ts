@@ -2,12 +2,9 @@ import { describe, it, expect, afterEach } from 'vitest'
 import { Dirent } from 'fs'
 import * as fs from 'fs/promises'
 import { vi } from 'vitest'
-import findQueryFile, {
-  QueryNotFoundError,
-  SourceFileNotFoundError,
-} from '.'
+import findQueryFile, { QueryNotFoundError, SourceFileNotFoundError } from '.'
 
-const ROOT_FOLDER = 'path/to/queries';
+const ROOT_FOLDER = 'path/to/queries'
 
 // Mocks fs module
 vi.mock('fs/promises', () => ({

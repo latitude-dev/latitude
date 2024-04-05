@@ -23,7 +23,7 @@ export default class FileAdapter extends Adapter {
     } catch (error) {
       // @ts-expect-error - Error type doesn't have a code property
       if (error.code === 'ENOENT') return null
-    
+
       throw error
     }
   }
@@ -31,7 +31,7 @@ export default class FileAdapter extends Adapter {
   public set(key: string, value: string | Blob) {
     return fs.writeFileSync(
       `${this.root}/${this.getHashedKey(key)}`,
-      value.toString()
+      value.toString(),
     )
   }
 

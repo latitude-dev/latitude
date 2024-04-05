@@ -16,7 +16,7 @@ describe('loadToken', () => {
 
     expect(response).toEqual({
       valid: false,
-      errorMessage: MISSING_KEY
+      errorMessage: MISSING_KEY,
     })
   })
 
@@ -27,7 +27,7 @@ describe('loadToken', () => {
 
     expect(response).toEqual({
       valid: false,
-      errorMessage: GENERIC_MSG
+      errorMessage: GENERIC_MSG,
     })
     import.meta.env.PROD = false
   })
@@ -38,7 +38,7 @@ describe('loadToken', () => {
     const response = await loadToken({ url })
     expect(response).toEqual({
       valid: false,
-      errorMessage: 'Invalid Compact JWS'
+      errorMessage: 'Invalid Compact JWS',
     })
   })
 
@@ -49,7 +49,7 @@ describe('loadToken', () => {
     const response = await loadToken({ url })
     expect(response).toEqual({
       valid: false,
-      errorMessage: GENERIC_MSG
+      errorMessage: GENERIC_MSG,
     })
     import.meta.env.PROD = false
   })
@@ -63,9 +63,9 @@ describe('loadToken', () => {
         iss: 'latitude-user',
         sub: userID.toString(),
         aud: 'latitude',
-        company_id: 33
+        company_id: 33,
       },
-      secretKey
+      secretKey,
     })
     const url = new URL(`http://example.com?__token=${token}`)
     const response = await loadToken({ url })
@@ -85,7 +85,7 @@ describe('loadToken', () => {
         protectedHeader: {
           alg: 'HS256',
         },
-      }
+      },
     })
   })
 })

@@ -1,5 +1,5 @@
-import path from 'path';
-import { defineConfig } from 'vite';
+import path from 'path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   build: {
@@ -19,4 +19,4 @@ export default defineConfig({
     },
     minify: process.env.NODE_ENV === 'production',
   },
-});
+})
