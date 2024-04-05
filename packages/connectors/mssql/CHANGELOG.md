@@ -1,5 +1,13 @@
 # @latitude-data/mssql-connector
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [7c86e2c]
+  - @latitude-data/query_result@0.2.0
+  - @latitude-data/base-connector@1.0.2
+
 ## 1.0.1
 
 ### Patch Changes

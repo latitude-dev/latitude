@@ -1,5 +1,18 @@
 # @latitude-data/server
 
+## 0.7.0
+
+### Minor Changes
+
+- 7c86e2c: Allow users to download query results in csv format
+
+### Patch Changes
+
+- Updated dependencies [7c86e2c]
+  - @latitude-data/client@0.7.0
+  - @latitude-data/svelte@0.5.2
+  - @latitude-data/connector-factory@0.1.6
+
 ## 0.6.1
 
 ### Patch Changes
