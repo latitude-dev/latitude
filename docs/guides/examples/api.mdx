@@ -118,6 +118,19 @@ curl http://localhost:3000/api/queries/sample_agg?year=2020
 
 This will return the results of the `sample_agg.sql` query for the year 2020 in JSON format.
 
+### 4.2 Downloading query results as CSV
+
+You can pass a special `__download` boolean parameter to the URL to download
+the results as a CSV file. For example, to download the results of the
+`sample_agg.sql` query as a CSV file, you can run the following command in your
+terminal:
+
+```bash
+curl http://localhost:3000/api/queries/sample_agg?year=2020&__download=true --output sample_agg.csv
+```
+
+Calling the same url from a browser will automatically triggera a download.
+
 ## 5. Next steps
 
 Congratulations! You have successfully created an API to your data with the Latitude. You can now use this API to access your data from any other app or service.
