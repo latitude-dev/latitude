@@ -4,7 +4,7 @@
 
   type $$Props = Omit<HTMLAnchorAttributes, 'href' | 'target' | 'rel'> & {
     to: string;
-    newTab: boolean;
+    newTab?: boolean;
     class?: string;
   };
 

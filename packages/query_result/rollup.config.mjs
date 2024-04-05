@@ -7,5 +7,6 @@ export default {
   },
   plugins: [typescript({
     exclude: ["**/__tests__", "**/*.test.ts"]
-  })]
+  })],
+  external: ['json-2-csv']
 }

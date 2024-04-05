@@ -2,22 +2,35 @@
   import type { ScatterChartProps } from '@latitude-data/svelte/internal'
   import { useQuery, type QueryProps } from '$lib/stores/queries'
   import { ScatterChart } from '@latitude-data/svelte/internal'
-  type Props = Omit<ScatterChartProps, 'data' | 'isLoading' | 'error'> &
-    QueryProps
   import { DEFAULT_HEIGHT } from './constants'
+  import { api } from '@latitude-data/client'
 
-  export let query: Props['query']
-  export let inlineParams: Props['inlineParams'] = {}
-  export let opts: Props['opts'] = {}
-  export let height: Props['height'] = DEFAULT_HEIGHT
-  export let x: Props['x']
-  export let y: Props['y']
-  export let sizeColumn: Props['sizeColumn']
+  type $$Props = Omit<
+    ScatterChartProps,
+    'download' | 'data' | 'isLoading' | 'error'
+  > &
+    QueryProps & {
+      download?: boolean
+    }
+
+  export let query: $$Props['query']
+  export let inlineParams: $$Props['inlineParams'] = {}
+  export let opts: $$Props['opts'] = {}
+  export let height: $$Props['height'] = DEFAULT_HEIGHT
+  export let x: $$Props['x']
+  export let y: $$Props['y']
+  export let sizeColumn: $$Props['sizeColumn']
+  export let download: $$Props['download'] = false
+
+  const downloadFn = download
+    ? () => api.downloadQuery({ queryPath: query, params: inlineParams })
+    : undefined
 
   const result = useQuery({ query, inlineParams, opts })
 </script>
 
 <ScatterChart
+  download={downloadFn}
   {height}
   {x}
   {y}

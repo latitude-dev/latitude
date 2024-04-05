@@ -29,9 +29,11 @@
   export let locale: $$Props['locale'] = 'en'
   export let animation: $$Props['animation'] = true
   export let config: $$Props['config'] = undefined
+  export let download: $$Props['download'] = undefined
 </script>
 
 <Wrapper
+  {download}
   {data}
   {title}
   {description}

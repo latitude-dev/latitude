@@ -2,7 +2,6 @@ import { tv, type VariantProps } from 'tailwind-variants'
 import { cn } from '../../utils'
 
 type CardType = VariantProps<typeof cardRootVariants>['type']
-const NORMAL_PADDING = 'p-6'
 
 const cardRootVariants = tv({
   base: 'rounded-xl bg-card text-card-foreground ',
@@ -18,8 +17,8 @@ const cardHeaderVariants = tv({
   base: 'flex flex-col space-y-1.5',
   variants: {
     type: {
-      normal: NORMAL_PADDING,
-      invisible: 'pb-6',
+      normal: 'pb-6',
+      invisible: '',
     },
   },
 })

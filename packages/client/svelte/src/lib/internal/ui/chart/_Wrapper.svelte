@@ -7,15 +7,18 @@
     description?: string
     height?: number
     width?: number
+    download?: () => Promise<void>
   }
 </script>
 
 <script lang="ts">
-  import { theme as client } from '@latitude-data/client'
-  const { cn } = client.utils
+  import * as Card from '$lib/ui/card'
+  import VisualizationHeader from '../_shared/VisualizationHeader.svelte'
   import BlankSlate from './_BlankSlate.svelte'
   import Error from './_Error.svelte'
-  import * as Card from '$lib/ui/card'
+  import { theme as client } from '@latitude-data/client'
+
+  const { cn } = client.utils
 
   type $$Props = WrapperProps
 
@@ -27,6 +30,7 @@
   export let description: $$Props['description'] = undefined
   export let error: $$Props['error'] = null
   export let bordered: $$Props['bordered'] = false
+  export let download: $$Props['download'] = undefined
 
   const cardStyle = bordered ? 'normal' : 'invisible'
 
@@ -97,14 +101,13 @@
   style="width: {width}px; height: {height}px"
 >
   <Card.Root class="h-full" type={cardStyle}>
-    {#if title}
-      <Card.Header type={cardStyle} action={cardHeaderDimensions}>
-        <Card.Title>{title}</Card.Title>
-        {#if description}
-          <Card.Description>{description}</Card.Description>
-        {/if}
-      </Card.Header>
-    {/if}
+    <VisualizationHeader
+      {title}
+      {description}
+      {download}
+      headerType={cardStyle}
+      headerAction={cardHeaderDimensions}
+    />
 
     <Card.Content
       type={cardStyle}

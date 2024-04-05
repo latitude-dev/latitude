@@ -4,6 +4,7 @@ import { EMPTY_PAYLOAD, LatitudeProvider } from '$src/data/LatitudeProvider'
 import { server } from '$src/tests/setup'
 import { QueryClient } from '@tanstack/react-query'
 import { QueryResultPayload } from '@latitude-data/query_result'
+
 export type KeyValue = { uid: [string, boolean]; value: unknown }
 
 const MOCKED_HOST = 'https://latitude.mocked'
