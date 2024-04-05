@@ -1,0 +1,25 @@
+{
+  "name": "@latitude-data/embedding",
+  "version": "0.0.0",
+  "license": "LGPL",
+  "scripts": {
+    "build:rollup": "rollup -c",
+    "dev": "pnpm run build:rollup -w",
+    "build": "npm run build:rollup",
+    "prettier": "prettier --write src/**/*.ts",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/eslint": "8.56.0",
+    "prettier": "^3.1.1",
+    "rollup": "^4.10.0",
+    "typescript": "^5.0.0"
+  }
+}

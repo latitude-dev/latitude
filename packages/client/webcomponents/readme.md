@@ -1,16 +1,16 @@
 # Latitude web components
 
-Common Latitude components used accross differnt frontend frameworks like
-`latitude-embed` iframe wrapper.
+Common Latitude components used accross different frontend frameworks. We expose
+webcomponents like `<latitude-embed></latitude-embed>` iframe wrapper.
 
 ## Getting Started
 
 ```bash
 pnpm install
-pnpm start
+pnpm dev
 ```
 
-To build the component for production, run:
+To build the component for production or using inside others packages, run:
 
 ```bash
 pnpm build

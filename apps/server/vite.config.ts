@@ -34,7 +34,11 @@ export default defineConfig({
     port: 3000,
   },
   ssr: {
-    noExternal: ['@latitude-data/client', '@latitude-data/svelte'],
+    noExternal: [
+      '@latitude-data/client',
+      '@latitude-data/svelte',
+      '@latitude-data/embedding',
+    ],
   },
   build: {
     rollupOptions: {

@@ -7,11 +7,18 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `first`  | `first`   |             | `string` | `undefined` |
-| `last`   | `last`    |             | `string` | `undefined` |
-| `middle` | `middle`  |             | `string` | `undefined` |
+| Property           | Attribute       | Description | Type                       | Default     |
+| ------------------ | --------------- | ----------- | -------------------------- | ----------- |
+| `params`           | --              |             | `{ [x: string]: string; }` | `undefined` |
+| `signedParams`     | `signed-params` |             | `string`                   | `undefined` |
+| `url` _(required)_ | `url`           |             | `string`                   | `undefined` |
+
+
+## Events
+
+| Event           | Description | Type                                                                                   |
+| --------------- | ----------- | -------------------------------------------------------------------------------------- |
+| `paramsChanged` |             | `CustomEvent<{ type: EmbeddingEvent.ParamsChanged; params: ParamsChangedEventData; }>` |
 
 
 ----------------------------------------------

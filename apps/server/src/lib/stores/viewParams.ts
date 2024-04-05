@@ -19,46 +19,10 @@ const getParamsFromUrl = () => {
   return newParams
 }
 
-const viewParamsStore = writable<ViewParams>(getParamsFromUrl())
-
-export const useViewParams = (): Writable<ViewParams> => viewParamsStore
-export const getAllViewParams = (): ViewParams => get(viewParamsStore)
-
-export const useViewParam = (
-  key: string,
-  defaultValue?: unknown,
-): Readable<unknown> => {
-  if (!(key in get(viewParamsStore))) setViewParam(key, defaultValue)
-  return derived(viewParamsStore, ($viewParams) =>
-    key in $viewParams ? $viewParams[key] : defaultValue,
-  )
-}
-export const getViewParam = (key: string, defaultValue?: unknown): unknown => {
-  const params = get(viewParamsStore)
-  return key in params ? params[key] : defaultValue
-}
-
-export const setViewParam = (key: string, value: unknown): void => {
-  setUrlParam(key, value)
-
-  viewParamsStore.update((params) => {
-    params[key] = value
-    return params
-  })
-}
-
-function setUrlParam(key: string, value: unknown) {
+export function setUrlParam(newParams: ViewParams) {
   if (!browser) return
 
-  const urlParams = getAllViewParams()
-
-  if (value === undefined) {
-    delete urlParams[key]
-  } else {
-    urlParams[key] = value
-  }
-
-  const newParamsString = LatitudeApi.buildParams(urlParams)
+  const newParamsString = LatitudeApi.buildParams(newParams)
 
   // There are two ways to update the url: the default window.location.replaceState and svelte's replaceState
   // When using the default window.location.replaceState, sveltekit will print a warning in the console recommending to use svelte's replaceState instead
@@ -70,4 +34,38 @@ function setUrlParam(key: string, value: unknown) {
   } catch (_) {
     /* do nothing */
   } // replaceState fails when not ran within a svelte component
+}
+
+const viewParamsStore = writable<ViewParams>(getParamsFromUrl())
+
+export const useViewParams = (): Writable<ViewParams> => viewParamsStore
+export const getAllViewParams = (): ViewParams => get(viewParamsStore)
+
+export const useViewParam = (
+  key: string,
+  defaultValue?: unknown,
+): Readable<unknown> => {
+  if (!(key in get(viewParamsStore))) setViewParam(key, defaultValue)
+
+  return derived(viewParamsStore, ($viewParams) =>
+    key in $viewParams ? $viewParams[key] : defaultValue,
+  )
+}
+
+export const getViewParam = (key: string, defaultValue?: unknown): unknown => {
+  const params = get(viewParamsStore)
+  return key in params ? params[key] : defaultValue
+}
+
+export const setViewParam = (key: string, value: unknown): void => {
+  viewParamsStore.update((params) => {
+    params[key] = value
+    return params
+  })
+}
+
+export const setViewParams = (params: ViewParams): void => {
+  viewParamsStore.update((oldParams) => {
+    return { ...oldParams, ...params }
+  })
 }
