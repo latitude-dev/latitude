@@ -1,5 +1,16 @@
 # @latitude-data/client
 
+## 0.7.0
+
+### Minor Changes
+
+- 7c86e2c: Allow users to download query results in csv format
+
+### Patch Changes
+
+- Updated dependencies [7c86e2c]
+  - @latitude-data/query_result@0.2.0
+
 ## 0.6.1
 
 ### Patch Changes

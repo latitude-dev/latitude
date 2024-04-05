@@ -1,5 +1,11 @@
 # @latitude-data/query_result
 
+## 0.2.0
+
+### Minor Changes
+
+- 7c86e2c: exposes a toCSV() method to return query results as csv strings
+
 ## 0.1.0
 
 ### Minor Changes
