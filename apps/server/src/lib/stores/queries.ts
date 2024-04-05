@@ -38,14 +38,20 @@ export const input = (key: string, defaultValue?: unknown): InlineParam => ({
     key in viewParams ? viewParams[key] : defaultValue,
 })
 
-function computeQueryParams(inlineParams: InlineParams): Record<string, unknown> {
-  const viewParams = getAllViewParams();
-  return Object.entries(inlineParams).reduce((params, [key, inlineParam]) => {
-    params[key] = (typeof inlineParam === 'object' && 'callback' in inlineParam)
-      ? inlineParam.callback(viewParams)
-      : inlineParam; // Inline params can be just a hardcoded value
-    return params;
-  }, { ...viewParams });
+function computeQueryParams(
+  inlineParams: InlineParams,
+): Record<string, unknown> {
+  const viewParams = getAllViewParams()
+  return Object.entries(inlineParams).reduce(
+    (params, [key, inlineParam]) => {
+      params[key] =
+        typeof inlineParam === 'object' && 'callback' in inlineParam
+          ? inlineParam.callback(viewParams)
+          : inlineParam // Inline params can be just a hardcoded value
+      return params
+    },
+    { ...viewParams },
+  )
 }
 
 function createMiddlewareKey(
@@ -54,7 +60,12 @@ function createMiddlewareKey(
 ): string {
   const hashedParams = Object.keys(inlineParams)
     .sort()
-    .map((paramName) => `${paramName}=${inlineParams[paramName].key ?? String(inlineParams[paramName])}`)
+    .map(
+      (paramName) =>
+        `${paramName}=${
+          inlineParams[paramName].key ?? String(inlineParams[paramName])
+        }`,
+    )
     .join('&')
   return `query:${queryPath}?${hashedParams}`
 }
@@ -152,7 +163,8 @@ export function useQuery({
   queryStore.subscribe(updateState) // Check for state updates when queryStore changes
   // Refetch when viewParams change
   if (opts.reactiveToParams || opts.reactiveToParams === 0) {
-    const debounceTime = opts.reactiveToParams === true ? 0 : opts.reactiveToParams
+    const debounceTime =
+      opts.reactiveToParams === true ? 0 : opts.reactiveToParams
     const debouncedRefetch = debounce(() => {
       fetchQueryFromCore({ query, inlineParams })
     }, debounceTime)
@@ -160,7 +172,10 @@ export function useQuery({
     useViewParams().subscribe(() => {
       const newComputedParams = computeQueryParams(inlineParams)
       const newCoreQueryKey = createKeyForQueryStore(query, newComputedParams)
-      if (debounceTime === 0 || newCoreQueryKey in queryStore.getState().queries) {
+      if (
+        debounceTime === 0 ||
+        newCoreQueryKey in queryStore.getState().queries
+      ) {
         fetchQueryFromCore({ query, inlineParams })
         return
       }
@@ -182,7 +197,7 @@ export function runQuery(
   inlineParams: InlineParams = {},
   opts: QuerySubscriptionOptions = {},
 ): Readable<Promise<QueryResultArray>> {
-  const pendingPromise = () => new Promise<QueryResultArray>(() => { })
+  const pendingPromise = () => new Promise<QueryResultArray>(() => {})
   const resolvedPromise = (value: QueryResultArray) =>
     new Promise<QueryResultArray>((resolve) => resolve(value))
   const rejectedPromise = (reason?: Error) =>

@@ -1,3 +1,3 @@
-import Root from "./scroll-area.svelte";
+import Root from './scroll-area.svelte'
 
-export default Root;
+export default Root

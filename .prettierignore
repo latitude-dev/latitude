@@ -1,3 +1,6 @@
-*.md
-*.mdx
-*.html
+.*
+dist
+build
+examples
+node_modules
+

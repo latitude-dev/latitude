@@ -26,7 +26,7 @@ export function cssClass({
   type,
   className,
   secondary = false,
-  scrollable = false
+  scrollable = false,
 }: Props) {
   const { foreground, background } = useType({ type, secondary })
   const cssBgColor = colors.backgrounds[background]
@@ -39,9 +39,8 @@ export function cssClass({
       className,
       {
         'items-start overflow-y-auto custom-scrollbar': scrollable,
-        'items-center': !scrollable
-      }
-    )
+        'items-center': !scrollable,
+      },
+    ),
   }
 }
-

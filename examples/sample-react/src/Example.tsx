@@ -36,7 +36,11 @@ function MovieList({ movies }: { movies: QueryResultPayload }) {
 }
 
 export default function Example() {
-  const { data: movies, isFetching, compute } = useQuery({
+  const {
+    data: movies,
+    isFetching,
+    compute,
+  } = useQuery({
     queryPath: 'titles/titles-table',
   })
 

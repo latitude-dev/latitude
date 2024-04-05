@@ -23,7 +23,8 @@ import { transformXAxis, transformYAxis } from './transformAxis'
 import transformCartesiansSeries from './transformSeries'
 import { ColumnConfig, getColumns } from './getColumns'
 
-export type AnimationEasing = 'linear'
+export type AnimationEasing =
+  | 'linear'
   | 'quadraticIn'
   | 'quadraticOut'
   | 'quadraticInOut'
@@ -171,7 +172,7 @@ export default function generateConfig({
   const { datasets, datasetIndex } = getDataset({
     dataset,
     normalizeValues,
-    sort
+    sort,
   })
   const dataZoom = setDataZoom({ swapAxis, showZoom })
   const grid = setGrid({
@@ -189,7 +190,7 @@ export default function generateConfig({
     yColumns,
     dataset,
     hiddenSeries,
-    datasetIndex
+    datasetIndex,
   })
 
   const rawXAxis = transformXAxis({

@@ -5,7 +5,7 @@ type Props = { className?: string | null | undefined }
 function containerCssClass({ className }: Props) {
   return cn(
     'border rounded-md w-full h-full overflow-auto whitespace-nowrap',
-    className
+    className,
   )
 }
 
@@ -16,7 +16,7 @@ function tableCssClass({ className }: Props) {
 function tableRowCssClass({ className }: Props) {
   return cn(
     'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
-    className
+    className,
   )
 }
 
@@ -27,7 +27,7 @@ function tableHeaderCssClass({ className }: Props) {
 function tableHeadCssClass({ className }: Props) {
   return cn(
     'h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
-    className
+    className,
   )
 }
 
@@ -38,7 +38,7 @@ function tableFooterCssClass({ className }: Props) {
 function tableCellCssClass({ className }: Props) {
   return cn(
     'p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
-    className
+    className,
   )
 }
 

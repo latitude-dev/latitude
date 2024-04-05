@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useQuery, init as initQueries } from './queries'
 import { type ViewParams } from './viewParams'
 import { get, Writable, writable } from 'svelte/store'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 // @ts-expect-error - This imported functions are defined in the mock below, but not in the actual file
 import { resetQueryState, mockFetchFn } from '@latitude-data/client'
@@ -10,7 +10,7 @@ import { setViewParam } from './viewParams'
 
 vi.mock('$app/environment', () => {
   return {
-    browser: true
+    browser: true,
   }
 })
 
@@ -28,7 +28,7 @@ vi.mock('@latitude-data/client', () => {
     fetch: mockFetchFn,
   }
   let queryState: Writable<MockQueryState>
-  
+
   return {
     store: {
       subscribe: vi.fn((subscription) => {
@@ -39,7 +39,10 @@ vi.mock('@latitude-data/client', () => {
         queryState.update(updater)
       }),
     },
-    createQueryKey: (queryPath: string, params: Record<string, unknown>): string => {
+    createQueryKey: (
+      queryPath: string,
+      params: Record<string, unknown>,
+    ): string => {
       return queryPath + JSON.stringify(params)
     },
     resetQueryState: () => {
@@ -61,7 +64,7 @@ vi.mock('./viewParams', () => {
         params[key] = value
         return params
       })
-    })
+    }),
   }
 })
 

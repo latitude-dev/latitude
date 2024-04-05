@@ -3,15 +3,12 @@ import type { DatasetOption } from 'echarts/types/dist/shared'
 import { DBSource, DBSourceColumn, DBSourceRow, Dataset } from '../../types'
 
 function calculatePercentage(row: DBSourceRow) {
-  const total = row.reduce(
-    (sum, value) => {
-      const maybeNum = Number(value)
-      if (isNaN(maybeNum)) return sum
+  const total = row.reduce((sum, value) => {
+    const maybeNum = Number(value)
+    if (isNaN(maybeNum)) return sum
 
-      return Number(sum) + maybeNum
-    },
-    0,
-  ) as number
+    return Number(sum) + maybeNum
+  }, 0) as number
 
   if (total === 0) {
     return row.map((val) => {
@@ -49,19 +46,20 @@ function convertToNumberMaybe(item: DBSourceColumn) {
 }
 
 function normalizeValues(source: DBSource, normalizeValues = false) {
-  if (!normalizeValues) return source.map((row) => row.map(convertToNumberMaybe))
+  if (!normalizeValues)
+    return source.map((row) => row.map(convertToNumberMaybe))
 
   return source.map(calculatePercentage)
 }
 
 function completeSortItem(sort: string | SortItem): TransformedSort {
-  if (typeof sort === 'string') return { dimension: sort, order: 'asc'}
+  if (typeof sort === 'string') return { dimension: sort, order: 'asc' }
 
   return {
     dimension: sort.column,
     order: sort.order,
     parser: sort.parser,
-    incomparable: sort.incomparable
+    incomparable: sort.incomparable,
   }
 }
 
@@ -72,7 +70,10 @@ function parseSort(sort: Sort | undefined): TransformedSort[] {
   return [completeSortItem(sort)]
 }
 
-export function getDataset(props: Props): { datasets: DatasetOption[], datasetIndex: number } {
+export function getDataset(props: Props): {
+  datasets: DatasetOption[]
+  datasetIndex: number
+} {
   const { fields, source } = props.dataset
   const sort = parseSort(props.sort)
   const dataset = {
@@ -82,10 +83,7 @@ export function getDataset(props: Props): { datasets: DatasetOption[], datasetIn
 
   if (!sort.length) return { datasets: [dataset], datasetIndex: 0 }
 
-  const datasets = [
-    dataset,
-    { transform: { type: 'sort', config: sort } }
-  ]
+  const datasets = [dataset, { transform: { type: 'sort', config: sort } }]
 
   return {
     datasets,

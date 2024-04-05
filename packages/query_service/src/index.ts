@@ -26,7 +26,10 @@ export class SourceFileNotFoundError extends NotFoundError {
   }
 }
 
-export default async function findQueryFile(queriesDir: string, filePath: string): Promise<Result> {
+export default async function findQueryFile(
+  queriesDir: string,
+  filePath: string,
+): Promise<Result> {
   let sourcePath
   const queryPath = path.join(queriesDir, filePath) + '.sql'
 
@@ -44,7 +47,7 @@ export default async function findQueryFile(queriesDir: string, filePath: string
     // Try to find a .yml file in the current directory
     const files = await fs.readdir(currentDir)
     const ymlFile = files.find(
-      (file) => file.endsWith('.yml') || file.endsWith('.yaml')
+      (file) => file.endsWith('.yml') || file.endsWith('.yaml'),
     )
 
     if (ymlFile) {

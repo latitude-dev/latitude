@@ -14,7 +14,7 @@ export type LatitudeApiConfig = {
 export class ApiError extends Error {
   constructor(
     message: string,
-    public status: number
+    public status: number,
   ) {
     super(message)
   }
@@ -59,7 +59,7 @@ export class LatitudeApi {
   async get<T>(
     urlStr: string,
     params: AnyObject = {},
-    additionalHeaders: Record<string, string> = {}
+    additionalHeaders: Record<string, string> = {},
   ): Promise<T> {
     const url = this.buildUrl(`${urlStr}`, params)
     const init = {
@@ -99,7 +99,7 @@ export class LatitudeApi {
     headers.append('Accept', 'application/json')
 
     Object.keys(customHeaders).forEach((key) =>
-      headers.append(key, customHeaders[key]!)
+      headers.append(key, customHeaders[key]!),
     )
 
     return headers

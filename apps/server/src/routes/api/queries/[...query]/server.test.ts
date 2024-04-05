@@ -19,8 +19,8 @@ mockedCompileQuery.mockReturnValue(
     resolve({
       compiledQuery: 'SELECT * FROM winterfell',
       resolvedParams: [],
-    })
-  )
+    }),
+  ),
 )
 vi.mock('@latitude-data/connector-factory', () => ({
   createConnector: () => ({
@@ -69,7 +69,7 @@ describe('GET endpoint', () => {
 
   it('should return 404 status if the query file is not found', async () => {
     mockedFindQueryFile.mockRejectedValue(
-      new QueryNotFoundError('Query file not found')
+      new QueryNotFoundError('Query file not found'),
     )
     const response = await GET({
       params: { query: 'testQuery' },

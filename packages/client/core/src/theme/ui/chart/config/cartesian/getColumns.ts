@@ -30,7 +30,7 @@ function filterByWildcard(fields: string[], column: string) {
   const isStart = column.startsWith('*')
   const name = column.replace('*', '')
   return fields.filter((field) =>
-    isStart ? field.endsWith(name) : field.startsWith(name)
+    isStart ? field.endsWith(name) : field.startsWith(name),
   )
 }
 
@@ -46,7 +46,7 @@ function completeStringColumn({
   if (!isWildcard(column)) return buildColumnString(column, chartType)
 
   return filterByWildcard(fields, column).map((c) =>
-    buildColumnString(c, chartType)
+    buildColumnString(c, chartType),
   )
 }
 
@@ -80,7 +80,7 @@ export function getColumns({
 }): FullColumn[] {
   if (Array.isArray(column)) {
     return flatten(
-      column.map((c) => completeColumn({ column: c, chartType, fields }))
+      column.map((c) => completeColumn({ column: c, chartType, fields })),
     )
   }
 

@@ -99,7 +99,7 @@ describe('useQuery', () => {
       callback: (forced) => {
         // Inspect the callback to see if the fetch was forced
         wasForced = forced
-      }
+      },
     })
 
     // Refetch data forcing it

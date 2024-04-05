@@ -1,5 +1,5 @@
-import path from 'path';
-import { defineConfig } from 'vite';
+import path from 'path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   mode: 'test',
@@ -23,4 +23,4 @@ export default defineConfig({
     },
     minify: false,
   },
-});
+})

@@ -1,63 +1,67 @@
 // @ts-expect-error - no types for this package
 import { isIdentifierStart } from 'acorn'
-import fullCharCodeAt from '../utils/full_char_code_at';
+import fullCharCodeAt from '../utils/full_char_code_at'
 import {
   isBracketOpen,
   isBracketClose,
   isBracketPair,
-  getBracketClose
-} from '../utils/bracket';
-import { parseExpressionAt } from '../utils/acorn';
-import PARSER_ERRORS from '../../error/errors';
-import { Parser } from '..';
-import type CompileError from '../../error/error';
-import { Pattern } from 'estree';
+  getBracketClose,
+} from '../utils/bracket'
+import { parseExpressionAt } from '../utils/acorn'
+import PARSER_ERRORS from '../../error/errors'
+import { Parser } from '..'
+import type CompileError from '../../error/error'
+import { Pattern } from 'estree'
 
-export default function readContext(parser: Parser): Pattern & { start: number; end: number } {
-  const start = parser.index;
-  let i = parser.index;
+export default function readContext(
+  parser: Parser,
+): Pattern & { start: number; end: number } {
+  const start = parser.index
+  let i = parser.index
 
-  const code = fullCharCodeAt(parser.template, i);
+  const code = fullCharCodeAt(parser.template, i)
   if (isIdentifierStart(code, true)) {
     return {
       type: 'Identifier',
       name: parser.readIdentifier()!,
       start,
-      end: parser.index
-    };
+      end: parser.index,
+    }
   }
 
   if (!isBracketOpen(code)) {
-    parser.error(PARSER_ERRORS.unexpectedTokenDestructure);
+    parser.error(PARSER_ERRORS.unexpectedTokenDestructure)
   }
 
-  const bracketStack: number[] = [code];
-  i += code <= 0xffff ? 1 : 2;
+  const bracketStack: number[] = [code]
+  i += code <= 0xffff ? 1 : 2
 
   while (i < parser.template.length) {
-    const code = fullCharCodeAt(parser.template, i);
+    const code = fullCharCodeAt(parser.template, i)
     if (isBracketOpen(code)) {
-      bracketStack.push(code);
+      bracketStack.push(code)
     } else if (isBracketClose(code)) {
       if (!isBracketPair(bracketStack[bracketStack.length - 1]!, code)) {
         parser.error(
           PARSER_ERRORS.unexpectedToken(
-            String.fromCharCode(getBracketClose(bracketStack[bracketStack.length - 1]!) ?? 0)
-          )
-        );
+            String.fromCharCode(
+              getBracketClose(bracketStack[bracketStack.length - 1]!) ?? 0,
+            ),
+          ),
+        )
       }
-      bracketStack.pop();
+      bracketStack.pop()
       if (bracketStack.length === 0) {
-        i += code <= 0xffff ? 1 : 2;
-        break;
+        i += code <= 0xffff ? 1 : 2
+        break
       }
     }
-    i += code <= 0xffff ? 1 : 2;
+    i += code <= 0xffff ? 1 : 2
   }
 
-  parser.index = i;
+  parser.index = i
 
-  const patternString = parser.template.slice(start, i);
+  const patternString = parser.template.slice(start, i)
   try {
     // the length of the `space_with_newline` has to be start - 1
     // because we added a `(` in front of the pattern_string,
@@ -67,20 +71,24 @@ export default function readContext(parser: Parser): Pattern & { start: number; 
     // so it will not affect the `column` of the node
     let spaceWithNewLine = parser.template
       .slice(0, start)
-      .replace(/[^\n]/g, ' ');
-    const firstSpace = spaceWithNewLine.indexOf(' ');
+      .replace(/[^\n]/g, ' ')
+    const firstSpace = spaceWithNewLine.indexOf(' ')
     spaceWithNewLine =
-      spaceWithNewLine.slice(0, firstSpace) + spaceWithNewLine.slice(firstSpace + 1);
+      spaceWithNewLine.slice(0, firstSpace) +
+      spaceWithNewLine.slice(firstSpace + 1)
 
-    return parseExpressionAt(`${spaceWithNewLine}(${patternString} = 1)`, start - 1).left;
+    return parseExpressionAt(
+      `${spaceWithNewLine}(${patternString} = 1)`,
+      start - 1,
+    ).left
   } catch (error) {
-    parser.acornError(error as CompileError);
+    parser.acornError(error as CompileError)
   }
 
   return {
     type: 'Identifier',
     name: '',
     start: parser.index,
-    end: parser.index
-  };
+    end: parser.index,
+  }
 }

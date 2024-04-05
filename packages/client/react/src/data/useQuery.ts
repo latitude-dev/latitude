@@ -11,7 +11,10 @@ import { QueryResultPayload } from '@latitude-data/query_result'
 type Props = {
   queryPath: string
   params?: QueryParams
-  tanstaskQueryOptions?: Omit<UseQueryOptions<QueryResultPayload>, 'queryKey' | 'queryFn'>
+  tanstaskQueryOptions?: Omit<
+    UseQueryOptions<QueryResultPayload>,
+    'queryKey' | 'queryFn'
+  >
 }
 export function useQuery({
   queryPath,
@@ -47,6 +50,6 @@ export function useQuery({
   return {
     ...query,
     compute,
-    isFetching: query.isFetching || isComputing
+    isFetching: query.isFetching || isComputing,
   }
 }

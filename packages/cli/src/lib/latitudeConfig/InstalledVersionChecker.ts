@@ -6,13 +6,7 @@ export default class InstalledVersionChecker {
   public installed: string | null = null
   public config: string | null = null
 
-  constructor({
-    cwd,
-    configVersion,
-  }: {
-    cwd: string
-    configVersion: string
-  }) {
+  constructor({ cwd, configVersion }: { cwd: string; configVersion: string }) {
     this.installed = getInstalledVersion(cwd)
     this.config = configVersion
   }

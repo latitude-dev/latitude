@@ -18,7 +18,6 @@ type ComposedComponent = typeof Text & {
   H5B: typeof H5B
   H6: typeof H6
 }
-
 ;(Text as ComposedComponent).H1 = H1
 ;(Text as ComposedComponent).H2 = H2
 ;(Text as ComposedComponent).H3 = H3

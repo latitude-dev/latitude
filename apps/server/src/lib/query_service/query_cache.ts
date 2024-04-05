@@ -18,7 +18,7 @@ class QueryCache {
 
   public set(
     { query, params }: { query: string; params: ResolvedParam[] },
-    queryResult: QueryResult
+    queryResult: QueryResult,
   ) {
     this.cache.set(this.createKey({ query, params }), queryResult.toJSON())
   }

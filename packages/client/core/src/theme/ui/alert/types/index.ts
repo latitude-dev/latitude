@@ -61,9 +61,9 @@ export const useType = ({
   type,
   secondary = false,
 }: {
-    type: AlertyType
-    secondary: boolean
-  }): AlertColor => {
+  type: AlertyType
+  secondary: boolean
+}): AlertColor => {
   const mode = secondary ? 'secondary' : 'normal'
 
   const typeConfig = TYPES[type]

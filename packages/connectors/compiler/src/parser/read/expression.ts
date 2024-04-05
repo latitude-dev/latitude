@@ -1,35 +1,35 @@
-import { Parser } from "..";
-import { parseExpressionAt } from "../utils/acorn"
-import PARSER_ERRORS from "../../error/errors"
-import CompileError from "../../error/error";
+import { Parser } from '..'
+import { parseExpressionAt } from '../utils/acorn'
+import PARSER_ERRORS from '../../error/errors'
+import CompileError from '../../error/error'
 
 export default function readExpression(parser: Parser) {
   try {
-    const node = parseExpressionAt(parser.template, parser.index);
+    const node = parseExpressionAt(parser.template, parser.index)
 
-    let numParenthesis = 0;
+    let numParenthesis = 0
 
     for (let i = parser.index; i < node.start; i += 1) {
-      if (parser.template[i] === '(') numParenthesis += 1;
+      if (parser.template[i] === '(') numParenthesis += 1
     }
 
-    let index = node.end;
+    let index = node.end
     while (numParenthesis > 0) {
       const char = parser.template[index]
 
       if (char === ')') {
-        numParenthesis -= 1;
+        numParenthesis -= 1
       } else if (!/\s/.test(char!)) {
-        parser.error(PARSER_ERRORS.unexpectedToken(')'), index);
+        parser.error(PARSER_ERRORS.unexpectedToken(')'), index)
       }
 
-      index += 1;
+      index += 1
     }
 
-    parser.index = index;
+    parser.index = index
 
-    return node;
+    return node
   } catch (err) {
-    parser.acornError(err as CompileError);
+    parser.acornError(err as CompileError)
   }
 }

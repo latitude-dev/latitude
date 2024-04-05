@@ -11,7 +11,7 @@ export const colors = {
     yellow50: 'bg-yellow-50',
     yellow400: 'bg-yellow-400',
     muted: 'bg-muted',
-    mutedForeground: 'bg-muted-foreground'
+    mutedForeground: 'bg-muted-foreground',
   },
   textColors: {
     white: 'text-white',
