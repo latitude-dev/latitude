@@ -15,15 +15,16 @@ export type Field = {
   type: DataType
 }
 
+export type ResultRow = unknown[]
 type Props = {
   fields?: Field[]
-  rows?: unknown[][]
+  rows?: ResultRow[]
   rowCount?: number
 }
 
 export type QueryResultPayload = {
   fields: Field[]
-  rows: unknown[][]
+  rows: ResultRow[]
   rowCount: number
 }
 

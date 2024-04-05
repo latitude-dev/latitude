@@ -10,7 +10,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { type QueryResultPayload, useQuery } from '@latitude-data/react'
-import MovieListSkeleton from '@/MovieListSkeleton'
+import MovieListSkeleton from './MovieListSkeleton'
 
 function MovieList({ movies }: { movies: QueryResultPayload }) {
   return (
@@ -35,7 +35,7 @@ function MovieList({ movies }: { movies: QueryResultPayload }) {
   )
 }
 
-export default function Example() {
+export default function UseQuery() {
   const {
     data: movies,
     isFetching,
@@ -48,8 +48,7 @@ export default function Example() {
   const refresh = useCallback(() => compute(), [compute])
 
   return (
-    <div className='p-4 flex flex-col gap-y-4'>
-      <h1 className='text-4xl font-medium'>React example with Latitude</h1>
+    <div className='flex flex-col gap-y-2'>
       <Button onClick={refresh}>Refresh</Button>
 
       <Table>
