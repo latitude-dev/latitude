@@ -1,5 +1,13 @@
 # @latitude-data/server
 
+## 0.7.1
+
+### Patch Changes
+
+- b789703: Fixes left alignment of popover in select component
+- Updated dependencies [b789703]
+  - @latitude-data/svelte@0.5.3
+
 ## 0.7.0
 
 ### Minor Changes
