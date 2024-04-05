@@ -4,6 +4,8 @@ const EXTERNAL_DEPENDENCIES = [
   '@latitude-data/client',
   '@latitude-data/query_result',
   '@tanstack/react-query',
+  'react/jsx-runtime',
+  'react'
 ]
 
 export default [
