@@ -10,10 +10,11 @@ type ILatitude = { api: LatitudeApi }
 const LatitudeContext = createContext<ILatitude>({ api: new LatitudeApi() })
 
 import { LatitudeApiConfig } from '@latitude-data/client'
+import { Field, ResultRow } from '@latitude-data/query_result'
 
 export const EMPTY_PAYLOAD = {
-  fields: [],
-  rows: [],
+  fields: [] as Field[],
+  rows: [] as ResultRow[],
   rowCount: 0,
 }
 export const useLatitude = () => {
