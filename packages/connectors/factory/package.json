@@ -29,6 +29,7 @@
     "@latitude-data/athena-connector": "workspace:^",
     "@latitude-data/base-connector": "workspace:*",
     "@latitude-data/bigquery-connector": "workspace:^",
+    "@latitude-data/clickhouse-connector": "workspace:^",
     "@latitude-data/databricks-connector": "workspace:^",
     "@latitude-data/duckdb-connector": "workspace:^",
     "@latitude-data/mssql-connector": "workspace:^",

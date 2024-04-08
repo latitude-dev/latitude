@@ -1,8 +1,59 @@
 ---
 title: 'Clickhouse'
-description: 'How to configure your Clickhouse database'
+description: 'How to configure your ClickHouse database'
 ---
+
+## How to configure sources
+
+The sources files must be inside the `queries/` folder.
+
+<Note>
+  To know how the source hierarchy works, please, visit [How to configure
+  sources](../sources/how-to-configure-sources).
+</Note>
 
 ## Configuration
 
-This connector uses the PostgreSQL connector under the hood, so please [follow that documentation](/sources/postgresql).
+To configure the connection with your your ClickHouse database follow these steps:
+
+<Steps>
+  <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
+    ``` /queries/source.yml ```
+  </Step>
+  <Step title='Add the following code for your ClickHouse connection'>
+    ``` yaml 
+    type: clickhouse 
+    details: 
+      url: string
+      username: string
+      password: string
+      database: string
+    ```
+  </Step>
+  <Step title='Replace the details section with your info and save'></Step>
+  <Step title='Done, now you can test your connection'></Step>
+</Steps>
+
+## Attributes
+
+Usually, you may only need to set the `url`, `username`, `password`, and `database` attributes. However, for more advanced configurations, here's the list of all available attributes:
+
+- **url** → The URL of your ClickHouse instance. Example: `https://latitude.server.aws.clickhouse.cloud:8443`
+- **pathname** → An optional pathname to add to the ClickHouse URL after it is parsed by the client. Default value: `''`.
+- **request_timeout** → The request timeout in milliseconds. Default value: `30_000`.
+- **username** → The name of the user on whose behalf requests are made. Default value: `default`.
+- **password** → The user password. Default value: `''`.
+- **database** → The name of the database to connect to. Default value: `default`.
+- **session_id** → An optional ClickHouse Session ID to send with every request.
+- **clickhouse_settings** → An additional dictionary of settings to pass to the ClickHouse client. Check out the [official ClickHouse API docs](https://clickhouse.com/docs/en/integrations/language-clients/javascript#configuration) for more information about it. Default value: `{}`.
+- **tls** → An optional dictionary of TLS settings. Default value: `{}`.
+  - **ca_cert** → The path to the CA certificate file.
+  - **cert** → The path to the client certificate file.
+  - **key** → The path to the client key file.
+
+## Test connection
+
+To test the connection you can:
+
+1. Create a query `.sql` in the `queries` directory that points to a table of your new connection in the `FROM` clause. See the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to learn more.
+2. Use the command line to run `latitude run query_file_name` where `query_file_name` is the name of your `.sql` file. This will display the results in your terminal. See the section [Running queries](../guides/development/latitude-cli#running-queries) to learn more about how to query your data.
