@@ -1,0 +1,33 @@
+{
+  "name": "@latitude-data/clickhouse-connector",
+  "version": "0.0.0",
+  "license": "LGPL",
+  "description": "ClickHouse connector for Latitude",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "prettier": "prettier --write src/**/*.ts"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.10.6",
+    "rollup": "^4.10.0",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.4.0"
+  },
+  "dependencies": {
+    "@clickhouse/client": "^1.0.1",
+    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/query_result": "workspace:^"
+  }
+}

@@ -12,6 +12,7 @@ import { PostgresConnector } from '@latitude-data/postgresql-connector'
 import { SnowflakeConnector } from '@latitude-data/snowflake-connector'
 import { SqliteConnector } from '@latitude-data/sqlite-connector'
 import { TrinoConnector } from '@latitude-data/trino-connector'
+import { ClickHouseConnector } from '@latitude-data/clickhouse-connector'
 
 import { type BaseConnector } from '@latitude-data/base-connector'
 
@@ -63,8 +64,9 @@ export function createConnector(sourcePath: string): BaseConnector {
   switch (type) {
     case ConnectorType.Postgres:
     case ConnectorType.Redshift:
-    case ConnectorType.Clickhouse:
       return new PostgresConnector(path.dirname(sourcePath), details)
+    case ConnectorType.Clickhouse:
+      return new ClickHouseConnector(path.dirname(sourcePath), details)
     case ConnectorType.Bigquery:
       return new BigQueryConnector(path.dirname(sourcePath), details)
     case ConnectorType.Mysql:
