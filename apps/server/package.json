@@ -17,6 +17,7 @@
     "query": "vite-node scripts/run_query/index.ts"
   },
   "devDependencies": {
+    "@latitude-data/base-connector": "workspace:*",
     "@latitude-data/client": "workspace:*",
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/query_result": "workspace:*",

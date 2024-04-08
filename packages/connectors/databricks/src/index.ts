@@ -23,8 +23,6 @@ export type ConnectionParams = {
 
 export class DatabricksConnector extends BaseConnector {
   private client: DBSQLClient
-  private connectionOptions: ConnectionOptions
-  private isConnected: boolean = false
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
@@ -32,8 +30,9 @@ export class DatabricksConnector extends BaseConnector {
     const { host, port, path } = connectionParams
     const connection = { host, port, path }
 
+    let connectionOptions: ConnectionOptions
     if (connectionParams.token) {
-      this.connectionOptions = {
+      connectionOptions = {
         ...connection,
         authType: 'access-token',
         token: connectionParams.token,
@@ -42,7 +41,7 @@ export class DatabricksConnector extends BaseConnector {
       connectionParams.oauthClientId &&
       connectionParams.oauthClientSecret
     ) {
-      this.connectionOptions = {
+      connectionOptions = {
         ...connection,
         authType: 'databricks-oauth',
         oauthClientId: connectionParams.oauthClientId,
@@ -53,16 +52,12 @@ export class DatabricksConnector extends BaseConnector {
         'Invalid connection parameters. Provide either a token or OAuth client ID and secret.',
       )
     }
+
+    this.client.connect(connectionOptions)
   }
 
-  async connect(): Promise<void> {
-    this.client.connect(this.connectionOptions)
-    this.isConnected = true
-  }
-
-  async disconnect(): Promise<void> {
-    this.client.close()
-    this.isConnected = false
+  end(): Promise<void> {
+    return this.client.close()
   }
 
   resolve(value: unknown, index: number): ResolvedParam {
@@ -82,8 +77,6 @@ export class DatabricksConnector extends BaseConnector {
   }
 
   async runQuery(request: CompiledQuery): Promise<QueryResult> {
-    if (!this.isConnected) await this.connect()
-
     const session = await this.client.openSession()
     const queryOperation = await session.executeStatement(request.sql, {
       namedParameters: request.params.reduce((acc, param, index) => {

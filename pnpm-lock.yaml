@@ -48,6 +48,9 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
+      '@latitude-data/base-connector':
+        specifier: workspace:*
+        version: link:../../packages/connectors/base
       '@latitude-data/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
@@ -680,6 +683,8 @@ importers:
       puppeteer:
         specifier: ^21.9.0
         version: 21.11.0
+
+  packages/client/webcomponents/loader: {}
 
   packages/connectors/athena:
     dependencies:
@@ -20637,6 +20642,9 @@ packages:
   /sqlite3@5.1.7:
     resolution: {integrity: sha512-GGIyOiFaG+TUra3JIfkI/zGP8yZYLPQ0pl1bH+ODjiX57sPhrLU5sQJn1y9bDKZUFYkX1crlrPfSYt0BKKdkog==}
     requiresBuild: true
+    peerDependenciesMeta:
+      node-gyp:
+        optional: true
     dependencies:
       bindings: 1.5.0
       node-addon-api: 7.1.0

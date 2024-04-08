@@ -9,6 +9,7 @@ import { readFileSync } from 'fs'
 import { ClickHouseSettings, createClient } from '@clickhouse/client'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { NodeClickHouseClientConfigOptions } from '@clickhouse/client/dist/config'
+import { NodeClickHouseClient } from '@clickhouse/client/dist/client'
 
 export type TLSOptions = {
   ca_cert: string
@@ -29,7 +30,7 @@ export type ConnectionParams = {
 }
 
 export class ClickHouseConnector extends BaseConnector {
-  private client
+  private client: NodeClickHouseClient
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
@@ -39,6 +40,10 @@ export class ClickHouseConnector extends BaseConnector {
     } catch (error) {
       throw new ConnectionError((error as Error).message)
     }
+  }
+
+  async end(): Promise<void> {
+    await this.client.close()
   }
 
   resolve(value: unknown, id: number): ResolvedParam {

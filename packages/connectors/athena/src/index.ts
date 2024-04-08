@@ -14,14 +14,15 @@ import {
 } from '@latitude-data/base-connector'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 
-interface AthenaQueryClientConfig {
-  client: {
-    region?: string
-    credentials?: {
-      accessKeyId: string
-      secretAccessKey: string
-    }
+type AthenaQueryClientOptions = {
+  region?: string
+  credentials?: {
+    accessKeyId: string
+    secretAccessKey: string
   }
+}
+interface AthenaQueryClientConfig {
+  client: AthenaQueryClientOptions
   database: string
   catalog: string
   workgroup: string
@@ -49,12 +50,17 @@ export class AthenaConnector extends BaseConnector {
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
 
-    this.client = new AthenaClient(connectionParams.client)
     this.database = connectionParams.database || this.database
     this.catalog = connectionParams.catalog || this.catalog
     this.workgroup = connectionParams.workgroup || this.workgroup
     this.resultReuseConfiguration =
       connectionParams.resultReuseConfiguration || this.resultReuseConfiguration
+
+    this.client = new AthenaClient(connectionParams.client)
+  }
+
+  async end(): Promise<void> {
+    this.client.destroy()
   }
 
   resolve(value: unknown, _: number): ResolvedParam {

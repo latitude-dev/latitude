@@ -12,12 +12,17 @@ export type ConnectionParams = {
 }
 
 export class DuckdbConnector extends BaseConnector {
+  private client?: Database
   private url: string
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
-
     this.url = connectionParams.url || ':memory:'
+  }
+
+  end(): Promise<void> {
+    if (this.client) return this.client.close()
+    return Promise.resolve()
   }
 
   resolve(value: unknown): ResolvedParam {
@@ -27,13 +32,17 @@ export class DuckdbConnector extends BaseConnector {
     }
   }
 
+  private async createClient(): Promise<void> {
+    this.client = await Database.create(
+      this.url,
+      this.url === ':memory:' ? OPEN_READWRITE : OPEN_READONLY,
+    )
+  }
+
   async runQuery(query: CompiledQuery): Promise<QueryResult> {
     try {
-      const client = await Database.create(
-        this.url,
-        this.url === ':memory:' ? OPEN_READWRITE : OPEN_READONLY,
-      )
-      const conn = await client.connect()
+      if (!this.client) await this.createClient()
+      const conn = await this.client!.connect()
 
       let results = []
       if (query.params.length > 0) {

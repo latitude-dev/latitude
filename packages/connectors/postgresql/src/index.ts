@@ -30,11 +30,10 @@ export type ConnectionParams = {
 }
 
 export class PostgresConnector extends BaseConnector {
-  private pool
+  private pool: pg.Pool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
-
     this.pool = new Pool(this.buildConnectionParams(connectionParams))
 
     if (connectionParams.schema) {
@@ -42,6 +41,10 @@ export class PostgresConnector extends BaseConnector {
         client.query(`SET search_path TO ${connectionParams.schema}`)
       })
     }
+  }
+
+  end(): Promise<void> {
+    return this.pool.end()
   }
 
   resolve(value: unknown, index: number): ResolvedParam {

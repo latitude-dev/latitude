@@ -23,12 +23,16 @@ export type ConnectionParams = {
 }
 
 export class MssqlConnector extends BaseConnector {
-  private pool
+  private pool: sql.ConnectionPool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
 
     this.pool = new sql.ConnectionPool(connectionParams)
+  }
+
+  end(): Promise<void> {
+    return this.pool.close()
   }
 
   resolve(value: unknown, index: number): ResolvedParam {
