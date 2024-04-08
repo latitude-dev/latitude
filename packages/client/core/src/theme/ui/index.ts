@@ -18,6 +18,7 @@ import * as command from './command'
 import * as dialog from './dialog'
 import * as combobox from './combobox'
 import * as scrollArea from './scroll-area'
+import downloadTooltip from './downloadTooltip'
 import table from './table'
 
 export {
@@ -42,4 +43,5 @@ export {
   dialog,
   combobox,
   scrollArea,
+  downloadTooltip,
 }

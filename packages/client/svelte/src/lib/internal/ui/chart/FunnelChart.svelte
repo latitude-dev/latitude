@@ -31,9 +31,11 @@
   export let showLabels: $$Props['showLabels'] = true
   export let showDecal: $$Props['showDecal'] = false
   export let showLegend: $$Props['showLegend'] = false
+  export let download: $$Props['download'] = undefined
 </script>
 
 <Wrapper
+  {download}
   {data}
   {title}
   {description}

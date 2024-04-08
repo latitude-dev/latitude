@@ -1,14 +1,18 @@
 import { format } from '@latitude-data/custom_types'
 import { QueryParams } from '../stores/queries'
+import {
+  DOWNLOAD_PARAM,
+  FORCE_REFETCH_PARAM,
+  PRIVATE_PARAMS,
+} from '../constants'
 import { QueryResultPayload } from '@latitude-data/query_result'
-import { FORCE_REFETCH_PARAM, PRIVATE_PARAMS } from '../constants'
+
 type AnyObject = { [key: string]: unknown }
 type ApiErrorItem = { title: string; detail: string }
 
 export type LatitudeApiConfig = {
   host?: string
   cors?: RequestMode
-  customHeaders?: Record<string, string>
 }
 
 export class ApiError extends Error {
@@ -20,10 +24,14 @@ export class ApiError extends Error {
   }
 }
 
+const DEFAULT_HEADERS = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+}
+
 export class LatitudeApi {
   private host?: string
   private cors: RequestMode = 'cors'
-  private customHeaders: Record<string, string> = {}
 
   static buildParams(params: AnyObject): string {
     return Object.entries(params)
@@ -35,10 +43,9 @@ export class LatitudeApi {
       .join('&')
   }
 
-  constructor({ host, cors, customHeaders }: LatitudeApiConfig = {}) {
+  constructor({ host, cors }: LatitudeApiConfig = {}) {
     if (host !== undefined) this.host = host
     if (cors !== undefined) this.cors = cors
-    if (customHeaders) this.customHeaders = customHeaders
   }
 
   async getQuery({
@@ -49,29 +56,50 @@ export class LatitudeApi {
     queryPath: string
     params?: QueryParams
     force?: boolean
-  }) {
-    const queryParams = force
-      ? { ...params, [FORCE_REFETCH_PARAM]: 'true' }
-      : params
-    return this.get<QueryResultPayload>(`api/queries/${queryPath}`, queryParams)
+  }): Promise<QueryResultPayload> {
+    if (force) params[FORCE_REFETCH_PARAM] = true
+
+    return this.get(`api/queries/${queryPath}`, params).then(
+      this.handleRegularResponse,
+    )
   }
 
-  async get<T>(
+  async downloadQuery({
+    queryPath,
+    params = {},
+    force = false,
+  }: {
+    queryPath: string
+    params?: QueryParams
+    force?: boolean
+  }) {
+    return this.get(
+      `api/queries/${queryPath}`,
+      {
+        ...params,
+        [FORCE_REFETCH_PARAM]: force,
+        [DOWNLOAD_PARAM]: true,
+      },
+      {
+        Accept: 'text/csv',
+        ContentType: 'text/csv',
+      },
+    )
+      .then((res) => this.handleDownloadResponse(queryPath, res))
+      .catch((error) => {
+        throw new ApiError(error.message, 500)
+      })
+  }
+
+  private async get(
     urlStr: string,
     params: AnyObject = {},
-    additionalHeaders: Record<string, string> = {},
-  ): Promise<T> {
-    const url = this.buildUrl(`${urlStr}`, params)
-    const init = {
+    headers: Record<string, string> = DEFAULT_HEADERS,
+  ) {
+    return globalThis.window.fetch(this.buildUrl(`${urlStr}`, params).href, {
       method: 'GET',
-      headers: this.buildHeaders({
-        customHeaders: { ...this.customHeaders, ...additionalHeaders },
-      }),
+      headers: this.buildHeaders(headers),
       mode: this.cors,
-    } as RequestInit
-    return await this.request(async () => {
-      const res = await globalThis.window.fetch(url.href, init)
-      return this.handleResponse<T>(res)
     })
   }
 
@@ -87,34 +115,35 @@ export class LatitudeApi {
     return this.host ?? globalThis.location.origin
   }
 
-  private buildHeaders({
-    customHeaders,
-  }: {
-    data?: AnyObject
-    customHeaders: Record<string, string>
-  }): HeadersInit {
-    const headers = new Headers()
+  private buildHeaders(headers: Record<string, string> = DEFAULT_HEADERS) {
+    const h = new Headers()
 
-    headers.append('Content-Type', 'application/json')
-    headers.append('Accept', 'application/json')
-
-    Object.keys(customHeaders).forEach((key) =>
-      headers.append(key, customHeaders[key]!),
-    )
+    Object.keys(headers).forEach((key) => h.append(key, headers[key]!))
 
     return headers
   }
 
-  private async request<T>(fn: () => Promise<T>) {
-    return await fn()
+  private async handleDownloadResponse(name: string, response: Response) {
+    try {
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      const a = globalThis.document.createElement('a')
+      a.href = url
+      a.download = `${name}.csv`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      throw new ApiError((error as Error).message, 500)
+    }
   }
 
-  private async handleResponse<T>(response: Response): Promise<T> {
-    if (response.ok) return response.json()
+  private async handleRegularResponse(response: Response) {
+    if (response.ok) return response.json() as Promise<QueryResultPayload>
 
     let errorMessage = 'Unexpected API error'
     try {
       const contentType = response.headers.get('Content-Type')
+
       if (contentType && contentType.includes('application/json')) {
         const json = await response.json()
         if (json.errors) {

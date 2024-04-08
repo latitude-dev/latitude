@@ -14,13 +14,12 @@ const CORS = {
   },
   headers: {
     name: 'Access-Control-Allow-Headers',
-    value: 'Content-Type, Accept',
+    value: '*',
   },
 }
 export const handle: Handle = async ({ event, resolve }) => {
   const response = await resolve(event)
 
-  // If you need to handle preflight (OPTIONS) requests:
   if (event.request.method.toUpperCase() === 'OPTIONS') {
     return new Response(null, {
       status: 200,

@@ -22,6 +22,7 @@ export function useQuery({
   tanstaskQueryOptions = { enabled: true },
 }: Props) {
   const [isComputing, setComputing] = useState(false)
+  const [isDownloading, setDownloading] = useState(false)
   const queryClient = useQueryClient()
   const { api } = useLatitude()
   const queryKeyProp = useMemo(
@@ -31,7 +32,7 @@ export function useQuery({
   const query = useReactQuery({
     ...tanstaskQueryOptions,
     queryKey: queryKeyProp,
-    queryFn: async () => api.getQuery({ queryPath, params, force: false }),
+    queryFn: async () => api.getQuery({ queryPath, params }),
   })
 
   const compute = useCallback(async () => {
@@ -40,16 +41,36 @@ export function useQuery({
     try {
       const data = await api.getQuery({ queryPath, params, force: true })
       queryClient.setQueryData(queryKeyProp, data)
-    } catch {
-      // Do nothing
+    } catch (e) {
+      console.error(e)
     } finally {
       setComputing(false)
     }
-  }, [queryClient, queryKeyProp])
+  }, [api, queryClient, queryKeyProp, queryPath, params])
+
+  const download = useCallback(
+    async ({ force = false }: { force?: boolean } = { force: false }) => {
+      setDownloading(true)
+
+      try {
+        await api.downloadQuery({
+          queryPath,
+          params: { ...params, __force: force },
+        })
+      } catch (e) {
+        console.error(e)
+      } finally {
+        setDownloading(false)
+      }
+    },
+    [api, queryPath, params],
+  )
 
   return {
     ...query,
     compute,
+    download,
+    isDownloading,
     isFetching: query.isFetching || isComputing,
   }
 }

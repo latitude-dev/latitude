@@ -33,9 +33,11 @@
   export let xFormat: $$Props['xFormat'] = undefined
   export let yFormat: $$Props['yFormat'] = undefined
   export let config: $$Props['config'] = undefined
+  export let download: $$Props['download'] = undefined
 </script>
 
 <Wrapper
+  {download}
   {data}
   {title}
   {description}

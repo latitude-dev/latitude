@@ -3,10 +3,7 @@ import { fontFamily } from 'tailwindcss/defaultTheme'
 /** @type {import('tailwindcss').Config} */
 const config = {
   darkMode: ['class'],
-  content: [
-    './src/theme/ui/**/*.ts',
-    './src/theme/tokens/*.ts',
-  ],
+  content: ['./src/theme/ui/**/*.ts', './src/theme/tokens/*.ts'],
   safelist: ['dark'],
   theme: {
     container: {

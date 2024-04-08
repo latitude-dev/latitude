@@ -34,7 +34,6 @@ const buildServerProps = async ({
     verbose: config.verbose,
   }
   const latitudeJson = await findOrCreateConfigFile()
-
   const checker = new InstalledVersionChecker({
     cwd: config.rootDir,
     // TODO: Fix this. Version should never be undefined in reality.

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { useQuery } from './useQuery'
 import {
@@ -22,6 +22,10 @@ const USERS = {
 }
 
 describe('useQuery', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('returns a successful response', async () => {
     mockServerRequest({ path: 'some/path/users', payload: USERS })
 
@@ -108,6 +112,7 @@ describe('useQuery', () => {
     await waitFor(() => {
       expect(result.current.data).toMatchObject(USERS)
     })
+
     expect(wasForced).toBe(true)
   })
 

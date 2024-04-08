@@ -35,6 +35,8 @@
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
     "cross-fetch": "^4.0.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "jsdom": "^24.0.0",
     "msw": "^2.2.13",
     "prettier": "^3.1.1",

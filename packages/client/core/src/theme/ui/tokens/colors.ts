@@ -29,6 +29,7 @@ export const colors = {
     destructiveForeground: 'text-destructive-foreground',
     yellow900: 'text-yellow-900',
     green700: 'text-green-700',
+    gray800: 'text-gray-800',
   },
 }
 
