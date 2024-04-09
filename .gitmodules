@@ -7,3 +7,6 @@
 [submodule "examples/sample-clerk"]
 	path = examples/sample-clerk
 	url = https://github.com/latitude-dev/sample-authentication-clerk
+[submodule "examples/file-over-app"]
+	path = examples/file-over-app
+	url = git@github.com:latitude-dev/file-over-app.git
