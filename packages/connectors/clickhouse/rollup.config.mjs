@@ -17,5 +17,6 @@ export default {
     '@latitude-data/base-connector',
     '@latitude-data/query_result',
     'fs',
+    '@clickhouse/client',
   ],
 }

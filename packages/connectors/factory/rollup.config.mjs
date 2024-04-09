@@ -16,6 +16,7 @@ export default {
   external: [
     'svelte/compiler',
     '@latitude-data/athena-connector',
+    '@latitude-data/clickhouse-connector',
     '@latitude-data/postgresql-connector',
     '@latitude-data/bigquery-connector',
     '@latitude-data/mysql-connector',
