@@ -103,11 +103,11 @@ CLI.command('login')
   .option('--password', 'Account password')
   .action(loginCommand)
 
-CLI.command('poke').describe('Poke Latitude server').action(pokeCommand)
-
 CLI.command('logout')
   .describe('Logout an existing account')
   .action(logoutCommand)
+
+CLI.command('poke').describe('Poke Latitude server').action(pokeCommand)
 
 async function init() {
   const argv = CLI.parse(process.argv, { lazy: true })
