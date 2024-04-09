@@ -1,5 +1,16 @@
 # @latitude-data/react
 
+## 0.2.0
+
+### Minor Changes
+
+- bbd4f8a: useQuery exports a download function to download query result as csv
+
+### Patch Changes
+
+- Updated dependencies [bbd4f8a]
+  - @latitude-data/client@0.8.0
+
 ## 0.1.1
 
 ### Patch Changes

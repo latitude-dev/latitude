@@ -1,5 +1,20 @@
 # @latitude-data/server
 
+## 0.8.0
+
+### Minor Changes
+
+- bbd4f8a: Implements csv export to UI components
+
+### Patch Changes
+
+- 3094cb7: Manage client connection instance to allow running multiple queries in the same request.
+- Updated dependencies [bbd4f8a]
+- Updated dependencies [d66eecd]
+  - @latitude-data/svelte@0.6.0
+  - @latitude-data/client@0.8.0
+  - @latitude-data/connector-factory@0.2.0
+
 ## 0.7.1
 
 ### Patch Changes

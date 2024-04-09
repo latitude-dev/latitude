@@ -1,5 +1,12 @@
 # @latitude-data/bigquery-connector
 
+## 1.1.2
+
+### Patch Changes
+
+- Updated dependencies [3094cb7]
+  - @latitude-data/base-connector@1.0.3
+
 ## 1.1.1
 
 ### Patch Changes

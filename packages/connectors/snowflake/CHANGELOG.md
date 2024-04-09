@@ -1,5 +1,12 @@
 # @latitude-data/snowflake-connector
 
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [3094cb7]
+  - @latitude-data/base-connector@1.0.3
+
 ## 1.0.3
 
 ### Patch Changes

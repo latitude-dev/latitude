@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.8.0
+
+### Minor Changes
+
+- bbd4f8a: Implements csv export to UI components
+
 ## 0.7.0
 
 ### Minor Changes

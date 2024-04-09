@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/clickhouse-connector",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "LGPL",
   "description": "ClickHouse connector for Latitude",
   "scripts": {

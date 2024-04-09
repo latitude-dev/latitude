@@ -1,5 +1,16 @@
 # @latitude-data/svelte
 
+## 0.6.0
+
+### Minor Changes
+
+- bbd4f8a: Implements csv export to UI components
+
+### Patch Changes
+
+- Updated dependencies [bbd4f8a]
+  - @latitude-data/client@0.8.0
+
 ## 0.5.3
 
 ### Patch Changes

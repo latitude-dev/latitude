@@ -1,5 +1,13 @@
 # @latitude-data/mysql-connector
 
+## 1.1.3
+
+### Patch Changes
+
+- 3094cb7: Manage client connection instance to allow running multiple queries in the same request.
+- Updated dependencies [3094cb7]
+  - @latitude-data/base-connector@1.0.3
+
 ## 1.1.2
 
 ### Patch Changes
