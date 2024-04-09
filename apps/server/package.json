@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "svelte-kit sync && vite build",
+    "build:server": "svelte-kit sync && vite build",
+    "build:shutdownScript": "mv build/index.js build/server.js && cp scripts/shutdownOnDemand.js build/index.js",
+    "build": "npm run build:server && npm run build:shutdownScript",
     "preview": "vite preview",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "test": "svelte-kit sync && vitest --run",
