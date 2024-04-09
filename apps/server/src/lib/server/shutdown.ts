@@ -1,4 +1,4 @@
-import { clearAllConnector } from './connectorManager'
+import { clearAllConnectors } from './connectorManager'
 let isListening = false
 
 /**
@@ -9,7 +9,7 @@ let isListening = false
  * system stability, especially in production environments.
  */
 async function shutdown(): Promise<void> {
-  await clearAllConnector() // Manually close all open database connections
+  await clearAllConnectors() // Manually close all open database connections
 }
 
 export default function configureShutdownHandler(): void {

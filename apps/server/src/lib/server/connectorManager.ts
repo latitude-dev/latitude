@@ -16,6 +16,6 @@ export async function clearConnector(sourcePath: string): Promise<void> {
   delete connectors[sourcePath]
 }
 
-export async function clearAllConnector(): Promise<void> {
+export async function clearAllConnectors(): Promise<void> {
   await Promise.all(Object.keys(connectors).map(clearConnector))
 }
