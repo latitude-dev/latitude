@@ -1,9 +1,6 @@
 import config from '$src/config'
 import { IncomingMessage } from 'http'
-<<<<<<< HEAD
 import configStore from '../configStore'
-=======
->>>>>>> 5edb54ec (WIP)
 
 type Options = {
   path: string

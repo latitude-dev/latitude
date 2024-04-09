@@ -16,6 +16,7 @@ import signupCommand from './commands/signup'
 import logoutCommand from './commands/logout'
 import loginCommand from './commands/login'
 import pokeCommand from './commands/poke'
+import deployCommand from './commands/deploy'
 
 initSentry()
 
@@ -102,6 +103,10 @@ CLI.command('login')
   .option('--email', 'Account email')
   .option('--password', 'Account password')
   .action(loginCommand)
+
+CLI.command('deploy')
+  .describe('Deploy your Latitude app to the cloud')
+  .action(deployCommand)
 
 CLI.command('logout')
   .describe('Logout an existing account')
