@@ -1,14 +1,14 @@
-import { fileURLToPath } from 'url'
+import commonjs from '@rollup/plugin-commonjs'
 import fs from 'fs'
-import { config as dotenvConfig } from 'dotenv'
-import path from 'path'
-import { dirname, resolve as resolvePath } from 'path'
 import json from '@rollup/plugin-json'
-import { copy } from '@web/rollup-plugin-copy'
+import path from 'path'
+import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
-import commonjs from '@rollup/plugin-commonjs'
-import replace from '@rollup/plugin-replace'
+import { config as dotenvConfig } from 'dotenv'
+import { copy } from '@web/rollup-plugin-copy'
+import { dirname, resolve as resolvePath } from 'path'
+import { fileURLToPath } from 'url'
 
 const DIRNAME = dirname(fileURLToPath(import.meta.url))
 function getPackageVersion() {
@@ -52,10 +52,20 @@ export default {
     replace({
       'process.env.NODE_ENV': JSON.stringify(nodeEnv),
       'process.env.PACKAGE_VERSION': JSON.stringify(packageVersion),
-      'process.env.CLI_SENTRY_ENABLED': JSON.stringify(process.env.CLI_SENTRY_ENABLED),
+      'process.env.CLI_SENTRY_ENABLED': JSON.stringify(
+        process.env.CLI_SENTRY_ENABLED,
+      ),
       'process.env.CLI_SENTRY_DSN': JSON.stringify(process.env.CLI_SENTRY_DSN),
       'process.env.TELEMETRY_URL': JSON.stringify(process.env.TELEMETRY_URL),
-      'process.env.TELEMETRY_CLIENT_KEY': JSON.stringify(process.env.TELEMETRY_CLIENT_KEY),
+      'process.env.TELEMETRY_CLIENT_KEY': JSON.stringify(
+        process.env.TELEMETRY_CLIENT_KEY,
+      ),
+      'process.env.LATITUDE_SERVER_HOST': JSON.stringify(
+        process.env.LATITUDE_SERVER_HOST,
+      ),
+      'process.env.LATITUDE_SERVER_PORT': JSON.stringify(
+        process.env.LATITUDE_SERVER_PORT,
+      ),
       preventAssignment: true,
     }),
     json(),
@@ -82,7 +92,6 @@ export default {
     'configstore',
     'latest-version',
     '@sentry/node',
-    '@sentry/profiling-node',
-    '@latitude-data/connector-factory',
+    '@latitude-data/connector-factory'
   ],
 }

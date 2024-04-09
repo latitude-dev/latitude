@@ -9,6 +9,8 @@ export type TelemetryEventType =
   | 'updateCommand'
   | 'telemetryCommand'
   | 'deployCommand'
+  | 'destroyCommand'
+  | 'cancelCommand'
   | 'telemetryEnabled'
   | 'telemetryDisabled'
   | 'credentialsCommand'
