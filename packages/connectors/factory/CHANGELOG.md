@@ -1,5 +1,28 @@
 # @latitude-data/connector-factory
 
+## 0.2.0
+
+### Minor Changes
+
+- d66eecd: ClickHouse connector now uses official API instead of the postgres interface.
+
+### Patch Changes
+
+- Updated dependencies [3094cb7]
+- Updated dependencies [d66eecd]
+  - @latitude-data/clickhouse-connector@0.1.0
+  - @latitude-data/databricks-connector@1.0.3
+  - @latitude-data/postgresql-connector@1.1.2
+  - @latitude-data/athena-connector@1.1.2
+  - @latitude-data/duckdb-connector@1.0.3
+  - @latitude-data/mssql-connector@1.0.3
+  - @latitude-data/mysql-connector@1.1.3
+  - @latitude-data/base-connector@1.0.3
+  - @latitude-data/bigquery-connector@1.1.2
+  - @latitude-data/snowflake-connector@1.0.4
+  - @latitude-data/sqlite-connector@1.0.3
+  - @latitude-data/trino-connector@1.0.3
+
 ## 0.1.6
 
 ### Patch Changes

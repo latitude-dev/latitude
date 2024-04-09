@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.7.1
+
+### Patch Changes
+
+- 3094cb7: Manage client connection instance to allow running multiple queries in the same request.
+
 ## 0.7.0
 
 ### Minor Changes
