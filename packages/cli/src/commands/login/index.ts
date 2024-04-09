@@ -24,7 +24,6 @@ export default async function loginCommand({
       return
     } else {
       const { response, responseBody } = res
-
       if (response.statusCode === 200) {
         try {
           const response = JSON.parse(responseBody)
