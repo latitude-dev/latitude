@@ -116,10 +116,10 @@ export class ClickHouseConnector extends BaseConnector {
   }
 
   private buildQueryParams(params: ResolvedParam[]): Record<string, unknown> {
-    return params.reduce((acc, { value, resolvedAs }) => {
+    return params.reduce((acc, { value }, index) => {
       return {
         ...acc,
-        [resolvedAs]: value,
+        [`val_${index}`]: value,
       }
     }, {})
   }
