@@ -12,6 +12,10 @@ import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import { onError } from './utils'
 import initSentry from '$src/integrations/sentry'
+import signupCommand from './commands/signup'
+import logoutCommand from './commands/logout'
+import loginCommand from './commands/login'
+import pokeCommand from './commands/poke'
 
 initSentry()
 
@@ -86,6 +90,24 @@ CLI.command('credentials')
     'Create or update a master key. Be careful with this option. If you were already using the old key you will need to change your code.',
   )
   .action(credentialsCommand)
+
+CLI.command('signup')
+  .describe('Signup for a new account')
+  .option('--email', 'Email to use for the new account')
+  .option('--password', 'Password to use for the new account')
+  .action(signupCommand)
+
+CLI.command('login')
+  .describe('Login for an existing account')
+  .option('--email', 'Account email')
+  .option('--password', 'Account password')
+  .action(loginCommand)
+
+CLI.command('poke').describe('Poke Latitude server').action(pokeCommand)
+
+CLI.command('logout')
+  .describe('Logout an existing account')
+  .action(logoutCommand)
 
 async function init() {
   const argv = CLI.parse(process.argv, { lazy: true })

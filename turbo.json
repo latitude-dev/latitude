@@ -8,7 +8,9 @@
     "TELEMETRY_CLIENT_KEY",
     "TELEMETRY_URL",
     "CLI_SENTRY_ENABLED",
-    "CLI_SENTRY_DSN"
+    "CLI_SENTRY_DSN",
+    "LATITUDE_SERVER_HOST",
+    "LATITUDE_SERVER_PORT"
   ],
   "pipeline": {
     "prettier": {
