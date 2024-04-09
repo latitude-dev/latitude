@@ -30,36 +30,22 @@ export abstract class BaseConnector {
   protected abstract resolve(value: unknown, index: number): ResolvedParam
 
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
-  protected async connect(): Promise<void> {}
-  protected async disconnect(): Promise<void> {}
+  async end(): Promise<void> {}
 
   async run(request: QueryRequest): Promise<QueryResult> {
-    await this.connect()
-
     const resolvedParams: ResolvedParam[] = []
     const ranQueries: Record<string, QueryResultArray> = {}
     const queriesBeingCompiled: string[] = []
-
-    try {
-      return await this._query({
-        request,
-        resolvedParams,
-        ranQueries,
-        queriesBeingCompiled,
-      })
-    } finally {
-      await this.disconnect()
-    }
+    return await this._query({
+      request,
+      resolvedParams,
+      ranQueries,
+      queriesBeingCompiled,
+    })
   }
 
   async runCompiled(request: CompiledQuery): Promise<QueryResult> {
-    await this.connect()
-
-    try {
-      return await this.runQuery(request)
-    } finally {
-      await this.disconnect()
-    }
+    return await this.runQuery(request)
   }
 
   async compileQuery(

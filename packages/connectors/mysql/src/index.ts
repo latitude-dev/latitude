@@ -6,7 +6,7 @@ import {
   QueryError,
 } from '@latitude-data/base-connector'
 import { readFileSync } from 'fs'
-import { PoolConfig, Types, createPool } from 'mysql'
+import { Pool, PoolConfig, Types, createPool } from 'mysql'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 
 export type SSLConfig = {
@@ -27,15 +27,18 @@ export type ConnectionParams = {
 }
 
 export class MysqlConnector extends BaseConnector {
-  private pool
+  private pool: Pool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {
     super(rootPath)
-
     this.pool = createPool({
       connectionLimit: 10,
       ...this.buildConnectionParams(connectionParams),
     })
+  }
+
+  async end(): Promise<void> {
+    this.pool.end()
   }
 
   resolve(value: unknown, _: number): ResolvedParam {
@@ -47,6 +50,11 @@ export class MysqlConnector extends BaseConnector {
 
   runQuery(query: CompiledQuery): Promise<QueryResult> {
     return new Promise((resolve, reject) => {
+      if (!this.pool) {
+        reject(new ConnectionError('Connection not established'))
+        return
+      }
+
       this.pool.getConnection((err, connection) => {
         if (err) {
           return reject(new ConnectionError(err.message))
@@ -57,8 +65,6 @@ export class MysqlConnector extends BaseConnector {
           this.buildQueryParams(query.params),
           (error, results, fields) => {
             connection.release()
-
-            this.pool.end()
 
             if (error) {
               return reject(new QueryError(error.message))

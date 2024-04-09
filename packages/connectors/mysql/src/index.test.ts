@@ -80,7 +80,7 @@ describe('runQuery', () => {
     ).rejects.toThrow('connection error')
   })
 
-  it('releases the connection and ends the pool when connection.query completes', async () => {
+  it('releases the connection when connection.query completes', async () => {
     const connectionMock = {
       query: vi.fn().mockImplementationOnce((_, __, cb) => cb(null, [], [])),
       release: vi.fn(),
@@ -104,6 +104,5 @@ describe('runQuery', () => {
     await connector.runQuery({ sql: 'sql', params: [] })
 
     expect(connectionMock.release).toHaveBeenCalled()
-    expect(poolMock.end).toHaveBeenCalled()
   })
 })

@@ -1,7 +1,7 @@
 import findQueryFile from '@latitude-data/query_service'
-import { createConnector } from '@latitude-data/connector-factory'
 import cache from './query_cache'
 import path from 'path'
+import { loadConnector } from '$lib/server/connectorManager'
 
 type Props = {
   query: string
@@ -17,7 +17,7 @@ export default async function findOrCompute({
   force,
 }: Props) {
   const { sourcePath } = await findQueryFile(QUERIES_DIR, query)
-  const connector = createConnector(sourcePath)
+  const connector = loadConnector(sourcePath)
   const { compiledQuery, resolvedParams } = await connector.compileQuery({
     queryPath: computeRelativeQueryPath({ sourcePath, queryPath: query }),
     params: queryParams,

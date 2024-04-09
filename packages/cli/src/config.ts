@@ -35,7 +35,7 @@ class CLIConfig {
   public async init(argv: string[]) {
     const args = mri(argv.slice(2))
     this._simulatedPro = args['simulate-pro'] ?? false
-    this.verbose = (args.verbose as boolean | undefined) ?? false
+    this.verbose = args.debug ?? false
   }
 
   public get appDir() {

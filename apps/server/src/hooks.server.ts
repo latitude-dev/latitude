@@ -1,4 +1,7 @@
+import configureShutdown from '$lib/server/shutdown'
 import { Handle } from '@sveltejs/kit'
+
+configureShutdown()
 
 // TODO: Implement CORS origin property in `latitude.json` and use it here
 // this way users are able to configure what domains are allowed to pull data from
