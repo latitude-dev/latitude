@@ -225,20 +225,25 @@ export async function computeQueries({
   queryPaths: string[]
   force?: boolean
   skipIfParamsUnchanged?: boolean
-}): Promise<void> {
-  if (!browser) return
+}): Promise<void[]> {
+  if (!browser) return []
 
   const queriesInView = get(middlewareQueryStore)
-  Object.values(queriesInView).map((queryInView) => {
-    if (queryPaths.length && !queryPaths.includes(queryInView.queryPath)) return
-
-    fetchQueryFromCore({
-      query: queryInView.queryPath,
-      inlineParams: queryInView.inlineParams,
-      force,
-      skipIfParamsUnchanged,
-    })
-  })
+  return Promise.all(
+    Object.values(queriesInView)
+      .filter(
+        (queryInView) =>
+          queryPaths.length === 0 || queryPaths.includes(queryInView.queryPath),
+      )
+      .map((queryInView) =>
+        fetchQueryFromCore({
+          query: queryInView.queryPath,
+          inlineParams: queryInView.inlineParams,
+          force,
+          skipIfParamsUnchanged,
+        }),
+      ),
+  )
 }
 
 /**
@@ -251,5 +256,9 @@ export async function computeQueries({
  */
 export function init() {
   loaded = true
-  computeQueries({ queryPaths: [], force: false, skipIfParamsUnchanged: false })
+  return computeQueries({
+    queryPaths: [],
+    force: false,
+    skipIfParamsUnchanged: false,
+  })
 }

@@ -5,15 +5,32 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { EmbeddingEvent, EmbeddingEventData } from "@latitude-data/embedding";
+export { EmbeddingEvent, EmbeddingEventData } from "@latitude-data/embedding";
 export namespace Components {
     interface LatitudeEmbed {
-        "first": string;
-        "last": string;
-        "middle": string;
+        "params": Record<string, string>;
+        "signedParams": string;
+        "url": string;
     }
 }
+export interface LatitudeEmbedCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLLatitudeEmbedElement;
+}
 declare global {
+    interface HTMLLatitudeEmbedElementEventMap {
+        "paramsChanged": EmbeddingEventData<EmbeddingEvent.ParamsChanged>;
+    }
     interface HTMLLatitudeEmbedElement extends Components.LatitudeEmbed, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLLatitudeEmbedElementEventMap>(type: K, listener: (this: HTMLLatitudeEmbedElement, ev: LatitudeEmbedCustomEvent<HTMLLatitudeEmbedElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLLatitudeEmbedElementEventMap>(type: K, listener: (this: HTMLLatitudeEmbedElement, ev: LatitudeEmbedCustomEvent<HTMLLatitudeEmbedElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
     }
     var HTMLLatitudeEmbedElement: {
         prototype: HTMLLatitudeEmbedElement;
@@ -25,9 +42,10 @@ declare global {
 }
 declare namespace LocalJSX {
     interface LatitudeEmbed {
-        "first"?: string;
-        "last"?: string;
-        "middle"?: string;
+        "onParamsChanged"?: (event: LatitudeEmbedCustomEvent<EmbeddingEventData<EmbeddingEvent.ParamsChanged>>) => void;
+        "params"?: Record<string, string>;
+        "signedParams"?: string;
+        "url": string;
     }
     interface IntrinsicElements {
         "latitude-embed": LatitudeEmbed;

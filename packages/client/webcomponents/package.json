@@ -14,9 +14,10 @@
   "collection:main": "dist/collection/index.js",
   "unpkg": "dist/webcomponents/webcomponents.esm.js",
   "scripts": {
+    "dev": "stencil build --watch",
     "build": "stencil build",
     "prettier": "prettier --write 'src/*.ts' 'src/components.d.ts' 'src/**/*.tsx' 'src/**/*.ts'",
-    "start": "stencil build --dev --watch --serve",
+    "stencil": "stencil",
     "test": "stencil test --spec",
     "test:watch": "stencil test --spec --watchAll",
     "generate": "stencil generate"
@@ -33,12 +34,15 @@
     "./latitude-embed": {
       "import": "./dist/components/latitude-embed.js",
       "types": "./dist/components/latitude-embed.d.ts"
-    }
+   }
   },
   "files": [
     "dist/",
     "loader/"
   ],
+  "dependencies": {
+    "@latitude-data/embedding": "workspace:*"
+  },
   "devDependencies": {
     "@stencil/core": "^4.7.0",
     "@stencil/react-output-target": "^0.5.3",

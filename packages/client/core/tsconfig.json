@@ -2,6 +2,7 @@
   "extends": "@latitude-data/typescript/base.json",
   "compilerOptions": {
     "rootDir": ".",
+    "declarationDir": "./dist",
     "outDir": "dist",
     "target": "es5"
   },

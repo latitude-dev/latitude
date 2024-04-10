@@ -5,6 +5,7 @@ const EXTERNAL_DEPENDENCIES = [
   '@latitude-data/query_result',
   '@latitude-data/webcomponents',
   '@latitude-data/webcomponents/loader',
+  '@latitude-data/embedding',
   '@tanstack/react-query',
   'react/jsx-runtime',
   'react-dom',

@@ -19,7 +19,8 @@
     "@latitude-data/client": "workspace:*",
     "@latitude-data/webcomponents": "workspace:*",
     "@latitude-data/query_result": "workspace:^",
-    "@tanstack/react-query": "^5.28.14"
+    "@tanstack/react-query": "^5.28.14",
+    "@latitude-data/embedding": "workspace:*"
   },
   "peerDependencies": {
     "react": "^17.0.0",

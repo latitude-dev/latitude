@@ -6,6 +6,8 @@
   import '../assets/app.css'
   import { onMount } from 'svelte'
   import { init as initQueries } from '$lib/stores/queries'
+  import { setUrlParam, useViewParams } from '$lib/stores/viewParams'
+  import { initIframeCommunication } from '$lib/iframeEmbedding'
 
   /**
    * FIXME: https://github.com/latitude-dev/latitude/issues/158
@@ -15,7 +17,16 @@
   const validToken = data.valid
   const tokenError = data.errorMessage
 
-  onMount(initQueries)
+  onMount(async () => {
+    await initQueries()
+
+    const iframe = initIframeCommunication({ allowedOrigins: ['*'] })
+
+    useViewParams().subscribe((params) => {
+      setUrlParam(params)
+      iframe.sendParamsChanged(params)
+    })
+  })
 </script>
 
 <ThemeProvider theme={defaultTheme} />
