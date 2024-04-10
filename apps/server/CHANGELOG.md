@@ -1,5 +1,20 @@
 # @latitude-data/server
 
+## 0.9.0
+
+### Minor Changes
+
+- 734e18d: Improve embedding experience between users apps and Latitude iframe. We did a integration as a webcomponent that users can include in their projects and listen to changes in the params inside Latitude's view. Also they can trigger view recomputations
+
+### Patch Changes
+
+- f5c6d85: Close server gracefully on SIGINT and SIGTERM
+- 7e8ffe8: Refetch queries automatically when file is updated
+- 512020a: Fix: CLI run command no longer cuts off last 2 results from table
+- Updated dependencies [734e18d]
+  - @latitude-data/client@0.9.0
+  - @latitude-data/svelte@0.6.1
+
 ## 0.8.0
 
 ### Minor Changes

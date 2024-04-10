@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/embedding",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "LGPL",
   "scripts": {
     "build:rollup": "rollup -c",
