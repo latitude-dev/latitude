@@ -105,6 +105,8 @@ export default class QueryDisplay {
       }`,
     )
     const table: Widgets.ListTableElement = listtable({
+      top: 0,
+      bottom: 0,
       keys: true,
       mouse: true,
       border: {
