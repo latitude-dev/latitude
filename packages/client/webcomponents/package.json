@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/webcomponents",
   "description": "Web Components for Latitude",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "LGPL",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "./latitude-embed": {
       "import": "./dist/components/latitude-embed.js",
       "types": "./dist/components/latitude-embed.d.ts"
-   }
+    }
   },
   "files": [
     "dist/",

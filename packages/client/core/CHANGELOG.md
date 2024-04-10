@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.9.0
+
+### Minor Changes
+
+- 734e18d: Improve embedding experience between users apps and Latitude iframe. We did a integration as a webcomponent that users can include in their projects and listen to changes in the params inside Latitude's view. Also they can trigger view recomputations
+
 ## 0.8.0
 
 ### Minor Changes
