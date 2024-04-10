@@ -35,6 +35,9 @@ importers:
       '@latitude-data/custom_types':
         specifier: workspace:^
         version: link:../../packages/custom_types
+      '@latitude-data/embedding':
+        specifier: workspace:*
+        version: link:../../packages/embedding
       '@latitude-data/jwt':
         specifier: workspace:*
         version: link:../../packages/jwt
@@ -51,9 +54,6 @@ importers:
       '@latitude-data/base-connector':
         specifier: workspace:*
         version: link:../../packages/connectors/base
-      '@latitude-data/embedding':
-        specifier: workspace:*
-        version: link:../../packages/embedding
       '@latitude-data/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
