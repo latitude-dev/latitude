@@ -1,5 +1,16 @@
 # @latitude-data/react
 
+## 0.5.0
+
+### Minor Changes
+
+- 75d8495: Fix missing defineCustomComponents export in @latitude-data/react
+
+### Patch Changes
+
+- Updated dependencies [75d8495]
+  - @latitude-data/webcomponents@0.3.0
+
 ## 0.4.0
 
 ### Minor Changes
