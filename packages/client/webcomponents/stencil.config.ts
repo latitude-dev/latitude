@@ -5,6 +5,7 @@ export const config: Config = {
   namespace: 'webcomponents',
   outputTargets: [
     { type: 'docs-readme' },
+    { type: 'dist' },
     {
       type: 'dist-custom-elements',
       customElementsExportBehavior: 'single-export-module',

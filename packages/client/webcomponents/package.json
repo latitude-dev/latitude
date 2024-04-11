@@ -16,10 +16,17 @@
     "test:watch": "stencil test --spec --watchAll",
     "generate": "stencil generate"
   },
-  "main": "./dist/components/index.js",
-  "module": "./dist/components/index.js",
+  "main": "./dist/index.cjs.js",
+  "module": "./dist/index.js",
+  "collection": "dist/collection/collection-manifest.json",
+  "collection:main": "dist/collection/index.js",
+  "unpkg": "dist/webcomponents/webcomponents.esm.js",
   "types": "./dist/components/index.d.ts",
   "exports": {
+    "./dist/loader": {
+      "import": "./dist/loader/index.js",
+      "types": "./dist/loader/index.d.ts"
+    },
     "./dist/components": {
       "import": "./dist/components/index.js",
       "types": "./dist/components/index.d.ts"

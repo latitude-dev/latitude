@@ -4,6 +4,7 @@ const EXTERNAL_DEPENDENCIES = [
   '@latitude-data/client',
   '@latitude-data/query_result',
   '@latitude-data/embedding',
+  '@latitude-data/webcomponents/dist/loader',
   '@latitude-data/webcomponents/dist/components/latitude-embed.js',
   '@tanstack/react-query',
   'react/jsx-runtime',
