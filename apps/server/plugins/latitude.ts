@@ -23,7 +23,9 @@ export default function transformCodePlugin() {
     transform(code: string, id: string) {
       if (!filter(id)) return
 
-      const generatedCode = transformRunQuery(code)
+      let generatedCode = code
+      generatedCode = extractReactiveFunction(generatedCode, 'runQuery')
+      generatedCode = extractReactiveFunction(generatedCode, 'param')
 
       return {
         code: generatedCode,
@@ -32,23 +34,33 @@ export default function transformCodePlugin() {
   }
 }
 
+let varCount = 0
+/**
+ * Generates a unique name for a variable from a provided fnName.
+ */
+function generateVarName(fnName: string) {
+  varCount++
+  return `__${fnName}_${varCount}`
+}
+
 /**
  * Transforms Svelte file code by finding 'runQuery' function calls and replacing them with variables.
  * If 'runQuery' calls are found, it generates a variable for each unique call, replaces the call
  * with the variable, and adds a declaration for this variable at the end of the script tag or creates
  * a new script tag with the declaration if a script tag doesn't exist.
  */
-function transformRunQuery(code: string) {
+function extractReactiveFunction(code: string, fnName: string) {
   const ast = parse(code)
-  const declarations = findRunQueries({ ast })
-  const ncode = replaceRunQueries({ code, declarations })
+  const declarations = findFunctionDeclarations({ ast, fnName })
+  const ncode = replaceDeclarations({ code, declarations })
 
   return ncode
 }
 
-type RunQueryInstance = {
-  queryVarName: string
-  queryParams: string
+type FunctionInstance = {
+  fnName: string
+  fnParams: string
+  varName: string
 }
 
 /**
@@ -58,19 +70,16 @@ type RunQueryInstance = {
  * declaration into the script section of the Svelte file.
  */
 // @ts-expect-error - TS does not pick up the AwaitBlock node type
-function findRunQueries({ ast }) {
+function findFunctionDeclarations({ ast, fnName }) {
   if (!ast?.html) return []
-
-  let queryCounter = 0
-  const declarations: RunQueryInstance[] = []
+  const declarations: FunctionInstance[] = []
 
   function traverse(node: TemplateNode) {
     if (
-      node.type === 'AwaitBlock' &&
       node.expression?.type === 'CallExpression' &&
-      node.expression.callee?.name === 'runQuery'
+      node.expression.callee?.name === fnName
     ) {
-      const queryParamsValues = node.expression.arguments.map(
+      const fnParamsValues = node.expression.arguments.map(
         (arg: TemplateNode, index: number) => {
           if (index === 0) return arg.raw
           if (arg.type === 'ObjectExpression' && arg.properties) {
@@ -78,13 +87,14 @@ function findRunQueries({ ast }) {
           }
         },
       )
-      const queryParams = queryParamsValues.filter(Boolean).join(', ')
+      const fnParams = fnParamsValues.filter(Boolean).join(', ')
       const instance = {
-        queryVarName: `query_${++queryCounter}`,
-        queryParams,
+        fnName,
+        fnParams,
+        varName: generateVarName(fnName),
       }
 
-      if (!declarations.some((d) => d.queryParams === instance.queryParams)) {
+      if (!declarations.some((d) => d.fnParams === instance.fnParams)) {
         declarations.push(instance)
       }
     }
@@ -106,23 +116,23 @@ function findRunQueries({ ast }) {
  * with a generated variable reference. Additionally, injects variable declarations into the script tag of the
  * Svelte file, creating a new script tag if necessary.
  */
-function replaceRunQueries({
+function replaceDeclarations({
   code,
   declarations,
 }: {
   code: string
-  declarations: RunQueryInstance[]
+  declarations: FunctionInstance[]
 }) {
   if (!declarations.length) return code
 
   let ncode = code
-  declarations.forEach(({ queryParams, queryVarName }) => {
-    while (ncode.includes(`runQuery(${queryParams})`)) {
-      ncode = ncode.replace(`runQuery(${queryParams})`, `$${queryVarName}`)
+  declarations.forEach(({ fnName, fnParams, varName }) => {
+    while (ncode.includes(`${fnName}(${fnParams})`)) {
+      ncode = ncode.replace(`${fnName}(${fnParams})`, `$${varName}`)
     }
 
     // Append the declaration to just before the </script> tag if any (add one if there is none)
-    const declaration = `let ${queryVarName} = runQuery(${queryParams})\n`
+    const declaration = `let ${varName} = ${fnName}(${fnParams})\n`
     const scriptTagIndex = ncode.lastIndexOf('</script>')
     if (scriptTagIndex === -1) {
       ncode += `\n<script>\n${declaration}\n</script>`

@@ -26,6 +26,7 @@ export default defineConfig({
       },
       mapping: {
         runQuery: 'import { runQuery } from "$lib/stores/queries"',
+        param: 'import { useViewParam as param } from "$lib/stores/viewParams"',
         input: 'import { input } from "$lib/stores/queries"',
       },
       components: [{ name: './src/lib/autoimports', flat: true }],
