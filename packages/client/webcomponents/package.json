@@ -1,7 +1,7 @@
 {
   "name": "@latitude-data/webcomponents",
   "description": "Web Components for Latitude",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "license": "LGPL",
   "repository": {
     "type": "git",
@@ -29,7 +29,9 @@
       "types": "./dist/types/components.d.ts"
     }
   },
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "dependencies": {
     "@latitude-data/embedding": "workspace:*"
   },

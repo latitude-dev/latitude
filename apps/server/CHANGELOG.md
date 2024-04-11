@@ -1,5 +1,15 @@
 # @latitude-data/server
 
+## 0.10.0
+
+### Minor Changes
+
+- c5609ac: New 'param' function to display the value of parameters in a View.
+
+### Patch Changes
+
+- b3593cd: Move @latitude-data/embedding to dependencies. Is used in client code
+
 ## 0.9.0
 
 ### Minor Changes
