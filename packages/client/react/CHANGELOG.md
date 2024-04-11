@@ -1,5 +1,16 @@
 # @latitude-data/react
 
+## 0.4.0
+
+### Minor Changes
+
+- edfe2d1: Fix build of stenciljs when generating react wrapper for latitude-embed
+
+### Patch Changes
+
+- Updated dependencies [edfe2d1]
+  - @latitude-data/webcomponents@0.2.0
+
 ## 0.3.0
 
 ### Minor Changes
