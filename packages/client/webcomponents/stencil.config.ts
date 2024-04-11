@@ -4,16 +4,17 @@ import { reactOutputTarget } from '@stencil/react-output-target'
 export const config: Config = {
   namespace: 'webcomponents',
   outputTargets: [
-    { type: 'dist', esmLoaderPath: '../loader' },
+    { type: 'docs-readme' },
     {
       type: 'dist-custom-elements',
-      customElementsExportBehavior: 'auto-define-custom-elements',
-      externalRuntime: false,
+      customElementsExportBehavior: 'single-export-module',
+      generateTypeDeclarations: true,
     },
-    { type: 'docs-readme' },
     reactOutputTarget({
       componentCorePackage: '@latitude-data/webcomponents',
       proxiesFile: '../react/src/webcomponents/index.ts',
+      customElementsDir: 'dist/components',
+      includeImportCustomElements: true,
     }),
   ],
   testing: {

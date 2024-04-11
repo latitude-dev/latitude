@@ -24,7 +24,7 @@ export default function Embedding() {
   const { headerHeight } = useExample()
   const [ref, { height }] = useMeasure<HTMLDivElement>()
   const topHeight = height + headerHeight
-  const [endYear, setEndYear] = useState(2006)
+  const [endYear, setEndYear] = useState('2006')
 
   const runQuery = useCallback(() => {
     runEmbedViewQuery({ queryPaths: [], force: true })
@@ -64,7 +64,7 @@ export default function Embedding() {
             name='name'
             value={endYear}
             onChange={(e) => {
-              const value = Number(e.target.value)
+              const value = e.target.value
               changeEmbedParams({ end_year: value })
               setEndYear(value)
             }}
@@ -87,12 +87,15 @@ export default function Embedding() {
         <div className='absolute -top-2.5 left-4 px-2 py-0.5 text-xs text-orange-700 uppercase rounded border border-orange-500 bg-white'>Latitude iframe</div>
         {/* FIXME: Types are wrong in generated component */}
         {/* This needs more investigation */}
+
+        {/* Use the URL to this data project. You can run it locally */}
+        {/* https://github.com/latitude-dev/netflix-starwars */}
         <LatitudeEmbed
-          url='http://localhost:3000'
-          params={{ start_year: 2003, end_year: endYear }}
+          url='https://netflix-starwars-black-shadow-3482.fly.dev'
+          params={{ start_year: '2003', end_year: endYear }}
           onParamsChanged={(event: CustomEvent<EmbeddingEventData<EmbeddingEvent.ParamsChanged>>) => {
             const params = event.detail.params
-            const newEndYear = params.end_year as number
+            const newEndYear = params.end_year as string
             if (endYear === newEndYear) return
 
             setEndYear(newEndYear)

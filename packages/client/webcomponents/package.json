@@ -7,12 +7,6 @@
     "type": "git",
     "url": "https://github.com/latitude-dev/latitude.git"
   },
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.js",
-  "types": "dist/types/components.d.ts",
-  "collection": "dist/collection/collection-manifest.json",
-  "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/webcomponents/webcomponents.esm.js",
   "scripts": {
     "dev": "stencil build --watch",
     "build": "stencil build",
@@ -22,32 +16,28 @@
     "test:watch": "stencil test --spec --watchAll",
     "generate": "stencil generate"
   },
+  "main": "./dist/components/index.js",
+  "module": "./dist/components/index.js",
+  "types": "./dist/components/index.d.ts",
   "exports": {
-    ".": {
-      "import": "./dist/webcomponents/webcomponents.esm.js",
-      "require": "./dist/webcomponents/webcomponents.cjs.js"
+    "./dist/components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
     },
-    "./loader": {
-      "import": "./loader/index.js",
-      "types": "./loader/index.d.ts"
-    },
-    "./latitude-embed": {
+    "./dist/components/latitude-embed.js": {
       "import": "./dist/components/latitude-embed.js",
-      "types": "./dist/components/latitude-embed.d.ts"
+      "types": "./dist/types/components.d.ts"
     }
   },
-  "files": [
-    "dist/",
-    "loader/"
-  ],
+  "files": ["dist/"],
   "dependencies": {
     "@latitude-data/embedding": "workspace:*"
   },
   "devDependencies": {
-    "@stencil/core": "^4.7.0",
-    "@stencil/react-output-target": "^0.5.3",
     "@types/jest": "^29.5.6",
     "@types/node": "^16.18.11",
+    "@stencil/core": "^4.7.0",
+    "@stencil/react-output-target": "^0.5.3",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
     "prettier": "^3.1.1",
