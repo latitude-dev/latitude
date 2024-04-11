@@ -11,9 +11,9 @@ In this guide, we will learn how to use `if` and `else` statements in your views
 
 Here's an example of how to use `if` and `else` statements in your views to display a message or a chart depending on whether the query result is empty or not.
 
-```html
+```jsx
 <View>
-    {#if url_param('user_token')}
+    {#if param('user_token')}
         <Chart data={...} />
     {:else}
         <Text>No data available</Text>
@@ -25,7 +25,7 @@ Here's an example of how to use `if` and `else` statements in your views to disp
 
 You can also use any query result to conditionally render content. To do so, use the `await` syntax to wait for the query to resolve before using the result.
 
-```html
+```jsx
 <View>
     {#await runQuery('sample')}
         <Text>Loading...</Text>

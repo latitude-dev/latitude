@@ -19,27 +19,6 @@ If you have a file named `views/about.html`, it won't be accessible because we o
 
 If you have both a file and a directory with the same name, the framework will throw an error.
 
-## Passing parameters
-
-You can pass parameters to a view via URL parameters. For example, if you have a file called `views/user.html`, you can access it at `/user?id=123`. The `id` parameter will be available in the view.
-
-To access the URL parameter in the view, you can use the `url_param()` function. For example, to retrieve the value of the `id` parameter, you can use `url_param('id')`. Here's an example of how you can pass this parameter to a query using a `Value` component:
-
-```html
-<Value
-  data={
-     query_path: 'users', 
-     params: {
-       id: url_param('id'),
-     }
-  }
-/>
-```
-
-URL parameters can also be used to set the initial value of any input component. This happens automatically, so if you have an input component with the name `id`, it will be automatically set to the value of the `id` parameter.
-
-To learn more about how to use input components, check out the [Input components guide](/components/inputs).
-
 ## Next steps
 
 Now that you know how to use views, you can start creating views for your data apps. To learn more about how to use layouts to display your data, check out the [Layout docs](/views/basics/layout).

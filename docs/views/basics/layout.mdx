@@ -9,7 +9,7 @@ Latitude provides a set of layout components to help you build your views. These
 
 The `View` component is the root container that allows you to define layout properties for your views.
 
-```html
+```jsx
 <View>
     {/* Your content here */}
 </View>
@@ -31,7 +31,7 @@ We've prepared a set of components that make it easy to use the flexbox model in
 
 The `Row` component is a container that lays out its children in a row. It is a flex container with a `flexDirection` of `row` by default.
 
-```html
+```jsx
 <Row>
     {/* Your content here */}
 </Row>
@@ -47,7 +47,7 @@ You can set the following properties on the `Row` component:
 
 The `Column` component is a container that lays out its children in a column. It is a flex container with a `flexDirection` of `column` by default.
 
-```html
+```jsx
 <Column>
     {/* Your content here */}
 </Column>
@@ -63,7 +63,7 @@ You can set the following properties on the `Row` component:
 
 You can combine the `Row` and `Column` components within a `View` to create complex layouts. For example, you can use two `Column` components inside a `Row` component to create a sidebar and main content area.
 
-```html
+```jsx
 <View theme='latitude'>
     <Row gap={8}>
         <Column>

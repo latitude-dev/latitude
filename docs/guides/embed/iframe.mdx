@@ -11,7 +11,7 @@ You can embed a Latitude data app in an iframe on your website or in a web appli
 
 To embed a Latitude data app in an iframe, you need to use the following HTML code:
 
-```html
+```jsx
 <iframe src="https://url-to-your-app.latitude.so/" width="100%" height="600" frameborder="0"></iframe>
 ```
 
@@ -21,7 +21,7 @@ Replace `https://url-to-your-app.latitude.so/` with the public URL where your La
 
 You can pass parameters to the Latitude data app using the URL query string. For example, to pass a `country` parameter with the value `US`, you can use the following URL:
 
-```html
+```jsx
 <iframe src="https://url-to-your-app.latitude.so/?country=US" width="100%" height="600" frameborder="0"></iframe>
 ```
 
@@ -32,7 +32,7 @@ Passing parameters is useful when you want to filter the data displayed in the a
 ## Passing signed parameters
 If you want to pass sensitive information to a Latitude data app, you can use signed parameters. This allows you to pass parameters that are encrypted and signed by your server, so that they can't be tampered with by the user.
 The signed parameter has to be called `__token`
-```html
+```jsx
 <iframe src="https://url-to-your-app.latitude.so/?__token=[SECRET_TOKEN]
 ```
 To learn more about how to generate a `[SECRET_TOKEN]` please refer to the [signed parameters](/queries/logic/parameters#signed-parameters) documentation.

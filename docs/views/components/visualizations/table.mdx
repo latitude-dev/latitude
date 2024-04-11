@@ -1,0 +1,37 @@
+---
+title: 'Table'
+description: 'How to create and configure the Table visualization'
+---
+
+<iframe class="rounded-xl" src="https://docs-charts-examples.fly.dev/visualizations/table" width="100%" height="460"> </iframe>
+
+## Introduction
+The Table format organizes data in rows and columns, providing a clear view for comparison and detailed analysis. It's ideal for displaying precise values.
+
+## Syntax
+You can use `<Table ... />` to add it to your view. Within the tag you must add the properties to configure the chart.
+
+``` js
+<Table
+	query='orders_evolution'
+/>
+```
+
+## Properties
+To configure and customize the table, simply reference the query from which you want to view the data.
+
+	### Query configuration
+	<ParamField path="query" type="string" required>
+		The path to the query file that will provide the data displayed in the visualization.
+	</ParamField>
+
+	<ParamField path="inlineParams" type="object">
+		An object with custom parameters to be used in the query, in addition to the global parameters of the view.
+	</ParamField>
+
+	<ParamField path="opts" type="object">
+		Includes options to control the behavior of the chart. For example, react to changes in the parameters to update the data immediately.
+	</ParamField>
+
+	Refer to the [Running queries](/views/basics/running-queries) section for more information about query configuration.
+
