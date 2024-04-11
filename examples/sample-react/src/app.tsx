@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { defineCustomElements } from '@latitude-data/react'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import './index.css'
 import { LatitudeProvider } from '@latitude-data/react'
@@ -13,9 +12,6 @@ declare module '@tanstack/react-router' {
     router: typeof router
   }
 }
-
-// Define the custom elements from Latitude React
-defineCustomElements()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
