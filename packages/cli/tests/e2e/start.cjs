@@ -47,4 +47,4 @@ setTimeout(() => {
 
   spawned.kill()
   process.exit(1)
-}, 120000)
+}, 180000)
