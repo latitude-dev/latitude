@@ -21,7 +21,7 @@ const spawned = spawn('node', [
   'test-project',
   '--template',
   'default',
-  '--debug'
+  '--verbose'
 ])
 
 spawned.stdout.pipe(process.stdout)

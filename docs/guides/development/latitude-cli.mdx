@@ -66,3 +66,11 @@ latitude run sample --param name=Latitude --param id=1
 ```
 
 Now, when building the query with the parameters, the `name` and `id` parameters will receive the values `Latitude` and `1`, respectively.
+
+### Debugging queries
+
+You can use the `--debug` flag to display the actual query that would be sent to your database, without actually running it. For example:
+
+```bash
+latitude run sample --debug
+```

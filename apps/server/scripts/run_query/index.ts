@@ -6,35 +6,55 @@ import chokidar from 'chokidar'
 
 type CommandArgs = {
   queryPath: string
+  parameters: { [key: string]: string }
   watch: boolean
-  options: { [key: string]: string }
+  debug: boolean
 }
 
 function getArgs(): CommandArgs {
   const args = process.argv.slice(2)
-  if (args.length < 2) {
-    console.error('Usage: run <query> <watch:true|false> [options]')
+  if (args.length < 1) {
+    console.error(
+      'Usage: run <query> [parameters] <watch:true|false> <debug:true|false>',
+    )
     process.exit(1)
   }
-  const watch = args[1] === 'true'
   const queryPath = args[0]!
-  let options
+
+  let parameters
   try {
-    options = args.length < 3 ? {} : JSON.parse(args[2]!)
+    parameters = args.length < 3 ? {} : JSON.parse(args[1]!)
   } catch (e) {
-    console.error('Options must be a valid JSON string')
+    console.error('Parameters must be a valid JSON string')
     process.exit(1)
   }
-  return { queryPath, watch, options }
+
+  const watch = args[2] === 'true'
+  const debug = args[3] === 'true'
+
+  return { queryPath, parameters, watch, debug }
 }
 
-async function runQuery(query: string, options: { [key: string]: string }) {
+async function runQuery(
+  query: string,
+  params: { [key: string]: string },
+  debug = false,
+) {
   try {
     const { sourcePath, queryPath } = await findQueryFile(QUERIES_DIR, query)
     const connector = createConnector(sourcePath)
 
+    if (debug) {
+      const compiledQuery = await connector.compileQuery({ queryPath, params })
+      QueryDisplay.displayCompiledQuery({
+        sql: compiledQuery.compiledQuery,
+        params: compiledQuery.resolvedParams,
+      })
+      return
+    }
+
     const startTime = Date.now()
-    const result = await connector.run({ queryPath, params: options })
+    const result = await connector.run({ queryPath, params })
     const totalTime = Date.now() - startTime
 
     QueryDisplay.displayResults(result, totalTime)
@@ -46,14 +66,11 @@ async function runQuery(query: string, options: { [key: string]: string }) {
 const args = getArgs()
 
 if (args.watch) {
-  const watcher = chokidar.watch(QUERIES_DIR, {
-    ignored: /(^|[/\\])\../,
-  })
-
+  const watcher = chokidar.watch(QUERIES_DIR)
   watcher.on('change', () => {
-    runQuery(args.queryPath, args.options)
+    runQuery(args.queryPath, args.parameters, args.debug)
   })
 }
 
 QueryDisplay.render()
-runQuery(args.queryPath, args.options)
+runQuery(args.queryPath, args.parameters, args.debug)

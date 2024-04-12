@@ -7,9 +7,14 @@ import tracked from '$src/lib/decorators/tracked'
 
 async function run(
   queryName: string,
-  opts?: { param: string[] | string | undefined; watch: boolean },
+  opts?: {
+    param: string[] | string | undefined
+    watch: boolean
+    debug: boolean
+  },
 ) {
   const watch = opts?.watch || false
+  const debug = opts?.debug || false
 
   await syncQueries({ watch })
 
@@ -17,8 +22,9 @@ async function run(
     'run',
     'query',
     queryName,
-    watch ? 'true' : 'false',
     JSON.stringify(buildParams(opts?.param || [])),
+    watch ? 'true' : 'false',
+    debug ? 'true' : 'false',
   ].filter(Boolean)
 
   return spawn(
