@@ -1,18 +1,34 @@
 # `@latitude-data/cli`
 
-CLI for running latitude projects.
+Latitude CLI for running latitude projects.
 
-## Developing
+## Installation
 
-`./sites` folder is for the developers of the Latitude project to have their own
-data apps. This way they can use Latitude's CLI in development.
+```bash
+npm install -g @latitude-data/cli
+```
 
-## How to develop in the monorep?
+## Usage
 
-1. You're responsible of installing dependencies on `./apps/server`. `pnpm
-install`.
-2. First start CLI in dev mode `cd ./packages/cli && pnpm dev`
-3. Now go to sites `cd ./sites`
-4. Create a new data app site: `pnpm latitude-dev start`
-5. Enter the site with the name you put: `cd ./sites/my-data-app`
-6. You can start dev server: `pnpm latitude-dev dev --folder my-data-app`
+### 1. Create the starter project
+
+Run this command to create a new Latitude project:
+
+```
+latitude start
+```
+
+The CLI will ask you the project name. Once you’re done, you’ll have a new
+directory with a sample app that you can run and customize.
+
+### 2. Navigate to the project and run the app
+
+```
+cd my-new-app
+```
+
+```
+latitude dev
+```
+
+This will start the development server and open the sample app in your browser.
