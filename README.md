@@ -66,7 +66,7 @@ It's fast to get started, easy to maintain, and scales with your data.
 
 ## 💫 Examples
 
-You can find sample projects using Latitude in action in the [examples](https://github.com/latitude-dev/latitude/examples) directory.
+You can find sample projects using Latitude in action in the [examples](https://github.com/latitude-dev/latitude/tree/main/examples) directory.
 
 ## 📚 Table Of Contents
 
