@@ -26,7 +26,7 @@ The missing analytics layer between your database and your users.
     ·
     <a href="https://github.com/orgs/latitude-dev/projects/1">Roadmap</a>
     ·
-    <a href="https://twitter.com/trylatitude">X</a>
+    <a href="https://x.com/trylatitude">X</a>
   </p>
 
 <p align="center">
@@ -132,23 +132,24 @@ details:
 ```
 
 We support the following sources:
-- [x] Athena
-- [x] BigQuery
-- [x] Clickhouse
-- [x] CSV files
-- [x] Databricks
-- [x] DuckDB
-- [x] MS SQL
-- [x] MySQL
-- [x] PostgreSQL
-- [x] Redshift
-- [x] Snowflake
-- [x] SQLite
-- [x] Trino
+- [x] [Athena](https://docs.latitude.so/sources/athena)
+- [x] [BigQuery](https://docs.latitude.so/sources/bigquery)
+- [x] [Clickhouse](https://docs.latitude.so/sources/clickhouse)
+- [x] [Databricks](https://docs.latitude.so/sources/databricks)
+- [x] [DuckDB](https://docs.latitude.so/sources/duckdb)
+- [x] [MS SQL](https://docs.latitude.so/sources/mssql)
+- [x] [MySQL](https://docs.latitude.so/sources/mysql)
+- [x] [PostgreSQL](https://docs.latitude.so/sources/postgresql)
+- [x] [Redshift](https://docs.latitude.so/sources/redshift)
+- [x] [Snowflake](https://docs.latitude.so/sources/snowflake)
+- [x] [SQLite](https://docs.latitude.so/sources/sqlite)
+- [x] [Trino](https://docs.latitude.so/sources/trino)
+
+Find out more about connecting to sources in the [documentation](https://docs.latitude.so/sources/how-to-configure-sources).
 
 ## 🧑‍💻 Write your SQL queries
 
-Latitude makes it easy to fetch data from your database and transform it into a format that can be consumed by your frontend application.
+Latitude makes it easy to fetch data from your database and expose it via an API endpoint in JSON format so that it can be easily consumed by your frontend application.
 
 You can use parameters in your SQL queries to filter data based on external inputs. For example, you can create a query that fetches movies released between two years:
 
@@ -176,7 +177,15 @@ group by 1
 order by 1 asc
 ```
 
+### Automatic API endpoints
+
 Latitude will automatically expose these queries as API endpoints that you can fetch from your frontend application.
+
+To use these endpoints with parameters, you can pass them in the URL. For example, to fetch movies released between 2000 and 2020, you can do:
+
+```bash
+curl http://localhost:3000/titles?start_year=2000&end_year=2020
+```
 
 ## ⌨️ Native frontend integration
 
@@ -188,7 +197,7 @@ Use our React components to fetch data from your API and display it in your appl
 npm install @latitude-data/react
 ```
 
-Once the React package is installed in your project, you need to place our Latitude data provider at the root of your app as shown below:
+Once the React package is installed in your project, add the LatitudeProvider:
 
 ```jsx
 import React from 'react';
@@ -206,7 +215,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 );
 ```
 
-After installing the package, you can fetch data from your Latitude data server with the useQuery hook.
+You can fetch data from your Latitude data server with the useQuery hook:
 
 ```jsx
 import { useQuery } from '@latitude-data/react';
@@ -267,7 +276,11 @@ To do so, simply create an `index.html` file under the `queries` directory with 
 
 This will create a dashboard with a line chart and a table displaying the data fetched from the `titles` and `titles-agg` queries.
 
-This dashboard can be accessed by navigating to `http://localhost:3000/queries`. To pass parameters to the queries, add them to the URL as query parameters. For example: `http://localhost:3000/queries?start_year=2000&end_year=2020`.
+This dashboard can be accessed by navigating to `http://localhost:3000/queries`.
+
+To pass parameters to the queries, add them to the URL as query parameters. For example: `http://localhost:3000/queries?start_year=2000&end_year=2020`.
+
+Another option is to use our `<Input>` component to create a form that allows users to input parameters. Find out more about this in the [documentation](https://docs.latitude.so/views/components/inputs/text).
 
 ### Embedding a standalone dashboard
 
@@ -300,4 +313,4 @@ contribute a pull request.
 - [Home page](https://latitude.so?utm_campaign=github-readme)
 - [Documentation](https://docs.latitude.so/)
 - [Slack community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
-- [X](https://twitter.com/trylatitude)
+- [X](https://x.com/trylatitude)
