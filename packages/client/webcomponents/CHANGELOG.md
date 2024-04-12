@@ -1,5 +1,11 @@
 # @latitude-data/webcomponents
 
+## 0.4.0
+
+### Minor Changes
+
+- 7549c67: Ship latitude-embed webcomponent with @stencil/core runtime
+
 ## 0.3.0
 
 ### Minor Changes

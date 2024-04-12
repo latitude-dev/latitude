@@ -1,5 +1,12 @@
 # @latitude-data/react
 
+## 0.6.1
+
+### Patch Changes
+
+- Updated dependencies [7549c67]
+  - @latitude-data/webcomponents@0.4.0
+
 ## 0.6.0
 
 ### Minor Changes
