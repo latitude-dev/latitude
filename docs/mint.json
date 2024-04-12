@@ -80,6 +80,7 @@
       "group": "Embed",
       "pages": [
         "guides/embed/iframe",
+        "guides/embed/react-embed",
         "guides/embed/react-components"
       ]
     },
