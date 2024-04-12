@@ -1,71 +1,113 @@
 // syncViews.test.ts
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { syncFnFactory } from '.' // Adjust this path to the actual path of your module
+import fs from 'fs'
+import path from 'path'
+import {
+  beforeAll,
+  afterAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest'
 import syncFiles from '../shared/syncFiles'
+import { syncDirectory, syncFnFactory } from '.'
 
 vi.mock('../shared/syncFiles', () => ({
   default: vi.fn(),
 }))
 
-describe('syncFile function', () => {
+let rootDir = ''
+let destinationDir = ''
+describe('snycFnFactory', () => {
   beforeEach(() => {
     // @ts-expect-error mock
     ;(syncFiles as vi.Mock).mockClear()
   })
 
-  it('correctly handles "add" type operation by syncing new file', () => {
-    const rootDir = '/test'
-    const destinationDir = '/test/dist'
+  describe('when views folder exists', () => {
+    rootDir = path.join('/tmp', `/test-${Math.random()}`)
+    destinationDir = `${rootDir}/dist`
 
-    // Make the syncFile function ready for tests
-    const handler = syncFnFactory({ rootDir, destinationDir })
+    beforeAll(() => {
+      fs.mkdirSync(path.join(rootDir, 'views'), { recursive: true })
+    })
 
-    const srcPath = `${rootDir}/views/example/index.html`
-    const type = 'add'
+    afterAll(() => {
+      fs.rmdirSync(rootDir, { recursive: true })
+    })
 
-    // Perform the operation as handled during 'add'
-    handler(srcPath, type, true)
+    it('handle add file', () => {
+      const handler = syncFnFactory({ rootDir, destinationDir })
 
-    const expectedDestPath = '/test/dist/example/+page.svelte'
+      const srcPath = `${rootDir}/views/example/index.html`
+      handler(srcPath, 'add', true)
 
-    expect(syncFiles).toHaveBeenCalledWith(
-      expect.objectContaining({
-        srcPath: srcPath,
-        destPath: expectedDestPath,
-        relativePath: '/example/+page.svelte',
-        type: 'add',
-        ready: true,
-      }),
-    )
+      const expectedDestPath = `${destinationDir}/example/+page.svelte`
+
+      expect(syncFiles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          srcPath: srcPath,
+          destPath: expectedDestPath,
+          relativePath: '/example/+page.svelte',
+          type: 'add',
+          ready: true,
+        }),
+      )
+    })
+
+    it('handle remove file', () => {
+      const handler = syncFnFactory({ rootDir, destinationDir })
+
+      const srcPathBefore = `${rootDir}/views/example/index.html`
+
+      // Simulate adding a file before testing unlink
+      handler(srcPathBefore, 'add', true)
+
+      const srcPath = `${rootDir}/views/example/index.html`
+      const type = 'unlink'
+
+      // Perform the operation as handled during 'unlink'
+      handler(srcPath, type, true)
+
+      const expectedDestPath = `${destinationDir}/example/+page.svelte`
+
+      expect(syncFiles).toHaveBeenCalledWith(
+        expect.objectContaining({
+          srcPath: srcPath,
+          destPath: expectedDestPath,
+          relativePath: '/example/+page.svelte',
+          type: 'unlink',
+          ready: true,
+        }),
+      )
+    })
   })
 
-  it('correctly handles "unlink" type operation by removing a synced file', () => {
-    const rootDir = '/test'
-    const destinationDir = '/test/dist'
+  describe('when views folder does not exist', () => {
+    it('does not fail', () => {
+      const destinationDir = '/test/dist'
 
-    const handler = syncFnFactory({ rootDir, destinationDir })
+      console.log('rootDir', rootDir)
+      const handler = syncFnFactory({ rootDir, destinationDir })
 
-    const srcPathBefore = `${rootDir}/views/example/index.html`
+      const srcPath = `${rootDir}/views/example/index.html`
+      const type = 'add'
 
-    // Simulate adding a file before testing unlink
-    handler(srcPathBefore, 'add', true)
+      handler(srcPath, type, true)
 
-    const srcPath = `${rootDir}/views/example/index.html`
-    const type = 'unlink'
+      expect(syncFiles).not.toHaveBeenCalled()
+    })
+  })
+})
 
-    // Perform the operation as handled during 'unlink'
-    handler(srcPath, type, true)
+describe('syncDirectory', () => {
+  it('does not fail when does not exists', () => {
+    const syncFn = vi.fn()
+    const folder = '/tmp/does-not-exist'
 
-    const expectedDestPath = '/test/dist/example/+page.svelte'
+    syncDirectory(folder, syncFn)
 
-    expect(syncFiles).toHaveBeenCalledWith(
-      expect.objectContaining({
-        srcPath: srcPath,
-        destPath: expectedDestPath,
-        relativePath: '/example/+page.svelte',
-        type: 'unlink',
-        ready: true,
-      }),
-    )
+    expect(syncFn).not.toHaveBeenCalled()
   })
 })
