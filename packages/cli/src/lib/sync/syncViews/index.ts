@@ -26,7 +26,7 @@ export default async function syncViews({
 
   if (watch) {
     await watcher(viewsDir, syncFn, {
-      // ignored: IGNORED_FILES_REGEX,
+      ignored: IGNORED_FILES_REGEX,
     })
   } else {
     syncDirectory(viewsDir, syncFn)
