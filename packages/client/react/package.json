@@ -17,10 +17,10 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "@latitude-data/client": "workspace:*",
-    "@latitude-data/webcomponents": "workspace:*",
+    "@latitude-data/embedding": "workspace:*",
     "@latitude-data/query_result": "workspace:^",
-    "@tanstack/react-query": "^5.28.14",
-    "@latitude-data/embedding": "workspace:*"
+    "@latitude-data/webcomponents": "workspace:*",
+    "@tanstack/react-query": "^5.28.14"
   },
   "peerDependencies": {
     "react": "^17.0.0",
