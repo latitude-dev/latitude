@@ -10,4 +10,6 @@ export default new Configstore(CLI_PACKAGE_NAME, {
   telemetry: TELEMETRY_NOT_CONFIGURED,
   lastCheckedAt: undefined,
   jwt: undefined,
+  awsAccessKeyId: undefined,
+  awsSecretAccessKey: undefined,
 })

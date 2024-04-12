@@ -1,122 +1,157 @@
+import chalk from 'chalk'
+import findConfigFile from '$src/lib/latitudeConfig/findConfigFile'
 import loggedIn from '$src/lib/decorators/loggedIn'
 import tracked from '$src/lib/decorators/tracked'
-import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
-import { request } from '$src/lib/server'
-import betterSpawn from '$src/lib/spawn'
-import chalk from 'chalk'
-import { spawnSync } from 'child_process'
+import { request, sseRequest } from '$src/lib/server'
+import { spawn } from 'child_process'
 
-async function loginDockerRegistry({ url, password }) {
-  return new Promise<void>((resolve, reject) => {
-    betterSpawn(
-      'docker',
-      ['login', url, '--password-stdin'],
-      { stdio: 'pipe' },
-      {
-        onClose: (code) => {
-          if (code !== 0) {
-            console.error(chalk.red('Failed to login to Docker registry'))
-            reject()
-          }
+function buildDockerImage(tag: string) {
+  return new Promise<string>((resolve, reject) => {
+    const build = spawn('docker', ['build', '-t', tag, '.'], {
+      stdio: 'inherit',
+    })
 
-          resolve()
-        },
-        onStdout: (child) => {
-          child.stdin.write(`${password}\n`)
-        },
-      },
-    )
+    build.on('exit', (code) => {
+      if (code === 0) {
+        resolve(tag)
+      } else {
+        reject(new Error(`build process exited with code ${code}`))
+      }
+    })
   })
 }
 
-async function buildDockerImage(tag) {
-  return new Promise((resolve, reject) => {
-    betterSpawn(
-      'docker',
-      ['build', '.', '-t', tag],
-      { stdio: 'inherit' },
-      {
-        onClose: (code) => {
-          if (code !== 0) {
-            console.error(chalk.red('Failed to build Docker image'))
-            reject()
-          }
-
-          const image = spawnSync('docker', ['images', '-q', 'latest'])
-            .stdout.toString()
-            .trim()
-
-          resolve(image)
-        },
-      },
-    )
-  })
-}
-
-async function pushDockerImage(tag) {
+async function pushDockerImage({
+  username,
+  password,
+  url,
+  tag,
+}: {
+  username: string
+  password: string
+  url: string
+  tag: string
+}) {
   return new Promise<void>((resolve, reject) => {
-    betterSpawn(
-      'docker',
-      ['push', tag],
-      { stdio: 'inherit' },
-      {
-        onClose: (code) => {
-          if (code !== 0) {
-            console.error(chalk.red('Failed to push Docker image'))
-            reject()
-          }
+    const login = spawn('docker', [
+      'login',
+      '--username',
+      username,
+      '--password-stdin',
+      url,
+    ])
 
-          resolve()
-        },
-      },
-    )
+    login.stdin.write(password)
+    login.stdin.end()
+
+    login.on('exit', (code) => {
+      if (code === 0) {
+        const push = spawn('docker', ['push', tag], { stdio: 'inherit' })
+
+        push.on('exit', (code) => {
+          if (code === 0) {
+            resolve()
+          } else {
+            reject(new Error(`push process exited with code ${code}`))
+          }
+        })
+      } else {
+        reject(new Error('docker login failed'))
+      }
+    })
   })
 }
 
 async function deployCommand() {
-  console.log('Deploying...')
+  console.log(chalk.gray('Deploying...'))
 
-  const latitudeJson = await findOrCreateConfigFile()
+  const latitudeJson = findConfigFile()
   const name = latitudeJson.data.name
 
-  request({ path: '/api/registry-credentials' }, async ({ err, res }) => {
-    if (err) {
-      console.error(
-        chalk.red('Failed to get registry credentials:', err.message),
-      )
-      process.exit(1)
-    } else {
-      const { response, responseBody } = res
-
-      if (response.statusCode === 200) {
-        try {
-          const { url, password } = JSON.parse(responseBody)
-          const tag = `${url}/${name}:latest`
-
-          await loginDockerRegistry({ url, password })
-          await buildDockerImage(tag)
-          await pushDockerImage(tag)
-
-          console.log(chalk.green('Deployed successfully!'))
-        } catch (error) {
-          console.error(
-            chalk.red('Failed to deploy:', (error as Error).message),
-          )
-
-          process.exit(1)
-        }
+  request(
+    {
+      method: 'POST',
+      path: '/api/ecr/repositories/find-or-create',
+      data: JSON.stringify({ name }),
+    },
+    async ({ err, res }) => {
+      if (err) {
+        console.error(
+          chalk.red('Failed to get registry credentials:', err.message),
+        )
+        process.exit(1)
       } else {
-        try {
-          const response = JSON.parse(responseBody)
-          console.error(chalk.red('Failed to deploy: ', response.error))
-        } catch (error) {
-          console.error(responseBody)
-        } finally {
-          process.exit(1)
+        const { response, responseBody } = res
+
+        if (response.statusCode === 200) {
+          const { url } = JSON.parse(responseBody)
+          const tag = `${url}:latest`
+
+          request({ path: '/api/ecr/credentials' }, async ({ err, res }) => {
+            if (err) {
+              console.error(
+                chalk.red('Failed to get registry credentials:', err.message),
+              )
+              process.exit(1)
+            } else {
+              const { response, responseBody } = res
+              if (response.statusCode === 200) {
+                const { username, password } = JSON.parse(responseBody)
+
+                try {
+                  await buildDockerImage(tag)
+                  await pushDockerImage({ username, password, tag, url })
+                  const stream = await sseRequest({
+                    method: 'POST',
+                    path: '/api/apps/deploy',
+                    data: JSON.stringify({ app: name }),
+                  })
+
+                  stream.on('data', (chunk) => {
+                    console.log(chunk.toString())
+                  })
+
+                  stream.on('error', (error) => {
+                    console.error(chalk.red('Failed to deploy:', error.message))
+
+                    process.exit(1)
+                  })
+
+                  stream.on('end', () => {
+                    console.log(chalk.green('Deployed successfully!'))
+                  })
+                } catch (error) {
+                  console.error(
+                    chalk.red('Failed to deploy:', (error as Error).message),
+                  )
+
+                  process.exit(1)
+                }
+              } else {
+                try {
+                  const response = JSON.parse(responseBody)
+                  console.error(chalk.red('Failed to deploy: ', response.error))
+                } catch (error) {
+                  console.error(responseBody)
+                } finally {
+                  process.exit(1)
+                }
+              }
+            }
+          })
+        } else {
+          try {
+            const response = JSON.parse(responseBody)
+            console.error(chalk.red('Failed to deploy: ', response.error))
+          } catch (error) {
+            console.error(responseBody)
+          } finally {
+            process.exit(1)
+          }
         }
       }
-    }
-  })
+    },
+  )
 }
 
 export default tracked('deployCommand', loggedIn(deployCommand))

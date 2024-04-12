@@ -1,6 +1,7 @@
 import config from '$src/config'
 import { IncomingMessage } from 'http'
 import configStore from '../configStore'
+import { Readable } from 'stream'
 
 type Options = {
   path: string
@@ -11,13 +12,15 @@ type Options = {
 
 const options = ({ method = 'GET', path, data, headers }: Options) => ({
   hostname: process.env.LATITUDE_SERVER_HOST || 'localhost',
-  port: process.env.LATITUDE_SERVER_PORT || 5173,
+  port: process.env.LATITUDE_SERVER_PORT || 3000,
   path,
   method,
   headers: {
     'Content-Type': 'application/json',
     ...(data ? { 'Content-Length': data.length } : {}),
-    ...(configStore.get('jwt') ? { Authorization: `Bearer ${configStore.get('jwt')}` } : {}),
+    ...(configStore.get('jwt')
+      ? { Authorization: `Bearer ${configStore.get('jwt')}` }
+      : {}),
     ...headers,
   },
 })
@@ -54,4 +57,48 @@ export const request = async (
   req.end()
 
   return req
+}
+
+export const sseRequest = async (opts: Options): Promise<Readable> => {
+  return new Promise((resolve, reject) => {
+    const httpModule = config.dev ? import('http') : import('https')
+
+    httpModule
+      .then((module) => {
+        const req = module.request(
+          options({
+            ...opts,
+            headers: { ...opts.headers, Accept: 'text/event-stream' },
+          }),
+          (res) => {
+            const stream = new Readable({
+              read() {},
+            })
+
+            res.on('data', (chunk) => {
+              stream.push(chunk)
+            })
+
+            res.on('end', () => {
+              stream.push(null)
+            })
+
+            res.on('error', (error) => {
+              stream.destroy(error)
+            })
+
+            resolve(stream)
+          },
+        )
+
+        req.on('error', (error) => {
+          reject(error) // Reject the promise on request errors
+        })
+
+        if (opts.data) req.write(opts.data)
+
+        req.end()
+      })
+      .catch(reject)
+  })
 }

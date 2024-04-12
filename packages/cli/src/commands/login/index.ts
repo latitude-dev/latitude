@@ -10,7 +10,7 @@ export default async function loginCommand({
   password: string
 }) {
   const options = {
-    path: '/api/users/login',
+    path: '/auth/login',
     method: 'POST',
     data: JSON.stringify({
       email,

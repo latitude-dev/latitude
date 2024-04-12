@@ -10,7 +10,7 @@ export default async function signupCommand({
   password: string
 }) {
   const options = {
-    path: '/api/users/signup',
+    path: '/auth/signup',
     method: 'POST',
     data: JSON.stringify({
       email,
