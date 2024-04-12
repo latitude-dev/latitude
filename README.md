@@ -136,6 +136,7 @@ details:
 We do not recommend to store your database credentials in the configuration file. Instead, you can use environment variables to store your credentials securely. Find out more about this in the [documentation](https://docs.latitude.so/sources/credentials).
 
 We support the following sources:
+
 - [x] [Athena](https://docs.latitude.so/sources/athena)
 - [x] [BigQuery](https://docs.latitude.so/sources/bigquery)
 - [x] [Clickhouse](https://docs.latitude.so/sources/clickhouse)
@@ -158,6 +159,7 @@ Latitude makes it easy to fetch data from your database and expose it via an API
 You can use parameters in your SQL queries to filter data based on external inputs. For example, you can create a query that fetches movies released between two years:
 
 #### /queries/titles.sql
+
 ```sql titles.sql
 select id,
        title,
@@ -172,6 +174,7 @@ where release_year between { param('start_year') } and { param('end_year') }
 Additionally, you can reference other queries in your SQL to create composable data pipelines. For example, this is a query that uses the results of the previous one to display the count of titles released each year:
 
 #### /queries/titles-agg.sql
+
 ```sql titles-agg.sql
 select
   release_year,
@@ -260,20 +263,17 @@ If you want to build standalone dashboards, you can use our layout engine to cre
 To do so, simply create an `index.html` file under the `queries` directory with the following content:
 
 #### /queries/index.html
+
 ```jsx
-<View class="gap-8 p-8">
+<View class='gap-8 p-8'>
   <Row>
-    <Text.H2 class="font-bold">Netflix titles released over time</Text.H2>
+    <Text.H2 class='font-bold'>Netflix titles released over time</Text.H2>
   </Row>
   <Row>
-    <LineChart
-      query="titles-agg"
-      x="release_year"
-      y="total_titles"
-    />
+    <LineChart query='titles-agg' x='release_year' y='total_titles' />
   </Row>
   <Row>
-    <Table query="titles" />
+    <Table query='titles' />
   </Row>
 </View>
 ```
@@ -291,7 +291,11 @@ Another option is to use our `<Input>` component to create a form that allows us
 You can embed the dashboard in your application using an iframe. To do so, simply add the following code to your application:
 
 ```html
-<iframe src="http://localhost:3000/queries?start_year=2000&end_year=2020" width="100%" height="600" />
+<iframe
+  src="http://localhost:3000/queries?start_year=2000&end_year=2020"
+  width="100%"
+  height="600"
+/>
 ```
 
 If you're using React, we released a React component that simplifies the process of embedding dashboards in your application. [Check out the documentation](https://docs.latitude.so/guides/embed/react-embed) to learn more.
