@@ -17,12 +17,12 @@ The missing analytics layer between your database and your users.
 
   <p align="center">
     <br />
-    <a href="https://docs.novu.co" rel="dofollow"><strong>See documentation →</strong></a>
+    <a href="https://docs.latitude.so" rel="dofollow"><strong>See documentation →</strong></a>
     <br />
     <br/>
     <a href="https://github.com/latitude-dev/latitude/issues/new">Report Bug</a>
     ·
-  <a href="https://discord.novu.co">Join Our Slack</a>
+  <a href="https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email">Join Our Slack</a>
     ·
     <a href="https://github.com/orgs/latitude-dev/projects/1">Roadmap</a>
     ·
@@ -52,7 +52,7 @@ It's fast to get started, easy to maintain, and scales with your data.
 
 - 📊 Easily compose parameterized SQL queries and expose them as API endpoints
 
-- 📦 built-in cache layer for lightning-fast query performance
+- 📦 Built-in cache layer for lightning-fast query performance
 
 - 🛠 Integrations with all common frontend frameworks (React, Svelte, Vue, VanilaJS)
 
