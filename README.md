@@ -33,8 +33,8 @@ The missing analytics layer between your database and your users.
   <a href="https://www.npmjs.com/package/@latitude-data/cli">
     <img src="https://img.shields.io/npm/v/@latitude-data/cli" alt="NPM">
   </a>
-  <a href="https://www.npmjs.com/package/@latitude-data/cli">
-    <img src="https://img.shields.io/npm/dm/@latitude-data/cli" alt="npm downloads">
+  <a href="https://www.npmjs.com/package/@latitude-data/server">
+    <img src="https://img.shields.io/npm/dm/@latitude-data/server" alt="npm downloads">
   </a>
   <img src="https://github.com/latitude-dev/latitude/actions/workflows/linter.yml/badge.svg" alt="Linter">
   <img src="https://github.com/latitude-dev/latitude/actions/workflows/test.yml/badge.svg" alt="Tests">
