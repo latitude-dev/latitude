@@ -136,6 +136,7 @@
         "views/basics/what-are-views",
         "views/basics/layout",
         "views/basics/parameters",
+        "views/basics/signed-parameters",
         "views/basics/running-queries"
       ]
     },

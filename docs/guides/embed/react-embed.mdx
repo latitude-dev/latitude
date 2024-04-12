@@ -66,6 +66,19 @@ export default App () {
 ```
 That's it! 🎉 You have successfully embedded a Latitude data app within your React application.
 
+### Passing signed params
+You can read more about [signed params](/views/basics/signed-parameters) in our documentation. You can pass signed params to the Latitude app.
+
+```tsx src/App.tsx
+export default App () {
+  return (
+    <LatitudeEmbed
+      url='http://localhost:3000/some/view'
+      signedParams='SECRET_SIGNED_PARAMS'
+    />
+  )
+}
+```
 
 ### Passing initial parameters
 You can setup the embedding with initial parameters. This is useful when you want to pass some data from your React app to the Latitude app.

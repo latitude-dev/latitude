@@ -1,0 +1,42 @@
+---
+title: 'Signed Parameters'
+description: 'How do signed parameters work in views'
+---
+
+If you need to obfuscate the parameters in the URL, you can sign the parameter `__token` in the URL of your view as a [JWT token](https://jwt.io/introduction). This parameter has to be signed with your `LATITUDE_MASTER_KEY` that you will find in the `.env` file in the root of your latitude project.
+
+If you don't see a `.env` file in your project you can run:
+```bash
+latitude credentials --create-master-key
+```
+This command will create `LATITUDE_MASTER_KEY` in an `.env` file
+```sh
+LATITUDE_MASTER_KEY=SOME_SECRET_TOKEN
+```
+### Example
+Imagine you want to obfuscate the parameter `workspace_id` to be used in your query like this:
+```sql
+SELECT * FROM table WHERE workspace_id = {param('workspace_id')}
+```
+Normally you would have a URL like this:
+```
+http://localhost:3000/view?workspace_id=123
+```
+But this way anyone can see the name of this secret `workspace_id` parameter and try to send a different value. To avoid this you can sign the parameter `workspace_id` with the `LATITUDE_MASTER_KEY` like this:
+
+This example is using our own JS implementation of JWT but you can easily do this in your server side language.
+```javascript
+import { signJwt } from '@latitude-data/jwt'
+const masterKey = process.env['LATITUDE_MASTER_KEY']
+const signedParams = { workspace_id: 123 }
+const token = await signJwt({ secretKey: masterKey, payload: signedParams  })
+
+// Now this token will look something like this
+// console.log(token) -> eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VfaWQiOjEyM30.1JZ
+```
+
+Now you can use this token in your URL like this
+
+```
+http://localhost:3000/some/latitude/view?__token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3b3Jrc3BhY2VfaWQiOjEyM30.1JZ
+```
