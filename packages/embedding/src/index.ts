@@ -20,7 +20,7 @@ export function triggerCustomEvent(data: unknown) {
 }
 
 export function changeEmbedParams(params: ParamsChangedEventData) {
-  triggerEvent(EmbeddingEvent.ParamsChanged, { params })
+  triggerEvent(EmbeddingEvent.ChangeParamRequest, { params })
 }
 
 export const iframe = new IframeMessages()

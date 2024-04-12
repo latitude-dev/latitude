@@ -67,9 +67,9 @@ export class LatitudeEmbed {
     })
   }
 
-  @Listen('latitude-params-changed', { target: 'document' })
+  @Listen('latitude-change-param-request', { target: 'document' })
   paramsChangedHander(
-    event: CustomEvent<EmbeddingEventData<EmbeddingEvent.Run>>,
+    event: CustomEvent<EmbeddingEventData<EmbeddingEvent.ChangeParamRequest>>,
   ) {
     this.iframe.contentWindow.postMessage(event.detail, {
       targetOrigin: this.queryOrigin,

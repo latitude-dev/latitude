@@ -11,7 +11,7 @@ export function initIframeCommunication({
   allowedOrigins: string[]
 }) {
   iframe.registerAllowedOrigins(allowedOrigins)
-  iframe.onParamsChanged = (data) => {
+  iframe.onParamsRequestChange = (data) => {
     setViewParams(data.params)
   }
   iframe.onRun = (data) => {
