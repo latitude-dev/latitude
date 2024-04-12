@@ -706,6 +706,8 @@ importers:
         specifier: ^21.9.0
         version: 21.11.0
 
+  packages/client/webcomponents/dist/loader: {}
+
   packages/connectors/athena:
     dependencies:
       '@aws-sdk/client-athena':
