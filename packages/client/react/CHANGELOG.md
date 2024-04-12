@@ -1,5 +1,11 @@
 # @latitude-data/react
 
+## 0.6.0
+
+### Minor Changes
+
+- 415c307: Missing pnpm-lock.json line
+
 ## 0.5.0
 
 ### Minor Changes
