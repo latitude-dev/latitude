@@ -7,7 +7,7 @@
 /package
 node_modules
 /queries
-static/latitude
+static
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
@@ -17,3 +17,4 @@ src/routes/*
 !src/routes/api/
 !src/routes/+layout.svelte
 !src/routes/+layout.server.ts
+!src/routes/+layout.ts

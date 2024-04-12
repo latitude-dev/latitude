@@ -8,7 +8,7 @@ declare module 'vite/types/customEvent' {
 }
 
 export default function watchQueriesPlugin() {
-  const queriesPath = path.resolve(__dirname, '../static/latitude/queries')
+  const queriesPath = path.resolve(__dirname, '../static/.latitude/queries')
   return {
     name: 'latitude-queries-watcher',
     enforce: 'post',

@@ -9,7 +9,7 @@ type Props = {
   force: boolean
 }
 
-export const QUERIES_DIR = 'static/latitude/queries'
+export const QUERIES_DIR = 'static/.latitude/queries'
 
 export default async function findOrCompute({
   query,
@@ -45,14 +45,14 @@ export default async function findOrCompute({
 }
 
 export function computeRelativeQueryPath({
-  sourcePath, // /static/latitude/queries/folder/source.yml
+  sourcePath, // /static/.latitude/queries/folder/source.yml
   queryPath, // folder/query.sql
 }: {
   sourcePath: string
   queryPath: string
 }) {
   const base = path
-    .dirname(sourcePath) // /static/latitude/queries/folder
+    .dirname(sourcePath) // /static/.latitude/queries/folder
     .slice(sourcePath.indexOf(QUERIES_DIR) + QUERIES_DIR.length + 1) // folder
 
   if (!base) return queryPath
