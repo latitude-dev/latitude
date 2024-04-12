@@ -131,6 +131,8 @@ details:
   ssl: true
 ```
 
+We do not recommend to store your database credentials in the configuration file. Instead, you can use environment variables to store your credentials securely. Find out more about this in the [documentation](https://docs.latitude.so/sources/credentials).
+
 We support the following sources:
 - [x] [Athena](https://docs.latitude.so/sources/athena)
 - [x] [BigQuery](https://docs.latitude.so/sources/bigquery)
