@@ -25,7 +25,7 @@ export default async function syncQueries({
     rootDir,
     APP_FOLDER,
     'static',
-    'latitude',
+    '.latitude',
     'queries',
   )
 

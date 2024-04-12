@@ -6,27 +6,27 @@ import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
 import config from '$src/config'
 
-function getRoutesFolderPath(cwd: string): string {
-  return path.join(cwd, APP_FOLDER, 'src', 'routes')
+function getStaticFilesFolderPath(cwd: string): string {
+  return path.join(cwd, APP_FOLDER, 'static')
 }
+
+const IGNORED_REGEX = /^.*(?:\/|^)(\..+|.+\.html)$/ // Ignore all html files and hidden files and directories (starting with a dot)
 
 const copiedFiles = new Set<string>()
 
-const IGNORED_FILES_REGEX = /^(?!.*index\.html$).*$/ // ignore all files except index.html
-
-export default async function syncViews({
+export default async function syncStaticFiles({
   watch = false,
 }: {
   watch?: boolean
 }): Promise<void> {
   const rootDir = config.rootDir
-  const destinationDir = getRoutesFolderPath(rootDir)
+  const destinationDir = getStaticFilesFolderPath(rootDir)
   const viewsDir = path.join(rootDir, 'views')
-  const syncFn = syncFnFactory({ rootDir, destinationDir })
+  const syncFn = syncStaticFilesFn({ rootDir, destinationDir })
 
   if (watch) {
     await watcher(viewsDir, syncFn, {
-      // ignored: IGNORED_FILES_REGEX,
+      ignored: IGNORED_REGEX,
     })
   } else {
     syncDirectory(viewsDir, syncFn)
@@ -35,14 +35,22 @@ export default async function syncViews({
   onExit(clearFiles(watch))
 }
 
-export const syncFnFactory =
-  ({ rootDir, destinationDir }: { rootDir: string; destinationDir: string }) =>
-  (srcPath: string, type: 'add' | 'change' | 'unlink', ready: boolean) => {
-    const relativeSrcPath = path
+export function syncStaticFilesFn({
+  rootDir,
+  destinationDir,
+}: {
+  rootDir: string
+  destinationDir: string
+}) {
+  return (
+    srcPath: string,
+    type: 'add' | 'change' | 'unlink',
+    ready: boolean,
+  ) => {
+    const relativePath = path
       .relative(rootDir, srcPath)
-      .replace(/^views/, '')
-    if (IGNORED_FILES_REGEX.test(relativeSrcPath)) return
-    const relativePath = relativeSrcPath.replace(/[^/]*$/, '+page.svelte')
+      .replace(/^views\/?/, '')
+
     const destPath = path.join(destinationDir, relativePath)
 
     if (type === 'add' || type === 'change') {
@@ -53,6 +61,7 @@ export const syncFnFactory =
 
     syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
+}
 
 export const syncDirectory = (directory: string, syncFn: Function): void => {
   fs.readdirSync(directory).forEach((file: string) => {
