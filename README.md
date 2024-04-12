@@ -263,9 +263,9 @@ export default function Example() {
 
 If you want to build standalone dashboards, you can use our layout engine to create a dashboard with multiple visualizations.
 
-To do so, simply create an `index.html` file under the `queries` directory with the following content:
+To do so, simply create an `index.html` file under the `views` directory with the following content:
 
-#### /queries/index.html
+#### /views/index.html
 
 ```jsx
 <View class='gap-8 p-8'>
@@ -283,9 +283,9 @@ To do so, simply create an `index.html` file under the `queries` directory with 
 
 This will create a dashboard with a line chart and a table displaying the data fetched from the `titles` and `titles-agg` queries.
 
-This dashboard can be accessed by navigating to `http://localhost:3000/queries`.
+This dashboard can be accessed by navigating to `http://localhost:3000/`.
 
-To pass parameters to the queries, add them to the URL as query parameters. For example: `http://localhost:3000/queries?start_year=2000&end_year=2020`.
+To pass parameters to the queries, add them to the URL as query parameters. For example: `http://localhost:3000/?start_year=2000&end_year=2020`.
 
 Another option is to use our `<Input>` component to create a form that allows users to input parameters. Find out more about this in the [documentation](https://docs.latitude.so/views/components/inputs/text).
 
