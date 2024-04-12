@@ -1,5 +1,6 @@
 export enum EmbeddingEvent {
   Run = 'latitude-run',
+  ChangeParamRequest = 'latitude-change-param-request',
   ParamsChanged = 'latitude-params-changed',
   Custom = 'latitude-custom',
 }
@@ -21,6 +22,8 @@ export type EmbeddingEventData<T extends EmbeddingEvent> =
     ? { type: T } & RunEventData
     : T extends EmbeddingEvent.ParamsChanged
       ? { type: T; params: ParamsChangedEventData }
-      : T extends EmbeddingEvent.Custom
-        ? { type: T; data: unknown }
-        : never
+      : T extends EmbeddingEvent.ChangeParamRequest
+        ? { type: T; params: ParamsChangedEventData }
+        : T extends EmbeddingEvent.Custom
+          ? { type: T; data: unknown }
+          : never

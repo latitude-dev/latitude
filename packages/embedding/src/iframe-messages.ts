@@ -12,7 +12,7 @@ export default class IframeMessages {
   allowedOrigins: string[] = []
   private _onRun: MessageHandlerFn<EmbeddingEvent.Run> | undefined
   private _onParamsChanged:
-    | MessageHandlerFn<EmbeddingEvent.ParamsChanged>
+    | MessageHandlerFn<EmbeddingEvent.ChangeParamRequest>
     | undefined
   private _onCustomEvent: MessageHandlerFn<EmbeddingEvent.Custom> | undefined
 
@@ -29,7 +29,9 @@ export default class IframeMessages {
     this._onRun = handler
   }
 
-  set onParamsChanged(handler: MessageHandlerFn<EmbeddingEvent.ParamsChanged>) {
+  set onParamsRequestChange(
+    handler: MessageHandlerFn<EmbeddingEvent.ChangeParamRequest>,
+  ) {
     if (this._onParamsChanged) return
 
     this._onParamsChanged = handler
@@ -52,7 +54,7 @@ export default class IframeMessages {
         case EmbeddingEvent.Run:
           this._onRun?.(event.data)
           break
-        case EmbeddingEvent.ParamsChanged:
+        case EmbeddingEvent.ChangeParamRequest:
           this._onParamsChanged?.(event.data)
           break
         case EmbeddingEvent.Custom:
