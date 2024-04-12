@@ -11,6 +11,6 @@ export type OnErrorFn = (_args: OnErrorProps) => void
 
 export type CommonCLIArgs = {
   folder?: string
-  debug?: boolean
+  verbose?: boolean
   'simulate-pro'?: boolean
 }

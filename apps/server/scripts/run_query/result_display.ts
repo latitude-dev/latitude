@@ -1,6 +1,7 @@
 import QueryResult from '@latitude-data/query_result'
 import { screen, text, box, listtable, type Widgets } from 'blessed'
 import { CompileError } from '@latitude-data/sql-compiler'
+import { type CompiledQuery } from '@latitude-data/base-connector'
 
 export default class QueryDisplay {
   private static instance: QueryDisplay
@@ -154,6 +155,88 @@ export default class QueryDisplay {
     scrollTable(0)
   }
 
+  public displayCompiledQuery(compiledQuery: CompiledQuery) {
+    this.header.setContent('Compiled Query and parameters')
+    const queryContent = compiledQuery.sql
+    const paramsContent = compiledQuery.params
+      .map((param) => `${param.resolvedAs} = ${JSON.stringify(param.value)}`)
+      .join('\n')
+
+    const queryLines = queryContent.split('\n').length
+    const paramsLines = paramsContent.split('\n').length
+
+    const queryTitle = text({
+      content: 'Query',
+      tags: true,
+      style: {
+        fg: 'blue',
+        bold: true,
+      },
+      top: 0,
+      height: 1,
+    })
+    const queryBox = box({
+      content: queryContent,
+      tags: true,
+      top: 1,
+      height: 1 + queryLines,
+      left: 1,
+      right: 2,
+    })
+    const paramsTitle = text({
+      content: 'Parameters',
+      tags: true,
+      style: {
+        fg: 'blue',
+        bold: true,
+      },
+      top: 1 + queryLines + 2,
+      height: 1,
+    })
+    const paramsBox = box({
+      content: paramsContent,
+      tags: true,
+      top: 1 + queryLines + 2 + 1,
+      height: paramsLines + 2,
+      left: 1,
+      right: 2,
+    })
+
+    const scrollableContainer = box({
+      scrollable: true,
+      scrollbar: {
+        ch: ' ',
+        track: {
+          bg: 'grey',
+        },
+        style: {
+          inverse: true,
+        },
+      },
+      tags: true,
+      top: 0,
+      bottom: 0,
+      keys: true,
+      mouse: true,
+    })
+
+    scrollableContainer.key(['up', 'k'], () => {
+      scrollableContainer.scroll(-1)
+    })
+    scrollableContainer.key(['down', 'j'], () => {
+      scrollableContainer.scroll(1)
+    })
+
+    scrollableContainer.append(queryBox)
+    scrollableContainer.append(paramsBox)
+    scrollableContainer.append(queryTitle)
+    scrollableContainer.append(paramsTitle)
+
+    this.setBodyContent(scrollableContainer)
+    scrollableContainer.focus()
+    this.render()
+  }
+
   public displayError(error: Error) {
     this.header.setContent('Error')
     let errorMsg = error.message
@@ -189,6 +272,10 @@ export default class QueryDisplay {
 
   public static displayResults(results: QueryResult, loadTime: number) {
     QueryDisplay.getInstance().displayResults(results, loadTime)
+  }
+
+  public static displayCompiledQuery(compiledQuery: CompiledQuery) {
+    QueryDisplay.getInstance().displayCompiledQuery(compiledQuery)
   }
 
   public static displayError(error: Error) {

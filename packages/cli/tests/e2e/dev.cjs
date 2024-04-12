@@ -7,7 +7,7 @@ function dev () {
     'dev',
     '--open',
     'false',
-    '--debug'
+    '--verbose'
   ], {
     cwd: './test-project',
   })

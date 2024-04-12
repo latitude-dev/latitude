@@ -18,7 +18,7 @@ initSentry()
 const CLI = sade('latitude')
 
 CLI.version(process.env.PACKAGE_VERSION ?? 'development')
-  .option('--debug', 'Enables verbose console logs')
+  .option('--verbose', 'Enables verbose console logs')
   .option('--simulate-pro', 'Enable pro mode in development')
 
 if (process.env.NODE_ENV === 'development') {
@@ -63,6 +63,7 @@ CLI.command('dev')
 CLI.command('run <query_name>')
   .describe('Run a query from the Latitude app.')
   .option('--watch', 'Re-run the query each time the query file changes')
+  .option('--debug', 'Instead of running the query, print the generated SQL')
   .option(
     '--param',
     'Add a parameter to the query. Use the format --param <name>=<value>',
