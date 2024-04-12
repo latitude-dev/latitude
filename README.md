@@ -72,13 +72,16 @@ You can find sample projects using Latitude in action in the [examples](https://
 
 - [Quick start](https://github.com/latitude-dev/latitude#-quick-start)
 - [Connect to your data sources](https://github.com/latitude-dev/latitude#-connect-to-your-data-sources)
-- [Write your SQL queries](https://github.com/latitude-dev/latitude#-write-sql-queries)
+- [Write your SQL queries](https://github.com/latitude-dev/latitude#-write-your-sql-queries)
 
 - [Native frontend integration](https://github.com/latitude-dev/latitude#-native-frontend-integration)
   - [Integrate with your frontend](https://github.com/latitude-dev/latitude#-integrate-with-your-frontend)
 - [Layout engine and iframe embedding](https://github.com/latitude-dev/latitude#-layout-engine-and-iframe-embedding)
   - [Use our layout engine](https://github.com/latitude-dev/latitude#-optional-use-our-layout-engine)
   - [Embedding a standalone dashboard](https://github.com/latitude-dev/latitude#-embedding-a-standalone-dashboard)
+- [Community](https://github.com/latitude-dev/latitude#-community)
+- [Contributing](https://github.com/latitude-dev/latitude#-contributing)
+- [Links](https://github.com/latitude-dev/latitude#-links)
 
 ## ⚡ Quick start
 
