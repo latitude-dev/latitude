@@ -324,4 +324,4 @@ contribute a pull request.
 - [Home page](https://latitude.so?utm_campaign=github-readme)
 - [Documentation](https://docs.latitude.so/)
 - [Slack community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
-- [X](https://x.com/trylatitude)
+- [X / Twitter](https://x.com/trylatitude)
