@@ -52,7 +52,7 @@ It's fast to get started, easy to maintain, and scales with your data.
 
 - 📊 Easily compose parameterized SQL queries and expose them as API endpoints
 
-- 📦 Built-in cache layer to make sure your analytics scale
+- 📦 built-in cache layer for lightning-fast query performance
 
 - 🛠 Integrations with all common frontend frameworks (React, Svelte, Vue, VanilaJS)
 
@@ -300,4 +300,4 @@ contribute a pull request.
 - [Home page](https://latitude.so?utm_campaign=github-readme)
 - [Documentation](https://docs.latitude.so/)
 - [Slack community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
-- [Twitter](https://twitter.com/trylatitude)
+- [X](https://twitter.com/trylatitude)
