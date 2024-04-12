@@ -1,10 +1,11 @@
-import fs, { rmSync } from 'fs'
+import { rmSync } from 'fs'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
 import { APP_FOLDER } from '$src/commands/constants'
 import watcher from '../shared/watcher'
 import { onExit } from '$src/utils'
 import config from '$src/config'
+import { syncDirectory } from '$src/lib/sync/syncViews'
 
 function getStaticFilesFolderPath(cwd: string): string {
   return path.join(cwd, APP_FOLDER, 'static')
@@ -61,20 +62,6 @@ export function syncStaticFilesFn({
 
     syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
-}
-
-export const syncDirectory = (directory: string, syncFn: Function): void => {
-  fs.readdirSync(directory).forEach((file: string) => {
-    const srcPath = path.join(directory, file)
-
-    // Check if the srcPath is a directory, and recursively call syncDirectory if it is
-    if (fs.statSync(srcPath).isDirectory()) {
-      syncDirectory(srcPath, syncFn)
-    } else {
-      // It's a file, perform the synchronization operation
-      syncFn(srcPath, 'add', true)
-    }
-  })
 }
 
 const clearFiles = (watch: boolean) => () => {
