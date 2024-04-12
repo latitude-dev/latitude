@@ -1,0 +1,86 @@
+---
+title: 'Running queries'
+description: 'How to run queries from a View'
+---
+
+## Introduction
+There are some components that allow you to run queries from a View, and display the results in different ways.
+All of these components share the same configuration attributes to define which query to run, and how to handle the results.
+
+## Basic query configuration
+
+  ### Query
+  The query that will be run is defined by the `query` attribute. This attribute must be a string, which represents the path to the query that will be run. This path is relative to the `queries` folder in your project.
+
+  ```jsx my_view.html
+  <Table query="path/to/query" />
+  ```
+
+  ### Parameters
+  By default, all queries are executed with the global parameters set in the URL. This means that you don't have to specify any parameters in the component, as long as they are set in the URL.
+  See the [Global parameters](/views/basics/parameters) section for more information.
+
+  You can also override some of the global parameters for a specific query by setting the `inlineParams` attribute. This attribute must be an object, where each key is the name of the parameter, and the value is the value that will be used for that parameter.
+
+  ```jsx my_view.html
+  <Table
+    query="user_info"
+    inlineParams={{
+      id: '123',
+    }}
+  />
+  ```
+
+  The query will still be run with the global parameters, but any parameter that is set in `inlineParams` will override the global value.
+  This also allows you to run the same query multiple times with different parameters within the same View.
+
+  You can also override a parameter using the value from another parameter, using the `input` function.
+  
+  ```jsx my_view.html
+  <Input param="user_id" />
+  <Input param="parent_id" />
+
+  <Table
+    query="user_info"
+    inlineParams={{
+      id: input('user_id')
+    }}
+  />
+  <Table
+    query="user_info"
+    inlineParams={{
+      id: input('parent_id')
+    }}
+  />
+  ```
+
+## Query reactivity and refetching
+  Queries are ran automatically when the View loads, but they are not reactive. This means that changing the value of any parameter will not automatically re-run the query.
+
+  ### Reactivity to parameters
+
+  To configure a query to be reactive to the global parameters, you can configure the `reactiveToParams` option in the `opts` attribute of the component.
+  This option can be set with a number, that represents the number of milliseconds that the query will wait before re-running after a parameter change.
+
+  This debouonce is useful to avoid running the query multiple times when the user is still typing the parameter value, as runnning the query on every key press could be too expensive.
+  However, if you want the query to run immediately after a parameter change, you can set this option to `0`.
+
+  ```jsx my_view.html
+  <Table
+    query="path/to/query"
+    opts={{
+      reactiveToParams: 500 // Wait 500ms (0.5s) of debounce
+    }}
+  />
+  ```
+
+  ### Refetching a query
+  To avoid querying the same data multiple times to your sources, the results of the queries are cached in the server by default. For more information about how this cache works, check the [Cache layer](/queries/basics/cache) section.
+
+  However, you can let the user update the data with the [Run button component](/views/components/interaction/run-button), which will send a request to the server to re-fetch the query from your source, and update the results in the View.
+  This will also update the results with the new global parameters, if they have changed.
+
+  ```jsx my_view.html
+  <Table query="important_data" />
+  <RunButton query="important_data">Update results</RunButton>
+  ```

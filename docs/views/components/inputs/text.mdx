@@ -7,13 +7,13 @@ description: 'Create a regular input to control parameters in your queries'
 
 ## Introduction
 
-Inputs provide a straightforward way to set the values of the [parameters in your queries](/queries/logic/parameters) from your views. Basically they let you provide a user interface to your queries.
+Inputs provide a straightforward way to set the values of the [Global Parameters](/views/basics/parameters) of your views. Basically they let you provide a user interface to your queries.
 
 ## Basic usage
 
 The most basic usage of an input is to provide a text input for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control. `param` is mandatory so if you don't include it the app will return an error.
 
-```html
+```jsx
 <Input param="name" value="Jon" />
 ```
 
@@ -25,7 +25,7 @@ If you load the page without the `name` parameter in the URL, the input will be 
 
 You can also specify the type of input you want to use by using the `type` prop. This works with the `type` attribute of the `<input>` element in HTML. You can use this to specify that the input should be a `number`, `email`, `tel` (phone number), `time`, etc.
 
-```html
+```jsx
 <Input param="age" type="number" />
 ```
 

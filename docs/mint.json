@@ -40,14 +40,6 @@
     {
       "name": "Views",
       "url": "views"
-    },
-    {
-      "name": "Components",
-      "url": "components"
-    },
-    {
-      "name": "Visualizations",
-      "url": "visualizations"
     }
   ],
   "anchors": [],
@@ -123,9 +115,9 @@
       "group": "Logic",
       "pages": [
         "queries/logic/variables",
+        "queries/logic/parameters",
         "queries/logic/if-else",
-        "queries/logic/loops",
-        "queries/logic/parameters"
+        "queries/logic/loops"
       ]
     },
     {
@@ -139,11 +131,17 @@
     },
     {
       "group": "Basics",
-      "pages": ["views/basics/what-are-views", "views/basics/layout"]
+      "pages": [
+        "views/basics/what-are-views",
+        "views/basics/layout",
+        "views/basics/parameters",
+        "views/basics/running-queries"
+      ]
     },
     {
       "group": "Logic",
       "pages": [
+        "views/logic/param",
         "views/logic/if-else",
         "views/logic/await",
         "views/logic/loops",
@@ -151,11 +149,44 @@
       ]
     },
     {
-      "group": "Content",
+      "group": "Components",
       "pages": [
-        "components/content/text",
-        "components/content/alert",
-        "components/content/card"
+        {
+          "group": "Content",
+          "pages": [
+            "views/components/content/text",
+            "views/components/content/alert",
+            "views/components/content/card"
+          ]
+        },
+        {
+          "group": "Inputs",
+          "pages": [
+            "views/components/inputs/text",
+            "views/components/inputs/select",
+            "views/components/inputs/date"
+          ]
+        },
+        {
+          "group": "Visualizations",
+          "pages": [
+            "views/components/visualizations/table",
+            "views/components/visualizations/line-chart",
+            "views/components/visualizations/bar-chart",
+            "views/components/visualizations/area-chart",
+            "views/components/visualizations/scatter",
+            "views/components/visualizations/mixed-types-chart",
+            "views/components/visualizations/pie-chart",
+            "views/components/visualizations/funnel-chart"
+          ]
+        },
+        {
+          "group": "Interaction",
+          "pages": [
+            "views/components/interaction/run-button",
+            "views/components/interaction/link"
+          ]
+        }
       ]
     },
     {
@@ -165,42 +196,6 @@
     {
       "group": "Advanced",
       "pages": ["views/advanced/svelte-syntax", "views/advanced/head"]
-    },
-    {
-      "group": "Inputs",
-      "pages": [
-        "components/inputs/text",
-        "components/inputs/select",
-        "components/inputs/date"
-      ]
-    },
-    {
-      "group": "Interaction",
-      "pages": [
-        "components/interaction/run-button",
-        "components/interaction/link"
-      ]
-    },
-    {
-      "group": "Two Axes Charts",
-      "pages": [
-        "visualizations/two-axes-charts/line-chart",
-        "visualizations/two-axes-charts/bar-chart",
-        "visualizations/two-axes-charts/area-chart",
-        "visualizations/two-axes-charts/scatter",
-        "visualizations/two-axes-charts/mixed-types-chart"
-      ]
-    },
-    {
-      "group": "Tables",
-      "pages": ["visualizations/tables/table"]
-    },
-    {
-      "group": "Others",
-      "pages": [
-        "visualizations/others/pie-chart",
-        "visualizations/others/funnel-chart"
-      ]
     }
   ],
   "footerSocials": {

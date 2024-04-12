@@ -7,13 +7,15 @@ description: 'Add buttons to your views to update the data in your app'
 
 ## Introduction
 
-The `RunButton` component lets users run a query—or a group of queries—by clicking a button.
+The `RunButton` component lets users manually refetch the contents of a query, or a group of queries, by clicking a button.
+
+See [Refetching a query](/views/basics/running-queries#refetching-a-query) for more information on how queries are fetched.
 
 ## Usage
 
 To use the `RunButton` component, simply add it to any view like this:
 
-```html
+```jsx
 <RunButton>Run</RunButton>
 ```
 
@@ -21,7 +23,7 @@ When you click the button, it will run all queries being used in the view.
 
 You can also specify a query to run:
 
-```html
+```jsx
 <RunButton query="users">Run</RunButton>
 ```
 
@@ -29,7 +31,7 @@ This will run the `users` query when the button is clicked, and it will reactive
 
 Finally, you can specify an array of queries to run:
 
-```html
+```jsx
 <RunButton queries={["users", "transactions"]}>Run</RunButton>
 ```
 

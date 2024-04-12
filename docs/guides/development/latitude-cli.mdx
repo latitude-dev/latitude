@@ -59,10 +59,10 @@ With this, every time you save the file, the query will be re-run and the result
 
 ### Passing parameters
 
-If you're using parameters in your query, you can pass them to the `run` command like this:
+If you're using parameters in your query, you can pass them to the `run` command using the `--param` flag, followed by the parameter name and value. For example:
 
 ```bash
-latitude run sample --param1 value1 --param2 value2
+latitude run sample --param name=Latitude --param id=1
 ```
 
-Now, when building the query with the parameters, the values `value1` and `value2` will be used.
+Now, when building the query with the parameters, the `name` and `id` parameters will receive the values `Latitude` and `1`, respectively.

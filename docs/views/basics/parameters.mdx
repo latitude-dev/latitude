@@ -1,0 +1,51 @@
+---
+title: 'Global Parameters'
+description: 'How do parameters work in views'
+---
+
+## Introduction
+Some components, like [Visualizations](/views/components/visualizations), allow you to use and display the results of queries, which can be executed using dynamic parameters. For more information, read about [query parameters](/queries/logic/parameters).
+
+Every Latitude view has a set of **global parameters** defined in the URL. When using components that run queries, all of these parameters are automatically passed to the query.
+
+## URL Parameters
+
+Global parameters can be both seen and set in the URL of the view, as regular URL parameters.
+
+URL parameters are defined by the `?` character at the end of the URL, followed by a list of key-value pairs separated by the `&` character. Each key-value pair is separated by the `=` character.
+For example: `?key1=value1&key2=value2&key3=value3`
+
+### Example
+Let's see an example:
+1. **Create a query with a parameter**:
+	```sql user_friends.sql
+	SELECT * FROM friends WHERE user_id = {param('id')}
+	```
+	In this query, we are using a parameter called `id` to filter the results. Check out [query parameters](/queries/logic/parameters) for more information.
+
+2. **Create a view displaying the results**:
+	```jsx friends.html
+	<Table query="user_friends" />
+	```
+	Here, we are using the `Table` component to display the results of the query. We have specified the query to use, but we do not have to specify any parameter, as all global parameters are automatically passed to the query.
+
+3. **Set the parameter in the URL**:
+	Now, if we want to see the results for a specific user, we just need to set the `id` parameter in the URL. For example, if we want to see the friends of the user with `id = 1`, we can set the URL to:
+	```
+	https://latitude.example.com/friends?id=1
+	```
+
+### Parameter types in the URL
+
+Parameters in the URL are always treated as strings by default, and they are sent to the query as strings. If you need to use a parameter as a different type, you can specify the type in the URL with the following syntax:
+
+`parameter=$type:value`
+
+Where `type` is the type of the parameter, like `text`, `num`, `bool` or `date`. Following the previous example, if we want to set the `id` parameter as a number, we can set the URL to:
+```
+https://latitude.example.com/friends?id=$num:1
+```
+
+## Modifying Global Parameters
+
+Some components will allow you to modify the global parameters directly from the view. For example, the [Input](/views/components/inputs/text) component allows you to set a global parameter when the user types in the input field. Check out the **Components** section to find more information.

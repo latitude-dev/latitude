@@ -13,13 +13,13 @@ The `Link` component is used to navigate between pages. You can link to internal
 
 To link to an internal page, use the `to` prop pointing to a relative path. For example, to link to the about page, use the following code
 
-```html
+```jsx
 <Link to="/about">About</Link>
 ```
 
 By default, the new page will open in the same tab. If you want to open the new page in a new tab, you can use the `newTab` prop.
 
-```html
+```jsx
 <Link to="/about" newTab={true}>Go to About page</Link>
 ```
 
@@ -27,12 +27,12 @@ By default, the new page will open in the same tab. If you want to open the new 
 
 To link to an external page, use the same `to` prop but include the full URL you want to link to.
 
-```html
+```jsx
 <Link to="https://example.com">External Link</Link>
 ```
 
 External links open in a new tab by default. If you want to open the link in the same tab, you can set the `newTab` prop to `false`.
 
-```html
+```jsx
 <Link to="https://example.com" newTab={false}>External Link</Link>
 ```

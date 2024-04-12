@@ -1,0 +1,34 @@
+---
+title: '{param(...)}'
+description: 'Read and display the value of global parameters in your views.'
+---
+
+## Introduction
+
+As explained in [Global parameters](/views/basics/parameters), all views have a set of global parameters that can be configured and modified by users.
+Although these are managed automatically for running queries, you can also read and display their values in your views using the `param` function.
+
+## Basic usage
+
+Here's an example of how to use the `param` function to read the value of a global parameter:
+
+```jsx
+<View>
+	<Input param='name' label='Your name' />
+	<Text>Hello, {param('name')}!</Text>
+</View>
+```
+
+In this example, the `Input` component is used to set the value of the `name` parameter, and the `Text` component is used to display the value of the `name` parameter.
+The text shown in the `Text` component will be updated automatically whenever the value of the `name` parameter changes.
+
+### Fallback
+
+You can also use parameters that may be present in the URL but do not have any associated Input component.
+However, if the parameter is not present in the URL either, you can provide a fallback value as the second argument to the `param` function. Otherwise, the function will return `undefined`.
+
+```jsx
+<View>
+	<Text>Hello, {param('name', 'unidentified user')}!</Text>
+</View>
+```

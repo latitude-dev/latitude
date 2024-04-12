@@ -1,11 +1,11 @@
 ---
 title: '{#await ... }'
-description: 'Wait for functions to complete before rendering the result'
+description: 'Display custom content based on the results of a query'
 ---
 
 ## Introduction
 
-The `await` block lets you run functions in a synchronous manner. This is useful when for example you want to use the results of a query in a custom element in your views.
+The `await` block, along with the `runQuery` function lets you manually run queries in a synchronous manner. This is useful when you want to display custom content based on the results of a query.
 
 ## Basic usage
 
@@ -13,11 +13,14 @@ There are three possible states for the `await` block: `pending`, `fulfilled` an
 
 ```html
 {#await runQuery('sample')}
-    <p>Waiting...</p>
+	<!-- This will be displayed while the query is pending -->
+	<p>Waiting...</p>
 {:then data}
-    <p>There are {data.length} elements</p>
+	<!-- This will be displayed if the query is successful -->
+	<p>There are {data.length} elements</p>
 {:catch error}
-    <p>{error.message}</p>
+	<!-- This will be displayed if the query fails -->
+	<p>{error.message}</p>
 {/await}
 ```
 
@@ -25,6 +28,55 @@ If you don't want to show a loading state or an error message, those parts can b
 
 ```html
 {#await runQuery('sample') then data}
-    <p>The value is {data}</p>
+	<p>The value is {data}</p>
+{/await}
+```
+
+## The Run Query function
+The `runQuery` function is a built-in function that lets you run queries synchronously. It takes a query name as an argument and returns the result of the query.
+
+In addition to the query name, this function can have these three attributes:
+
+<ParamField path="query" type="string" required>
+	The path to the query file that will provide the data displayed in the visualization.
+</ParamField>
+
+<ParamField path="inlineParams" type="object">
+	An object with custom parameters to be used in the query, in addition to the global parameters of the view.
+</ParamField>
+
+<ParamField path="opts" type="object">
+	Includes options to control the behavior of the chart. For example, react to changes in the parameters to update the data immediately.
+</ParamField>
+
+Refer to the [Running queries](/views/basics/running-queries) section for more information about query configuration.
+
+The results of the query, which is accessed through the `{:then}` block, will be the data returned by the query. This data is structured as an array of objects, where each object represents a row in the query result. For example:
+```json
+[
+	{ "name": "Alice", "age": 25 },
+	{ "name": "Bob", "age": 30 }
+]
+```
+
+### Example
+
+```jsx
+{#await runQuery(
+	'users',
+	{ minimum_age: 25 }
+)}
+	<p>Loading data...</p>
+
+{:then data}
+	<p>There are {data.length} users older than 25:</p>
+	{#each data as user}
+		<p>{user.name} is {user.age} years old</p>
+	{/each}
+
+{:catch error}
+	<p>There has been an error!</p>
+	<p>{error.message}</p>
+	
 {/await}
 ```
