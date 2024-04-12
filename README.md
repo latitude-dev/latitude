@@ -92,6 +92,8 @@ Run the following command to install the Latitude CLI globally on your machine:
 npm install -g @latitude-data/cli
 ```
 
+Note that if you're using Windows, you might need to follow these instructions first: [Windows setup](https://docs.latitude.so/guides/getting-started/windows-compatibility).
+
 ### 2. Create the starter project
 
 Run this command to create a new Latitude project:
