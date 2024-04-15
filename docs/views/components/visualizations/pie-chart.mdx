@@ -77,9 +77,9 @@ To configure and customize the chart, you can add properties, some of which are 
 
 ### Reactive To Params
 
-Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactiveToParams` option is available.
+Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactToParams` option is available.
 
-<ParamField path="reactiveToParams" type="boolean">
+<ParamField path="reactToParams" type="boolean">
     If true, the chart will react to any change in the params to update the data displayed without the need to run the view manually.
 </ParamField>
 
@@ -90,7 +90,7 @@ Within the `opts` property we can include some options to modify the behavior of
     y='count'
     title='Titles by type'
     opts={{
-        reactiveToParams: true
+        reactToParams: true
     }}
 />
 ```

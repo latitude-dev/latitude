@@ -80,7 +80,7 @@ describe('useQuery with reactiveParams', () => {
   it('should not run the refetch function when reactiveParams is not set', () => {
     // Subscribe to a query
     const query = uuidv4()
-    const opts = { reactiveToParams: false }
+    const opts = { reactToParams: false }
     useQuery({ query, opts })
 
     // The 'fetch' method should be called once when the query is first subscribed
@@ -97,7 +97,7 @@ describe('useQuery with reactiveParams', () => {
   it('should re-run the refetch function each time the parameters change when reactiveParams is set to true', () => {
     // Subscribe to a query
     const query = uuidv4()
-    const opts = { reactiveToParams: true }
+    const opts = { reactToParams: true }
     useQuery({ query, opts })
 
     // The 'fetch' method should be called once when the query is first subscribed
@@ -117,7 +117,7 @@ describe('useQuery with reactiveParams', () => {
   it('should re-run the refetch function only when the debounce time has passed when reactiveParams is set to a number', () => {
     // Subscribe to a query
     const query = uuidv4()
-    const opts = { reactiveToParams: 100 } // 100ms debounce time
+    const opts = { reactToParams: 100 } // 100ms debounce time
     useQuery({ query, opts })
     vi.runAllTimers()
 
@@ -133,5 +133,28 @@ describe('useQuery with reactiveParams', () => {
 
     // The 'fetch' method should have been called the 1 initial time + 1 time after the debounce time has passed
     expect(mockFetchFn).toHaveBeenCalledTimes(2)
+  })
+
+  it('show a console warning when using the deprecated reactiveToParams option', () => {
+    // Subscribe to a query
+    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const query = uuidv4()
+    const opts = { reactiveToParams: true }
+    useQuery({ query, opts })
+
+    // The 'fetch' method should be called once when the query is first subscribed
+    expect(mockFetchFn).toHaveBeenCalledTimes(1)
+
+    // Update the viewParams
+    setViewParam('param', 'value')
+    vi.runAllTimers()
+
+    // The 'fetch' method should have been called the 1 initial time + 1 time after the viewParams were updated
+    expect(mockFetchFn).toHaveBeenCalledTimes(2)
+
+    // The console should have a warning
+    expect(consoleSpy).toBeCalledWith(
+      'The "reactiveToParams" option is deprecated. Please use "reactToParams" instead.',
+    )
   })
 })
