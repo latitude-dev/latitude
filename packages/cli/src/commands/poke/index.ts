@@ -2,7 +2,7 @@ import { request } from '$src/lib/server'
 import chalk from 'chalk'
 
 export default function pokeCommand() {
-  request({ path: '/api/poke' }, async ({ err, res }) => {
+  request({ path: '/api/users/me' }, async ({ err, res }) => {
     if (err) {
       console.error(chalk.red(err.message))
       process.exit(1)

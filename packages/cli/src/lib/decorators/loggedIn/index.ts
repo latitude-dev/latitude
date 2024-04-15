@@ -3,7 +3,7 @@ import chalk from 'chalk'
 
 export default function loggedIn(commandFn: Function) {
   return async function (...args: any[]) {
-    request({ path: '/api/poke' }, ({ err, res }) => {
+    request({ path: '/api/users/me' }, ({ err, res }) => {
       if (err) {
         console.error(
           chalk.red(

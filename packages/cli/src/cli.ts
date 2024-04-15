@@ -18,6 +18,7 @@ import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import { onError } from './utils'
+import cancelCommand from './commands/cancel'
 
 initSentry()
 
@@ -105,17 +106,21 @@ CLI.command('login')
   .option('--password', 'Account password')
   .action(loginCommand)
 
+CLI.command('logout')
+  .describe('Logout an existing account')
+  .action(logoutCommand)
+
 CLI.command('deploy')
   .describe('Deploy your Latitude app to the cloud')
   .action(deployCommand)
 
+CLI.command('cancel')
+  .describe('Cancels an ongoing deployment')
+  .action(cancelCommand)
+
 CLI.command('destroy')
   .describe('Destroy a deployed Latitude app')
   .action(destroyCommand)
-
-CLI.command('logout')
-  .describe('Logout an existing account')
-  .action(logoutCommand)
 
 CLI.command('poke').describe('Poke Latitude server').action(pokeCommand)
 
