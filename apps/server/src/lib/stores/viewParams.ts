@@ -11,7 +11,7 @@ export type ViewParams = {
 const getParamsFromUrl = () => {
   if (!browser) return {}
 
-  const urlParams = new URLSearchParams(globalThis.location.search)
+  const urlParams = new URLSearchParams(globalThis?.location?.search)
   const newParams: ViewParams = {}
   urlParams.forEach((value, key) => {
     newParams[key] = parse(value)
@@ -20,9 +20,12 @@ const getParamsFromUrl = () => {
 }
 
 export function setUrlParam(newParams: ViewParams) {
-  if (!browser) return
-
-  const newParamsString = LatitudeApi.buildParams(newParams)
+  const cleanParams = Object.fromEntries(
+    Object.entries(newParams).filter(
+      ([_, value]) => value !== undefined && value !== null && value !== '',
+    ),
+  )
+  const newParamsString = LatitudeApi.buildParams(cleanParams)
 
   // There are two ways to update the url: the default window.location.replaceState and svelte's replaceState
   // When using the default window.location.replaceState, sveltekit will print a warning in the console recommending to use svelte's replaceState instead
@@ -30,7 +33,8 @@ export function setUrlParam(newParams: ViewParams) {
   // To avoid the warning and the error, we use a try/catch block to catch the error and do nothing
 
   try {
-    replaceState(`?${newParamsString}`, {})
+    const urlParamsReplace = newParamsString ? `?${newParamsString}` : ''
+    replaceState(urlParamsReplace, {})
   } catch (_) {
     /* do nothing */
   } // replaceState fails when not ran within a svelte component
