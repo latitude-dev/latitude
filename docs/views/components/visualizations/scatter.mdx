@@ -37,9 +37,9 @@ You can use `<ScatterChart ... />` to add it in your view. Within the tag you mu
 
 ### Reactive To Params
 
-Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactiveToParams` option is available.
+Within the `opts` property we can include some options to modify the behavior of the chart. At the moment only the `reactToParams` option is available.
 
-<ParamField path="reactiveToParams" type="boolean">
+<ParamField path="reactToParams" type="boolean">
     If true, the chart will react to any change in the params to update the data displayed without the need to run the view manually.
 </ParamField>
 
@@ -51,7 +51,7 @@ Within the `opts` property we can include some options to modify the behavior of
     xTitle='Year'
     yTitle='Titles'
     opts={{
-        reactiveToParams: true
+        reactToParams: true
     }}
 />
 ```

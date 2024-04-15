@@ -35,7 +35,7 @@ All of these components share the same configuration attributes to define which 
   This also allows you to run the same query multiple times with different parameters within the same View.
 
   You can also override a parameter using the value from another parameter, using the `input` function.
-  
+
   ```jsx my_view.html
   <Input param="user_id" />
   <Input param="parent_id" />
@@ -59,7 +59,7 @@ All of these components share the same configuration attributes to define which 
 
   ### Reactivity to parameters
 
-  To configure a query to be reactive to the global parameters, you can configure the `reactiveToParams` option in the `opts` attribute of the component.
+  To configure a query to be reactive to the global parameters, you can configure the `reactToParams` option in the `opts` attribute of the component.
   This option can be set with a number, that represents the number of milliseconds that the query will wait before re-running after a parameter change.
 
   This debouonce is useful to avoid running the query multiple times when the user is still typing the parameter value, as runnning the query on every key press could be too expensive.
@@ -69,10 +69,12 @@ All of these components share the same configuration attributes to define which 
   <Table
     query="path/to/query"
     opts={{
-      reactiveToParams: 500 // Wait 500ms (0.5s) of debounce
+      reactToParams: 500 // Wait 500ms (0.5s) of debounce
     }}
   />
   ```
+
+  <Note>`reactiveToParams` has been deprecated. Please replace it with `reactToParams`</Note>
 
   ### Refetching a query
   To avoid querying the same data multiple times to your sources, the results of the queries are cached in the server by default. For more information about how this cache works, check the [Cache layer](/queries/basics/cache) section.

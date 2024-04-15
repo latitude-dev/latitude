@@ -111,7 +111,8 @@ async function fetchQueryFromCore({
 }
 
 export type QuerySubscriptionOptions = {
-  reactiveToParams?: boolean | number
+  reactToParams?: boolean | number
+  reactiveToParams?: boolean | number // Deprecated
 }
 
 export type QueryProps = {
@@ -158,13 +159,23 @@ export function useQuery({
       data: queryResultState.data ?? get(queryResultStore).data,
     })
   }
+  // Update state when coreQueryKey changes
+  coreQueryKeyStore.subscribe(updateState)
 
-  coreQueryKeyStore.subscribe(updateState) // Update state when coreQueryKey changes
-  queryStore.subscribe(updateState) // Check for state updates when queryStore changes
+  // Check for state updates when queryStore changes
+  queryStore.subscribe(updateState)
+
+  if (opts.reactiveToParams) {
+    console.warn(
+      'The "reactiveToParams" option is deprecated. Please use "reactToParams" instead.',
+    )
+  }
+
+  const reactive = opts.reactiveToParams ?? opts.reactToParams
+
   // Refetch when viewParams change
-  if (opts.reactiveToParams || opts.reactiveToParams === 0) {
-    const debounceTime =
-      opts.reactiveToParams === true ? 0 : opts.reactiveToParams
+  if (reactive || reactive === 0) {
+    const debounceTime = reactive === true ? 0 : reactive
     const debouncedRefetch = debounce(() => {
       fetchQueryFromCore({ query, inlineParams })
     }, debounceTime)
