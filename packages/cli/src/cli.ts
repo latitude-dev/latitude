@@ -3,20 +3,21 @@
 import buildCommand from './commands/build'
 import config from './config'
 import credentialsCommand from './commands/credentials'
+import deployCommand from './commands/deploy'
+import destroyCommand from './commands/destroy'
 import devCommand from './commands/dev'
+import initSentry from '$src/integrations/sentry'
+import loginCommand from './commands/login'
+import logoutCommand from './commands/logout'
+import pokeCommand from './commands/poke'
 import runCommand from './commands/run'
 import sade from 'sade'
 import setupCommand from './commands/setup'
+import signupCommand from './commands/signup'
 import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import { onError } from './utils'
-import initSentry from '$src/integrations/sentry'
-import signupCommand from './commands/signup'
-import logoutCommand from './commands/logout'
-import loginCommand from './commands/login'
-import pokeCommand from './commands/poke'
-import deployCommand from './commands/deploy'
 
 initSentry()
 
@@ -107,6 +108,10 @@ CLI.command('login')
 CLI.command('deploy')
   .describe('Deploy your Latitude app to the cloud')
   .action(deployCommand)
+
+CLI.command('destroy')
+  .describe('Destroy a deployed Latitude app')
+  .action(destroyCommand)
 
 CLI.command('logout')
   .describe('Logout an existing account')

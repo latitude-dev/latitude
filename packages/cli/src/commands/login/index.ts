@@ -1,20 +1,15 @@
+import askPassword from '$src/lib/askPassword'
 import configStore from '$src/lib/configStore'
 import { request } from '$src/lib/server'
 import chalk from 'chalk'
 
-export default async function loginCommand({
-  email,
-  password,
-}: {
-  email: string
-  password: string
-}) {
+export default async function loginCommand({ email }: { email: string }) {
   const options = {
     path: '/auth/login',
     method: 'POST',
     data: JSON.stringify({
       email,
-      password,
+      password: await askPassword(),
     }),
   }
 

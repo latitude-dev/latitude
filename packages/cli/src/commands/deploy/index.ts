@@ -7,9 +7,13 @@ import { spawn } from 'child_process'
 
 function buildDockerImage(tag: string) {
   return new Promise<string>((resolve, reject) => {
-    const build = spawn('docker', ['build', '-t', tag, '.'], {
-      stdio: 'inherit',
-    })
+    const build = spawn(
+      'docker',
+      ['build', '--platform', 'linux/amd64', '-t', tag, '.', '--load'],
+      {
+        stdio: 'inherit',
+      },
+    )
 
     build.on('exit', (code) => {
       if (code === 0) {
@@ -63,10 +67,10 @@ async function pushDockerImage({
 }
 
 async function deployCommand() {
-  console.log(chalk.gray('Deploying...'))
-
   const latitudeJson = findConfigFile()
   const name = latitudeJson.data.name
+
+  console.log(chalk.gray(`Deploying ${name}...`))
 
   request(
     {
@@ -101,6 +105,7 @@ async function deployCommand() {
                 try {
                   await buildDockerImage(tag)
                   await pushDockerImage({ username, password, tag, url })
+
                   const stream = await sseRequest({
                     method: 'POST',
                     path: '/api/apps/deploy',
@@ -108,6 +113,8 @@ async function deployCommand() {
                   })
 
                   stream.on('data', (chunk) => {
+                    if (chunk === null) process.exit(0)
+
                     console.log(chunk.toString())
                   })
 
@@ -119,6 +126,8 @@ async function deployCommand() {
 
                   stream.on('end', () => {
                     console.log(chalk.green('Deployed successfully!'))
+
+                    process.exit(0)
                   })
                 } catch (error) {
                   console.error(
