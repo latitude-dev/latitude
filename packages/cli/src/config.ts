@@ -2,11 +2,6 @@ import mri from 'mri'
 import path from 'path'
 import { APP_FOLDER, LATITUDE_CONFIG_FILE } from './commands/constants'
 
-export type PartialLatitudeConfig = {
-  name: string
-  version: string
-}
-
 class CLIConfig {
   public rootDir: string
   public dev: boolean = true
