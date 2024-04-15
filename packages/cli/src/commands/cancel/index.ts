@@ -3,12 +3,13 @@ import tracked from '$src/lib/decorators/tracked'
 import findConfigFile from '$src/lib/latitudeConfig/findConfigFile'
 import { request } from '$src/lib/server'
 import chalk from 'chalk'
+import ora from 'ora'
 
 function cancel() {
   const latitudeJson = findConfigFile()
   const name = latitudeJson.data.name
 
-  console.log(chalk.gray(`Cancelling deploy of ${name}...`))
+  const spinner = ora(`Cancelling deploy of ${name}...`).start()
 
   request(
     {
@@ -25,6 +26,8 @@ function cancel() {
         const { response } = res
 
         if (response.statusCode === 200) {
+          spinner.stop()
+
           console.log(chalk.green('Deploy cancelled.'))
         } else {
           console.error(

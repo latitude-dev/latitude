@@ -4,6 +4,7 @@ import loggedIn from '$src/lib/decorators/loggedIn'
 import tracked from '$src/lib/decorators/tracked'
 import { request, sseRequest } from '$src/lib/server'
 import { spawn } from 'child_process'
+import ora from 'ora'
 
 function buildDockerImage(tag: string) {
   return new Promise<string>((resolve, reject) => {
@@ -70,7 +71,7 @@ async function deployCommand() {
   const latitudeJson = findConfigFile()
   const name = latitudeJson.data.name
 
-  console.log(chalk.gray(`Deploying ${name}...`))
+  const spinner = ora(`Deploying ${name}...`).start()
 
   request(
     {
@@ -115,7 +116,7 @@ async function deployCommand() {
                   stream.on('data', (chunk) => {
                     if (chunk === null) process.exit(0)
 
-                    console.log(chunk.toString())
+                    spinner.text = chunk.toString()
                   })
 
                   stream.on('error', (error) => {
@@ -125,6 +126,8 @@ async function deployCommand() {
                   })
 
                   stream.on('end', () => {
+                    spinner.stop()
+
                     console.log(chalk.green('Deployed successfully!'))
 
                     process.exit(0)

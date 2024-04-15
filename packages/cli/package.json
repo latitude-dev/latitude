@@ -71,6 +71,7 @@
     "fs-extra": "^11.2.0",
     "latest-version": "^9.0.0",
     "mri": "^1.2.0",
+    "ora": "^8.0.1",
     "picocolors": "^1.0.0",
     "portfinder": "^1.0.32",
     "rimraf": "^5.0.5",

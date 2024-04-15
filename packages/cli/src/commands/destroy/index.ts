@@ -3,12 +3,13 @@ import tracked from '$src/lib/decorators/tracked'
 import findConfigFile from '$src/lib/latitudeConfig/findConfigFile'
 import { sseRequest } from '$src/lib/server'
 import chalk from 'chalk'
+import ora from 'ora'
 
 async function destroyCommand() {
   const latitudeJson = findConfigFile()
   const name = latitudeJson.data.name
 
-  console.log(chalk.gray(`Destroying ${name}...`))
+  const spinner = ora(`Destroying ${name}...`).start()
 
   try {
     const stream = await sseRequest({
@@ -18,11 +19,9 @@ async function destroyCommand() {
     })
 
     stream.on('data', (chunk) => {
-      if (chunk === null) {
-        process.exit(0)
-      }
+      if (chunk === null) process.exit(0)
 
-      console.log(chunk.toString())
+      spinner.text = chunk.toString()
     })
 
     stream.on('error', (error) => {
@@ -32,6 +31,8 @@ async function destroyCommand() {
     })
 
     stream.on('end', () => {
+      spinner.stop()
+
       console.log(chalk.green(`Destroyed ${name} successfully`))
 
       process.exit(0)
