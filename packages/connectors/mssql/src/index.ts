@@ -22,7 +22,7 @@ export type ConnectionParams = {
   }
 }
 
-export class MssqlConnector extends BaseConnector {
+export default class MssqlConnector extends BaseConnector {
   private pool: sql.ConnectionPool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

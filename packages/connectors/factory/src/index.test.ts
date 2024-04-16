@@ -1,17 +1,23 @@
 import * as fs from 'fs'
-import * as postgresConnector from '@latitude-data/postgresql-connector'
-import { createConnector } from './index'
-import { it, describe, beforeEach, afterEach, expect } from 'vitest'
+
+import { it, describe, beforeEach, expect } from 'vitest'
 import { vi } from 'vitest'
+import { createConnector } from './index'
+
+let MockPostgresqlConnector = vi.hoisted(() => vi.fn())
+
+vi.mock('@latitude-data/postgresql-connector', () => ({
+  default: MockPostgresqlConnector,
+}))
 
 vi.mock('fs', () => ({
   readFileSync: vi.fn(),
   existsSync: vi.fn(),
 }))
 
-describe('createConnector', () => {
-  const sourcePath = '/path/to/source.yaml'
+const sourcePath = '/path/to/source.yaml'
 
+describe('createConnector', () => {
   beforeEach(() => {
     vi.mocked(fs.existsSync).mockReturnValue(true)
     vi.mocked(fs.readFileSync).mockReturnValue(
@@ -27,44 +33,21 @@ describe('createConnector', () => {
     )
   })
 
-  afterEach(() => {
-    vi.restoreAllMocks()
-  })
-
-  it('should fail because it does not find a required env var', () => {
-    expect(() => createConnector(sourcePath)).toThrowError(
+  it('fails because it does not find a required env var', async () => {
+    await expect(createConnector(sourcePath)).rejects.toThrow(
       `Invalid configuration. Environment variable LATITUDE__DB_PASSWORD was not found in the environment. You can review how to set up secret source credentials in the documentation: https://docs.latitude.so/sources/credentials`,
     )
   })
 
-  it('should correctly parse env vars', () => {
-    process.env['LATITUDE__DB_PASSWORD'] = 'mypassword' // eslint-disable-line
-
-    const spy = vi
-      .spyOn(postgresConnector, 'PostgresConnector')
-      // @ts-ignore
-      .mockReturnValue(10)
-
-    const connector = createConnector(sourcePath)
-    expect(connector).toBeInstanceOf(postgresConnector.PostgresConnector)
-    expect(spy).toHaveBeenCalledWith('/path/to', {
-      host: 'localhost',
-      port: 5432,
-      user: 'myuser',
-      password: 'mypassword',
-      database: 'mydatabase',
-    })
-  })
-
-  it('should throw an error if source configuration file is missing', () => {
+  it('throw an error if source configuration file is missing', async () => {
     vi.mocked(fs.existsSync).mockReturnValue(false)
 
-    expect(() => createConnector(sourcePath)).toThrowError(
+    await expect(createConnector(sourcePath)).rejects.toThrow(
       `Missing source configuration file in: ${sourcePath}`,
     )
   })
 
-  it('should throw an error if "type" is missing in configuration', () => {
+  it('throws an error if "type" is missing in configuration', async () => {
     vi.mocked(fs.readFileSync).mockReturnValue(`
       details:
         host: localhost
@@ -74,12 +57,12 @@ describe('createConnector', () => {
         database: mydatabase
     `)
 
-    expect(() => createConnector(sourcePath)).toThrowError(
+    await expect(createConnector(sourcePath)).rejects.toThrowError(
       `Missing 'type' in configuration`,
     )
   })
 
-  it('should throw an error if "type" is invalid in configuration', () => {
+  it('throws an error if "type" is invalid in configuration', async () => {
     vi.mocked(fs.readFileSync).mockReturnValue(`
       type: invalid
       details:
@@ -90,8 +73,22 @@ describe('createConnector', () => {
         database: mydatabase
     `)
 
-    expect(() => createConnector(sourcePath)).toThrowError(
+    await expect(createConnector(sourcePath)).rejects.toThrowError(
       `Unsupported connector type: invalid`,
     )
+  })
+
+  it('correctly parses env vars', async () => {
+    process.env['LATITUDE__DB_PASSWORD'] = 'mypassword' // eslint-disable-line
+
+    const connector = await createConnector(sourcePath)
+    expect(connector).toBeInstanceOf(MockPostgresqlConnector)
+    expect(MockPostgresqlConnector).toHaveBeenCalledWith('/path/to', {
+      host: 'localhost',
+      port: 5432,
+      user: 'myuser',
+      password: 'mypassword',
+      database: 'mydatabase',
+    })
   })
 })

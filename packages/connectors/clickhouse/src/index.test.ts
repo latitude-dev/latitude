@@ -1,5 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { ClickHouseConnector } from './index'
+import ClickHouseConnector from './index'
 import { readFileSync } from 'fs'
 import { createClient } from '@clickhouse/client'
 import { DataType } from '@latitude-data/query_result'

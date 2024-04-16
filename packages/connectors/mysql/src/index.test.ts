@@ -1,5 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { MysqlConnector } from './index'
+import MysqlConnector from './index'
 import { readFileSync } from 'fs'
 import { createPool } from 'mysql'
 

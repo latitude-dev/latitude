@@ -29,7 +29,7 @@ export type ConnectionParams = {
   tls?: TLSOptions
 }
 
-export class ClickHouseConnector extends BaseConnector {
+export default class ClickHouseConnector extends BaseConnector {
   private client: NodeClickHouseClient
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

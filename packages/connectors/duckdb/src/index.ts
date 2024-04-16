@@ -11,7 +11,7 @@ export type ConnectionParams = {
   url?: string
 }
 
-export class DuckdbConnector extends BaseConnector {
+export default class DuckdbConnector extends BaseConnector {
   private client?: Database
   private url: string
 

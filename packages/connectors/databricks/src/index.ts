@@ -21,7 +21,7 @@ export type ConnectionParams = {
   oauthClientSecret?: string
 }
 
-export class DatabricksConnector extends BaseConnector {
+export default class DatabricksConnector extends BaseConnector {
   private client: DBSQLClient
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

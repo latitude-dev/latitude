@@ -12,6 +12,106 @@ import {
   unlinkSync,
 } from 'fs'
 import { onExit } from '$src/utils'
+import ensureConnectorInstalled from '$src/lib/sync/syncQueries/ensureConnectorInstalled'
+
+function isSourceFile(srcPath: string) {
+  return srcPath.endsWith('.yml') || srcPath.endsWith('.yaml')
+}
+
+function buildDestPath({
+  rootDir,
+  srcPath,
+  destinationQueriesDir,
+  destinationCsvsDir,
+  isSource,
+}: {
+  rootDir: string
+  srcPath: string
+  destinationQueriesDir: string
+  destinationCsvsDir: string
+  isSource: boolean
+}) {
+  const relativePath = path
+    .relative(rootDir, srcPath)
+    .replace(/^queries\/?/, '')
+
+  let destPath
+
+  if (srcPath.endsWith('.csv')) {
+    return {
+      destPath: path.join(destinationCsvsDir, relativePath),
+      relativePath,
+    }
+  }
+
+  if (srcPath.endsWith('.sql') || isSource) {
+    return {
+      destPath: path.join(destinationQueriesDir, relativePath),
+      relativePath,
+    }
+  }
+
+  return { destPath, relativePath }
+}
+
+export function syncDirectory(dirPath: string, syncFn: Function): void {
+  readdirSync(dirPath, { withFileTypes: true }).forEach((dirent) => {
+    const currentPath = path.join(dirPath, dirent.name)
+    if (dirent.isDirectory()) {
+      syncDirectory(currentPath, syncFn)
+    } else {
+      syncFn(currentPath, 'add', true)
+    }
+  })
+}
+
+export function clearFolders(folders: string[]) {
+  folders.forEach((folder) => {
+    if (!existsSync(folder)) {
+      mkdirSync(folder, { recursive: true })
+    }
+
+    readdirSync(folder).forEach((file: string) => {
+      const filePath = path.join(folder, file)
+      if (statSync(filePath).isDirectory()) {
+        rmSync(filePath, { recursive: true })
+      } else {
+        unlinkSync(filePath)
+      }
+    })
+  })
+}
+
+export function syncQueriesAndCsvs({
+  rootDir,
+  destinationCsvsDir,
+  destinationQueriesDir,
+}: {
+  rootDir: string
+  destinationCsvsDir: string
+  destinationQueriesDir: string
+}) {
+  return async (
+    srcPath: string,
+    type: 'add' | 'change' | 'unlink',
+    ready: boolean,
+  ) => {
+    const isSource = isSourceFile(srcPath)
+    const { destPath, relativePath } = buildDestPath({
+      rootDir,
+      srcPath,
+      destinationQueriesDir,
+      destinationCsvsDir,
+      isSource,
+    })
+
+    // Not a valid extension .sql, .csv, .yml or .yaml
+    if (!destPath) return
+
+    await ensureConnectorInstalled({ rootDir, srcPath, isSource })
+    syncFiles({ srcPath, relativePath, destPath, type, ready })
+  }
+}
 
 export default async function syncQueries({
   watch = false,
@@ -47,68 +147,5 @@ export default async function syncQueries({
     if (!watch) return
 
     clearFolders([destinationQueriesDir, destinationCsvsDir])
-  })
-}
-
-export function syncQueriesAndCsvs({
-  rootDir,
-  destinationCsvsDir,
-  destinationQueriesDir,
-}: {
-  rootDir: string
-  destinationCsvsDir: string
-  destinationQueriesDir: string
-}) {
-  return (
-    srcPath: string,
-    type: 'add' | 'change' | 'unlink',
-    ready: boolean,
-  ) => {
-    const relativePath = path
-      .relative(rootDir, srcPath)
-      .replace(/^queries\/?/, '')
-
-    let destPath
-
-    if (srcPath.endsWith('.csv')) {
-      destPath = path.join(destinationCsvsDir, relativePath)
-    } else if (
-      srcPath.endsWith('.sql') ||
-      srcPath.endsWith('.yml' || srcPath.endsWith('.yaml'))
-    ) {
-      destPath = path.join(destinationQueriesDir, relativePath)
-    } else {
-      return
-    }
-
-    syncFiles({ srcPath, relativePath, destPath, type, ready })
-  }
-}
-
-export function syncDirectory(dirPath: string, syncFn: Function): void {
-  readdirSync(dirPath, { withFileTypes: true }).forEach((dirent) => {
-    const currentPath = path.join(dirPath, dirent.name)
-    if (dirent.isDirectory()) {
-      syncDirectory(currentPath, syncFn)
-    } else {
-      syncFn(currentPath, 'add', true)
-    }
-  })
-}
-
-export function clearFolders(folders: string[]) {
-  folders.forEach((folder) => {
-    if (!existsSync(folder)) {
-      mkdirSync(folder, { recursive: true })
-    }
-
-    readdirSync(folder).forEach((file: string) => {
-      const filePath = path.join(folder, file)
-      if (statSync(filePath).isDirectory()) {
-        rmSync(filePath, { recursive: true })
-      } else {
-        unlinkSync(filePath)
-      }
-    })
   })
 }

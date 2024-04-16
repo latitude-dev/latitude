@@ -8,7 +8,7 @@ vi.mock('$src/lib/spawn', () => ({
   default: vi.fn(),
 }))
 
-describe('sync', () => {
+describe('syncDependencies', () => {
   it('successfully syncs dependencies when differences are present', () => {
     // @ts-expect-error mock
     existsSync.mockImplementationOnce((path: string) => {
