@@ -67,7 +67,9 @@ async function pushDockerImage({
   })
 }
 
-async function deployCommand() {
+async function deployCommand(
+  { force = false }: { force?: boolean } = { force: false },
+) {
   const latitudeJson = findConfigFile()
   const name = latitudeJson.data.name
 
@@ -89,8 +91,8 @@ async function deployCommand() {
         const { response, responseBody } = res
 
         if (response.statusCode === 200) {
-          const { url } = JSON.parse(responseBody)
-          const tag = `${url}:latest`
+          const { url, latestImage } = JSON.parse(responseBody)
+          const tag = `${url}:${latestImage.imageTag + 1}`
 
           request({ path: '/api/ecr/credentials' }, async ({ err, res }) => {
             if (err) {
@@ -110,7 +112,7 @@ async function deployCommand() {
                   const stream = await sseRequest({
                     method: 'POST',
                     path: '/api/apps/deploy',
-                    data: JSON.stringify({ app: name }),
+                    data: JSON.stringify({ app: name, force }),
                   })
 
                   stream.on('data', (chunk) => {

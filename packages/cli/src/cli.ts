@@ -112,6 +112,7 @@ CLI.command('logout')
 
 CLI.command('deploy')
   .describe('Deploy your Latitude app to the cloud')
+  .option('--force', 'Force the deployment even if the build has not changed')
   .action(deployCommand)
 
 CLI.command('cancel')
