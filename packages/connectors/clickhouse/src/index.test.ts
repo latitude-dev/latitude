@@ -69,7 +69,9 @@ describe('runQuery', () => {
 
     const result = await connector.runQuery({
       sql: 'SELECT * FROM table',
-      params: [],
+      resolvedParams: [],
+      accessedParams: {},
+      config: {},
     })
 
     expect(result.rowCount).toBe(2)
@@ -92,7 +94,12 @@ describe('runQuery', () => {
     })
 
     await expect(
-      connector.runQuery({ sql: 'SELECT * FROM table', params: [] }),
+      connector.runQuery({
+        sql: 'SELECT * FROM table',
+        resolvedParams: [],
+        accessedParams: {},
+        config: {},
+      }),
     ).rejects.toThrow('query error')
   })
 })

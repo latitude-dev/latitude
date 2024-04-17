@@ -53,12 +53,12 @@ export default class ClickHouseConnector extends BaseConnector {
     }
   }
 
-  runQuery(query: CompiledQuery): Promise<QueryResult> {
+  runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     return new Promise((resolve, reject) => {
       this.client
         .query({
-          query: query.sql,
-          query_params: this.buildQueryParams(query.params),
+          query: compiledQuery.sql,
+          query_params: this.buildQueryParams(compiledQuery.resolvedParams),
           format: 'JSONCompact', // https://clickhouse.com/docs/en/interfaces/formats#jsoncompact
         })
         .then((resultSet) => resultSet.json())

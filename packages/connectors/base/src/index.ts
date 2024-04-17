@@ -12,8 +12,18 @@ import {
   type ResolvedParam,
   type CompiledQuery,
   ConnectorError,
+  QueryConfig,
   QueryParams,
 } from './types'
+
+type CompilationContext = {
+  request: QueryRequest // Requested query
+  accessedParams: QueryParams // Parameters used in the query
+  resolvedParams: ResolvedParam[] // Parameters resolved by the connector, in order of appearance
+  queryConfig: QueryConfig // Configuration set by the user in the query
+  ranQueries: Record<string, QueryResultArray> // Cache of already ran queries
+  queriesBeingCompiled: string[] // Used to detect cyclic references
+}
 
 export abstract class BaseConnector {
   private rootPath: string
@@ -29,96 +39,90 @@ export abstract class BaseConnector {
    */
   protected abstract resolve(value: unknown, index: number): ResolvedParam
 
+  /**
+   * Perform the actual query execution on the data source.
+   */
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
+
+  /**
+   * Close the connection to the data source.
+   * This method must only be called once all queries have been executed and the
+   * connector instance is no longer needed.
+   */
   async end(): Promise<void> {}
 
+  /**
+   * Compile the given query. This method returns the compiled SQL, resolved parameters,
+   * and information about the compilation process.
+   */
+  async compileQuery({
+    queryPath,
+    params,
+  }: QueryRequest): Promise<CompiledQuery> {
+    const accessedParams: QueryParams = {}
+    const resolvedParams: ResolvedParam[] = []
+    const ranQueries: Record<string, QueryResultArray> = {}
+    const queriesBeingCompiled: string[] = []
+    const queryConfig: QueryConfig = {}
+
+    return await this._compileQuery({
+      request: { queryPath, params },
+      accessedParams,
+      resolvedParams,
+      queryConfig,
+      ranQueries,
+      queriesBeingCompiled,
+    })
+  }
+
+  runCompiled(request: CompiledQuery): Promise<QueryResult> {
+    return this.runQuery(request)
+  }
+
   async run(request: QueryRequest): Promise<QueryResult> {
-    const resolvedParams: ResolvedParam[] = []
-    const ranQueries: Record<string, QueryResultArray> = {}
-    const queriesBeingCompiled: string[] = []
-    return await this._query({
+    const compiledQuery = await this.compileQuery(request)
+    return this.runQuery(compiledQuery)
+  }
+
+  private async _compileQuery(
+    context: CompilationContext,
+  ): Promise<CompiledQuery> {
+    const {
       request,
       resolvedParams,
-      ranQueries,
+      accessedParams,
+      queryConfig,
       queriesBeingCompiled,
-    })
-  }
+    } = context
 
-  async runCompiled(request: CompiledQuery): Promise<QueryResult> {
-    return await this.runQuery(request)
-  }
-
-  async compileQuery(
-    request: QueryRequest,
-  ): Promise<{ compiledQuery: string; resolvedParams: ResolvedParam[] }> {
-    const resolvedParams: ResolvedParam[] = []
-    const ranQueries: Record<string, QueryResultArray> = {}
-    const queriesBeingCompiled: string[] = []
-
-    const { compiledQuery } = await this._compileQuery({
-      request,
-      resolvedParams,
-      ranQueries,
-      queriesBeingCompiled,
-    })
-
-    return { compiledQuery, resolvedParams }
-  }
-
-  private async _query({
-    request,
-    resolvedParams,
-    ranQueries,
-    queriesBeingCompiled,
-  }: {
-    request: QueryRequest
-    resolvedParams: ResolvedParam[]
-    ranQueries: Record<string, QueryResultArray> // Ran query results are cached to avoid re-running the same query
-    queriesBeingCompiled: string[] // Used to detect cyclic references
-  }): Promise<QueryResult> {
-    const { compiledQuery } = await this._compileQuery({
-      request,
-      resolvedParams,
-      ranQueries,
-      queriesBeingCompiled,
-    })
-
-    return this.runQuery({
-      sql: compiledQuery,
-      params: resolvedParams,
-    })
-  }
-
-  private async _compileQuery({
-    request,
-    resolvedParams,
-    ranQueries,
-    queriesBeingCompiled,
-  }: {
-    request: QueryRequest
-    resolvedParams: ResolvedParam[]
-    ranQueries: Record<string, QueryResultArray> // Ran query results are cached to avoid re-running the same query
-    queriesBeingCompiled: string[] // Used to detect cyclic references
-  }): Promise<{ compiledQuery: string; resolvedParams: ResolvedParam[] }> {
     const fullQueryName = this.fullQueryPath(request.queryPath)
     queriesBeingCompiled.push(fullQueryName)
 
     const query = this.readQuery(fullQueryName)
-    const params = request.params || {}
+
     const resolveFn = async (value: unknown): Promise<string> => {
       const resolved = this.resolve(value, resolvedParams.length)
       resolvedParams.push(resolved)
       return resolved.resolvedAs
     }
+    const configFn = (key: string, value: unknown) => {
+      if (key in queryConfig) {
+        throw new ConnectorError('Option already configured')
+      }
+
+      queryConfig[key as keyof QueryConfig] =
+        value as QueryConfig[keyof QueryConfig]
+    }
+
     const supportedMethods = this.buildSupportedMethods({
-      params,
+      context,
       resolveFn,
-      ranQueries,
-      queriesBeingCompiled,
     })
-    const compiledQuery = await compile({
+
+    const compiledSql = await compile({
       query,
       resolveFn,
+      configFn,
       supportedMethods,
     })
 
@@ -127,8 +131,10 @@ export abstract class BaseConnector {
     queriesBeingCompiled.pop()
 
     return {
-      compiledQuery,
+      sql: compiledSql,
       resolvedParams,
+      accessedParams,
+      config: queryConfig,
     }
   }
 
@@ -146,17 +152,21 @@ export abstract class BaseConnector {
   }
 
   private buildSupportedMethods({
-    params,
+    context,
     resolveFn,
-    ranQueries,
-    queriesBeingCompiled,
   }: {
-    params: QueryParams
+    context: CompilationContext
     resolveFn: (value: unknown) => Promise<string>
-    ranQueries: Record<string, QueryResultArray>
-    queriesBeingCompiled: string[]
   }): Record<string, SupportedMethod> {
+    const { request, accessedParams, ranQueries, queriesBeingCompiled } =
+      context
+
+    const requestParams = request.params ?? {}
+
     const supportedMethods = {
+      /**
+       * Unsafely interpolates a value directly into the final query string.
+       */
       interpolate: async <T extends boolean>(
         interpolation: T,
         value: unknown,
@@ -168,20 +178,32 @@ export abstract class BaseConnector {
         }
         return String(value)
       },
+
+      /**
+       * Returns the value of a paramameter from the request.
+       */
       param: async <T extends boolean>(
         interpolation: T,
         name: unknown,
         defaultValue?: unknown,
       ): Promise<T extends true ? string : unknown> => {
         if (typeof name !== 'string') throw new Error('Invalid parameter name')
-        if (!(name in params) && defaultValue === undefined) {
+        if (!(name in requestParams) && defaultValue === undefined) {
           throw new Error(`Missing parameter '${name}' in request`)
         }
-        const value = name in params ? params[name] : defaultValue
+        if (name in requestParams) {
+          accessedParams[name] = requestParams[name]
+        }
+        const value = name in requestParams ? requestParams[name] : defaultValue
 
         const resolvedValue = interpolation ? await resolveFn(value) : value
         return resolvedValue as T extends true ? string : unknown
       },
+
+      /**
+       * Unsafely interpolates a value directly into the final query string.
+       * @deprecated Use `interpolate(param(...))` instead.
+       */
       unsafeParam: async <T extends boolean>(
         interpolation: T,
         name: unknown,
@@ -193,13 +215,20 @@ export abstract class BaseConnector {
           )
         }
         if (typeof name !== 'string') throw new Error('Invalid parameter name')
-        if (!(name in params) && defaultValue === undefined) {
+        if (!(name in requestParams) && defaultValue === undefined) {
           throw new Error(`Missing parameter '${name}' in request`)
         }
-        const value = name in params ? params[name] : defaultValue
+        if (name in requestParams) {
+          accessedParams[name] = requestParams[name]
+        }
+        const value = name in requestParams ? requestParams[name] : defaultValue
 
         return String(value)
       },
+
+      /**
+       * Casts a value to a specific type.
+       */
       cast: async <T extends boolean>(
         interpolation: T,
         value: unknown,
@@ -216,6 +245,10 @@ export abstract class BaseConnector {
           : parsedValue
         return resolvedValue as T extends true ? string : unknown
       },
+
+      /**
+       * Compiles a subquery and includes the result into the final query string.
+       */
       ref: async <T extends boolean>(
         interpolation: T,
         queryName: unknown,
@@ -237,12 +270,17 @@ export abstract class BaseConnector {
         const compiledSubQuery = await compile({
           query: subQuery,
           resolveFn,
+          configFn: () => {}, // Subquery config does not affect the root query
           supportedMethods,
         })
         queriesBeingCompiled.pop()
 
         return `(${compiledSubQuery})`
       },
+
+      /**
+       * Compiles and runs a subquery and returns the result.
+       */
       runQuery: async <T extends boolean>(
         interpolation: T,
         queryName: unknown,
@@ -265,14 +303,15 @@ export abstract class BaseConnector {
           )
         }
 
-        const subQueryResults = (
-          await this._query({
-            request: { queryPath: queryName, params },
-            resolvedParams: [],
-            ranQueries,
-            queriesBeingCompiled,
-          })
-        ).toArray()
+        const compiledSubQuery = await this._compileQuery({
+          ...context,
+          request: { queryPath: queryName, params: {} },
+          queryConfig: {}, // Subquery config does not affect the root query
+        })
+
+        const subQueryResults = await this.runQuery(compiledSubQuery).then(
+          (result) => result.toArray(),
+        )
         ranQueries[fullSubQueryPath] = subQueryResults
         return subQueryResults as T extends true ? string : QueryResultArray
       },

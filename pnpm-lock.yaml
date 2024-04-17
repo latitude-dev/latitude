@@ -29,9 +29,6 @@ importers:
       '@latitude-data/client':
         specifier: workspace:*
         version: link:../../packages/client/core
-      '@latitude-data/connector-factory':
-        specifier: workspace:^
-        version: link:../../packages/connectors/factory
       '@latitude-data/custom_types':
         specifier: workspace:^
         version: link:../../packages/custom_types
@@ -41,9 +38,9 @@ importers:
       '@latitude-data/jwt':
         specifier: workspace:*
         version: link:../../packages/jwt
-      '@latitude-data/query_service':
-        specifier: workspace:*
-        version: link:../../packages/query_service
+      '@latitude-data/source-manager':
+        specifier: workspace:^
+        version: link:../../packages/source_manager
       '@latitude-data/svelte':
         specifier: workspace:*
         version: link:../../packages/client/svelte
@@ -69,6 +66,9 @@ importers:
       '@latitude-data/sveltekit-autoimport':
         specifier: ^1.7.1
         version: 1.7.1(@sveltejs/kit@2.5.0)
+      '@latitude-data/test-connector':
+        specifier: workspace:^
+        version: link:../../packages/connectors/test
       '@rollup/pluginutils':
         specifier: ^5.1.0
         version: 5.1.0(rollup@4.14.0)
@@ -256,9 +256,9 @@ importers:
       '@inquirer/prompts':
         specifier: ^4.2.1
         version: 4.2.1
-      '@latitude-data/connector-factory':
+      '@latitude-data/source-manager':
         specifier: workspace:*
-        version: link:../connectors/factory
+        version: link:../source_manager
       '@rudderstack/rudder-sdk-node':
         specifier: ^2.0.7
         version: 2.0.7(tslib@2.6.2)
@@ -955,40 +955,6 @@ importers:
         specifier: ^4.10.0
         version: 4.10.0
 
-  packages/connectors/factory:
-    dependencies:
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
-      yaml:
-        specifier: ^2.3.4
-        version: 2.3.4
-    devDependencies:
-      '@latitude-data/eslint-config':
-        specifier: workspace:*
-        version: link:../../../tools/eslint-config
-      '@latitude-data/typescript':
-        specifier: workspace:*
-        version: link:../../../tools/typescript
-      '@rollup/plugin-commonjs':
-        specifier: ^25.0.7
-        version: 25.0.7(rollup@4.10.0)
-      '@rollup/plugin-typescript':
-        specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.3.3)
-      '@types/node':
-        specifier: ^20.10.6
-        version: 20.10.6
-      rollup:
-        specifier: ^4.10.0
-        version: 4.10.0
-      typescript:
-        specifier: ^5.2.2
-        version: 5.3.3
-      vitest:
-        specifier: ^1.2.2
-        version: 1.2.2(@types/node@20.10.6)
-
   packages/connectors/mssql:
     dependencies:
       '@latitude-data/base-connector':
@@ -1162,6 +1128,31 @@ importers:
         specifier: ^4.10.0
         version: 4.10.0
 
+  packages/connectors/test:
+    dependencies:
+      '@latitude-data/base-connector':
+        specifier: workspace:^
+        version: link:../base
+      '@latitude-data/query_result':
+        specifier: workspace:^
+        version: link:../../query_result
+    devDependencies:
+      '@latitude-data/eslint-config':
+        specifier: workspace:*
+        version: link:../../../tools/eslint-config
+      '@latitude-data/typescript':
+        specifier: workspace:*
+        version: link:../../../tools/typescript
+      '@rollup/plugin-typescript':
+        specifier: ^11.1.6
+        version: 11.1.6(rollup@4.14.0)(typescript@5.4.3)
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.12.4
+      rollup:
+        specifier: ^4.10.0
+        version: 4.14.0
+
   packages/connectors/trino:
     dependencies:
       '@latitude-data/base-connector':
@@ -1304,32 +1295,54 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0(jsdom@24.0.0)
 
-  packages/query_service:
+  packages/source_manager:
+    dependencies:
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      yaml:
+        specifier: ^2.3.4
+        version: 2.3.4
     devDependencies:
+      '@latitude-data/base-connector':
+        specifier: workspace:^
+        version: link:../connectors/base
       '@latitude-data/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
+      '@latitude-data/query_result':
+        specifier: workspace:^
+        version: link:../query_result
+      '@latitude-data/test-connector':
+        specifier: workspace:^
+        version: link:../connectors/test
       '@latitude-data/typescript':
         specifier: workspace:*
         version: link:../../tools/typescript
+      '@rollup/plugin-commonjs':
+        specifier: ^25.0.7
+        version: 25.0.7(rollup@4.14.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.14.0)(typescript@5.4.3)
+      '@types/mock-fs':
+        specifier: ^4.13.4
+        version: 4.13.4
       '@types/node':
         specifier: ^20.10.6
-        version: 20.11.25
-      prettier:
-        specifier: ^3.1.1
-        version: 3.1.1
+        version: 20.12.4
+      mock-fs:
+        specifier: ^5.2.0
+        version: 5.2.0
       rollup:
         specifier: ^4.10.0
-        version: 4.10.0
-      vite-tsconfig-paths:
-        specifier: ^4.3.1
-        version: 4.3.1(typescript@5.4.3)
+        version: 4.14.0
+      typescript:
+        specifier: ^5.2.2
+        version: 5.4.3
       vitest:
         specifier: ^1.2.2
-        version: 1.4.0(@types/node@20.11.25)
+        version: 1.4.0(@types/node@20.12.4)
 
   tools/eslint-config:
     devDependencies:
@@ -13486,7 +13499,7 @@ packages:
     dependencies:
       get-intrinsic: 1.2.2
       has-tostringtag: 1.0.0
-      hasown: 2.0.0
+      hasown: 2.0.2
 
   /es-set-tostringtag@2.0.3:
     resolution: {integrity: sha512-3T8uNMC3OQTHkFUsFq8r/BwAXLHvU/9O9mE0fBc/MY5iq/8H7ncvO947LmYA6ldWw9Uh8Yhf25zu6n7nML5QWQ==}
@@ -15576,7 +15589,6 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       function-bind: 1.1.2
-    dev: true
 
   /he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
@@ -15973,7 +15985,7 @@ packages:
   /is-core-module@2.13.1:
     resolution: {integrity: sha512-hHrIjvZsftOsvKSn2TRYl63zvxsgE0K+0mYMoH6gD4omR5IWB2KynivBQczo3+wF1cCkjzvptnI9Q0sPU66ilw==}
     dependencies:
-      hasown: 2.0.0
+      hasown: 2.0.2
 
   /is-data-view@1.0.1:
     resolution: {integrity: sha512-AHkaJrsUVW6wq6JS8y3JnM/GJF/9cf+k20+iDzlSaJrinEo5+7vRiteOSwBhHRiAyQATN1AmY4hwzxJKPmYf+w==}
@@ -22920,27 +22932,6 @@ packages:
       - terser
     dev: true
 
-  /vite-node@1.4.0(@types/node@20.11.25):
-    resolution: {integrity: sha512-VZDAseqjrHgNd4Kh8icYHWzTKSCZMhia7GyHfhtzLW33fZlG9SwsB6CEhgyVOWkJfJ2pFLrp/Gj1FSfAiqH9Lw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    dependencies:
-      cac: 6.7.14
-      debug: 4.3.4(supports-color@8.1.1)
-      pathe: 1.1.2
-      picocolors: 1.0.0
-      vite: 5.2.8(@types/node@20.11.25)
-    transitivePeerDependencies:
-      - '@types/node'
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
   /vite-node@1.4.0(@types/node@20.12.4):
     resolution: {integrity: sha512-VZDAseqjrHgNd4Kh8icYHWzTKSCZMhia7GyHfhtzLW33fZlG9SwsB6CEhgyVOWkJfJ2pFLrp/Gj1FSfAiqH9Lw==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -23118,42 +23109,6 @@ packages:
         optional: true
     dependencies:
       '@types/node': 20.10.6
-      esbuild: 0.20.2
-      postcss: 8.4.38
-      rollup: 4.14.0
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
-  /vite@5.2.8(@types/node@20.11.25):
-    resolution: {integrity: sha512-OyZR+c1CE8yeHw5V5t59aXsUPPVTHMDjEZz8MgguLL/Q7NblxhZUlTu9xSPqlsUO/y+X7dlU05jdhvyycD55DA==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@types/node': ^18.0.0 || >=20.0.0
-      less: '*'
-      lightningcss: ^1.21.0
-      sass: '*'
-      stylus: '*'
-      sugarss: '*'
-      terser: ^5.4.0
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      less:
-        optional: true
-      lightningcss:
-        optional: true
-      sass:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-    dependencies:
-      '@types/node': 20.11.25
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.14.0
@@ -23534,62 +23489,6 @@ packages:
       tinypool: 0.8.2
       vite: 5.2.8(@types/node@20.10.6)
       vite-node: 1.4.0(@types/node@20.10.6)
-      why-is-node-running: 2.2.2
-    transitivePeerDependencies:
-      - less
-      - lightningcss
-      - sass
-      - stylus
-      - sugarss
-      - supports-color
-      - terser
-    dev: true
-
-  /vitest@1.4.0(@types/node@20.11.25):
-    resolution: {integrity: sha512-gujzn0g7fmwf83/WzrDTnncZt2UiXP41mHuFYFrdwaLRVQ6JYQEiME2IfEjU3vcFL3VKa75XhI3lFgn+hfVsQw==}
-    engines: {node: ^18.0.0 || >=20.0.0}
-    hasBin: true
-    peerDependencies:
-      '@edge-runtime/vm': '*'
-      '@types/node': ^18.0.0 || >=20.0.0
-      '@vitest/browser': 1.4.0
-      '@vitest/ui': 1.4.0
-      happy-dom: '*'
-      jsdom: '*'
-    peerDependenciesMeta:
-      '@edge-runtime/vm':
-        optional: true
-      '@types/node':
-        optional: true
-      '@vitest/browser':
-        optional: true
-      '@vitest/ui':
-        optional: true
-      happy-dom:
-        optional: true
-      jsdom:
-        optional: true
-    dependencies:
-      '@types/node': 20.11.25
-      '@vitest/expect': 1.4.0
-      '@vitest/runner': 1.4.0
-      '@vitest/snapshot': 1.4.0
-      '@vitest/spy': 1.4.0
-      '@vitest/utils': 1.4.0
-      acorn-walk: 8.3.2
-      chai: 4.4.1
-      debug: 4.3.4(supports-color@8.1.1)
-      execa: 8.0.1
-      local-pkg: 0.5.0
-      magic-string: 0.30.6
-      pathe: 1.1.2
-      picocolors: 1.0.0
-      std-env: 3.7.0
-      strip-literal: 2.0.0
-      tinybench: 2.6.0
-      tinypool: 0.8.2
-      vite: 5.2.8(@types/node@20.11.25)
-      vite-node: 1.4.0(@types/node@20.11.25)
       why-is-node-running: 2.2.2
     transitivePeerDependencies:
       - less

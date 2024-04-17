@@ -44,6 +44,10 @@ class CLIConfig {
   public get name() {
     return path.basename(this.rootDir)
   }
+
+  public get queriesDir() {
+    return path.join(this.rootDir, APP_FOLDER, 'static', '.latitude', 'queries')
+  }
 }
 
 export default new CLIConfig({

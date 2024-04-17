@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/test-connector": "workspace:^",
     "@latitude-data/client": "workspace:*",
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/query_result": "workspace:*",
@@ -56,11 +57,10 @@
   },
   "dependencies": {
     "@latitude-data/client": "workspace:*",
-    "@latitude-data/connector-factory": "workspace:^",
     "@latitude-data/custom_types": "workspace:^",
     "@latitude-data/embedding": "workspace:*",
     "@latitude-data/jwt": "workspace:*",
-    "@latitude-data/query_service": "workspace:*",
+    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/svelte": "workspace:*",
     "cheerio": "1.0.0-rc.12",
     "lodash-es": "^4.17.21"

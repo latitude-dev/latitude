@@ -96,8 +96,8 @@ export function syncQueriesAndCsvs({
     // Not a valid extension .sql, .csv, .yml or .yaml
     if (!destPath) return
 
-    ensureConnectorInstalled({ srcPath, type })
     syncFiles({ srcPath, relativePath, destPath, type, ready })
+    await ensureConnectorInstalled(destPath, type)
   }
 }
 
@@ -109,13 +109,7 @@ export default async function syncQueries({
   const rootDir = config.rootDir
   const queriesDir = path.join(rootDir, 'queries')
   const destinationCsvsDir = path.join(rootDir, APP_FOLDER, 'queries')
-  const destinationQueriesDir = path.join(
-    rootDir,
-    APP_FOLDER,
-    'static',
-    '.latitude',
-    'queries',
-  )
+  const destinationQueriesDir = config.queriesDir
 
   clearFolders([destinationQueriesDir, destinationCsvsDir])
 

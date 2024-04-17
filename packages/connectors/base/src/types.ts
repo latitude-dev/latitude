@@ -7,13 +7,20 @@ export type QueryRequest = {
   params?: QueryParams
 }
 
+export type QueryConfig = {
+  ttl?: number
+}
+
 export type ResolvedParam = {
   value: unknown
   resolvedAs: string
 }
+
 export type CompiledQuery = {
   sql: string
-  params: ResolvedParam[]
+  resolvedParams: ResolvedParam[]
+  accessedParams: QueryParams
+  config: QueryConfig
 }
 
 export class ConnectorError extends Error {}

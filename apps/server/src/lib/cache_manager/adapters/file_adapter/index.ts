@@ -17,8 +17,15 @@ export default class FileAdapter extends Adapter {
     }
   }
 
-  public get(key: string) {
+  public get(key: string, ttl?: number) {
     try {
+      if (ttl) {
+        // Time to live for the cache (in seconds)
+        const stats = fs.statSync(`${this.root}/${this.getHashedKey(key)}`)
+        if (Date.now() - stats.mtimeMs > ttl * 1000) {
+          return null
+        }
+      }
       return fs.readFileSync(`${this.root}/${this.getHashedKey(key)}`, 'utf8')
     } catch (error) {
       // @ts-expect-error - Error type doesn't have a code property

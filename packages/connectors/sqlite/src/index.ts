@@ -29,7 +29,7 @@ export default class SqliteConnector extends BaseConnector {
     }
   }
 
-  async runQuery(query: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     try {
       const client = new Database(
         this.url,
@@ -44,8 +44,8 @@ export default class SqliteConnector extends BaseConnector {
       const results = await new Promise<unknown[]>((resolve, reject) => {
         client.serialize(() => {
           client.all(
-            query.sql,
-            this.buildQueryParams(query.params),
+            compiledQuery.sql,
+            this.buildQueryParams(compiledQuery.resolvedParams),
             (err, results) => {
               if (err) {
                 reject(err)

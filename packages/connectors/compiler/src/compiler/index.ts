@@ -14,6 +14,7 @@ import Scope from './scope'
 type CompilerAttrs = {
   query: string
   resolveFn: ResolveFn
+  configFn: ConfigFn
   supportedMethods?: Record<string, SupportedMethod>
 }
 export type SupportedMethod = <T extends boolean>(
@@ -21,11 +22,13 @@ export type SupportedMethod = <T extends boolean>(
   ...args: unknown[]
 ) => Promise<T extends true ? string : unknown>
 export type ResolveFn = (value: unknown) => Promise<string>
+export type ConfigFn = (key: string, value: unknown) => void
 
 export class Compiler {
   private sql: string
   private supportedMethods: Record<string, SupportedMethod>
   private resolveFn: ResolveFn
+  private configFn: ConfigFn
 
   private varStash: unknown[]
 
@@ -42,9 +45,15 @@ export class Compiler {
     this.varStash[index] = value
   }
 
-  constructor({ query, resolveFn, supportedMethods = {} }: CompilerAttrs) {
+  constructor({
+    query,
+    resolveFn,
+    configFn,
+    supportedMethods = {},
+  }: CompilerAttrs) {
     this.sql = query
     this.resolveFn = resolveFn
+    this.configFn = configFn
     this.supportedMethods = supportedMethods
 
     this.varStash = []
@@ -70,87 +79,116 @@ export class Compiler {
   ): Promise<string> => {
     if (!node) return ''
 
-    switch (node.type) {
-      case 'Fragment':
-        return this.parseBaseNodeChildren(node.children, localScope)
+    if (node.type === 'Fragment') {
+      return this.parseBaseNodeChildren(node.children, localScope)
+    }
 
-      case 'Comment':
-        return node.raw
+    if (node.type === 'Comment') {
+      return node.raw
+    }
 
-      case 'Text':
-        return node.raw
+    if (node.type === 'Text') {
+      return node.raw
+    }
 
-      case 'MustacheTag':
-        return await this.parseLogicNode(node.expression, localScope)
+    if (node.type === 'MustacheTag') {
+      return await this.parseLogicNode(node.expression, localScope)
+    }
 
-      case 'ConstTag':
-        // Only allow equal expressions to define constants
-        const expression = node.expression
-        if (
-          expression.type !== 'AssignmentExpression' ||
-          expression.operator !== '=' ||
-          expression.left.type !== 'Identifier'
-        ) {
-          this.baseNodeError(errors.invalidConstantDefinition, node)
-        }
+    if (node.type === 'ConstTag') {
+      // Only allow equal expressions to define constants
+      const expression = node.expression
+      if (
+        expression.type !== 'AssignmentExpression' ||
+        expression.operator !== '=' ||
+        expression.left.type !== 'Identifier'
+      ) {
+        this.baseNodeError(errors.invalidConstantDefinition, node)
+      }
 
-        const constName = (expression.left as Identifier).name
-        const constValue = await this.resolveLogicNodeExpression(
-          expression.right,
-          localScope,
-        )
-        if (localScope.exists(constName)) {
-          this.baseNodeError(errors.variableAlreadyDeclared(constName), node)
-        }
-        localScope.defineConst(constName, constValue)
-        return ''
+      const constName = (expression.left as Identifier).name
+      const constValue = await this.resolveLogicNodeExpression(
+        expression.right,
+        localScope,
+      )
+      if (localScope.exists(constName)) {
+        this.baseNodeError(errors.variableAlreadyDeclared(constName), node)
+      }
+      localScope.defineConst(constName, constValue)
+      return ''
+    }
 
-      case 'IfBlock':
-        return (await this.resolveLogicNodeExpression(
-          node.expression,
-          localScope,
-        ))
-          ? this.parseBaseNodeChildren(node.children, localScope)
-          : await this.parseBaseNode(node.else, localScope)
+    if (node.type === 'ConfigTag') {
+      const expression = node.expression
+      if (
+        expression.type !== 'AssignmentExpression' ||
+        expression.operator !== '=' ||
+        expression.left.type !== 'Identifier'
+      ) {
+        this.baseNodeError(errors.invalidConfigDefinition, node)
+      }
 
-      case 'ElseBlock':
-        return this.parseBaseNodeChildren(node.children, localScope)
-
-      case 'EachBlock':
-        const iterableElement = await this.resolveLogicNodeExpression(
-          node.expression,
-          localScope,
-        )
-        if (!Array.isArray(iterableElement) || !iterableElement.length) {
-          return await this.parseBaseNode(node.else, localScope)
-        }
-
-        const contextVar = node.context.name
-        const indexVar = node.index
-        if (localScope.exists(contextVar)) {
-          this.baseNodeError(errors.variableAlreadyDeclared(contextVar), node)
-        }
-        if (indexVar && localScope.exists(indexVar)) {
-          this.baseNodeError(errors.variableAlreadyDeclared(indexVar), node)
-        }
-
-        const parsedChildren: string[] = []
-        for (let i = 0; i < iterableElement.length; i++) {
-          const element = iterableElement[i]
-          if (indexVar) localScope.set(indexVar, i)
-          localScope.set(contextVar, element)
-          parsedChildren.push(
-            await this.parseBaseNodeChildren(node.children, localScope),
-          )
-        }
-        return parsedChildren.join('') || ''
-
-      default:
-        throw this.baseNodeError(
-          errors.unsupportedBaseNodeType(node.type),
+      const optionKey = (expression.left as Identifier).name
+      const optionValue = await this.resolveLogicNodeExpression(
+        expression.right,
+        localScope,
+      )
+      try {
+        this.configFn(optionKey, optionValue)
+      } catch (error: unknown) {
+        const errorMessage = (error as Error).message
+        this.baseNodeError(
+          errors.configDefinitionFailed(optionKey, errorMessage),
           node,
         )
+      }
+      return ''
     }
+
+    if (node.type === 'IfBlock') {
+      return (await this.resolveLogicNodeExpression(
+        node.expression,
+        localScope,
+      ))
+        ? this.parseBaseNodeChildren(node.children, localScope)
+        : await this.parseBaseNode(node.else, localScope)
+    }
+
+    if (node.type === 'ElseBlock') {
+      return this.parseBaseNodeChildren(node.children, localScope)
+    }
+
+    if (node.type === 'EachBlock') {
+      const iterableElement = await this.resolveLogicNodeExpression(
+        node.expression,
+        localScope,
+      )
+      if (!Array.isArray(iterableElement) || !iterableElement.length) {
+        return await this.parseBaseNode(node.else, localScope)
+      }
+
+      const contextVar = node.context.name
+      const indexVar = node.index
+      if (localScope.exists(contextVar)) {
+        this.baseNodeError(errors.variableAlreadyDeclared(contextVar), node)
+      }
+      if (indexVar && localScope.exists(indexVar)) {
+        this.baseNodeError(errors.variableAlreadyDeclared(indexVar), node)
+      }
+
+      const parsedChildren: string[] = []
+      for (let i = 0; i < iterableElement.length; i++) {
+        const element = iterableElement[i]
+        if (indexVar) localScope.set(indexVar, i)
+        localScope.set(contextVar, element)
+        parsedChildren.push(
+          await this.parseBaseNodeChildren(node.children, localScope),
+        )
+      }
+      return parsedChildren.join('') || ''
+    }
+
+    throw this.baseNodeError(errors.unsupportedBaseNodeType(node.type), node)
   }
 
   private parseLogicNode = async (
@@ -180,176 +218,177 @@ export class Compiler {
     node: Node,
     localScope: Scope,
   ): Promise<unknown> => {
-    switch (node.type) {
-      case 'Literal':
-        return node.value
+    if (node.type === 'Literal') {
+      return node.value
+    }
 
-      case 'Identifier':
-        if (!localScope.exists(node.name)) {
-          this.expressionError(errors.variableNotDeclared(node.name), node)
+    if (node.type === 'Identifier') {
+      if (!localScope.exists(node.name)) {
+        this.expressionError(errors.variableNotDeclared(node.name), node)
+      }
+      return localScope.get(node.name)
+    }
+
+    if (node.type === 'ObjectExpression') {
+      const resolvedObject: { [key: string]: any } = {}
+      for (const prop of node.properties) {
+        if (prop.type !== 'Property') {
+          throw this.expressionError(errors.invalidObjectKey, node)
         }
-        return localScope.get(node.name)
-
-      case 'ObjectExpression':
-        const resolvedObject: { [key: string]: any } = {}
-        for (const prop of node.properties) {
-          if (prop.type !== 'Property') {
-            throw this.expressionError(errors.invalidObjectKey, node)
-          }
-          const key = prop.key as Identifier
-          const value = await this.resolveLogicNodeExpression(
-            prop.value,
-            localScope,
-          )
-          resolvedObject[key.name] = value
-        }
-        return resolvedObject
-
-      case 'ArrayExpression':
-        return await Promise.all(
-          node.elements.map((element) =>
-            element
-              ? this.resolveLogicNodeExpression(element, localScope)
-              : null,
-          ),
-        )
-
-      case 'SequenceExpression':
-        return await Promise.all(
-          node.expressions.map((expression) =>
-            this.resolveLogicNodeExpression(expression, localScope),
-          ),
-        )
-
-      case 'BinaryExpression':
-      case 'LogicalExpression':
-        const binaryOperator = node.operator
-        if (!BINARY_OPERATOR_METHODS.hasOwnProperty(binaryOperator)) {
-          this.expressionError(errors.unsupportedOperator(binaryOperator), node)
-        }
-        const leftOperand = await this.resolveLogicNodeExpression(
-          node.left,
+        const key = prop.key as Identifier
+        const value = await this.resolveLogicNodeExpression(
+          prop.value,
           localScope,
         )
-        const rightOperand = await this.resolveLogicNodeExpression(
-          node.right,
-          localScope,
-        )
-        return BINARY_OPERATOR_METHODS[binaryOperator]?.(
-          leftOperand,
-          rightOperand,
-        )
+        resolvedObject[key.name] = value
+      }
+      return resolvedObject
+    }
 
-      case 'UnaryExpression':
-        const unaryOperator = node.operator
-        if (!UNARY_OPERATOR_METHODS.hasOwnProperty(unaryOperator)) {
-          this.expressionError(errors.unsupportedOperator(unaryOperator), node)
-        }
+    if (node.type === 'ArrayExpression') {
+      return await Promise.all(
+        node.elements.map((element) =>
+          element ? this.resolveLogicNodeExpression(element, localScope) : null,
+        ),
+      )
+    }
 
-        const unaryArgument = await this.resolveLogicNodeExpression(
-          node.argument,
-          localScope,
-        )
-        const unaryPrefix = node.prefix
-        return UNARY_OPERATOR_METHODS[unaryOperator]?.(
-          unaryArgument,
-          unaryPrefix,
-        )
+    if (node.type === 'SequenceExpression') {
+      return await Promise.all(
+        node.expressions.map((expression) =>
+          this.resolveLogicNodeExpression(expression, localScope),
+        ),
+      )
+    }
 
-      case 'AssignmentExpression':
-        const assignedVariableName = (node.left as Identifier).name
-        let assignedValue = await this.resolveLogicNodeExpression(
-          node.right,
-          localScope,
-        )
-        const assignmentOperator = node.operator
+    if (node.type === 'LogicalExpression' || node.type === 'BinaryExpression') {
+      const binaryOperator = node.operator
+      if (!(binaryOperator in BINARY_OPERATOR_METHODS)) {
+        this.expressionError(errors.unsupportedOperator(binaryOperator), node)
+      }
+      const leftOperand = await this.resolveLogicNodeExpression(
+        node.left,
+        localScope,
+      )
+      const rightOperand = await this.resolveLogicNodeExpression(
+        node.right,
+        localScope,
+      )
+      return BINARY_OPERATOR_METHODS[binaryOperator]?.(
+        leftOperand,
+        rightOperand,
+      )
+    }
 
-        if (assignmentOperator != '=') {
-          if (!ASSIGNMENT_OPERATOR_METHODS.hasOwnProperty(assignmentOperator)) {
-            this.expressionError(
-              errors.unsupportedOperator(assignmentOperator),
-              node,
-            )
-          }
-          if (!localScope.exists(assignedVariableName)) {
-            this.expressionError(
-              errors.variableNotDeclared(assignedVariableName),
-              node,
-            )
-          }
-          assignedValue = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]?.(
-            localScope.get(assignedVariableName),
-            assignedValue,
-          )
-        }
-        if (localScope.isConst(assignedVariableName)) {
-          this.expressionError(errors.constantReassignment, node)
-        }
-        localScope.set(assignedVariableName, assignedValue)
-        return assignedValue
+    if (node.type === 'UnaryExpression') {
+      const unaryOperator = node.operator
+      if (!(unaryOperator in UNARY_OPERATOR_METHODS)) {
+        this.expressionError(errors.unsupportedOperator(unaryOperator), node)
+      }
 
-      case 'UpdateExpression':
-        const updateOperator = node.operator
-        if (!['++', '--'].includes(updateOperator)) {
-          this.expressionError(errors.unsupportedOperator(updateOperator), node)
-        }
-        const updatedVariableName = (node.argument as Identifier).name
-        if (!localScope.exists(updatedVariableName)) {
+      const unaryArgument = await this.resolveLogicNodeExpression(
+        node.argument,
+        localScope,
+      )
+      const unaryPrefix = node.prefix
+      return UNARY_OPERATOR_METHODS[unaryOperator]?.(unaryArgument, unaryPrefix)
+    }
+
+    if (node.type === 'AssignmentExpression') {
+      const assignedVariableName = (node.left as Identifier).name
+      let assignedValue = await this.resolveLogicNodeExpression(
+        node.right,
+        localScope,
+      )
+      const assignmentOperator = node.operator
+
+      if (assignmentOperator != '=') {
+        if (!(assignmentOperator in ASSIGNMENT_OPERATOR_METHODS)) {
           this.expressionError(
-            errors.variableNotDeclared(updatedVariableName),
+            errors.unsupportedOperator(assignmentOperator),
             node,
           )
         }
-        if (localScope.isConst(updatedVariableName)) {
-          this.expressionError(errors.constantReassignment, node)
+        if (!localScope.exists(assignedVariableName)) {
+          this.expressionError(
+            errors.variableNotDeclared(assignedVariableName),
+            node,
+          )
         }
-        const originalValue = localScope.get(updatedVariableName)
-        const updatedValue =
-          updateOperator === '++'
-            ? (originalValue as number) + 1
-            : (originalValue as number) - 1
-        localScope.set(updatedVariableName, updatedValue)
-        return node.prefix ? updatedValue : originalValue
-
-      case 'MemberExpression':
-        const object = (await this.resolveLogicNodeExpression(
-          node.object,
-          localScope,
-        )) as {
-          [key: string]: any
-        }
-        const property = node.computed
-          ? await this.resolveLogicNodeExpression(node.property, localScope)
-          : (node.property as Identifier).name
-        return MEMBER_EXPRESSION_METHOD(object, property)
-
-      case 'ConditionalExpression':
-        const test = await this.resolveLogicNodeExpression(
-          node.test,
-          localScope,
+        assignedValue = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]?.(
+          localScope.get(assignedVariableName),
+          assignedValue,
         )
-        const consequent = await this.resolveLogicNodeExpression(
-          node.consequent,
-          localScope,
-        )
-        const alternate = await this.resolveLogicNodeExpression(
-          node.alternate,
-          localScope,
-        )
-        return test ? consequent : alternate
+      }
+      if (localScope.isConst(assignedVariableName)) {
+        this.expressionError(errors.constantReassignment, node)
+      }
+      localScope.set(assignedVariableName, assignedValue)
+      return assignedValue
+    }
 
-      case 'CallExpression':
-        return await this.handleFunction(node, false, localScope)
-
-      case 'NewExpression':
-        throw this.expressionError(errors.unsupportedOperator('new'), node)
-
-      default:
-        throw this.expressionError(
-          errors.unsupportedExpressionType(node.type),
+    if (node.type === 'UpdateExpression') {
+      const updateOperator = node.operator
+      if (!['++', '--'].includes(updateOperator)) {
+        this.expressionError(errors.unsupportedOperator(updateOperator), node)
+      }
+      const updatedVariableName = (node.argument as Identifier).name
+      if (!localScope.exists(updatedVariableName)) {
+        this.expressionError(
+          errors.variableNotDeclared(updatedVariableName),
           node,
         )
+      }
+      if (localScope.isConst(updatedVariableName)) {
+        this.expressionError(errors.constantReassignment, node)
+      }
+      const originalValue = localScope.get(updatedVariableName)
+      const updatedValue =
+        updateOperator === '++'
+          ? (originalValue as number) + 1
+          : (originalValue as number) - 1
+      localScope.set(updatedVariableName, updatedValue)
+      return node.prefix ? updatedValue : originalValue
     }
+
+    if (node.type === 'MemberExpression') {
+      const object = (await this.resolveLogicNodeExpression(
+        node.object,
+        localScope,
+      )) as {
+        [key: string]: any
+      }
+      const property = node.computed
+        ? await this.resolveLogicNodeExpression(node.property, localScope)
+        : (node.property as Identifier).name
+      return MEMBER_EXPRESSION_METHOD(object, property)
+    }
+
+    if (node.type === 'ConditionalExpression') {
+      const test = await this.resolveLogicNodeExpression(node.test, localScope)
+      const consequent = await this.resolveLogicNodeExpression(
+        node.consequent,
+        localScope,
+      )
+      const alternate = await this.resolveLogicNodeExpression(
+        node.alternate,
+        localScope,
+      )
+      return test ? consequent : alternate
+    }
+
+    if (node.type === 'CallExpression') {
+      return await this.handleFunction(node, false, localScope)
+    }
+
+    if (node.type === 'NewExpression') {
+      throw this.expressionError(errors.unsupportedOperator('new'), node)
+    }
+
+    throw this.expressionError(
+      errors.unsupportedExpressionType(node.type),
+      node,
+    )
   }
 
   private parseBaseNodeChildren = async (
@@ -408,7 +447,7 @@ export class Compiler {
     localScope: Scope,
   ): Promise<T extends true ? string : unknown> => {
     const methodName = (node.callee as Identifier).name
-    if (!this.supportedMethods.hasOwnProperty(methodName)) {
+    if (!(methodName in this.supportedMethods)) {
       this.expressionError(errors.unknownFunction(methodName), node)
     }
     const method = this.supportedMethods[methodName]! as SupportedMethod

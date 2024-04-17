@@ -74,6 +74,14 @@ export default {
     code: 'invalid-constant-definition',
     message: 'Constant definitions must assign a value to a variable',
   },
+  invalidConfigDefinition: {
+    code: 'invalid-config-definition',
+    message: 'Config definitions must assign a value to an option',
+  },
+  configDefinitionFailed: (name: string, message: string) => ({
+    code: 'config-definition-failed',
+    message: `Config definition for '${name}' failed: ${message}`,
+  }),
   variableAlreadyDeclared: (name: string) => ({
     code: 'variable-already-declared',
     message: `Variable '${name}' is already declared`,

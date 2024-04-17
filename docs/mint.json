@@ -84,7 +84,7 @@
     },
     {
       "group": "Configuration",
-      "pages": ["sources/how-to-configure-sources", "sources/credentials"]
+      "pages": ["sources/how-to-configure-sources", "sources/credentials", "sources/additional-config"]
     },
     {
       "group": "Sources",
@@ -128,7 +128,8 @@
         "queries/advanced/reference-queries",
         "queries/advanced/run-query",
         "queries/advanced/cast-methods",
-        "queries/advanced/interpolation"
+        "queries/advanced/interpolation",
+        "queries/advanced/config"
       ]
     },
     {

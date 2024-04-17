@@ -42,15 +42,15 @@ export default class MssqlConnector extends BaseConnector {
     }
   }
 
-  async runQuery(query: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     let fields: Field[] = []
     const rows: unknown[][] = []
     const conn = await this.pool.connect()
 
-    if (query.params.length > 0) {
+    if (compiledQuery.resolvedParams.length > 0) {
       const ps = new sql.PreparedStatement(conn)
 
-      for (const param of query.params) {
+      for (const param of compiledQuery.resolvedParams) {
         ps.input(
           param.resolvedAs.replace('@', ''),
           this.inferDataType(param.value),
@@ -58,12 +58,12 @@ export default class MssqlConnector extends BaseConnector {
       }
 
       return await new Promise((resolve, reject) => {
-        ps.prepare(query.sql, (err) => {
+        ps.prepare(compiledQuery.sql, (err) => {
           if (err) {
             return reject(err)
           }
 
-          const pp = this.buildQueryParams(query.params)
+          const pp = this.buildQueryParams(compiledQuery.resolvedParams)
           ps.stream = true
           const req = ps.execute(pp, (err) => {
             if (err) {
@@ -102,7 +102,7 @@ export default class MssqlConnector extends BaseConnector {
     } else {
       const request = new sql.Request(conn)
       request.stream = true
-      request.query(query.sql)
+      request.query(compiledQuery.sql)
 
       return await new Promise((resolve, reject) => {
         request.on('done', async () => {

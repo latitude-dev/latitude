@@ -34,6 +34,11 @@ export interface ConstTag extends BaseNode {
   expression: AssignmentExpression
 }
 
+export interface ConfigTag extends BaseNode {
+  type: 'ConfigTag'
+  expression: AssignmentExpression
+}
+
 export interface IfBlock extends BaseNode {
   type: 'IfBlock'
   condition: Node

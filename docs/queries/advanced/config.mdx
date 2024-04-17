@@ -1,0 +1,25 @@
+---
+title: 'Query configuration'
+description: 'Configure the behaviour of the data in Latitude queries.'
+---
+import QueryConfigDocs from '/snippets/queries/config.mdx'
+
+In addition to your own source's behaviour, you can configure how Latitude will handle the data in each specific query. This can be done by adding a `config` tag to the query itself.
+This keyword will not be included in the query that gets sent to your source, but it defines how Latitude will handle the data.
+
+## Syntax
+
+A `config` tag is defined as a key-value object in the query. Here's an example:
+```sql
+{@config ttl = 3600} -- 1 hour of lifetime
+SELECT *
+FROM my_table
+```
+
+## Default configuration
+
+If you want to set a default configuration for all the queries in a source, you can do so by adding a `config` object in the source schema. Go to [Source additional configuration](/sources/additional-config) for more information.
+
+## Available options
+
+<QueryConfigDocs />

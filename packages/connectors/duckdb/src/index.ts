@@ -39,18 +39,20 @@ export default class DuckdbConnector extends BaseConnector {
     )
   }
 
-  async runQuery(query: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     try {
       if (!this.client) await this.createClient()
       const conn = await this.client!.connect()
 
       let results = []
-      if (query.params.length > 0) {
-        const stmt = await conn.prepare(query.sql)
-        results = await stmt.all(...this.buildQueryParams(query.params))
+      if (compiledQuery.resolvedParams.length > 0) {
+        const stmt = await conn.prepare(compiledQuery.sql)
+        results = await stmt.all(
+          ...this.buildQueryParams(compiledQuery.resolvedParams),
+        )
         stmt.finalize()
       } else {
-        results = await conn.all(query.sql)
+        results = await conn.all(compiledQuery.sql)
       }
       const rows = results.map((row) => Object.values(row))
       const rowCount = results.length

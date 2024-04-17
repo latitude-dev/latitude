@@ -35,17 +35,17 @@ export default class TrinoConnector extends BaseConnector {
     }
   }
 
-  async runQuery(request: CompiledQuery): Promise<QueryResult> {
-    let query = request.sql
-    if (request.params.length) {
-      const preparedQuery = `PREPARE request_query FROM (${request.sql})`
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
+    let query = compiledQuery.sql
+    if (compiledQuery.resolvedParams.length) {
+      const preparedQuery = `PREPARE request_query FROM (${compiledQuery.sql})`
       const prepareIter = await this.client.query(preparedQuery)
       for await (const data of prepareIter) {
         if (data.error) {
           throw new QueryError(data.error.message)
         }
       }
-      query = `EXECUTE request_query USING ${request.params
+      query = `EXECUTE request_query USING ${compiledQuery.resolvedParams
         .map((param) => this.stringify(param.value))
         .join(', ')}`
     }

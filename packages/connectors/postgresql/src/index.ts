@@ -60,13 +60,13 @@ export default class PostgresConnector extends BaseConnector {
     }
   }
 
-  async runQuery(request: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     const client = await this.createClient()
 
     try {
       const result = await client.query({
-        text: request.sql,
-        values: request.params.map((param) => param.value),
+        text: compiledQuery.sql,
+        values: compiledQuery.resolvedParams.map((param) => param.value),
       })
 
       return new QueryResult({

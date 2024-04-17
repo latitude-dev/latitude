@@ -70,10 +70,10 @@ export default class AthenaConnector extends BaseConnector {
     }
   }
 
-  async runQuery(query: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     const queryExecutionInput = {
-      QueryString: query.sql,
-      ExecutionParameters: this.buildQueryParams(query.params),
+      QueryString: compiledQuery.sql,
+      ExecutionParameters: this.buildQueryParams(compiledQuery.resolvedParams),
       QueryExecutionContext: {
         Database: this.database,
         Catalog: this.catalog,

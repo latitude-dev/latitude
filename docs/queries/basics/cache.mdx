@@ -18,12 +18,13 @@ To make things faster and minimize wait times, Latitude stores the results of yo
    - Running the query using the RunButton in a view. See the page [Run Button](/views/components/interaction/run-button) for more information.
    - Forcing a view to run by query parameters in the URL. See the section [Forcing Refresh with Query Param](#forcing-refresh-with-query-param) for more information.
 
- - **No Expiration**
+ - **Configurable Expiration**
 
-    The cached data doesn't expire. It remains stored until you either click the Run button or use a special URL parameter that updates and overwrites the cached data.
+    The cached data doesn't expire by default. It remains stored until you either click the Run button or use a special URL parameter that updates and overwrites the cached data.
+    This can be configured by setting the `ttl` parameter either in the [source configuration](/sources/additional-config) or [in the query itself](/queries/advanced/config).
    
  ## Forcing Refresh With Query Param
 
 You can use the `__force` parameter to force a refresh of results on a specific page. 
 
-See the page [parameters](/queries/logic/parameters) to learn how queyr params work.
+See the page [parameters](/queries/logic/parameters) to learn how query params work.

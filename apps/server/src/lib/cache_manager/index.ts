@@ -7,8 +7,8 @@ export default class CacheManager {
     this.adapter = adapter
   }
 
-  public find(key: string) {
-    return this.adapter.get(key)
+  public find(key: string, ttl?: number) {
+    return this.adapter.get(key, ttl)
   }
 
   public set(key: string, value: string | Blob) {

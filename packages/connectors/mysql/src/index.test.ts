@@ -76,7 +76,12 @@ describe('runQuery', () => {
     })
 
     await expect(
-      connector.runQuery({ sql: 'sql', params: [] }),
+      connector.runQuery({
+        sql: 'sql',
+        resolvedParams: [],
+        accessedParams: {},
+        config: {},
+      }),
     ).rejects.toThrow('connection error')
   })
 
@@ -101,7 +106,12 @@ describe('runQuery', () => {
       host: 'host',
     })
 
-    await connector.runQuery({ sql: 'sql', params: [] })
+    await connector.runQuery({
+      sql: 'sql',
+      resolvedParams: [],
+      accessedParams: {},
+      config: {},
+    })
 
     expect(connectionMock.release).toHaveBeenCalled()
   })

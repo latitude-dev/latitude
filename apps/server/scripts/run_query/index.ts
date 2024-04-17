@@ -1,8 +1,6 @@
-import { QUERIES_DIR } from '../../src/lib/query_service/find_or_compute'
-import findQueryFile from '@latitude-data/query_service'
-import { createConnector } from '@latitude-data/connector-factory'
 import QueryDisplay from './result_display'
 import chokidar from 'chokidar'
+import sourceManager, { QUERIES_DIR } from '../../src/lib/server/sourceManager'
 
 type CommandArgs = {
   queryPath: string
@@ -41,25 +39,24 @@ async function runQuery(
   debug = false,
 ) {
   try {
-    const { sourcePath, queryPath } = await findQueryFile(QUERIES_DIR, query)
-    const connector = await createConnector(sourcePath)
+    const source = await sourceManager.loadFromQuery(query)
+    const compiledQuery = await source.compileQuery({
+      queryPath: query,
+      params,
+    })
 
     if (debug) {
-      const compiledQuery = await connector.compileQuery({ queryPath, params })
-      QueryDisplay.displayCompiledQuery({
-        sql: compiledQuery.compiledQuery,
-        params: compiledQuery.resolvedParams,
-      })
+      QueryDisplay.displayCompiledQuery(compiledQuery)
       return
     }
 
     const startTime = Date.now()
-    const result = await connector.run({ queryPath, params })
+    const result = await source.runCompiledQuery(compiledQuery)
     const totalTime = Date.now() - startTime
 
     QueryDisplay.displayResults(result, totalTime)
   } catch (e) {
-    QueryDisplay.displayError(e)
+    QueryDisplay.displayError(e as Error)
   }
 }
 

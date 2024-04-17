@@ -1,7 +1,5 @@
-import findQueryFile from '@latitude-data/query_service'
 import cache from './query_cache'
-import path from 'path'
-import { loadConnector } from '$lib/server/connectorManager'
+import sourceManager from '$lib/server/sourceManager'
 
 type Props = {
   query: string
@@ -16,46 +14,28 @@ export default async function findOrCompute({
   queryParams,
   force,
 }: Props) {
-  const { sourcePath } = await findQueryFile(QUERIES_DIR, query)
-  const connector = await loadConnector(sourcePath)
-  const { compiledQuery, resolvedParams } = await connector.compileQuery({
-    queryPath: computeRelativeQueryPath({ sourcePath, queryPath: query }),
+  const source = await sourceManager.loadFromQuery(query)
+  const compiledQuery = await source.compileQuery({
+    queryPath: query,
     params: queryParams,
   })
-  const request = { query: compiledQuery, params: resolvedParams }
+
+  const request = {
+    queryPath: compiledQuery.sql,
+    params: compiledQuery.accessedParams, // Only cache the params that were accessed, not all the params passed in
+  }
+
   const compute = async () => {
-    const queryResult = await connector.runCompiled({
-      sql: compiledQuery,
-      params: resolvedParams,
-    })
-
+    const queryResult = await source.runCompiledQuery(compiledQuery)
     cache.set(request, queryResult)
-
     return queryResult
   }
 
   if (force) {
     return compute()
-  } else {
-    const queryResult = cache.find(request)
-    if (queryResult) return queryResult
-
-    return compute()
   }
-}
 
-export function computeRelativeQueryPath({
-  sourcePath, // /static/.latitude/queries/folder/source.yml
-  queryPath, // folder/query.sql
-}: {
-  sourcePath: string
-  queryPath: string
-}) {
-  const base = path
-    .dirname(sourcePath) // /static/.latitude/queries/folder
-    .slice(sourcePath.indexOf(QUERIES_DIR) + QUERIES_DIR.length + 1) // folder
-
-  if (!base) return queryPath
-
-  return queryPath.slice(queryPath.indexOf(base) + base.length + 1) // query.sql
+  const queryResult = cache.find(request, compiledQuery.config.ttl)
+  if (queryResult) return queryResult
+  return compute()
 }
