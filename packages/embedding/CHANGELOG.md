@@ -1,5 +1,11 @@
 # @latitude-data/embedding
 
+## 0.1.1
+
+### Patch Changes
+
+- 663b413: Fix infinite loop when changing an input field. Use different event in embedding when url param is changed from inside view
+
 ## 0.1.0
 
 ### Minor Changes

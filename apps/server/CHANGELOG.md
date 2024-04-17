@@ -1,5 +1,19 @@
 # @latitude-data/server
 
+## 0.11.0
+
+### Minor Changes
+
+- 58bca92: Remove empty params from URL when data app loads
+- b735b23: Support for static files in views. Just add any file inside the `views` folder, and they will be accessible in your web app.
+- 97a7d1d: Third-party scripts are now allowed inside the `<svelte:head>` tag
+- 2b31b14: Feature: CLI run command now allows using a --debug tag to see the compiled query
+
+### Patch Changes
+
+- Updated dependencies [663b413]
+  - @latitude-data/embedding@0.1.1
+
 ## 0.10.0
 
 ### Minor Changes
