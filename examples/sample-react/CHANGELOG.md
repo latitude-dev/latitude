@@ -1,5 +1,11 @@
 # example-react
 
+## 0.0.7
+
+### Patch Changes
+
+- @latitude-data/react@0.6.2
+
 ## 0.0.6
 
 ### Patch Changes

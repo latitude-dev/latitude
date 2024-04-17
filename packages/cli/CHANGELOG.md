@@ -1,5 +1,13 @@
 # @latitude-data/cli
 
+## 0.8.0
+
+### Minor Changes
+
+- b735b23: Support for static files in views. Just add any file inside the `views` folder, and they will be accessible in your web app.
+- 2b31b14: Feature: CLI run command now allows using a --debug tag to see the compiled query
+- a2d0427: Fix CLI build command failing when views folder doesn't exists
+
 ## 0.7.1
 
 ### Patch Changes
