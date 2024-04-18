@@ -49,7 +49,8 @@
       "pages": [
         "guides/getting-started/introduction",
         "guides/getting-started/installation",
-        "guides/getting-started/windows-compatibility"
+        "guides/getting-started/windows-compatibility",
+        "guides/getting-started/troubleshooting"
       ]
     },
     {
@@ -71,10 +72,7 @@
     },
     {
       "group": "Build and deploy",
-      "pages": [
-        "guides/deploy/docker",
-        "guides/deploy/nodejs"
-      ]
+      "pages": ["guides/deploy/docker", "guides/deploy/nodejs"]
     },
     {
       "group": "Embed",
