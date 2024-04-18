@@ -53,10 +53,7 @@ CLI.command('build')
 
 CLI.command('dev')
   .describe('Launch the local Latitude development environment')
-  .option(
-    '--open',
-    'Open the Latitude app in your browser, Default: yes. Options: yes, no',
-  )
+  .option('--open', 'Open the Latitude app in your browser. (default: true)')
   .option('--port', 'Port to run the Latitude app on')
   .action(devCommand)
 
