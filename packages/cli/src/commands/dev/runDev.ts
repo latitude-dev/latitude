@@ -44,6 +44,7 @@ export async function runDevServer(
   const args = [
     'run',
     'dev',
+    '--',
     '--strictPort',
     `--port=${appPort}`,
     `--host=${host}`,

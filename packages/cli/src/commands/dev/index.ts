@@ -8,7 +8,7 @@ import tracked from '$src/lib/decorators/tracked'
 import setup from '$src/lib/decorators/setup'
 import setRootDir from '$src/lib/decorators/setRootDir'
 
-export type Props = CommonCLIArgs & { open?: string; port?: number }
+export type Props = CommonCLIArgs & { open?: boolean; port?: number }
 
 async function devCommand(args: Props = {}) {
   await sync({
@@ -16,7 +16,7 @@ async function devCommand(args: Props = {}) {
   })
 
   runDevServer(
-    await buildServerProps({ open: args?.open ?? 'yes', port: args.port }),
+    await buildServerProps({ open: args?.open ?? config.pro, port: args.port }),
   )
 }
 
@@ -24,11 +24,11 @@ const buildServerProps = async ({
   open,
   port,
 }: {
-  open: string
+  open: boolean
   port?: number
 }) => {
   const server: DevServerProps = {
-    open: open === 'yes',
+    open: open,
     port: port,
     appFolder: config.rootDir,
     verbose: config.verbose,
