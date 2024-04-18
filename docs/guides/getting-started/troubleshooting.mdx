@@ -1,0 +1,18 @@
+---
+title: Troubleshooting
+description: 'Common issues and solutions when using Latitude'
+---
+
+## Error installing dependencies with Python 3.12
+
+Currently there's an incompatibiblity issue with Python 3.12 and some Latitude dependencies. If you're seeing an error like this:
+
+```bash
+npm ERR! ModuleNotFoundError: No module named 'distutils'
+```
+
+Fix it by running:
+
+```bash
+pip3 install setuptools
+```
