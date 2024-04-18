@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.8.1
+
+### Patch Changes
+
+- 943cd56: Server was opening with the wrong port if the original port is busy.
+
 ## 0.8.0
 
 ### Minor Changes
