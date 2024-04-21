@@ -24,6 +24,8 @@ vi.mock('../shared/syncFiles', () => ({
   default: vi.fn(),
 }))
 
+vi.mock('$src/config', () => ({ default: { rootDir: '/fake/rootDir' } }))
+
 let sync: Function
 describe('syncQueriesAndCsvs', () => {
   let fakeRootDir: string
@@ -45,7 +47,6 @@ describe('syncQueriesAndCsvs', () => {
       args.join('/'),
     )
     sync = syncQueriesAndCsvs({
-      rootDir: fakeRootDir,
       destinationCsvsDir,
       destinationQueriesDir,
     })

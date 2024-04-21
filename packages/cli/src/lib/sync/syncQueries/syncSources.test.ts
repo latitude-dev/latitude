@@ -1,9 +1,10 @@
 import fs from 'fs'
-import { spawn } from 'child_process'
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { syncQueriesAndCsvs } from '.'
 import syncFiles from '../shared/syncFiles'
 import { APP_FOLDER, LATITUDE_FOLDER } from '$src/commands/constants'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { spawn } from 'child_process'
+import { syncQueriesAndCsvs } from '.'
+import config from '$src/config'
 
 function initPackageJson({
   folder,
@@ -30,6 +31,10 @@ vi.mock('../shared/syncFiles', () => ({
   default: vi.fn(),
 }))
 
+vi.mock('$/config', () => ({
+  default: { rootDir: vi.fn() },
+}))
+
 let sourceType = 'postgres'
 let sourceContent = `
   type: ${sourceType}
@@ -37,7 +42,7 @@ let sourceContent = `
     host: localhost
     port: 5432
     user: myuser
-    password: LATITUDE__DB_PASSWORD
+    password: mypassword
     database: mydatabase
 `
 
@@ -47,6 +52,7 @@ let sync: Function
 describe('syncSources', () => {
   beforeEach(() => {
     tmpDir = `/tmp/data-app-folder-${Math.random().toString(36).substring(7)}`
+    vi.mocked(config).rootDir = tmpDir
     fs.mkdirSync(tmpDir)
     const latitudeFolder = `${tmpDir}/${LATITUDE_FOLDER}`
     fs.mkdirSync(latitudeFolder)
@@ -69,7 +75,6 @@ describe('syncSources', () => {
 
     destinationQueriesDir = `${tmpDir}/${APP_FOLDER}/static/queries`
     sync = syncQueriesAndCsvs({
-      rootDir: tmpDir,
       destinationCsvsDir: `${tmpDir}/dest/csvs`,
       destinationQueriesDir,
     })
@@ -127,7 +132,7 @@ describe('syncSources', () => {
 
       expect(spawn).toHaveBeenCalledWith(
         'npm',
-        ['install', '@latitude-data/postgresql-connector@^2.0.0'],
+        ['install', '--save', '@latitude-data/postgresql-connector@^2.0.0'],
         expect.anything(),
       )
     })
@@ -136,15 +141,9 @@ describe('syncSources', () => {
   describe('When package.json does not exists', () => {
     beforeEach(() => {
       vi.mock('child_process', () => ({
-        spawn: vi.fn((_, args, options) => {
+        spawn: vi.fn((_) => {
           const mockChildProcess = {
             on: vi.fn((event, callback) => {
-              if (args[0] === 'init' && args[1] === '-y') {
-                initPackageJson({
-                  folder: options.cwd,
-                  hasDependency: false,
-                })
-              }
               if (event === 'close') {
                 callback(0)
               }
@@ -155,24 +154,13 @@ describe('syncSources', () => {
       }))
     })
 
-    it('init package.json', async () => {
-      const srcPath = `${tmpDir}/queries/source.yaml`
-      await sync(srcPath, 'add', true)
-
-      expect(spawn).toHaveBeenCalledWith(
-        'npm',
-        ['init', '-y'],
-        expect.anything(),
-      )
-    })
-
     it('Install connector', async () => {
       const srcPath = `${tmpDir}/queries/source.yaml`
       await sync(srcPath, 'add', true)
 
       expect(spawn).toHaveBeenCalledWith(
         'npm',
-        ['install', '@latitude-data/postgresql-connector@^2.0.0'],
+        ['install', '--save', '@latitude-data/postgresql-connector@^2.0.0'],
         expect.anything(),
       )
     })

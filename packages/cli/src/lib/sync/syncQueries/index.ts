@@ -13,26 +13,19 @@ import {
 } from 'fs'
 import { onExit } from '$src/utils'
 import ensureConnectorInstalled from '$src/lib/sync/syncQueries/ensureConnectorInstalled'
-
-function isSourceFile(srcPath: string) {
-  return srcPath.endsWith('.yml') || srcPath.endsWith('.yaml')
-}
+import isSourceFile from '$src/lib/isSourceFile'
 
 function buildDestPath({
-  rootDir,
   srcPath,
   destinationQueriesDir,
   destinationCsvsDir,
-  isSource,
 }: {
-  rootDir: string
   srcPath: string
   destinationQueriesDir: string
   destinationCsvsDir: string
-  isSource: boolean
 }) {
   const relativePath = path
-    .relative(rootDir, srcPath)
+    .relative(config.rootDir, srcPath)
     .replace(/^queries\/?/, '')
 
   let destPath
@@ -44,7 +37,7 @@ function buildDestPath({
     }
   }
 
-  if (srcPath.endsWith('.sql') || isSource) {
+  if (srcPath.endsWith('.sql') || isSourceFile(srcPath)) {
     return {
       destPath: path.join(destinationQueriesDir, relativePath),
       relativePath,
@@ -83,11 +76,9 @@ export function clearFolders(folders: string[]) {
 }
 
 export function syncQueriesAndCsvs({
-  rootDir,
   destinationCsvsDir,
   destinationQueriesDir,
 }: {
-  rootDir: string
   destinationCsvsDir: string
   destinationQueriesDir: string
 }) {
@@ -96,19 +87,17 @@ export function syncQueriesAndCsvs({
     type: 'add' | 'change' | 'unlink',
     ready: boolean,
   ) => {
-    const isSource = isSourceFile(srcPath)
     const { destPath, relativePath } = buildDestPath({
-      rootDir,
       srcPath,
       destinationQueriesDir,
       destinationCsvsDir,
-      isSource,
     })
 
     // Not a valid extension .sql, .csv, .yml or .yaml
     if (!destPath) return
 
-    await ensureConnectorInstalled({ rootDir, srcPath, isSource })
+    await ensureConnectorInstalled({ srcPath, type })
+
     syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
 }
@@ -132,7 +121,6 @@ export default async function syncQueries({
   clearFolders([destinationQueriesDir, destinationCsvsDir])
 
   const syncFn = syncQueriesAndCsvs({
-    rootDir,
     destinationCsvsDir,
     destinationQueriesDir,
   })

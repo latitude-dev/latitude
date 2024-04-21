@@ -18,25 +18,24 @@ export enum ConnectorType {
   Databricks = 'databricks',
 }
 
+export class MissingEnvVarError extends Error {}
+
 export function loadConfig({
   sourcePath,
-  checkEnvVars,
 }: {
   sourcePath: string
-  checkEnvVars: boolean
-}) {
+}): Record<string, unknown> {
   if (!fs.existsSync(sourcePath)) {
     throw new Error(`Missing source configuration file in: ${sourcePath}`)
   }
+
   const file = fs.readFileSync(sourcePath, 'utf8')
   const config = yaml.parse(file, (_, value) => {
-    if (!checkEnvVars) return value
-
     // if key starts with 'LATITUDE__', replace it with the environment variable
     if (typeof value === 'string' && value.startsWith('LATITUDE__')) {
       if (process.env[value]) return process.env[value]
 
-      throw new Error(`
+      throw new MissingEnvVarError(`
       Invalid configuration. Environment variable ${value} was not found in the environment. You can review how to set up secret source credentials in the documentation: https://docs.latitude.so/sources/credentials
       `)
     } else {
@@ -44,20 +43,12 @@ export function loadConfig({
     }
   })
 
-  return config
+  return config || {}
 }
 
-type PartialConfig = {
-  type?: string
-}
+export class InvalidConnectorType extends Error {}
 
-export function getConnectorPackage(config: PartialConfig) {
-  const type = config?.type
-
-  if (!type) {
-    throw new Error("Missing 'type' in configuration")
-  }
-
+export function getConnectorPackage(type: ConnectorType) {
   switch (type) {
     case ConnectorType.Postgres:
       return '@latitude-data/postgresql-connector'
@@ -84,7 +75,7 @@ export function getConnectorPackage(config: PartialConfig) {
     case ConnectorType.Databricks:
       return '@latitude-data/databricks-connector'
     default:
-      throw new Error(`Unsupported connector type: ${type}`)
+      throw new InvalidConnectorType(`Unsupported connector type: ${type}`)
   }
 }
 
@@ -112,9 +103,9 @@ async function loadConnector(packageName: string) {
 
 export async function createConnector(sourcePath: string) {
   const rootPath = path.dirname(sourcePath)
-  const config = loadConfig({ sourcePath, checkEnvVars: true })
+  const config = loadConfig({ sourcePath })
   const details = (config.details ?? {}) as object
-  const packageName = getConnectorPackage(config)
+  const packageName = getConnectorPackage(config.type as ConnectorType)
   const { ConnectorClass, errorMessage } = await loadConnector(packageName)
 
   if (!ConnectorClass) {

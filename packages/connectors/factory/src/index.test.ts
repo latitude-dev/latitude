@@ -58,7 +58,7 @@ describe('createConnector', () => {
     `)
 
     await expect(createConnector(sourcePath)).rejects.toThrowError(
-      `Missing 'type' in configuration`,
+      'Unsupported connector type: undefined',
     )
   })
 
