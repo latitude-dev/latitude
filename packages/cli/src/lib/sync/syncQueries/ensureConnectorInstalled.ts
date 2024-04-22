@@ -1,7 +1,5 @@
 import fs from 'fs'
-import spawn from '$src/lib/spawn'
 import colors from 'picocolors'
-import { onError } from '$src/utils'
 import {
   ConnectorType,
   InvalidConnectorType,
@@ -12,61 +10,53 @@ import {
 import config from '$src/config'
 import isSourceFile from '$src/lib/isSourceFile'
 
-function installErrorMessage({ npmPackage }: { npmPackage: string }) {
-  return `
-🚨 Failed to install connector ${npmPackage}
-
-To install manually the connector run:
-'npm install --save ${npmPackage}' in the app directory.
-`
-}
-
-function installConnector({
+function checkInstalled({
   npmPackage,
   npmVersion,
 }: {
   npmPackage: string
   npmVersion: string
 }) {
-  const errorMessage = installErrorMessage({ npmPackage })
-  console.log(colors.yellow(`Installing connector ${npmPackage}...`))
-  return new Promise((resolve) => {
-    spawn(
-      'npm',
-      ['install', '--save', `${npmPackage}@${npmVersion}`],
-      {
-        cwd: config.rootDir,
-        stdio: 'pipe',
-      },
-      {
-        onError: (error) => {
-          onError({
-            error: error as Error,
-            message: errorMessage,
-          })
+  const installMessage = colors.yellow(`
+Connector ${npmPackage} not installed. To install it run:
 
-          process.exit(1)
-        },
-        onClose: (code) => {
-          if (code !== 0) {
-            onError({ message: errorMessage })
-            process.exit(1)
-          } else {
-            const env = process.env.NODE_ENV
-            if (env !== 'test') {
-              console.log(
-                colors.green(
-                  `Connector ${npmPackage} installed successfully 🎉`,
-                ),
-              )
-            }
+${colors.cyan(`npm install --save ${npmPackage}@${npmVersion}`)}
+`)
+  try {
+    const packageJson = `${config.rootDir}/package.json`
+    if (!fs.existsSync(packageJson)) return console.log(installMessage)
 
-            resolve(true)
-          }
-        },
-      },
-    )
-  })
+    const packageJsonContent = fs.readFileSync(packageJson, 'utf8')
+    const packageJsonParsed = JSON.parse(packageJsonContent)
+    const dependencies = packageJsonParsed.dependencies ?? {}
+    const installedVersion = dependencies[npmPackage]
+    if (!installedVersion) {
+      console.log(installMessage)
+
+      return
+    } else {
+      const nodeModules = `${config.rootDir}/node_modules/@latitude-data`
+      if (!fs.existsSync(nodeModules)) return console.log(installMessage)
+
+      const nodeModulesContent = fs.readdirSync(nodeModules)
+      const installed = nodeModulesContent.includes(npmPackage.split('/')[1]!)
+      if (!installed) {
+        console.log(installMessage)
+
+        return
+      }
+    }
+  } catch (e) {
+    // @ts-expect-error - Property 'code' does not exist on type 'unknown'
+    console.log('ERROR: ', e.code)
+
+    // @ts-expect-error - Property 'code' does not exist on type 'unknown'
+    if (e?.code === 'ENOENT') {
+      console.log(installMessage)
+    }
+
+    throw e
+  }
 }
 
 function getPackageName({ srcPath }: { srcPath: string }) {
@@ -87,16 +77,20 @@ function getConnectorVersionInLatitudeApp({
   npmPackage: string
 }) {
   const factoryPackagePath = `${config.appDir}/node_modules/@latitude-data/connector-factory`
-  const factoryPackageJson = JSON.parse(
-    fs.readFileSync(`${factoryPackagePath}/package.json`, 'utf8'),
-  )
+  try {
+    const factoryPackageJson = JSON.parse(
+      fs.readFileSync(`${factoryPackagePath}/package.json`, 'utf8'),
+    )
 
-  // NOTE: In production we pick the exec version from the factory package declared
-  // as peer dependency in the app package.json
-  // In development we just pick the latest version
-  const peer = factoryPackageJson.peerDependencies ?? {}
-  const version = peer[npmPackage] ?? 'latest' // Legacy factory packages didn't have peer dependencies
-  return config.dev ? 'latest' : version
+    // NOTE: In production we pick the exec version from the factory package declared
+    // as peer dependency in the app package.json
+    // In development we just pick the latest version
+    const peer = factoryPackageJson.peerDependencies ?? {}
+    const version = peer[npmPackage] ?? 'latest' // Legacy factory packages didn't have peer dependencies
+    return config.dev ? 'latest' : version
+  } catch (e) {
+    return 'latest'
+  }
 }
 
 export default function ensureConnectorInstalled({
@@ -116,5 +110,5 @@ export default function ensureConnectorInstalled({
     npmPackage,
   })
 
-  return installConnector({ npmPackage, npmVersion: connectorVersionInApp })
+  return checkInstalled({ npmPackage, npmVersion: connectorVersionInApp })
 }

@@ -2,7 +2,6 @@ import fs from 'fs'
 import syncFiles from '../shared/syncFiles'
 import { APP_FOLDER, LATITUDE_FOLDER } from '$src/commands/constants'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { spawn } from 'child_process'
 import { syncQueriesAndCsvs } from '.'
 import config from '$src/config'
 
@@ -81,15 +80,25 @@ describe('syncSources', () => {
   })
 
   afterEach(() => {
-    fs.rmdirSync(tmpDir, { recursive: true })
+    fs.rmSync(tmpDir, { recursive: true })
   })
 
   describe('when connector is already installed', () => {
     beforeEach(() => {
       initPackageJson({ folder: tmpDir, hasDependency: true })
+      fs.mkdirSync(
+        `${tmpDir}/node_modules/@latitude-data/postgresql-connector`,
+        { recursive: true },
+      )
     })
 
-    it('sync .yaml files correctly', async () => {
+    afterEach(() => {
+      fs.rmSync(`${tmpDir}/node_modules/@latitude-data/postgresql-connector`, {
+        recursive: true,
+      })
+    })
+
+    it('syncs .yaml files correctly', async () => {
       const srcPath = `${tmpDir}/queries/source.yaml`
       await sync(srcPath, 'add', true)
 
@@ -102,7 +111,7 @@ describe('syncSources', () => {
       })
     })
 
-    it('sync .yml files correctly', async () => {
+    it('syncs .yml files correctly', async () => {
       const srcPath = `${tmpDir}/queries/source.yml`
       await sync(srcPath, 'add', true)
 
@@ -113,56 +122,6 @@ describe('syncSources', () => {
         type: 'add',
         ready: true,
       })
-    })
-
-    it('do not init package.json', async () => {
-      const srcPath = `${tmpDir}/queries/source.yml`
-      await sync(srcPath, 'add', true)
-
-      expect(spawn).not.toHaveBeenCalledWith(
-        'npm',
-        ['init -y'],
-        expect.anything(),
-      )
-    })
-
-    it('install installed version of connector found in factory', async () => {
-      const srcPath = `${tmpDir}/queries/source.yml`
-      await sync(srcPath, 'add', true)
-
-      expect(spawn).toHaveBeenCalledWith(
-        'npm',
-        ['install', '--save', '@latitude-data/postgresql-connector@^2.0.0'],
-        expect.anything(),
-      )
-    })
-  })
-
-  describe('When package.json does not exists', () => {
-    beforeEach(() => {
-      vi.mock('child_process', () => ({
-        spawn: vi.fn((_) => {
-          const mockChildProcess = {
-            on: vi.fn((event, callback) => {
-              if (event === 'close') {
-                callback(0)
-              }
-            }),
-          }
-          return mockChildProcess
-        }),
-      }))
-    })
-
-    it('Install connector', async () => {
-      const srcPath = `${tmpDir}/queries/source.yaml`
-      await sync(srcPath, 'add', true)
-
-      expect(spawn).toHaveBeenCalledWith(
-        'npm',
-        ['install', '--save', '@latitude-data/postgresql-connector@^2.0.0'],
-        expect.anything(),
-      )
     })
   })
 })

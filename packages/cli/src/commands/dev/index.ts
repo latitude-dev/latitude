@@ -7,6 +7,7 @@ import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
 import tracked from '$src/lib/decorators/tracked'
 import setup from '$src/lib/decorators/setup'
 import setRootDir from '$src/lib/decorators/setRootDir'
+import versionCheck from '$src/lib/decorators/versionCheck'
 
 export type Props = CommonCLIArgs & { open?: boolean; port?: number }
 
@@ -50,4 +51,7 @@ const buildServerProps = async ({
     : server
 }
 
-export default tracked('devCommand', setRootDir(setup(devCommand)))
+export default tracked(
+  'devCommand',
+  versionCheck(setRootDir(setup(devCommand))),
+)

@@ -17,18 +17,16 @@ export default class InstalledVersionChecker {
 
   displayMessage(devUrl: string) {
     const message = `
-      ${devUrl}
+${devUrl}
 
-      ---------
+---------
 
-      You're using a different version of Latitude server.
-      Your machine: ${colors.red(this.installed)}
-      This project (latitude.json): ${colors.green(this.config)}
+You're using a different version of Latitude server.
+Your machine: ${colors.red(this.installed)}
+This project (latitude.json): ${colors.green(this.config)}
 
-      Please run to fix this issue:
-      ${colors.blue('latitude update --fix')}
-
-
+Please run to fix this issue:
+${colors.blue('latitude update --fix')}
     `
     boxedMessage({
       text: message,

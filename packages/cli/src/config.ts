@@ -6,31 +6,27 @@ class CLIConfig {
   public rootDir: string
   public dev: boolean = true
   public verbose: boolean = false
-  private _pro: boolean = false
-  private _simulatedPro: boolean = false
 
   constructor({
     dev,
     rootDir,
     verbose = false,
-    simulatedPro = false,
   }: {
     rootDir: string
     dev: boolean
     verbose?: boolean
-    simulatedPro?: boolean
   }) {
     this.dev = dev
     this.rootDir = rootDir
     this.verbose = verbose
-    this._pro = !this.dev
-    this._simulatedPro = simulatedPro
   }
 
   public async init(argv: string[]) {
     const args = mri(argv.slice(2))
-    this._simulatedPro = args['simulate-pro'] ?? false
     this.verbose = args.verbose ?? false
+
+    const simulatePro = args['simulate-pro'] ?? false
+    this.dev = simulatePro ? false : this.dev
   }
 
   public get appDir() {
@@ -42,7 +38,7 @@ class CLIConfig {
   }
 
   public get pro() {
-    return this._pro || this._simulatedPro
+    return !this.dev
   }
 
   public get name() {

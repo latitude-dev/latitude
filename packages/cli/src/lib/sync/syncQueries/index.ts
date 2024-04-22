@@ -96,8 +96,7 @@ export function syncQueriesAndCsvs({
     // Not a valid extension .sql, .csv, .yml or .yaml
     if (!destPath) return
 
-    await ensureConnectorInstalled({ srcPath, type })
-
+    ensureConnectorInstalled({ srcPath, type })
     syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
 }
