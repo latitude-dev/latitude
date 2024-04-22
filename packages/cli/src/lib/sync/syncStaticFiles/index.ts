@@ -11,8 +11,7 @@ function getStaticFilesFolderPath(cwd: string): string {
   return path.join(cwd, APP_FOLDER, 'static')
 }
 
-const IGNORED_REGEX = /^.*(?:\/|^)(\..+|.+\.html)$/ // Ignore all html files and hidden files and directories (starting with a dot)
-
+const IGNORED_FILES_REGEX = /^.*(?:\/|^)(\..+|.+\.html)$/ // Ignore all html files and hidden files and directories (starting with a dot)
 const copiedFiles = new Set<string>()
 
 export default async function syncStaticFiles({
@@ -26,9 +25,7 @@ export default async function syncStaticFiles({
   const syncFn = syncStaticFilesFn({ rootDir, destinationDir })
 
   if (watch) {
-    await watcher(viewsDir, syncFn, {
-      ignored: IGNORED_REGEX,
-    })
+    await watcher(viewsDir, syncFn)
   } else {
     syncDirectory(viewsDir, syncFn)
   }
@@ -48,6 +45,8 @@ export function syncStaticFilesFn({
     type: 'add' | 'change' | 'unlink',
     ready: boolean,
   ) => {
+    if (IGNORED_FILES_REGEX.test(srcPath)) return
+
     const relativePath = path
       .relative(rootDir, srcPath)
       .replace(/^views\/?/, '')

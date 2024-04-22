@@ -68,4 +68,32 @@ describe('syncStaticFiles function', () => {
       }),
     )
   })
+
+  it('does not sync files that match IGNORED_FILES_REGEX', () => {
+    const rootDir = '/test'
+    const destinationDir = '/test/static'
+
+    const handler = syncStaticFilesFn({ rootDir, destinationDir })
+
+    const srcPath = `${rootDir}/views/index.html`
+    const type = 'add'
+
+    handler(srcPath, type, true)
+
+    expect(syncFiles).not.toHaveBeenCalled()
+  })
+
+  it('does not sync files that match IGNORED_FILES_REGEX even if nested', () => {
+    const rootDir = '/test'
+    const destinationDir = '/test/static'
+
+    const handler = syncStaticFilesFn({ rootDir, destinationDir })
+
+    const srcPath = `${rootDir}/views/nested/index.html`
+    const type = 'add'
+
+    handler(srcPath, type, true)
+
+    expect(syncFiles).not.toHaveBeenCalled()
+  })
 })

@@ -82,6 +82,17 @@ describe('snycFnFactory', () => {
         }),
       )
     })
+
+    it('does not sync files that match IGNORED_FILES_REGEX', () => {
+      const handler = syncFnFactory({ rootDir, destinationDir })
+
+      const srcPath = `${rootDir}/views/foo.png`
+      const type = 'add'
+
+      handler(srcPath, type, true)
+
+      expect(syncFiles).not.toHaveBeenCalled()
+    })
   })
 
   describe('when views folder does not exist', () => {
