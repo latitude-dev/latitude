@@ -16,7 +16,7 @@ function logEvent(event: EventType, path: string) {
 
 type SyncFileFn = (srcPath: string, type: EventType, ready: boolean) => void
 type WatcherOptions = {
-  ignored?: RegExp
+  ignored?: RegExp | string | ((path: string) => boolean)
   persistent?: boolean
   debug?: boolean
 }

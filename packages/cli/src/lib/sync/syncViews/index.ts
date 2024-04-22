@@ -11,7 +11,6 @@ function getRoutesFolderPath(cwd: string): string {
 }
 
 const copiedFiles = new Set<string>()
-
 const IGNORED_FILES_REGEX = /^(?!.*index\.html$).*$/ // ignore all files except index.html
 
 const clearFiles = (watch: boolean) => () => {
@@ -30,13 +29,11 @@ export const syncFnFactory =
   ({ rootDir, destinationDir }: { rootDir: string; destinationDir: string }) =>
   (srcPath: string, type: 'add' | 'change' | 'unlink', ready: boolean) => {
     if (!fs.existsSync(rootDir)) return
+    if (IGNORED_FILES_REGEX.test(srcPath)) return
 
     const relativeSrcPath = path
       .relative(rootDir, srcPath)
       .replace(/^views/, '')
-
-    if (IGNORED_FILES_REGEX.test(relativeSrcPath)) return
-
     const relativePath = relativeSrcPath.replace(/[^/]*$/, '+page.svelte')
     const destPath = path.join(destinationDir, relativePath)
 
@@ -58,7 +55,6 @@ export const syncDirectory = (directory: string, syncFn: Function): void => {
     if (fs.statSync(srcPath).isDirectory()) {
       syncDirectory(srcPath, syncFn)
     } else {
-      // It's a file, perform the synchronization operation
       syncFn(srcPath, 'add', true)
     }
   })
