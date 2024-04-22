@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 0.8.2
+
+### Patch Changes
+
+- fa50966: fix: static files sync is breaking production builds
+
 ## 0.8.1
 
 ### Patch Changes
