@@ -21,7 +21,7 @@ function getArgs(): CommandArgs {
   }
   const queryPath = args[0]!
 
-  let parameters
+  let parameters: CommandArgs['parameters']
   try {
     parameters = args.length < 3 ? {} : JSON.parse(args[1]!)
   } catch (e) {
@@ -42,7 +42,7 @@ async function runQuery(
 ) {
   try {
     const { sourcePath, queryPath } = await findQueryFile(QUERIES_DIR, query)
-    const connector = createConnector(sourcePath)
+    const connector = await createConnector(sourcePath)
 
     if (debug) {
       const compiledQuery = await connector.compileQuery({ queryPath, params })

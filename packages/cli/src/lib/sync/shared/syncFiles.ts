@@ -1,9 +1,7 @@
 import colors from 'picocolors'
 import output from '../../output'
 import path from 'path'
-import { copyFile, mkdirSync, symlink, unlink } from 'fs'
-
-type Strategy = 'copy' | 'symlink'
+import { copyFile, mkdirSync, unlink } from 'fs'
 
 export default function syncFiles({
   srcPath,
@@ -11,14 +9,12 @@ export default function syncFiles({
   destPath,
   type,
   ready,
-  strategy = 'copy',
 }: {
   srcPath: string
   relativePath: string
   destPath: string
   type: 'add' | 'change' | 'unlink'
   ready: boolean
-  strategy?: Strategy
 }) {
   if (type === 'add' || type === 'change') {
     // Make sure all directories in the path exist
@@ -35,11 +31,7 @@ export default function syncFiles({
       }
     }
 
-    if (strategy === 'symlink') {
-      symlink(srcPath, destPath, 'file', onError)
-    } else {
-      copyFile(srcPath, destPath, onError)
-    }
+    copyFile(srcPath, destPath, onError)
   } else if (type === 'unlink') {
     unlink(destPath, (err) => {
       if (err) {

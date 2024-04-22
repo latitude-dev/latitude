@@ -20,7 +20,7 @@ export type ConnectionParams = {
   privateKeyPass?: string
 }
 
-export class SnowflakeConnector extends BaseConnector {
+export default class SnowflakeConnector extends BaseConnector {
   private pool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

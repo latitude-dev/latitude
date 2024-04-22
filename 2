@@ -43,7 +43,6 @@ export async function runDevServer(
   const args = [
     'run',
     'dev',
-    '--',
     '--strictPort',
     `--port=${appPort}`,
     `--host=${host}`,
@@ -132,11 +131,7 @@ const onError = (error: Error) => {
 }
 
 const onClose = (code?: number) => {
-  if (!code || code === 0) {
-    console.log(`\n Server closed 👋`)
-  } else {
-    console.log(colors.red(`\n Server closed with code: ${code}`))
-  }
+  console.log(colors.yellow(`\n Server closed with code: ${code || 0}`))
 
   process.exit(code ?? 0)
 }

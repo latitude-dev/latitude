@@ -26,7 +26,7 @@ export type ConnectionParams = {
   ssl?: SSLOptions
 }
 
-export class MysqlConnector extends BaseConnector {
+export default class MysqlConnector extends BaseConnector {
   private pool: Pool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

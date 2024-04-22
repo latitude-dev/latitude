@@ -15,8 +15,6 @@ async function build() {
   const handlers = {
     onClose,
     onError,
-    onStdout,
-    onStderr,
   }
 
   spawn(
@@ -25,6 +23,7 @@ async function build() {
     {
       detached: false,
       cwd: config.appDir,
+      stdio: 'inherit',
     },
     handlers,
   )
@@ -56,13 +55,11 @@ const onClose = async (code?: number) => {
 
   console.log(colors.green(`📦 Build completed!\n`))
 
-  console.log(
-    colors.gray(`
-        To run your app, use the following commands:\n
-        $ cd build
-        $ node build
-      `),
-  )
+  console.log(`
+To run your app, use the following commands:\n
+$ cd build
+$ node build
+`)
 
   process.exit()
 }
@@ -72,16 +69,6 @@ const onError = (err: Error) => {
     error: err,
     message: `Error running build process`,
   })
-}
-
-const onStdout = (data: Buffer) => {
-  console.log(colors.gray(data.toString()))
-}
-
-const onStderr = (data: Buffer) => {
-  if (data.includes('WARNING')) return // ignore warnings
-
-  console.error(colors.yellow(data.toString()))
 }
 
 export default tracked('buildCommand', setRootDir(setup(build)))

@@ -20,7 +20,7 @@ export default async function cloneTemplate({
 }) {
   return new Promise<string>((resolve) => {
     const gitTemplate = degit(TEMPLATE_URL[template], { force })
-    console.log(colors.yellow(`📦 Cloning template to ${dest}`))
+    console.log(`📦 Cloning template to ${dest}`)
 
     gitTemplate.on('info', () => {
       console.log(colors.green('✅ template cloned'))

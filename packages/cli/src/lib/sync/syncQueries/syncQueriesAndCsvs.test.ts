@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { syncQueriesAndCsvs } from '.'
+import { syncQueriesAndCsvs } from './index'
 import path from 'path'
 import syncFiles from '../shared/syncFiles'
 
@@ -11,19 +11,28 @@ vi.mock('path', () => ({
   },
 }))
 
+vi.mock('./index', async (importOriginal) => {
+  const original = await importOriginal()
+  return {
+    // @ts-expect-error - mock
+    ...original,
+    ensureConnectorInstalled: Promise.resolve(true),
+  }
+})
+
 vi.mock('../shared/syncFiles', () => ({
   default: vi.fn(),
 }))
 
+vi.mock('$src/config', () => ({ default: { rootDir: '/fake/rootDir' } }))
+
+let sync: Function
 describe('syncQueriesAndCsvs', () => {
   let fakeRootDir: string
   let destinationCsvsDir: string
   let destinationQueriesDir: string
 
   beforeEach(() => {
-    // Reset mocks and set up test variables
-    vi.resetAllMocks()
-
     fakeRootDir = '/fake/rootDir'
     destinationCsvsDir = '/dest/csvs'
     destinationQueriesDir = '/dest/queries'
@@ -37,18 +46,16 @@ describe('syncQueriesAndCsvs', () => {
     ;(path.join as unknown as vi.Mock).mockImplementation((...args: any[]) =>
       args.join('/'),
     )
-  })
-
-  it('should handle .csv files correctly', () => {
-    const sync = syncQueriesAndCsvs({
-      rootDir: fakeRootDir,
+    sync = syncQueriesAndCsvs({
       destinationCsvsDir,
       destinationQueriesDir,
     })
+  })
+
+  it('handle .csv files correctly', async () => {
     const srcPath = `${fakeRootDir}/queries/some/path/myfile.csv`
     const expectedDestPath = `${destinationCsvsDir}/some/path/myfile.csv`
-
-    sync(srcPath, 'add', true)
+    await sync(srcPath, 'add', true)
 
     expect(syncFiles).toHaveBeenCalledWith({
       srcPath,
@@ -59,16 +66,10 @@ describe('syncQueriesAndCsvs', () => {
     })
   })
 
-  it('should handle .sql files correctly', () => {
-    const sync = syncQueriesAndCsvs({
-      rootDir: fakeRootDir,
-      destinationCsvsDir,
-      destinationQueriesDir,
-    })
+  it('handle .sql files correctly', async () => {
     const srcPath = `${fakeRootDir}/queries/some/path/myfile.sql`
     const expectedDestPath = `${destinationQueriesDir}/some/path/myfile.sql`
-
-    sync(srcPath, 'add', true)
+    await sync(srcPath, 'add', true)
 
     expect(syncFiles).toHaveBeenCalledWith({
       srcPath,

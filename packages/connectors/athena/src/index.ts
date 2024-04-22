@@ -36,7 +36,7 @@ interface AthenaQueryClientConfig {
 
 export type ConnectionParams = AthenaQueryClientConfig
 
-export class AthenaConnector extends BaseConnector {
+export default class AthenaConnector extends BaseConnector {
   private client: AthenaClient
   private database: string = 'default'
   private catalog: string = 'AwsDataCatalog'

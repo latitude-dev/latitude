@@ -15,7 +15,7 @@ export type ConnectionParams = {
   password?: string
 }
 
-export class TrinoConnector extends BaseConnector {
+export default class TrinoConnector extends BaseConnector {
   private client: Trino
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

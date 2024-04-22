@@ -3,9 +3,11 @@ import { createConnector } from '@latitude-data/connector-factory'
 
 const connectors: Record<string, BaseConnector> = {}
 
-export function loadConnector(sourcePath: string): BaseConnector {
+export async function loadConnector(
+  sourcePath: string,
+): Promise<BaseConnector> {
   if (!connectors[sourcePath]) {
-    connectors[sourcePath] = createConnector(sourcePath)
+    connectors[sourcePath] = await createConnector(sourcePath)
   }
 
   return connectors[sourcePath]

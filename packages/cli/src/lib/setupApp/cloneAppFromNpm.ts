@@ -37,12 +37,12 @@ export default async function cloneAppFromNpm({
       }
 
       const tarballUrl = stdout.trim()
-      console.log(colors.yellow(`Downloading from: ${tarballUrl}`))
+      console.log(`Downloading from: ${tarballUrl}`)
 
       const oldApp = fsExtra.existsSync(config.appDir)
 
       if (oldApp) {
-        console.log(colors.yellow('Uninstalling old app version...'))
+        console.log('Uninstalling old app version...')
         fsExtra.removeSync(config.appDir)
       }
 

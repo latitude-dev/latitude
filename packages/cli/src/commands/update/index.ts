@@ -1,4 +1,3 @@
-import colors from 'picocolors'
 import config from '$src/config'
 import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
 import getLatestVersion from '$src/lib/latitudeConfig/getLatestVersion'
@@ -15,7 +14,7 @@ import setRootDir from '$src/lib/decorators/setRootDir'
 async function askForAppVersion() {
   let versions: string[] = DEFAULT_VERSION_LIST
   try {
-    console.log(colors.yellow('Fetching Latitude versions...'))
+    console.log('Fetching Latitude versions...')
     versions = await getLatitudeVersions({
       onFetch: () => cleanTerminal(),
     })
@@ -47,9 +46,7 @@ async function getVersions({ fix }: { fix: boolean }) {
     newVersion = await askForAppVersion()
   } catch (error) {
     if (!error) {
-      console.log(
-        colors.yellow('🙈 Mission aborted, when you are ready, try again'),
-      )
+      console.log('🙈 Mission aborted, when you are ready, try again')
     } else {
       onError({
         error: error as Error,

@@ -66,7 +66,7 @@ CLI.command('run <query_name>')
     'Add a parameter to the query. Use the format --param <name>=<value>',
   )
   .example('run --watch users')
-  .example('run users --param user_id=foo')
+  .example('run users --param user_id=foo --param limit=10')
   .action(runCommand)
 
 CLI.command('setup')

@@ -29,7 +29,7 @@ export type ConnectionParams = {
   ssl?: boolean | SSLConfig
 }
 
-export class PostgresConnector extends BaseConnector {
+export default class PostgresConnector extends BaseConnector {
   private pool: pg.Pool
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

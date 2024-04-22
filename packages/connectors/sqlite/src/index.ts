@@ -13,7 +13,7 @@ export type ConnectionParams = {
   url?: string
 }
 
-export class SqliteConnector extends BaseConnector {
+export default class SqliteConnector extends BaseConnector {
   private url: string
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

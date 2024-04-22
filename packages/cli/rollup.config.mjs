@@ -83,5 +83,6 @@ export default {
     'latest-version',
     '@sentry/node',
     '@sentry/profiling-node',
+    '@latitude-data/connector-factory',
   ],
 }

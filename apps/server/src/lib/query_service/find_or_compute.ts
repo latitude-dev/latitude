@@ -17,7 +17,7 @@ export default async function findOrCompute({
   force,
 }: Props) {
   const { sourcePath } = await findQueryFile(QUERIES_DIR, query)
-  const connector = loadConnector(sourcePath)
+  const connector = await loadConnector(sourcePath)
   const { compiledQuery, resolvedParams } = await connector.compileQuery({
     queryPath: computeRelativeQueryPath({ sourcePath, queryPath: query }),
     params: queryParams,

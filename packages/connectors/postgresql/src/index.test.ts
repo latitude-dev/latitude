@@ -1,5 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
-import { PostgresConnector } from './index'
+import PostgresConnector from './index'
 import { readFileSync } from 'fs'
 import pg from 'pg'
 

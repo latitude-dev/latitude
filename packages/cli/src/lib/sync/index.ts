@@ -1,4 +1,3 @@
-import syncDependencies from './syncDependencies'
 import syncDotenv from './syncDotenv'
 import syncQueries from './syncQueries'
 import syncStaticFiles from './syncStaticFiles'
@@ -12,6 +11,5 @@ export default function sync(
     syncStaticFiles({ watch }),
     syncDotenv({ watch }),
     syncQueries({ watch }),
-    syncDependencies({ watch }),
   ])
 }

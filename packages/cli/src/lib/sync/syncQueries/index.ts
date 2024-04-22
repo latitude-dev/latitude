@@ -12,77 +12,39 @@ import {
   unlinkSync,
 } from 'fs'
 import { onExit } from '$src/utils'
+import ensureConnectorInstalled from '$src/lib/sync/syncQueries/ensureConnectorInstalled'
+import isSourceFile from '$src/lib/isSourceFile'
 
-export default async function syncQueries({
-  watch = false,
-}: {
-  watch?: boolean
-}) {
-  const rootDir = config.rootDir
-  const queriesDir = path.join(rootDir, 'queries')
-  const destinationCsvsDir = path.join(rootDir, APP_FOLDER, 'queries')
-  const destinationQueriesDir = path.join(
-    rootDir,
-    APP_FOLDER,
-    'static',
-    '.latitude',
-    'queries',
-  )
-
-  clearFolders([destinationQueriesDir, destinationCsvsDir])
-
-  const syncFn = syncQueriesAndCsvs({
-    rootDir,
-    destinationCsvsDir,
-    destinationQueriesDir,
-  })
-
-  if (watch) {
-    await watcher(queriesDir, syncFn, { debug: config.verbose })
-  } else {
-    syncDirectory(queriesDir, syncFn)
-  }
-
-  onExit(() => {
-    if (!watch) return
-
-    clearFolders([destinationQueriesDir, destinationCsvsDir])
-  })
-}
-
-export function syncQueriesAndCsvs({
-  rootDir,
-  destinationCsvsDir,
+function buildDestPath({
+  srcPath,
   destinationQueriesDir,
+  destinationCsvsDir,
 }: {
-  rootDir: string
-  destinationCsvsDir: string
+  srcPath: string
   destinationQueriesDir: string
+  destinationCsvsDir: string
 }) {
-  return (
-    srcPath: string,
-    type: 'add' | 'change' | 'unlink',
-    ready: boolean,
-  ) => {
-    const relativePath = path
-      .relative(rootDir, srcPath)
-      .replace(/^queries\/?/, '')
+  const relativePath = path
+    .relative(config.rootDir, srcPath)
+    .replace(/^queries\/?/, '')
 
-    let destPath
+  let destPath
 
-    if (srcPath.endsWith('.csv')) {
-      destPath = path.join(destinationCsvsDir, relativePath)
-    } else if (
-      srcPath.endsWith('.sql') ||
-      srcPath.endsWith('.yml' || srcPath.endsWith('.yaml'))
-    ) {
-      destPath = path.join(destinationQueriesDir, relativePath)
-    } else {
-      return
+  if (srcPath.endsWith('.csv')) {
+    return {
+      destPath: path.join(destinationCsvsDir, relativePath),
+      relativePath,
     }
-
-    syncFiles({ srcPath, relativePath, destPath, type, ready })
   }
+
+  if (srcPath.endsWith('.sql') || isSourceFile(srcPath)) {
+    return {
+      destPath: path.join(destinationQueriesDir, relativePath),
+      relativePath,
+    }
+  }
+
+  return { destPath, relativePath }
 }
 
 export function syncDirectory(dirPath: string, syncFn: Function): void {
@@ -110,5 +72,67 @@ export function clearFolders(folders: string[]) {
         unlinkSync(filePath)
       }
     })
+  })
+}
+
+export function syncQueriesAndCsvs({
+  destinationCsvsDir,
+  destinationQueriesDir,
+}: {
+  destinationCsvsDir: string
+  destinationQueriesDir: string
+}) {
+  return async (
+    srcPath: string,
+    type: 'add' | 'change' | 'unlink',
+    ready: boolean,
+  ) => {
+    const { destPath, relativePath } = buildDestPath({
+      srcPath,
+      destinationQueriesDir,
+      destinationCsvsDir,
+    })
+
+    // Not a valid extension .sql, .csv, .yml or .yaml
+    if (!destPath) return
+
+    ensureConnectorInstalled({ srcPath, type })
+    syncFiles({ srcPath, relativePath, destPath, type, ready })
+  }
+}
+
+export default async function syncQueries({
+  watch = false,
+}: {
+  watch?: boolean
+}) {
+  const rootDir = config.rootDir
+  const queriesDir = path.join(rootDir, 'queries')
+  const destinationCsvsDir = path.join(rootDir, APP_FOLDER, 'queries')
+  const destinationQueriesDir = path.join(
+    rootDir,
+    APP_FOLDER,
+    'static',
+    '.latitude',
+    'queries',
+  )
+
+  clearFolders([destinationQueriesDir, destinationCsvsDir])
+
+  const syncFn = syncQueriesAndCsvs({
+    destinationCsvsDir,
+    destinationQueriesDir,
+  })
+
+  if (watch) {
+    await watcher(queriesDir, syncFn, { debug: config.verbose })
+  } else {
+    syncDirectory(queriesDir, syncFn)
+  }
+
+  onExit(() => {
+    if (!watch) return
+
+    clearFolders([destinationQueriesDir, destinationCsvsDir])
   })
 }

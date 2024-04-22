@@ -19,7 +19,7 @@ type ConnectionParams = {
   token?: string
 }
 
-export class BigQueryConnector extends BaseConnector {
+export default class BigQueryConnector extends BaseConnector {
   private params: ConnectionParams
 
   constructor(rootPath: string, connectionParams: ConnectionParams) {

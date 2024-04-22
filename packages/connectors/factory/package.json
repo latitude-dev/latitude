@@ -25,19 +25,21 @@
     "typescript": "^5.2.2",
     "vitest": "^1.2.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@latitude-data/athena-connector": "workspace:^",
-    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/base-connector": "workspace:^",
     "@latitude-data/bigquery-connector": "workspace:^",
     "@latitude-data/clickhouse-connector": "workspace:^",
     "@latitude-data/databricks-connector": "workspace:^",
     "@latitude-data/duckdb-connector": "workspace:^",
     "@latitude-data/mssql-connector": "workspace:^",
     "@latitude-data/mysql-connector": "workspace:^",
-    "@latitude-data/postgresql-connector": "workspace:*",
+    "@latitude-data/postgresql-connector": "workspace:^",
     "@latitude-data/snowflake-connector": "workspace:^",
     "@latitude-data/sqlite-connector": "workspace:^",
-    "@latitude-data/trino-connector": "workspace:*",
+    "@latitude-data/trino-connector": "workspace:^"
+  },
+  "dependencies": {
     "dotenv": "^16.4.5",
     "yaml": "^2.3.4"
   }
