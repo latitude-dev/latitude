@@ -58,10 +58,10 @@ async function deploy({ name, digest }: { name: string; digest: string }) {
     spinner.stop()
 
     console.log(`
-                ${chalk.green('Deployed successfully!')}
+${chalk.green('Deployed successfully!')}
 
-                Check your application at: ${chalk.bold(output)}
-                `)
+Check your application at: ${chalk.bold(output)}
+`)
 
     process.exit(0)
   })
