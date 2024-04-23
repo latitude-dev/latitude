@@ -14,6 +14,8 @@ Steps we can take to reproduce the issue you're seeing. Sample data is helpful.
 
 - Node version (`node -v`):
 - npm version (`npm -v`):
+- Latitude CLI version (`latitude --version`):
+- Latitude project version (check `latitude.json` at the root of your project):
 - OS:
 - Browser:
 - Database:
