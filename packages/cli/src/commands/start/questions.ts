@@ -39,7 +39,10 @@ async function askForTemplate(): Promise<TemplateUrl> {
       default: TemplateUrl.default,
       choices: [
         { value: TemplateUrl.default, name: 'Default (empty project)' },
-        { value: TemplateUrl.duckdb, name: 'DuckDB + CSV demo (working example)' },
+        {
+          value: TemplateUrl.duckdb,
+          name: 'DuckDB + CSV demo (working example)',
+        },
       ],
     })
   } catch (err) {
