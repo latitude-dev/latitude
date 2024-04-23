@@ -92,13 +92,16 @@
         "sources/athena",
         "sources/bigquery",
         "sources/clickhouse",
+        "sources/csv",
         "sources/databricks",
         "sources/duckdb",
+        "sources/mssql",
         "sources/mysql",
         "sources/postgresql",
         "sources/redshift",
         "sources/snowflake",
         "sources/sqlite",
+        "sources/supabase",
         "sources/trino"
       ]
     },

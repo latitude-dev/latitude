@@ -1,6 +1,6 @@
 ---
-title: 'DuckDB'
-description: 'How to configure your DuckDB database'
+title: 'CSV files'
+description: 'How to connect to CSV files'
 ---
 
 ## How to configure sources
@@ -14,7 +14,7 @@ The sources files must be inside the `queries/` folder.
 
 ## Configuration
 
-To configure the connection with your DuckDB database follow these steps:
+To use CSV files directly within a Latitude project, we use the DuckDB adapter. Make sure to configure the connection through DuckDB by following these steps:
 
 <Steps>
   <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
@@ -23,21 +23,22 @@ To configure the connection with your DuckDB database follow these steps:
   <Step title='Add the following code for your DuckDB connection'>
     ``` yaml
     type: duckdb
-    details:
-      url: string
     ```
   </Step>
-  <Step title='Replace the details section with your info and save'></Step>
   <Step title='Done, now you can test your connection'></Step>
 </Steps>
 
-## Attributes
+## Add your files
 
-- **URL** → (Optional) This refers to the location of the DuckDB database file. DuckDB is an embedded database, so instead of connecting over a network, you specify the path to the database file on your local system or a shared filesystem. This path tells your application exactly where to find the DuckDB database you want to work with. In its absence, duckDB starts a new database in memory that will not get persisted once the connection is closed.
+Simply add your CSV files anywhere in the `queries` directory. You can also create subdirectories to organize your files.
 
 ## Test connection
 
 To test the connection you can:
 
-1. Create a query `.sql` in the `queries` directory that points to a table of your new connection in the `FROM` clause. See the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to learn more.
+1. Create a query `.sql` in the `queries` directory that points to the CSV file in the `FROM` clause using the `read_csv_auto()` DuckDB function. Here's an example:
+```sql
+SELECT *
+FROM read_csv_auto('queries/file.csv')
+```
 2. Use the command line to run `latitude run query_file_name` where `query_file_name` is the name of your `.sql` file. This will display the results in your terminal. See the section [Running queries](../guides/development/latitude-cli#running-queries) to learn more about how to query your data.
