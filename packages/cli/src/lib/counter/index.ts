@@ -8,8 +8,6 @@ export default function counter() {
 
   const start = () => {
     const then = new Date()
-    const message = 'Deploying...'
-    console.log(message + ' ' + '00:00')
 
     interval = setInterval(() => {
       const now = new Date()
