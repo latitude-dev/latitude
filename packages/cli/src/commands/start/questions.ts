@@ -30,7 +30,7 @@ async function askForDestination({ name }: { name?: string }) {
 
 export enum TemplateUrl {
   default = 'default',
-  netflix = 'netflix',
+  duckdb = 'duckdb',
 }
 async function askForTemplate(): Promise<TemplateUrl> {
   try {
@@ -38,8 +38,11 @@ async function askForTemplate(): Promise<TemplateUrl> {
       message: 'Pick a template',
       default: TemplateUrl.default,
       choices: [
-        { value: TemplateUrl.default, name: 'Default (Empty project)' },
-        { value: TemplateUrl.netflix, name: 'Netflix (Some examples)' },
+        { value: TemplateUrl.default, name: 'Default (empty project)' },
+        {
+          value: TemplateUrl.duckdb,
+          name: 'DuckDB + CSV demo (working example)',
+        },
       ],
     })
   } catch (err) {

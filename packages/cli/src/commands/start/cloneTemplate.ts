@@ -6,7 +6,7 @@ import { TemplateUrl } from './questions'
 
 const TEMPLATE_URL: Record<TemplateUrl, string> = {
   [TemplateUrl.default]: `${LATITUDE_GITHUB_SLUG}/template`,
-  [TemplateUrl.netflix]: `${LATITUDE_GITHUB_SLUG}/sample-netflix`,
+  [TemplateUrl.duckdb]: `${LATITUDE_GITHUB_SLUG}/sample-duckdb`,
 }
 
 export default async function cloneTemplate({
