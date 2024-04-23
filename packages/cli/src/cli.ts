@@ -1,17 +1,23 @@
 #!/usr/bin/env node
 
 import buildCommand from './commands/build'
+import cancelCommand from './commands/cloud/cancel'
 import config from './config'
 import credentialsCommand from './commands/credentials'
+import deployCommand from './commands/cloud/deploy'
+import destroyCommand from './commands/cloud/destroy'
 import devCommand from './commands/dev'
+import initSentry from '$src/integrations/sentry'
+import loginCommand from './commands/cloud/login'
+import logoutCommand from './commands/cloud/logout'
 import runCommand from './commands/run'
 import sade from 'sade'
 import setupCommand from './commands/setup'
+import signupCommand from './commands/cloud/signup'
 import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import { onError } from './utils'
-import initSentry from '$src/integrations/sentry'
 
 initSentry()
 
@@ -85,8 +91,40 @@ CLI.command('credentials')
   )
   .action(credentialsCommand)
 
+CLI.command('signup')
+  .describe('Signup for a new account')
+  .option('--email', 'Email to use for the new account')
+  .option('--password', 'Password to use for the new account')
+  .action(signupCommand)
+
+CLI.command('login')
+  .describe('Login for an existing account')
+  .option('--email', 'Account email')
+  .option('--password', 'Account password')
+  .action(loginCommand)
+
+CLI.command('logout')
+  .describe('Logout an existing account')
+  .action(logoutCommand)
+
+CLI.command('deploy')
+  .describe('Deploy your Latitude app to the cloud')
+  .option('--force', 'Force the deployment even if the build has not changed')
+  .option('--nocache', 'Do not use cache when building the Docker image')
+  .action(deployCommand)
+
+CLI.command('destroy')
+  .describe('Destroy a deployed Latitude app')
+  .action(destroyCommand)
+
+CLI.command('cancel')
+  .describe('Cancels an ongoing deployment')
+  .action(cancelCommand)
+
 async function init() {
-  const argv = CLI.parse(process.argv, { lazy: true })
+  const argv = CLI.parse(process.argv, {
+    lazy: true,
+  })
 
   try {
     await config.init(process.argv)

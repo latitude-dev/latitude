@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { nodeProfilingIntegration } from '@sentry/profiling-node'
 import initSentry from './sentry'
 
 const mockedSentryInit = vi.hoisted(() => vi.fn())
@@ -23,9 +22,6 @@ describe('initSentry', () => {
     initSentry()
     expect(mockedSentryInit).toHaveBeenCalledWith({
       dsn: 'your-sentry-dsn-url',
-      integrations: [nodeProfilingIntegration()],
-      tracesSampleRate: 1.0,
-      profilesSampleRate: 1.0,
     })
   })
 
