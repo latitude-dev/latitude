@@ -1,6 +1,6 @@
 ---
-title: 'PostgreSQL'
-description: 'How to configure your PostgreSQL Database'
+title: 'Supabase'
+description: 'How to configure your Supabase database'
 ---
 
 ## How to configure sources
@@ -14,13 +14,13 @@ The sources files must be inside the `queries/` folder.
 
 ## Configuration
 
-To configure the connection with your PostgreSQL database follow these steps:
+To configure the connection with your Supabase database (Postgres) follow these steps:
 
 <Steps>
   <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
     ``` /queries/source.yml ```
   </Step>
-  <Step title='Add the following code for your PostgreSQL connection'>
+  <Step title='Add the following code for your Supabase connection'>
     ``` yaml
     type: postgres
     details:
