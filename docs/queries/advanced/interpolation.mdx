@@ -5,56 +5,115 @@ description: 'Insert values into SQL queries without parametization'
 
 ## Introduction
 
-Interpolation refers to inserting values directly into the SQL code but without parametrization.
+Interpolation refers to inserting values directly into the SQL code without parametrization.
 
-By default, all of Latitude's logic is parametrized to independently send the query and values to the database and to detect possible SQL injection. Interpolating a value breaks the parametrization.
+In order to prevent SQL injection attacks, Latitude [parameterizes](https://cheatsheetseries.owasp.org/cheatsheets/Query_Parameterization_Cheat_Sheet.html)
+all queries to your db, by default. Parameter interpolation bypasses this protection and users should use it at their own risk. Read more about it
+in the [SQL Syntax](/queries/basics/sql-syntax-basics#adding-values-to-the-query) section.
 
 <Warning>Direct interpolation can lead to SQL injection vulnerabilities, allowing users to perform critical actions such as deleting a table.</Warning>
+
+## Why use interpolation?
+
+There are some cases where you might want to interpolate a value directly into the SQL query.
+- **unparameterizable values**: Depending on the database engine, some values cannot be parameterized. For example, table names cannot be parameterized in PostgreSQL.
+
+  For example:
+  ```sql
+    SELECT
+      user_name as {param('column_name')}
+    FROM users
+  ```
+  Running this query in PostgreSQL will throw an error because the column name cannot be parameterized. To fix it, we must interpolate the column name directly into the query:
+  ```sql
+    SELECT
+      user_name as {interpolate(param('column_name'))}
+    FROM users
+  ```
+
+- **Dynamic query keywords**: Most database engines only let you parameterize values, not keywords. For example, you cannot parameterize the `DESC` or `ASC` keyword in some engines.
+  ```sql
+    SELECT *
+    FROM users
+    ORDER BY users.id {param('order')}
+  ```
+  In order to fix this, you can interpolate the keyword directly into the query:
+  ```sql
+    SELECT *
+    FROM users
+    ORDER BY users.id {interpolate(param('order'))}
+  ```
 
 ## Syntax
 
 `interpolate()` allows you to send any parenthesized logic directly to the database. Let's look at some examples:
 
-```
+```sql
 interpolate({your_logic_here})
 ```
 
-- **Variable without interpolation**
+Take into account that interpolating any value will just add it straight to the query. This means that interpolating a string will not add quotes around it, so you must add them manually if needed.
 
-    ``` sql variable.sql
-    {companyFiltered = 'Latitude'}
+```sql
+SELECT *
+FROM table
+WHERE company = \'{interpolate('company_name')}\'
+```
 
-    SELECT *
-    FROM table
-    WHERE company = {companyFiltered}
-    ```
-    Will send the query parametized:
-    ``` sql
-    SELECT *
-    FROM table
-    WHERE company = $1
-    ```
-    And the value of `$1` independently:
-    ``` js
-    $1 = 'Latitude'
-    ```
-    This allows databases to check the values and see if there is a security vulnerability.
+Here we are also adding quotes around the interpolation to make sure the query is correctly formatted. We are also escaping the quotes, because otherwise everything inside a string is just considered a regular string and not compiled by Latitude.
 
-- **Variable with interpolation**
+## Example
 
-    ``` sql variable.sql
-    {companyFiltered = 'Latitude'}
+### Without interpolation
 
-    SELECT *
-    FROM table
-    WHERE company = {interpolate({companyFiltered})}
-    ```
-    Will send the query as it is:
-    ``` sql
-    SELECT *
-    FROM table
-    WHERE company = 'Latitude'
-    ```
+**Original query:**
+  ```sql
+  {companyName = 'Latitude'}
+
+  SELECT *
+  FROM table
+  WHERE company = {companyName}
+  ```
+
+**Compiled query:**
+  
+  The compiled query will have references to the values instead of the actual parameters.
+
+  ```sql
+  SELECT *
+  FROM table
+  WHERE company = $1
+  ```
+
+  The values for each reference will be sent to your database separately.
+
+  `$1 = 'Latitude'`
+
+  This process is done differently depending on the database engine you are using, but all of them are secure and prevent SQL injection attacks.
+
+
+### With interpolation
+
+**Original query:**
+  ```sql
+  {companyName = 'Latitude'}
+
+  SELECT *
+  FROM table
+  WHERE company = \'{interpolate(companyName)}\'
+  ```
+
+**Compiled query:**
+
+  Here the compiled query will contain the actual value of the parameter we used.
+
+  ```sql
+  SELECT *
+  FROM table
+  WHERE company = 'Latitude'
+  ```
+  
+  Be careful with this approach, as the value is directly inserted into the query, which can lead to SQL injection vulnerabilities.
 
 ### Other uses
 
