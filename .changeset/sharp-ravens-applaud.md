@@ -2,4 +2,4 @@
 "@latitude-data/cli": patch
 ---
 
-New template name
+Changed name from netlix sample to duckdb sample 

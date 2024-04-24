@@ -22,8 +22,17 @@ This commit changes the way connectors are installed in Latitude projects.
 Before this release, all connectors were getting bundled by default in
 production builds, greatly increasing their size and impacting install times.
 From now on, connectors are opt-in. The CLI will automatically detect all
-sources configured in .yml files and install only the necessary dependencies.
+sources configured in .yml files and prompt the user to install the necessary
+dependencies. 
 
-This change also affects development watchers, which will install connectors as
-the developer adds them. However, it is the responsability of the developers
-to uninstall any unused connectors, if a particular source is removed.
+Users will also be responsible for removing unused connectors.
+
+## Migrating from pre-1.0 versions
+If you are migrating from a pre-1.0 version, you will need to manually install
+the connectors you need. Start your project development server:
+
+```bash
+latitude dev
+```
+
+The CLI will prompt you to install the necessary connectors.
