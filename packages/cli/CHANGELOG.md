@@ -1,5 +1,13 @@
 # @latitude-data/cli
 
+## 1.0.1
+
+### Patch Changes
+
+- f04793e: Fix: connectors were still being installed in latitude apps by default
+- Updated dependencies [f04793e]
+  - @latitude-data/connector-factory@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

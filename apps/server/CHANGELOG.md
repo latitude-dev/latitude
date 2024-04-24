@@ -1,5 +1,12 @@
 # @latitude-data/server
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [f04793e]
+  - @latitude-data/connector-factory@1.0.1
+
 ## 1.0.0
 
 ### Major Changes
