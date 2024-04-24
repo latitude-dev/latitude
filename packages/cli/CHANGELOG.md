@@ -1,5 +1,39 @@
 # @latitude-data/cli
 
+## 1.0.0
+
+### Major Changes
+
+- e97b521: BREAKING CHANGE
+
+  This commit changes the way connectors are installed in Latitude projects.
+
+  Before this release, all connectors were getting bundled by default in
+  production builds, greatly increasing their size and impacting install times.
+  From now on, connectors are opt-in. The CLI will automatically detect all
+  sources configured in .yml files and install only the necessary dependencies.
+
+  This change also affects development watchers, which will install connectors as
+  the developer adds them. However, it is the responsability of the developers
+  to uninstall any unused connectors, if a particular source is removed.
+
+### Minor Changes
+
+- e85196b: Implements the first commands to interact with the Latitude PaaS. Specifically:
+
+  - latitude signup: To signup to latitude from the CLI
+  - latitude login: To login to your existing account
+  - latitude logout: To logout from your existing account
+  - latitude deploy: To deploy your application to the Latitude PaaS
+  - latitude destroy: To destroy your application from the Latitude PaaS
+  - latitude cancel: To cancel an ongoing deployment to the Latitude PaaS
+
+### Patch Changes
+
+- 17b7dc1: New template name
+- Updated dependencies [e97b521]
+  - @latitude-data/connector-factory@1.0.0
+
 ## 0.8.2
 
 ### Patch Changes

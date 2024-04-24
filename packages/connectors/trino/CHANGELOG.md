@@ -1,5 +1,22 @@
 # @latitude-data/trino-connector
 
+## 2.0.0
+
+### Major Changes
+
+- e97b521: BREAKING CHANGE
+
+  This commit changes the way connectors are installed in Latitude projects.
+
+  Before this release, all connectors were getting bundled by default in
+  production builds, greatly increasing their size and impacting install times.
+  From now on, connectors are opt-in. The CLI will automatically detect all
+  sources configured in .yml files and install only the necessary dependencies.
+
+  This change also affects development watchers, which will install connectors as
+  the developer adds them. However, it is the responsability of the developers
+  to uninstall any unused connectors, if a particular source is removed.
+
 ## 1.0.3
 
 ### Patch Changes
