@@ -954,42 +954,6 @@ importers:
 
   packages/connectors/factory:
     dependencies:
-      '@latitude-data/athena-connector':
-        specifier: workspace:^
-        version: link:../athena
-      '@latitude-data/base-connector':
-        specifier: workspace:^
-        version: link:../base
-      '@latitude-data/bigquery-connector':
-        specifier: workspace:^
-        version: link:../bigquery
-      '@latitude-data/clickhouse-connector':
-        specifier: workspace:^
-        version: link:../clickhouse
-      '@latitude-data/databricks-connector':
-        specifier: workspace:^
-        version: link:../databricks
-      '@latitude-data/duckdb-connector':
-        specifier: workspace:^
-        version: link:../duckdb
-      '@latitude-data/mssql-connector':
-        specifier: workspace:^
-        version: link:../mssql
-      '@latitude-data/mysql-connector':
-        specifier: workspace:^
-        version: link:../mysql
-      '@latitude-data/postgresql-connector':
-        specifier: workspace:^
-        version: link:../postgresql
-      '@latitude-data/snowflake-connector':
-        specifier: workspace:^
-        version: link:../snowflake
-      '@latitude-data/sqlite-connector':
-        specifier: workspace:^
-        version: link:../sqlite
-      '@latitude-data/trino-connector':
-        specifier: workspace:^
-        version: link:../trino
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
