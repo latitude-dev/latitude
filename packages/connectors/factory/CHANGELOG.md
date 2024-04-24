@@ -1,5 +1,11 @@
 # @latitude-data/connector-factory
 
+## 1.0.1
+
+### Patch Changes
+
+- f04793e: Fix: connectors were still being installed in latitude apps by default
+
 ## 1.0.0
 
 ### Major Changes
