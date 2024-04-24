@@ -10,17 +10,11 @@ import {
 import config from '$src/config'
 import isSourceFile from '$src/lib/isSourceFile'
 
-function checkInstalled({
-  npmPackage,
-  npmVersion,
-}: {
-  npmPackage: string
-  npmVersion: string
-}) {
+function checkInstalled({ npmPackage }: { npmPackage: string }) {
   const installMessage = colors.yellow(`
 Connector ${npmPackage} not installed. To install it run:
 
-${colors.cyan(`npm install --save ${npmPackage}@${npmVersion}`)}
+${colors.cyan(`npm install --save ${npmPackage}`)}
 `)
   try {
     const packageJson = `${config.rootDir}/package.json`
@@ -71,28 +65,6 @@ function getPackageName({ srcPath }: { srcPath: string }) {
   }
 }
 
-function getConnectorVersionInLatitudeApp({
-  npmPackage,
-}: {
-  npmPackage: string
-}) {
-  const factoryPackagePath = `${config.appDir}/node_modules/@latitude-data/connector-factory`
-  try {
-    const factoryPackageJson = JSON.parse(
-      fs.readFileSync(`${factoryPackagePath}/package.json`, 'utf8'),
-    )
-
-    // NOTE: In production we pick the exec version from the factory package declared
-    // as peer dependency in the app package.json
-    // In development we just pick the latest version
-    const peer = factoryPackageJson.peerDependencies ?? {}
-    const version = peer[npmPackage] ?? 'latest' // Legacy factory packages didn't have peer dependencies
-    return config.dev ? 'latest' : version
-  } catch (e) {
-    return 'latest'
-  }
-}
-
 export default function ensureConnectorInstalled({
   srcPath,
   type,
@@ -106,9 +78,5 @@ export default function ensureConnectorInstalled({
   const npmPackage = getPackageName({ srcPath })
   if (!npmPackage) return
 
-  const connectorVersionInApp = getConnectorVersionInLatitudeApp({
-    npmPackage,
-  })
-
-  return checkInstalled({ npmPackage, npmVersion: connectorVersionInApp })
+  return checkInstalled({ npmPackage })
 }
