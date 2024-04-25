@@ -1,10 +1,12 @@
-import askPassword from '$src/lib/askPassword'
+import askEmail from '$src/commands/cloud/lib/askEmail'
+import askPassword from '$src/commands/cloud/lib/askPassword'
 import boxedMessage from '$src/lib/boxedMessage'
 import configStore from '$src/lib/configStore'
 import { request } from '$src/lib/server'
 import chalk from 'chalk'
 
-export default async function signupCommand({ email }: { email: string }) {
+export default async function signupCommand() {
+  const email = await askEmail()
   const options = {
     path: '/auth/signup',
     method: 'POST',

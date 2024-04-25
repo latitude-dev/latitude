@@ -1,9 +1,11 @@
-import askPassword from '$src/lib/askPassword'
+import askEmail from '$src/commands/cloud/lib/askEmail'
+import askPassword from '$src/commands/cloud/lib/askPassword'
 import configStore from '$src/lib/configStore'
 import { request } from '$src/lib/server'
 import chalk from 'chalk'
 
-export default async function loginCommand({ email }: { email: string }) {
+export default async function loginCommand() {
+  const email = await askEmail()
   const options = {
     path: '/auth/login',
     method: 'POST',
