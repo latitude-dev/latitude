@@ -77,6 +77,10 @@ Latitude requires `Node.js >18.x` to run, so after installing WSL, you will need
   </Step>
 </Steps>
 
+### Install the VS Code WSL extension
+
+If you are using VS Code as your editor, we highly recommend installing the [Remote - WSL extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) to work with your WSL environment directly from VS Code.
+
 ### (Optional) Install build tools
 
 Some Node.js packages may require build tools to be installed on your Ubuntu distribution. To install them, you can run the following command:
@@ -89,14 +93,9 @@ sudo apt install build-essential
 
 Now that you have WSL and Node.js installed, you can follow the [installation guide](./installation) to install Latitude on your Ubuntu distribution.
 
-### Running Latitude apps
 
-After installing Latitude on WSL, you can create and run Latitude apps on your Windows machine through the WSL terminal.
+### Start your first project
 
-WSL terminal uses its own file system by default, so you need to navigate to your windows desired directory before running the Latitude commands. In order to do so, you can use the following command:
+With Latitude installed, you can now create your first project by following the [getting started](./introduction) guide.
 
-```bash
-cd /mnt/c/Users/<your-username>
-```
-
-This will take you to your Windows user directory, same as `C:\Users\<your-username>`, where you can now navigate freely on your Windows file system and create or run Latitude apps!
+Keep in mind that you will need to run the Latitude CLI commands from the Ubuntu terminal, not the Windows terminal. If you want to work with your project files in Windows, you can mount your projects directory to WSL by following the [official Microsoft documentation](https://devblogs.microsoft.com/commandline/access-linux-filesystems-in-windows-and-wsl-2/).
