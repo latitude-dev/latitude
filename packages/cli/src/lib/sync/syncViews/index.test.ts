@@ -34,7 +34,7 @@ describe('snycFnFactory', () => {
     })
 
     afterAll(() => {
-      fs.rmdirSync(rootDir, { recursive: true })
+      fs.rmSync(rootDir, { recursive: true })
     })
 
     it('handle add file', () => {

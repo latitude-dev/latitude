@@ -1,6 +1,5 @@
 import config from '$src/config'
 import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
-import getLatestVersion from '$src/lib/latitudeConfig/getLatestVersion'
 import getLatitudeVersions, {
   getInstalledVersion,
 } from '$src/lib/getAppVersions'
@@ -37,7 +36,7 @@ async function getVersions({ fix }: { fix: boolean }) {
   if (fix) {
     return {
       oldVersion: getInstalledVersion(config.appDir),
-      newVersion: await getLatestVersion(),
+      newVersion: latitudeJson.data.version,
     }
   }
 
@@ -64,8 +63,9 @@ async function getVersions({ fix }: { fix: boolean }) {
 
 // If --fix flag is passed, use the version defined in latitude.json This means
 // user had installed a different version and wants to fix it
-async function updateCommand(args: { fix?: boolean }) {
+async function updateCommand(args: { fix?: boolean; force?: boolean }) {
   const fix = args.fix ?? false
+  const force = args.force ?? false
   const { oldVersion, newVersion } = await getVersions({ fix })
 
   if (!newVersion) process.exit(1)
@@ -75,7 +75,7 @@ async function updateCommand(args: { fix?: boolean }) {
     properties: { fixingVersion: fix, oldVersion, newVersion },
   })
 
-  return updateApp({ version: newVersion })
+  return updateApp({ version: newVersion, force })
 }
 
 export default setRootDir(updateCommand)

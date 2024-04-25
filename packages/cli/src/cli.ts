@@ -35,15 +35,19 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 CLI.command('start')
-  .describe('Setup you data project with an example data source')
+  .describe('Start a Latitude app from a template')
   .option('--name', 'Name of the project')
   .option('--template', 'Template to use for the Latitude app')
   .option('--port', 'Port to run the Latitude app on')
   .action(startCommand)
 
 CLI.command('update')
-  .describe('Update latitude app.You can define the version with --version')
-  .option('--fix', 'Installed the version in your latitude.json file')
+  .describe('Update latitude app. You can define the version with --version')
+  .option('--fix', 'Installs the version defined in latitude.json')
+  .option(
+    '--force',
+    'Updates latitude and overrides Dockerfile and .dockerignore files',
+  )
   .action(updateCommand)
 
 CLI.command('telemetry')

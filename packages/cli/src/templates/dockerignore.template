@@ -1,0 +1,6 @@
+.git*
+.latitude
+README.md
+build
+fly.toml
+node_modules
