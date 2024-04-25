@@ -1,4 +1,7 @@
+import chalk from 'chalk'
 import config from '$src/config'
+import dockerfileTemplate from '../../templates/Dockerfile.template'
+import dockerignoreTemplate from '../../templates/dockerignore.template'
 import findOrCreateConfigFile from '../latitudeConfig/findOrCreate'
 import installDependencies from './installDependencies'
 import installLatitudeServer from '../installLatitudeServer'
@@ -9,19 +12,17 @@ import { onError } from '$src/utils'
 
 export type Props = { version?: string }
 
-// Adds a package.json file to the app directory in development environment so
-// that you can run the cli in development mode with `npm run latitude-dev`
 function addPackageJson() {
-  if (config.pro) return
-
   const packageJsonPath = path.resolve(config.rootDir, 'package.json')
   if (existsSync(packageJsonPath)) return
 
-  const packageJson = {
-    scripts: {
-      'latitude-dev': '../../node_modules/.bin/latitude',
-    },
-  }
+  const packageJson = config.dev
+    ? {
+        scripts: {
+          'latitude-dev': '../../node_modules/.bin/latitude',
+        },
+      }
+    : {}
 
   try {
     writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
@@ -35,10 +36,70 @@ function addPackageJson() {
   }
 }
 
+function addDockerignore(
+  { force = false }: { force: boolean } = { force: false },
+) {
+  const dockerignorePath = path.resolve(config.rootDir, '.dockerignore')
+  if (!force && existsSync(dockerignorePath)) {
+    console.log(
+      chalk.yellow(
+        '.dockerignore file already exists. If you want to overwrite it, use the --force flag.',
+      ),
+    )
+
+    return
+  }
+
+  try {
+    writeFileSync(dockerignorePath, dockerignoreTemplate)
+  } catch (e) {
+    onError({
+      error: e as Error,
+      message: '🚨 Failed to create .dockerignore file',
+    })
+
+    process.exit(1)
+  }
+}
+
+function addDockerfile(
+  { force = false }: { force: boolean } = { force: false },
+) {
+  const dockerfilePath = path.resolve(config.rootDir, 'Dockerfile')
+  if (!force && existsSync(dockerfilePath)) {
+    console.log(
+      chalk.yellow(
+        'Dockerfile file already exists. If you want to overwrite it, use the --force flag.',
+      ),
+    )
+
+    return
+  }
+
+  try {
+    writeFileSync(dockerfilePath, dockerfileTemplate)
+  } catch (e) {
+    onError({
+      error: e as Error,
+      message: '🚨 Failed to create Dockerfile',
+    })
+
+    process.exit(1)
+  }
+}
+
+export function addDockerfiles(
+  { force = false }: { force: boolean } = { force: false },
+) {
+  addDockerignore({ force })
+  addDockerfile({ force })
+}
+
 export default async function setupApp() {
   const config = await findOrCreateConfigFile()
   await installLatitudeServer({ version: config.data.version })
   await installDependencies()
   addPackageJson()
+  addDockerfiles()
   createMasterKey()
 }

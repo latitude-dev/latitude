@@ -1,7 +1,13 @@
 // vitest.config.ts
-import { defineConfig } from 'vitest/config'
 import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vitest/config'
+import { string } from 'rollup-plugin-string'
 
 export default defineConfig({
-  plugins: [tsconfigPaths()],
+  plugins: [
+    tsconfigPaths(),
+    string({
+      include: '**/*.template',
+    }),
+  ],
 })

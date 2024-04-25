@@ -9,6 +9,7 @@ import { config as dotenvConfig } from 'dotenv'
 import { copy } from '@web/rollup-plugin-copy'
 import { dirname, resolve as resolvePath } from 'path'
 import { fileURLToPath } from 'url'
+import { string } from 'rollup-plugin-string'
 
 const DIRNAME = dirname(fileURLToPath(import.meta.url))
 function getPackageVersion() {
@@ -42,6 +43,9 @@ export default {
     copy({ patterns: 'latitude-banner.txt' }),
     typescript(),
     commonjs(),
+    string({
+      include: '**/*.template',
+    }),
     // The preferBuiltins option is required to resolve the built-in modules in
     // Node.js over any installed packages in node_modules directory
     resolve({
@@ -92,6 +96,6 @@ export default {
     'configstore',
     'latest-version',
     '@sentry/node',
-    '@latitude-data/connector-factory'
+    '@latitude-data/connector-factory',
   ],
 }
