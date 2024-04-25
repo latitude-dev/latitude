@@ -1,0 +1,40 @@
+--
+title: 'SSH Tunneling'
+description: 'How to connect to databases using SSH tunneling'
+--
+
+## Introduction
+
+SSH tunneling is a method used to connect to databases that are behind a firewall. This method allows you to connect to a database server through an SSH server. This is useful when you need to access a database that is not directly accessible from your local machine. 
+
+## Setup SSH tunneling
+
+Let's imagine the following scenario:
+
+- You have a managed PostgreSQL database running on a private network that is not directly accessible from the internet.
+- You have a server that is accessible from the internet and has SSH access to the managed database. The public DNS of this server is `server.acme.com`. And the server can connect to the managed database using the private DNS `database.acme.com`.
+- You want to connect to the managed database from your local machine.
+
+In this scenario, you can use SSH tunneling to connect to the managed database through the server that has SSH access to the managed database. To do so, run the following command from a terminal:
+
+```bash
+ssh -L 5432:database.acme.com:5432 {SERVER_USERNAME}@server.acme.com
+```
+
+In this command:
+
+- ssh: Is the command to initiate SSH
+- -L 5432:database.acme.com:5432: Sets up the port forwarding. It forwards your local port 5432 to port 5432 on the RDS instance. Replace `database.acme.com` with the actual endpoint of your RDS database.
+- {SERVER_USERNAME}@server.acme.com: Replace `server.acme.com` with the public IP address or DNS of your server. `SERVER_USERNAME` is the username you use to connect to the server. This command will prompt you to enter the password for the username. If you are using other SSH authentication methods, such as pem files, you can specify the path to the pem file using the `-i` flag.
+
+After running this command, you can connect to the managed database from your local machine as if it were running on `localhost:5432`. For example, when configuring your Latitude source file, you would use the following settings:
+
+```yaml
+type: postgres
+details:
+  host: localhost
+  port: 5432
+  user: myuser
+  password: mypassword
+  database: mydatabase
+```
