@@ -1,5 +1,18 @@
 # @latitude-data/cli
 
+## 1.1.0
+
+### Minor Changes
+
+- bfdcfeb: Instead of passing email as argument to the cli when doing signup or login ask users when they run these commands
+- 43179d6: Now query behaviour can be configured either in the source config file or the query themselves by adding a custom keyword. The first available option is `ttl`, that defines the cached lifetime of the query results in the server, before having to be refetched again.
+- ffaa618: CLI now handles all docker-related configuration for the user, so we no longer rely on the templates being up to date in this regard.
+
+### Patch Changes
+
+- Updated dependencies [43179d6]
+  - @latitude-data/source-manager@0.1.0
+
 ## 1.0.1
 
 ### Patch Changes
