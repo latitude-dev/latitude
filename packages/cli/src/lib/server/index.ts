@@ -1,7 +1,7 @@
 import config from '$src/config'
-import configStore from '../configStore'
 import { IncomingMessage } from 'http'
 import { http, https } from 'follow-redirects'
+import getAuthToken from '../getAuthToken'
 
 type Options = {
   path: string
@@ -30,22 +30,24 @@ class ApiError extends Error {
   }
 }
 
-const options = ({ method = 'GET', path, headers }: Options) => ({
-  hostname: process.env.LATITUDE_SERVER_HOST || 'localhost',
-  port: process.env.LATITUDE_SERVER_PORT
-    ? parseInt(process.env.LATITUDE_SERVER_PORT)
-    : 3000,
-  path,
-  method,
-  maxRedirects: 20,
-  headers: {
-    'Content-Type': 'application/json',
-    ...(configStore.get('jwt')
-      ? { Authorization: `Bearer ${configStore.get('jwt')}` }
-      : {}),
-    ...headers,
-  },
-})
+const options = ({ method = 'GET', path, headers }: Options) => {
+  const token = getAuthToken()
+
+  return {
+    hostname: process.env.LATITUDE_SERVER_HOST || 'localhost',
+    port: process.env.LATITUDE_SERVER_PORT
+      ? parseInt(process.env.LATITUDE_SERVER_PORT)
+      : 3000,
+    path,
+    method,
+    maxRedirects: 20,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+    },
+  }
+}
 
 export const request = (opts: Options) => {
   return new Promise<{ response: IncomingMessage; body: string }>(
