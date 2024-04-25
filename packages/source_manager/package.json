@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/source-manager",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "LGPL",
   "description": "Manage Latitude sources",
   "type": "module",
