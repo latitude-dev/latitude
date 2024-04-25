@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.2.0
+
+### Minor Changes
+
+- ed76f6d: Read latitude cloud auth token from env var first
+
 ## 1.1.0
 
 ### Minor Changes
