@@ -23,9 +23,9 @@ ssh -L 5432:database.acme.com:5432 {SERVER_USERNAME}@server.acme.com
 
 In this command:
 
-- ssh: Is the command to initiate SSH
-- -L 5432:database.acme.com:5432: Sets up the port forwarding. It forwards your local port 5432 to port 5432 on the RDS instance. Replace `database.acme.com` with the actual endpoint of your RDS database.
-- {SERVER_USERNAME}@server.acme.com: Replace `server.acme.com` with the public IP address or DNS of your server. `SERVER_USERNAME` is the username you use to connect to the server. This command will prompt you to enter the password for the username. If you are using other SSH authentication methods, such as pem files, you can specify the path to the pem file using the `-i` flag.
+- `ssh`: Is the command to initiate SSH
+- `-L 5432:database.acme.com:5432`: Sets up the port forwarding. It forwards your local port 5432 to port 5432 on the RDS instance. Replace `database.acme.com` with the actual endpoint of your RDS database.
+- `{SERVER_USERNAME}@server.acme.com`: Replace `server.acme.com` with the public IP address or DNS of your server. `SERVER_USERNAME` is the username you use to connect to the server. This command will prompt you to enter the password for the username. If you are using other SSH authentication methods, such as pem files, you can specify the path to the pem file using the `-i` flag.
 
 After running this command, you can connect to the managed database from your local machine as if it were running on `localhost:5432`. For example, when configuring your Latitude source file, you would use the following settings:
 
