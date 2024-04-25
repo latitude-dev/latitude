@@ -2,10 +2,11 @@ import chalk from 'chalk'
 import config from '$src/config'
 import findConfigFile from '../latitudeConfig/findConfigFile'
 import fsExtra from 'fs-extra'
-import installDependencies from '../setupApp/installDependencies'
 import installLatitudeServer from '../installLatitudeServer'
 import { onError } from '$src/utils'
-import { addDockerfiles } from '../setupApp'
+import installDependencies from '../installDependencies/fromUpdate'
+import { addDockerfiles } from '../addDockerfiles/fromUpdate'
+import addPackageJson from '../addPackageJson'
 
 async function updateConfigFile({ version }: { version: string }) {
   const latitudeJson = findConfigFile()
@@ -25,9 +26,16 @@ async function updateConfigFile({ version }: { version: string }) {
   }
 }
 
-export default async function updateApp({ version }: { version: string }) {
+export default async function updateApp({
+  version,
+  force = false,
+}: {
+  version: string
+  force: boolean
+}) {
   await updateConfigFile({ version })
   await installLatitudeServer({ version })
   await installDependencies()
-  addDockerfiles({ force: true })
+  addPackageJson()
+  addDockerfiles({ force })
 }
