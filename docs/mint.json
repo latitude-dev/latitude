@@ -72,7 +72,11 @@
     },
     {
       "group": "Build and deploy",
-      "pages": ["guides/deploy/docker", "guides/deploy/nodejs"]
+      "pages": [
+        "guides/deploy/latitude_cloud",
+        "guides/deploy/docker",
+        "guides/deploy/nodejs"
+      ]
     },
     {
       "group": "Embed",
