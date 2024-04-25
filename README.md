@@ -60,6 +60,8 @@ It's fast to get started, easy to maintain, and scales with your data.
 
 - 🖥️ Support for embedding dashboards via iframe
 
+- 🌎 Deploy with a single command `latitude deploy`
+
 - 🔒 SSL-ready, encrypted parameters in url and parameterized queries to protect against SQL injection attacks
 
 - 👥 Open-source driven by the community
@@ -79,6 +81,7 @@ You can find sample projects using Latitude in action in the [examples](https://
 - [Layout engine and iframe embedding](https://github.com/latitude-dev/latitude#-layout-engine-and-iframe-embedding)
   - [Use our layout engine](https://github.com/latitude-dev/latitude#-optional-use-our-layout-engine)
   - [Embedding a standalone dashboard](https://github.com/latitude-dev/latitude#-embedding-a-standalone-dashboard)
+- [Deploy](https://github.com/latitude-dev/latitude#-deploy)
 - [Community](https://github.com/latitude-dev/latitude#-community)
 - [Contributing](https://github.com/latitude-dev/latitude#-contributing)
 - [Links](https://github.com/latitude-dev/latitude#-links)
@@ -302,6 +305,18 @@ You can embed the dashboard in your application using an iframe. To do so, simpl
 ```
 
 If you're using React, we released a React component that simplifies the process of embedding dashboards in your application. [Check out the documentation](https://docs.latitude.so/guides/embed/react-embed) to learn more.
+
+## 🌍 Deploy
+
+To deploy your Latitude project, run the following command:
+
+```bash
+latitude deploy
+```
+
+This will deploy your project to the Latitude cloud, and you will get a URL where your project is hosted.
+
+You can also deploy your project to your own infrastructure. Find out more about this in the [documentation](https://docs.latitude.so/guides/deploy/docker).
 
 ## 👥 Community
 
