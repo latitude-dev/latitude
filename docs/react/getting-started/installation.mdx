@@ -1,0 +1,62 @@
+---
+title: 'Installation'
+description: 'How to install the react package in your project'
+---
+
+<Steps>
+  <Step title='Install Latitude for React'>
+    Install the `@latitude-data/react` package in your project:
+
+    ```bash
+    npm install @latitude-data/react
+    ```
+  </Step>
+  <Step title='Import the styles'>
+      Import the styles used by Latitude components in your project's root file:
+  
+      ```jsx index.tsx
+      import '@latitude-data/react/dist/index.css';
+      ```
+  </Step>
+  <Step title='Wrap your app with the LatitudeProvider'>
+    Wrap your main component with the `LatitudeProvider` to enable the use of Latitude components.
+    In the `LatitudeProvider`, you must set the `apiConfig` to configure the API connection with the Latitude server.
+
+    ```jsx index.tsx
+    import { LatitudeProvider } from '@latitude-data/react';
+
+    function App() {
+      return (
+        <LatitudeProvider
+          apiConfig={{
+            host: <YOUR_API_HOST>
+          }}
+        >
+          {/* Your app content */}
+        </LatitudeProvider>
+      );
+    }
+    ```
+  </Step>
+</Steps>
+
+## Using Latitude without components
+If you are planning to use the package only for the API features without the built-in components, you can skip the import of the `styles.css`, and add a `theme={false}` prop to the `LatitudeProvider`.
+This way they won't be included in your bundle.
+
+```jsx index.tsx
+import { LatitudeProvider } from '@latitude-data/react';
+
+function App() {
+  return (
+    <LatitudeProvider
+      apiConfig={{
+        host: <YOUR_API_HOST>
+      }}
+      theme={false}
+    >
+      {/* Your app content */}
+    </LatitudeProvider>
+  );
+}
+```

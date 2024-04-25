@@ -10,6 +10,8 @@ export default {
   content: ({ className }: { className?: string } = {}) => {
     return cn('lat-px-2 lat-py-2 lat-w-auto lat-rounded-lg', className)
   },
+  CONTENT_BOX_SHADOW:
+    '0px 16px 80px 0px #07132414, 0px 8px 24px 0px #0713241F, 0px 0px 4px 0px #07132414',
   option: ({ className }: { className?: string } = {}) => {
     return cn('lat-rounded-lg lat-bg-gray-100 lat-px-2 lat-py-1', className)
   },

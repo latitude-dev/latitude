@@ -7,18 +7,18 @@ import {
 import { LatitudeApi } from '@latitude-data/client'
 
 type ILatitude = { api: LatitudeApi }
-const LatitudeContext = createContext<ILatitude>({ api: new LatitudeApi() })
+const ApiContext = createContext<ILatitude>({ api: new LatitudeApi() })
 
 import { LatitudeApiConfig } from '@latitude-data/client'
 import { Field, ResultRow } from '@latitude-data/query_result'
 
-export const EMPTY_PAYLOAD = {
+const EMPTY_PAYLOAD = {
   fields: [] as Field[],
   rows: [] as ResultRow[],
   rowCount: 0,
 }
 export const useLatitude = () => {
-  const latitude = useContext(LatitudeContext)
+  const latitude = useContext(ApiContext)
 
   if (!latitude) {
     throw new Error(
@@ -29,13 +29,13 @@ export const useLatitude = () => {
   return latitude
 }
 
-export type QueryClientProviderProps = {
+type QueryClientProviderProps = {
   apiConfig: LatitudeApiConfig
-  children: ReactNode
   defaultTanstackQueryOptions?: QueryClientConfig['defaultOptions']
+  children: ReactNode
 }
 
-export function LatitudeProvider({
+function LatitudeApiProvider({
   apiConfig,
   defaultTanstackQueryOptions,
   children,
@@ -60,9 +60,16 @@ export function LatitudeProvider({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LatitudeContext.Provider value={{ api: new LatitudeApi(apiConfig) }}>
+      <ApiContext.Provider value={{ api: new LatitudeApi(apiConfig) }}>
         {children}
-      </LatitudeContext.Provider>
+      </ApiContext.Provider>
     </QueryClientProvider>
   )
+}
+
+export {
+  EMPTY_PAYLOAD,
+  ApiContext,
+  LatitudeApiProvider,
+  type QueryClientProviderProps,
 }

@@ -35,7 +35,7 @@
   <div class="lat-h-full lat-w-full lat-flex lat-items-center lat-justify-center">
     <ScrollArea {...args}>
       <div class="lat-h-[500px] lat-w-[500px]" style="background: linear-gradient(to bottom right, blue, red);">
-        <div class="p-2 lat-text-white">Scroll me</div>
+        <div class="lat-p-2 lat-text-white">Scroll me</div>
       </div>
     </ScrollArea>
   </div>

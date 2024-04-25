@@ -24,7 +24,7 @@
   <Popover.Content
     align="end"
     class={theme.ui.downloadTooltip.content()}
-    style="box-shadow: 0px 16px 80px 0px #07132414, 0px 8px 24px 0px #0713241F, 0px 0px 4px 0px #07132414;"
+    style={`box-shadow: ${theme.ui.downloadTooltip.CONTENT_BOX_SHADOW}`}
   >
     <button class={theme.ui.downloadTooltip.option()} on:click={download}>
       <Text size="h5" weight="medium" color="gray800">Download as CSV</Text>
