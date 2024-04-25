@@ -18,7 +18,7 @@ function initPackageJson({
       dependencies: {
         ...(hasDependency
           ? {
-              '@latitude-data/postgresql-connector': '^1.0.0',
+              '@latitude-data/test-connector': '^1.0.0',
             }
           : {}),
       },
@@ -26,15 +26,19 @@ function initPackageJson({
   )
 }
 
-vi.mock('../shared/syncFiles', () => ({
-  default: vi.fn(),
-}))
+vi.mock('../shared/syncFiles', async () => {
+  const actualSyncFiles = await vi.importActual('../shared/syncFiles')
+  const def = actualSyncFiles.default as typeof syncFiles
+  return {
+    default: vi.fn(def),
+  }
+})
 
 vi.mock('$/config', () => ({
   default: { rootDir: vi.fn() },
 }))
 
-let sourceType = 'postgres'
+let sourceType = 'test'
 let sourceContent = `
   type: ${sourceType}
   details:
@@ -49,7 +53,7 @@ let tmpDir: string = ''
 let destinationQueriesDir: string = ''
 let sync: Function
 describe('syncSources', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     tmpDir = `/tmp/data-app-folder-${Math.random().toString(36).substring(7)}`
     vi.mocked(config).rootDir = tmpDir
     fs.mkdirSync(tmpDir)
@@ -63,7 +67,7 @@ describe('syncSources', () => {
       `${factoryPackagePath}/package.json`,
       JSON.stringify({
         peerDependencies: {
-          '@latitude-data/postgresql-connector': '^2.0.0',
+          '@latitude-data/test-connector': '^2.0.0',
         },
       }),
     )
@@ -72,7 +76,7 @@ describe('syncSources', () => {
     fs.writeFileSync(`${tmpDir}/queries/source.yml`, sourceContent)
     fs.writeFileSync(`${tmpDir}/queries/source.yaml`, sourceContent)
 
-    destinationQueriesDir = `${tmpDir}/${APP_FOLDER}/static/queries`
+    destinationQueriesDir = `${tmpDir}/${APP_FOLDER}/static/.latitude/queries`
     sync = syncQueriesAndCsvs({
       destinationCsvsDir: `${tmpDir}/dest/csvs`,
       destinationQueriesDir,
@@ -86,14 +90,13 @@ describe('syncSources', () => {
   describe('when connector is already installed', () => {
     beforeEach(() => {
       initPackageJson({ folder: tmpDir, hasDependency: true })
-      fs.mkdirSync(
-        `${tmpDir}/node_modules/@latitude-data/postgresql-connector`,
-        { recursive: true },
-      )
+      fs.mkdirSync(`${tmpDir}/node_modules/@latitude-data/test-connector`, {
+        recursive: true,
+      })
     })
 
     afterEach(() => {
-      fs.rmSync(`${tmpDir}/node_modules/@latitude-data/postgresql-connector`, {
+      fs.rmSync(`${tmpDir}/node_modules/@latitude-data/test-connector`, {
         recursive: true,
       })
     })

@@ -1,8 +1,8 @@
 {
-  "name": "@latitude-data/connector-factory",
-  "version": "1.0.1",
+  "name": "@latitude-data/source-manager",
+  "version": "0.0.0",
   "license": "LGPL",
-  "description": "Factory to create connectors",
+  "description": "Manage Latitude sources",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,11 +16,16 @@
     "prettier": "prettier --write src/**/*.ts"
   },
   "devDependencies": {
+    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/test-connector": "workspace:^",
     "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/query_result": "workspace:^",
     "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.10.6",
+    "mock-fs": "^5.2.0",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2",
     "vitest": "^1.2.2"

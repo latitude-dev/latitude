@@ -22,7 +22,10 @@ describe('Special params', async () => {
   })
 
   it('computes query when __force is passed', async () => {
-    mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
+    mockedFindOrCompute.mockReturnValueOnce(
+      // @ts-expect-error - we're mocking the function
+      Promise.resolve({ queryResult, compiledQuery: { config: {} } }),
+    )
     const response = await GET({
       params: { query: 'testQuery' },
       url: new URL('http://localhost?param=42&__force=true'),
@@ -38,7 +41,10 @@ describe('Special params', async () => {
   })
 
   it('computes query when __force=$text:force is passed', async () => {
-    mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
+    mockedFindOrCompute.mockReturnValueOnce(
+      // @ts-expect-error - we're mocking the function
+      Promise.resolve({ queryResult, compiledQuery: { config: {} } }),
+    )
     const response = await GET({
       params: { query: 'testQuery' },
       url: new URL('http://localhost?param=42&__force=$text:true'),
@@ -60,7 +66,10 @@ describe('Special params', async () => {
       payload: { company_id: 33 },
       secretKey,
     })
-    mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
+    mockedFindOrCompute.mockReturnValueOnce(
+      // @ts-expect-error - we're mocking the function
+      Promise.resolve({ queryResult, compiledQuery: { config: {} } }),
+    )
 
     await GET({
       params: { query: 'testQuery' },
@@ -74,7 +83,10 @@ describe('Special params', async () => {
   })
 
   it('returns a csv file when __download is passed', async () => {
-    mockedFindOrCompute.mockReturnValueOnce(Promise.resolve(queryResult))
+    mockedFindOrCompute.mockReturnValueOnce(
+      // @ts-expect-error - we're mocking the function
+      Promise.resolve({ queryResult, compiledQuery: { config: {} } }),
+    )
     const response = await GET({
       params: { query: 'testQuery' },
       url: new URL('http://localhost?param=42&__download=true'),

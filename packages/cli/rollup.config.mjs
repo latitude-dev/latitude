@@ -96,6 +96,6 @@ export default {
     'configstore',
     'latest-version',
     '@sentry/node',
-    '@latitude-data/connector-factory',
+    '@latitude-data/source-manager'
   ],
 }

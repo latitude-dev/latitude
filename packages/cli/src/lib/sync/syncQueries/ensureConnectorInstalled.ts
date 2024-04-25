@@ -1,14 +1,19 @@
 import fs from 'fs'
 import colors from 'picocolors'
-import {
-  ConnectorType,
-  InvalidConnectorType,
-  MissingEnvVarError,
-  getConnectorPackage,
-  loadConfig,
-} from '@latitude-data/connector-factory'
 import config from '$src/config'
+import SourceManager from '@latitude-data/source-manager'
 import isSourceFile from '$src/lib/isSourceFile'
+
+let _sourceManager: SourceManager
+function currentSourceManager(): SourceManager {
+  // If config root dir changed, we must update the source manager.
+  if (_sourceManager?.queriesDir !== config.queriesDir) {
+    _sourceManager?.clearAll()
+    _sourceManager = new SourceManager(config.queriesDir)
+  }
+
+  return _sourceManager
+}
 
 function checkInstalled({ npmPackage }: { npmPackage: string }) {
   const installMessage = colors.yellow(`
@@ -42,9 +47,6 @@ ${colors.cyan(`npm install --save ${npmPackage}`)}
     }
   } catch (e) {
     // @ts-expect-error - Property 'code' does not exist on type 'unknown'
-    console.log('ERROR: ', e.code)
-
-    // @ts-expect-error - Property 'code' does not exist on type 'unknown'
     if (e?.code === 'ENOENT') {
       console.log(installMessage)
     }
@@ -53,30 +55,25 @@ ${colors.cyan(`npm install --save ${npmPackage}`)}
   }
 }
 
-function getPackageName({ srcPath }: { srcPath: string }) {
-  try {
-    const source = loadConfig({ sourcePath: srcPath })
-    return getConnectorPackage(source.type as ConnectorType)
-  } catch (e) {
-    if (e instanceof MissingEnvVarError) return
-    if (e instanceof InvalidConnectorType) return
+export default async function ensureConnectorInstalled(
+  sourcePath: string,
+  type: 'add' | 'change' | 'unlink',
+) {
+  if (!isSourceFile(sourcePath)) return
 
-    throw e
+  const sourceManager = currentSourceManager()
+  let source = await sourceManager.loadFromConfigFile(sourcePath)
+
+  if (type === 'unlink') {
+    await sourceManager.clear(source)
+    return
   }
-}
 
-export default function ensureConnectorInstalled({
-  srcPath,
-  type,
-}: {
-  srcPath: string
-  type: 'add' | 'change' | 'unlink'
-}) {
-  if (!isSourceFile(srcPath)) return
-  if (type !== 'add' && type !== 'change') return
+  if (type === 'change') {
+    await sourceManager.clear(source)
+    source = await sourceManager.loadFromConfigFile(sourcePath)
+  }
 
-  const npmPackage = getPackageName({ srcPath })
-  if (!npmPackage) return
-
+  const npmPackage = source.connectorPackageName
   return checkInstalled({ npmPackage })
 }

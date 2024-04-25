@@ -158,7 +158,7 @@ export default class QueryDisplay {
   public displayCompiledQuery(compiledQuery: CompiledQuery) {
     this.header.setContent('Compiled Query and parameters')
     const queryContent = compiledQuery.sql
-    const paramsContent = compiledQuery.params
+    const paramsContent = compiledQuery.resolvedParams
       .map((param) => `${param.resolvedAs} = ${JSON.stringify(param.value)}`)
       .join('\n')
 

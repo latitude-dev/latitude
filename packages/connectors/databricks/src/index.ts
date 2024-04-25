@@ -76,12 +76,14 @@ export default class DatabricksConnector extends BaseConnector {
     }
   }
 
-  async runQuery(request: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     const session = await this.client.openSession()
-    const queryOperation = await session.executeStatement(request.sql, {
-      namedParameters: request.params.reduce((acc, param, index) => {
-        return { ...acc, [`var_${index}`]: param.value }
-      }),
+    const queryOperation = await session.executeStatement(compiledQuery.sql, {
+      namedParameters: compiledQuery.resolvedParams.reduce(
+        (acc, param, index) => {
+          return { ...acc, [`var_${index}`]: param.value }
+        },
+      ),
     })
     const result = await queryOperation.fetchAll()
     const schema = await queryOperation.getSchema()

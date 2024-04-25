@@ -39,12 +39,12 @@ export default class SnowflakeConnector extends BaseConnector {
     }
   }
 
-  runQuery(query: CompiledQuery): Promise<QueryResult> {
+  runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     return new Promise((resolve, reject) => {
       this.pool.use(async (connection) => {
         connection.execute({
-          sqlText: query.sql,
-          binds: this.buildQueryParams(query.params),
+          sqlText: compiledQuery.sql,
+          binds: this.buildQueryParams(compiledQuery.resolvedParams),
           streamResult: true,
           complete: (err, stmt) => {
             if (err) {

@@ -71,7 +71,6 @@ describe('Text Block', () => {
     const stringCharacters = ['"', "'", '`']
     stringCharacters.forEach((char) => {
       const text = `hello \\${char}{foo}\\${char} world`
-      const expected = `hello ${char}{${char} world`
       const fragment = parse(text)
       expect(fragment.children.length).toBe(3)
 
@@ -368,6 +367,23 @@ describe('Const tag', () => {
     const error2 = getExpectedError(action2, CompileError)
     expect(error1.code).toBe('parse-error')
     expect(error2.code).toBe('parse-error')
+  })
+})
+
+describe('Config tag', () => {
+  it('parses a config tag', () => {
+    const fragment = parse('{@config name = "value"}')
+    expect(fragment.children.length).toBe(1)
+
+    const configTag = fragment.children[0]!
+    expect(configTag.type).toBe('ConfigTag')
+    expect(configTag.expression).toBeTruthy()
+  })
+
+  it('fails if the config tag is not closed', () => {
+    const action = () => parse('{@config name = "value"')
+    const error = getExpectedError(action, CompileError)
+    expect(error.code).toBe('unexpected-eof')
   })
 })
 

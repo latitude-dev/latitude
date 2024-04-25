@@ -1,4 +1,3 @@
-import chalk from 'chalk'
 import config from '$src/config'
 import dockerfileTemplate from '../../templates/Dockerfile.template'
 import dockerignoreTemplate from '../../templates/dockerignore.template'
@@ -40,15 +39,7 @@ function addDockerignore(
   { force = false }: { force: boolean } = { force: false },
 ) {
   const dockerignorePath = path.resolve(config.rootDir, '.dockerignore')
-  if (!force && existsSync(dockerignorePath)) {
-    console.log(
-      chalk.yellow(
-        '.dockerignore file already exists. If you want to overwrite it, use the --force flag.',
-      ),
-    )
-
-    return
-  }
+  if (!force && existsSync(dockerignorePath)) return
 
   try {
     writeFileSync(dockerignorePath, dockerignoreTemplate)
@@ -66,15 +57,7 @@ function addDockerfile(
   { force = false }: { force: boolean } = { force: false },
 ) {
   const dockerfilePath = path.resolve(config.rootDir, 'Dockerfile')
-  if (!force && existsSync(dockerfilePath)) {
-    console.log(
-      chalk.yellow(
-        'Dockerfile file already exists. If you want to overwrite it, use the --force flag.',
-      ),
-    )
-
-    return
-  }
+  if (!force && existsSync(dockerfilePath)) return
 
   try {
     writeFileSync(dockerfilePath, dockerfileTemplate)

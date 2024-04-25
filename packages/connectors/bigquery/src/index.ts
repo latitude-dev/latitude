@@ -35,13 +35,13 @@ export default class BigQueryConnector extends BaseConnector {
     }
   }
 
-  async runQuery(query: CompiledQuery): Promise<QueryResult> {
+  async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     const client = this.createClient()
 
     try {
       const [job] = await client.createQueryJob({
-        query: query.sql,
-        params: this.buildQueryParams(query.params),
+        query: compiledQuery.sql,
+        params: this.buildQueryParams(compiledQuery.resolvedParams),
       })
 
       // Wait for the query to finish

@@ -40,7 +40,7 @@ class MockConnector extends BaseConnector {
       rowCount: 1,
       fields: [
         {
-          name: 'var',
+          name: 'bar',
           type: DataType.String,
         },
       ],
@@ -129,10 +129,10 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.run({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'bar' } })
 
     expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('$[[var]]')
+    expect(ranQueries[0]!.sql).toBe('$[[bar]]')
   })
 
   it('returns the default value when the parameter is not provided', async () => {
@@ -168,10 +168,10 @@ describe('param function', async () => {
     const connector = new MockConnector()
     const sql = '{param("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.run({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'bar' } })
 
     expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('$[[var]]')
+    expect(ranQueries[0]!.sql).toBe('$[[bar]]')
   })
 
   it('returns the actual value when called inside a logical expression', async () => {
@@ -192,10 +192,10 @@ describe('unsafeParam function', async () => {
     const connector = new MockConnector()
     const sql = '{unsafeParam("foo")}'
     const queryPath = addFakeQuery(sql)
-    await connector.run({ queryPath, params: { foo: 'var' } })
+    await connector.run({ queryPath, params: { foo: 'bar' } })
 
     expect(ranQueries.length).toBe(1)
-    expect(ranQueries[0]!.sql).toBe('var')
+    expect(ranQueries[0]!.sql).toBe('bar')
   })
 
   it('uses default value if provided and no param is given', async () => {
@@ -286,6 +286,20 @@ describe('ref function', async () => {
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
   })
+
+  it('has access to parent global parameters', async () => {
+    const connector = new MockConnector()
+
+    const refQuerySql = "{param('foo')}"
+    const refQueryPath = addFakeQuery(refQuerySql, 'referenced_query')
+
+    const mainQuerySql = `{ref('${refQueryPath}')}`
+    const queryPath = addFakeQuery(mainQuerySql)
+
+    await connector.run({ queryPath, params: { foo: 'bar' } })
+    expect(ranQueries.length).toBe(1)
+    expect(ranQueries[0]!.sql).toBe('($[[bar]])')
+  })
 })
 
 describe('runQuery function', async () => {
@@ -355,5 +369,19 @@ describe('runQuery function', async () => {
     expect(ranQueries.length).toBe(2)
     expect(ranQueries[0]!.sql).toBe('ref')
     expect(ranQueries[1]!.sql).toBe('($[[1]])($[[1]])($[[1]])')
+  })
+
+  it('does not have access to parent global parameters', async () => {
+    const connector = new MockConnector()
+
+    const refQuerySql = "{param('foo')}"
+    const refQueryPath = addFakeQuery(refQuerySql, 'referenced_query')
+
+    const mainQuerySql = `{results = runQuery('${refQueryPath}')}`
+    const queryPath = addFakeQuery(mainQuerySql)
+
+    const action = () => connector.run({ queryPath })
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('function-call-error')
   })
 })

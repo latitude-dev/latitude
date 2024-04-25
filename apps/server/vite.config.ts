@@ -45,7 +45,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@latitude-data/connector-factory'],
+      external: ['@latitude-data/source-manager'],
     },
   },
 })

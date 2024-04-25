@@ -62,7 +62,7 @@ export default class MysqlConnector extends BaseConnector {
 
         connection.query(
           query.sql,
-          this.buildQueryParams(query.params),
+          this.buildQueryParams(query.resolvedParams),
           (error, results, fields) => {
             connection.release()
 

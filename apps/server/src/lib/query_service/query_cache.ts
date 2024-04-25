@@ -1,6 +1,6 @@
 import CacheManager from '$lib/cache_manager'
 import QueryResult from '@latitude-data/query_result'
-import { ResolvedParam } from '../../../../../packages/connectors/base/dist'
+import { QueryRequest } from '@latitude-data/base-connector'
 
 class QueryCache {
   private cache: CacheManager
@@ -9,28 +9,21 @@ class QueryCache {
     this.cache = new CacheManager()
   }
 
-  public find({ query, params }: { query: string; params: ResolvedParam[] }) {
-    const json = this.cache.find(this.createKey({ query, params }))
+  public find({ queryPath, params }: QueryRequest, ttl?: number) {
+    const json = this.cache.find(this.createKey({ queryPath, params }), ttl)
     if (!json) return null
 
     return QueryResult.fromJSON(json)
   }
 
-  public set(
-    { query, params }: { query: string; params: ResolvedParam[] },
-    queryResult: QueryResult,
-  ) {
-    this.cache.set(this.createKey({ query, params }), queryResult.toJSON())
+  public set({ queryPath, params }: QueryRequest, queryResult: QueryResult) {
+    this.cache.set(this.createKey({ queryPath, params }), queryResult.toJSON())
   }
 
-  private createKey({
-    query,
-    params,
-  }: {
-    query: string
-    params: ResolvedParam[]
-  }) {
-    return `${query}::${params.map((param) => param.value).join('::')}`
+  private createKey({ queryPath, params }: QueryRequest) {
+    return `${queryPath}__${Object.entries(params ?? {})
+      .map(([key, value]) => `${key}=${value}`)
+      .join('__')}`
   }
 }
 

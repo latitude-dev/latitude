@@ -1,0 +1,29 @@
+---
+title: 'Additional configuration'
+description: 'Additional configuration to control the data behaviour in Latitude.'
+---
+import QueryConfigDocs from '/snippets/queries/config.mdx'
+
+In addition to each connector's details, there are some additional options that can be configured in any source. These options can either be set in the `config` object of the source schema
+to set a default configuration for all the queries, or in each query itself using a special keyword.
+
+## Example
+
+```yaml
+type: 'postgres'
+
+details:
+  # Connection details
+  # ...
+
+config:
+  ttl: 3600 # 1 hour of lifetime
+```
+
+## Specific query configuration
+
+You can also set a specific configuration for each query by adding a custom tag in the query itself. For more information, go to [Queries advanced configuration](/queries/advanced/config).
+
+## Available options
+
+<QueryConfigDocs />

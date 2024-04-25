@@ -1,7 +1,7 @@
-import findQueryFile from '@latitude-data/query_service'
 import cache from './query_cache'
-import path from 'path'
-import { loadConnector } from '$lib/server/connectorManager'
+import sourceManager from '$lib/server/sourceManager'
+import QueryResult from '@latitude-data/query_result'
+import { CompiledQuery } from '@latitude-data/base-connector'
 
 type Props = {
   query: string
@@ -15,47 +15,37 @@ export default async function findOrCompute({
   query,
   queryParams,
   force,
-}: Props) {
-  const { sourcePath } = await findQueryFile(QUERIES_DIR, query)
-  const connector = await loadConnector(sourcePath)
-  const { compiledQuery, resolvedParams } = await connector.compileQuery({
-    queryPath: computeRelativeQueryPath({ sourcePath, queryPath: query }),
+}: Props): Promise<{
+  queryResult: QueryResult
+  compiledQuery: CompiledQuery
+}> {
+  const source = await sourceManager.loadFromQuery(query)
+  const compiledQuery = await source.compileQuery({
+    queryPath: query,
     params: queryParams,
   })
-  const request = { query: compiledQuery, params: resolvedParams }
+
+  const request = {
+    queryPath: compiledQuery.sql,
+    params: compiledQuery.accessedParams, // Only cache the params that were accessed, not all the params passed in
+  }
+
   const compute = async () => {
-    const queryResult = await connector.runCompiled({
-      sql: compiledQuery,
-      params: resolvedParams,
-    })
-
+    const queryResult = await source.runCompiledQuery(compiledQuery)
     cache.set(request, queryResult)
-
     return queryResult
   }
 
+  let queryResult
   if (force) {
-    return compute()
+    queryResult = await compute()
   } else {
-    const queryResult = cache.find(request)
-    if (queryResult) return queryResult
-
-    return compute()
+    queryResult =
+      cache.find(request, compiledQuery.config.ttl) || (await compute())
   }
-}
 
-export function computeRelativeQueryPath({
-  sourcePath, // /static/.latitude/queries/folder/source.yml
-  queryPath, // folder/query.sql
-}: {
-  sourcePath: string
-  queryPath: string
-}) {
-  const base = path
-    .dirname(sourcePath) // /static/.latitude/queries/folder
-    .slice(sourcePath.indexOf(QUERIES_DIR) + QUERIES_DIR.length + 1) // folder
-
-  if (!base) return queryPath
-
-  return queryPath.slice(queryPath.indexOf(base) + base.length + 1) // query.sql
+  return {
+    queryResult,
+    compiledQuery,
+  }
 }

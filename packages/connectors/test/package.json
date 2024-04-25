@@ -1,27 +1,29 @@
 {
-  "name": "@latitude-data/query_service",
-  "version": "0.0.2",
+  "name": "@latitude-data/test-connector",
+  "version": "0.0.0",
   "license": "LGPL",
+  "description": "A mock connector for testing purposes",
+  "type": "module",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
-    "test": "vitest run",
-    "test:watch": "vitest",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
-  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "keywords": [],
+  "author": "",
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
-    "prettier": "^3.1.1",
-    "rollup": "^4.10.0",
-    "vite-tsconfig-paths": "^4.3.1",
-    "vitest": "^1.2.2"
+    "rollup": "^4.10.0"
+  },
+  "dependencies": {
+    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/query_result": "workspace:^"
   }
 }

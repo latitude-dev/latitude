@@ -171,6 +171,32 @@ export function mustache(parser: Parser) {
       type: 'ConstTag',
       expression,
     })
+  } else if (parser.eat('@config')) {
+    // {@config a = b}
+    parser.requireWhitespace()
+    const expression = readExpression(parser)
+    if (
+      !(
+        expression.type === 'AssignmentExpression' &&
+        expression.operator === '='
+      )
+    ) {
+      parser.error(
+        {
+          code: 'invalid-config-args',
+          message: '{@config ...} must be an assignment.',
+        },
+        start,
+      )
+    }
+    parser.allowWhitespace()
+    parser.eat('}', true)
+    parser.current().children!.push({
+      start,
+      end: parser.index,
+      type: 'ConfigTag',
+      expression,
+    })
   } else {
     const expression = readExpression(parser)
     parser.allowWhitespace()
@@ -218,6 +244,8 @@ function toString(node: TemplateNode) {
       return '{#each} block'
     case 'ConstTag':
       return '{@const} tag'
+    case 'ConfigTag':
+      return '{@config} tag'
     default:
       return node.type
   }
