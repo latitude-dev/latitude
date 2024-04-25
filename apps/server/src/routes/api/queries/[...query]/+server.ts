@@ -9,15 +9,21 @@ export async function GET({ params: args, url }: Props) {
 
   try {
     const { params, force, download } = await getQueryParams(url)
-    const queryResult = await findOrCompute({
+    const { queryResult, compiledQuery } = await findOrCompute({
       query: query ?? '',
       queryParams: params,
       force,
     })
+    const ttl = compiledQuery.config.ttl
+    let headers = {}
+    if (ttl) {
+      headers = { 'Cache-Control': `private, max-age=${ttl}` }
+    }
 
     if (download) {
       return new Response(queryResult.toCSV(), {
         headers: {
+          ...headers,
           'Content-Type': 'text/csv',
           'Content-Disposition': `attachment; filename="${
             query ?? 'query'
@@ -27,7 +33,10 @@ export async function GET({ params: args, url }: Props) {
       })
     } else {
       return new Response(queryResult.toJSON(), {
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          ...headers,
+          'Content-Type': 'application/json',
+        },
         status: 200,
       })
     }

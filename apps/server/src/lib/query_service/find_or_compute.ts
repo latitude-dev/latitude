@@ -1,5 +1,7 @@
 import cache from './query_cache'
 import sourceManager from '$lib/server/sourceManager'
+import QueryResult from '@latitude-data/query_result'
+import { CompiledQuery } from '@latitude-data/base-connector'
 
 type Props = {
   query: string
@@ -13,7 +15,10 @@ export default async function findOrCompute({
   query,
   queryParams,
   force,
-}: Props) {
+}: Props): Promise<{
+  queryResult: QueryResult
+  compiledQuery: CompiledQuery
+}> {
   const source = await sourceManager.loadFromQuery(query)
   const compiledQuery = await source.compileQuery({
     queryPath: query,
@@ -31,11 +36,16 @@ export default async function findOrCompute({
     return queryResult
   }
 
+  let queryResult
   if (force) {
-    return compute()
+    queryResult = await compute()
+  } else {
+    queryResult =
+      cache.find(request, compiledQuery.config.ttl) || (await compute())
   }
 
-  const queryResult = cache.find(request, compiledQuery.config.ttl)
-  if (queryResult) return queryResult
-  return compute()
+  return {
+    queryResult,
+    compiledQuery,
+  }
 }

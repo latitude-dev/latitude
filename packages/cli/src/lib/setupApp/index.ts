@@ -1,4 +1,3 @@
-import chalk from 'chalk'
 import config from '$src/config'
 import dockerfileTemplate from '../../templates/Dockerfile.template'
 import dockerignoreTemplate from '../../templates/dockerignore.template'
