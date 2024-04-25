@@ -88,7 +88,12 @@
     },
     {
       "group": "Configuration",
-      "pages": ["sources/how-to-configure-sources", "sources/credentials", "sources/additional-config"]
+      "pages": [
+        "sources/how-to-configure-sources",
+        "sources/credentials",
+        "sources/additional-config",
+        "sources/ssh_tunneling"
+      ]
     },
     {
       "group": "Sources",
