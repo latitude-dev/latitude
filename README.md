@@ -316,6 +316,8 @@ latitude deploy
 
 This will deploy your project to the Latitude cloud, and you will get a URL where your project is hosted.
 
+If it's your first time deploying, make sure to log in or sign up to Latitude by running `latitude login` or `latitude signup` respectively.
+
 You can also deploy your project to your own infrastructure. Find out more about this in the [documentation](https://docs.latitude.so/guides/deploy/docker).
 
 ## 👥 Community
