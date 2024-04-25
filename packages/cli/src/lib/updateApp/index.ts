@@ -25,15 +25,9 @@ async function updateConfigFile({ version }: { version: string }) {
   }
 }
 
-export default async function updateApp({
-  force = false,
-  version,
-}: {
-  force: boolean
-  version: string
-}) {
+export default async function updateApp({ version }: { version: string }) {
   await updateConfigFile({ version })
   await installLatitudeServer({ version })
   await installDependencies()
-  addDockerfiles({ force })
+  addDockerfiles({ force: true })
 }

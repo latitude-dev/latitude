@@ -44,10 +44,6 @@ CLI.command('start')
 CLI.command('update')
   .describe('Update latitude app. You can define the version with --version')
   .option('--fix', 'Installs the version defined in latitude.json')
-  .option(
-    '--force',
-    'Updates latitude and overrides Dockerfile and .dockerignore files',
-  )
   .action(updateCommand)
 
 CLI.command('telemetry')
