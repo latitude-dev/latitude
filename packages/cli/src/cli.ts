@@ -91,16 +91,10 @@ CLI.command('credentials')
   )
   .action(credentialsCommand)
 
-CLI.command('signup')
-  .describe('Signup for a new account')
-  .option('--email', 'Email to use for the new account')
-  .option('--password', 'Password to use for the new account')
-  .action(signupCommand)
+CLI.command('signup').describe('Signup for a new account').action(signupCommand)
 
 CLI.command('login')
   .describe('Login for an existing account')
-  .option('--email', 'Account email')
-  .option('--password', 'Account password')
   .action(loginCommand)
 
 CLI.command('logout')
