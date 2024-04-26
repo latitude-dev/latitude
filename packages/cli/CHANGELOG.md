@@ -1,5 +1,17 @@
 # @latitude-data/cli
 
+## 1.3.0
+
+### Minor Changes
+
+- f26cbe3: Added command to create latitude cloud tokens
+- 51c3d29: Unify and call app parameter always app on cloud CLI commands
+
+### Patch Changes
+
+- 8e0ed89: Update npm dependencies on latitude update
+  add --force flag to latitude update in order to override docker files
+
 ## 1.2.0
 
 ### Minor Changes
