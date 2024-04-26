@@ -1,7 +1,9 @@
+export default function DockerfileTemplate() {
+  return `
 FROM node:18-slim AS base
 
 RUN apt-get update && apt-get install -y curl
-RUN npm install -g @latitude-data/cli
+RUN npm install -g @latitude-data/cli@${process.env.PACKAGE_VERSION}
 
 FROM base AS builder
 
@@ -29,3 +31,5 @@ WORKDIR /usr/src/app/build
 EXPOSE 3000
 
 CMD ["node", "build"]
+`
+}
