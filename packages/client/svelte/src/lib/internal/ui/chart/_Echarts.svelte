@@ -117,11 +117,11 @@
   }
 </script>
 
-<div class="h-full w-full">
+<div class="lat-h-full lat-w-full">
   {#if options}
     <div
       use:chartable={{ theme, options, locale }}
-      class="min-h-full min-w-full"
+      class="lat-min-h-full lat-min-w-full"
       style="width: {width}px; height: {height}px"
     />
   {/if}

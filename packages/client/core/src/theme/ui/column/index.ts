@@ -5,5 +5,5 @@ export type LayoutProps = {
 }
 
 export function cssClass({ className }: LayoutProps) {
-  return cn('flex flex-col', className)
+  return cn('lat-flex lat-flex-col', className)
 }

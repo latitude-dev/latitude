@@ -13,7 +13,7 @@
 </script>
 
 <DropdownMenuPrimitive.Label
-  class={cn("px-2 py-1.5 text-sm font-semibold", inset && "pl-8", className)}
+  class={cn("lat-px-2 lat-py-1.5 lat-text-sm lat-font-semibold", inset && "lat-pl-8", className)}
   {...$$restProps}
 >
   <slot />
