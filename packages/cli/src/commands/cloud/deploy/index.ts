@@ -7,12 +7,12 @@ import pushDockerImage from './docker/push'
 import tracked from '$src/lib/decorators/tracked'
 import { request, sseRequest } from '$src/lib/server'
 
-async function deploy({ name, digest }: { name: string; digest: string }) {
-  const spinner = ora(`Deploying ${name}...`).start()
+async function deploy({ app, digest }: { app: string; digest: string }) {
+  const spinner = ora(`Deploying ${app}...`).start()
   const stream = await sseRequest({
     method: 'POST',
     path: '/api/apps/deploy',
-    data: JSON.stringify({ app: name, digest }),
+    data: JSON.stringify({ app, digest }),
   })
 
   let output: string
@@ -74,14 +74,14 @@ async function deployCommand(
   },
 ) {
   const latitudeJson = findConfigFile()
-  const name = latitudeJson.data.name!
+  const app = latitudeJson.data.name!
 
-  console.log(`Deploying ${name}...`)
+  console.log(`Deploying ${app}...`)
 
   const { url, latestImage } = await request({
     method: 'POST',
     path: '/api/ecr/repositories/find-or-create',
-    data: JSON.stringify({ name }),
+    data: JSON.stringify({ app }),
   })
     .then(({ body }) => JSON.parse(body))
     .catch((err) => {
@@ -113,7 +113,7 @@ async function deployCommand(
     if (digest === latestImage?.imageDigest && !force) {
       console.log(
         chalk.yellow(`
-No changes detected, skipping deployment. To force a new deployment, run: 
+No changes detected, skipping deployment. To force a new deployment, run:
 
  ${chalk.green('latitude deploy --force')}
 `),
@@ -122,7 +122,7 @@ No changes detected, skipping deployment. To force a new deployment, run:
       process.exit(0)
     }
 
-    deploy({ name, digest })
+    deploy({ app, digest })
   } catch (error) {
     console.error(chalk.red('Failed to deploy:', (error as Error).message))
 
