@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.3.1
+
+### Patch Changes
+
+- 48662c6: Add cli version to dockerfile
+
 ## 1.3.0
 
 ### Minor Changes
