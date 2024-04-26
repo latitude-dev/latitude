@@ -1,6 +1,6 @@
 import chalk from 'chalk'
 import { writeFileSync } from 'fs'
-import dockerfileTemplate from '../../templates/Dockerfile.template'
+import dockerfileTemplate from '../../templates/Dockerfile'
 import dockerignoreTemplate from '../../templates/dockerignore.template'
 
 export function writeFile({
@@ -11,7 +11,7 @@ export function writeFile({
   path: string
 }) {
   const template =
-    type === 'dockerfile' ? dockerfileTemplate : dockerignoreTemplate
+    type === 'dockerfile' ? dockerfileTemplate() : dockerignoreTemplate
   try {
     writeFileSync(path, template)
   } catch (e) {
