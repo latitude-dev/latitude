@@ -17,6 +17,7 @@ import signupCommand from './commands/cloud/signup'
 import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
+import createTokenCommand from './commands/cloud/tokens/create'
 import { onError } from './utils'
 
 initSentry()
@@ -114,6 +115,10 @@ CLI.command('destroy')
 CLI.command('cancel')
   .describe('Cancels an ongoing deployment')
   .action(cancelCommand)
+
+CLI.command('tokens create')
+  .describe('Creates an authentication token for Latitude Cloud')
+  .action(createTokenCommand)
 
 async function init() {
   const argv = CLI.parse(process.argv, {
