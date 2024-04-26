@@ -1,6 +1,6 @@
 import { SpawnOptions, spawn } from 'child_process'
 
-type Handlers = {
+export type Handlers = {
   onClose?: (...args: any[]) => void
   onError?: (...args: any[]) => void
   onStdout?: (...args: any[]) => void
