@@ -30,3 +30,16 @@ docker run -p 3000:3000 my-latitude-app
 ```
 
 See the [docker build](https://docs.docker.com/reference/cli/docker/image/build/) documentation for more details.
+
+### Environment variables in production builds
+Keep in mind .env variables are not available in production builds for security reasons – you should use environment variables instead. You can set them in the Dockerfile or pass them as arguments when running the container. For example, if you had a .env file with the following content:
+
+```bash
+LATITUDE__DB_PASSWORD=mypassword
+```
+
+You could pass the environment variable to the container like this:
+
+```bash
+docker run -p 3000:3000 -e LATITUDE__DB_PASSWORD=mypassword my-latitude-app
+```
