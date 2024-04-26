@@ -23,7 +23,7 @@ function addDockerfile(force = false) {
   if (!force && existsSync(dockerfilePath)) {
     console.log(
       chalk.yellow(
-        'Dockerignore file already exists. Run latitude update --force to update it.',
+        'Dockerfile file already exists. Run latitude update --force to update it.',
       ),
     )
     return
