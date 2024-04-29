@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.10.0-next.0
+
+### Minor Changes
+
+- f89e566: '@latitude-data/svelte' package can now be used in svelte projects without needing to configure tailwind.
+
 ## 0.9.0
 
 ### Minor Changes
