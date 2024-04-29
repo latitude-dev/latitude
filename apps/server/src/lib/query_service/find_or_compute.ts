@@ -1,8 +1,8 @@
 import cache from './query_cache'
-import sourceManager, { QUERIES_DIR } from '$lib/server/sourceManager'
+import sourceManager from '$lib/server/sourceManager'
 import QueryResult from '@latitude-data/query_result'
 import { CompiledQuery } from '@latitude-data/base-connector'
-import path from 'path'
+import computeRelativeQueryPath from './computeRelativeQueryPath'
 
 type Props = {
   query: string
@@ -50,20 +50,4 @@ export default async function findOrCompute({
     queryResult,
     compiledQuery,
   }
-}
-
-export function computeRelativeQueryPath({
-  sourcePath, // /static/.latitude/queries/folder/source.yml
-  queryPath, // folder/query.sql
-}: {
-  sourcePath: string
-  queryPath: string
-}) {
-  const base = path
-    .dirname(sourcePath) // /static/.latitude/queries/folder
-    .slice(sourcePath.indexOf(QUERIES_DIR) + QUERIES_DIR.length + 1) // folder
-
-  if (!base) return queryPath
-
-  return queryPath.slice(queryPath.indexOf(base) + base.length + 1) // query.sql
 }
