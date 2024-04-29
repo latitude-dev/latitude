@@ -32,5 +32,7 @@
     "latitude-vscode": "0.0.4",
     "@latitude-data/typescript": "0.1.0"
   },
-  "changesets": []
+  "changesets": [
+    "funny-jobs-lie"
+  ]
 }
