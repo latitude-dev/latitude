@@ -30,8 +30,14 @@ spawned.on('close', async (code) => {
 
   ok = true
 
-  await dev()
-  run()
+  try {
+    await dev()
+    await run()
+  } catch (error) {
+    console.error(error)
+
+    process.exit(1)
+  }
 
   process.exit()
 })

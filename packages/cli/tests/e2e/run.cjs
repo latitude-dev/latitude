@@ -1,28 +1,46 @@
-const { spawnSync } = require('child_process')
+const { spawn } = require('child_process')
 const { writeFileSync } = require('fs')
 
 function run () {
-  console.log("Creating a new query...")
-  spawnSync('mkdir', ['-p', 'queries/nested/sql']), {
-    cwd: './test-project',
-  }
+  return new Promise((resolve) => {
+    try {
+      const cwd = './test-project'
+      const proc = spawn('mkdir', ['-p', 'queries/nested/sql'], {cwd})
 
-  console.log("Writing files...")
-  writeFileSync('queries/nested/source.yml', 'type: duckdb'), {
-    cwd: './test-project',
-  }
-  writeFileSync('queries/nested/titles.csv', 'title\nHello, World!'), {
-    cwd: './test-project',
-  }
-  writeFileSync('queries/nested/sql/test.sql', "SELECT * FROM read_csv_auto('queries/nested/titles.csv') LIMIT 1"), {
-    cwd: './test-project',
-  }
+      proc.on('error', (err) => {
+        console.error(err)
 
-  console.log("Installing dependencies...")
-  spawnSync('npm', ['install', '--save', '@latitude-data/ddckdb-connector'], { stdio: 'inherit', cwd: './test-project'})
+        process.exit(1)
+      })
 
-  console.log("Running the query...")
-  spawnSync('latitude', ['run', 'queries/nested/sql/test.sql'], { stdio: 'inherit', cwd: './test-project'})
+      proc.on('close', () => {
+        writeFileSync('test-project/queries/nested/source.yml', 'type: duckdb')
+        writeFileSync('test-project/queries/nested/titles.csv', 'title\nHello, World!')
+        writeFileSync('test-project/queries/nested/sql/test.sql', "SELECT * FROM read_csv_auto('queries/nested/titles.csv') LIMIT 1")
+
+        const proc = spawn('npm', ['install', '--save', '@latitude-data/duckdb-connector'], { cwd, stdio: 'inherit'})
+        proc.on('error', (err) => {
+          console.error(err)
+
+          process.exit(1)
+        })
+        proc.on('close', () => {
+          const proc = spawn('latitude', ['run', 'nested/sql/test.sql'], { cwd, stdio: 'inherit'})
+          proc.on('error', (err) => {
+            console.error(err)
+
+            process.exit(1)
+          })
+          proc.on('close', () => resolve())
+        })
+
+      })
+    } catch (e) {
+      console.error(e)
+
+      process.exit(1)
+    }
+  })
 }
 
 module.exports = run
