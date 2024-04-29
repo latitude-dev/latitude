@@ -1,5 +1,11 @@
 # @latitude-data/server
 
+## 1.1.2
+
+### Patch Changes
+
+- 92a2848: fixes cli run command
+
 ## 1.1.1
 
 ### Patch Changes
