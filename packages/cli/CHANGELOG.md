@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.3.3
+
+### Patch Changes
+
+- bda631b: Do not include prerelease versions in CLI options
+
 ## 1.3.2
 
 ### Patch Changes
