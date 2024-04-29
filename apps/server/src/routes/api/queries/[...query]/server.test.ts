@@ -30,10 +30,13 @@ vi.mock('$lib/server/sourceManager', async () => {
         }
 
         return {
-          compileQuery: (request: QueryRequest) =>
-            connector.compileQuery(request),
-          runCompiledQuery: (compiledQuery: CompiledQuery) =>
-            connector.runCompiled(compiledQuery),
+          source: {
+            compileQuery: (request: QueryRequest) =>
+              connector.compileQuery(request),
+            runCompiledQuery: (compiledQuery: CompiledQuery) =>
+              connector.runCompiled(compiledQuery),
+          },
+          sourceFilePath: filePath,
         }
       },
     },

@@ -21,6 +21,12 @@ describe('findQueryFile', () => {
           'query.sql': 'Some query',
           nested: {
             'query.sql': 'Some nested query',
+            nnested: {
+              'source.yml': 'Nested source config file',
+              sql: {
+                'test.sql': 'Some very nested query',
+              },
+            },
           },
         },
         invalid: {
@@ -35,18 +41,34 @@ describe('findQueryFile', () => {
     vi.restoreAllMocks()
   })
 
-  it('finds the correct source config file from any query', async () => {
+  it('finds the correct source config file from root query', async () => {
     const result = await findSourceConfigFromQuery({
       queriesDir: ROOT_FOLDER,
       query: 'valid/query',
     })
+    const sourcePath = `${ROOT_FOLDER}/valid/source.yml`
+    expect(result).toEqual(sourcePath)
+  })
+
+  it('finds correct source config from nested query', async () => {
+    const sourcePath = `${ROOT_FOLDER}/valid/source.yml`
     const nestedResult = await findSourceConfigFromQuery({
       queriesDir: ROOT_FOLDER,
       query: 'valid/nested/query',
     })
-    const sourcePath = `${ROOT_FOLDER}/valid/source.yml`
-    expect(result).toEqual(sourcePath)
+
     expect(nestedResult).toEqual(sourcePath)
+  })
+
+  it('finds correct nexted source config from nested query', async () => {
+    const veryNestedResult = await findSourceConfigFromQuery({
+      queriesDir: ROOT_FOLDER,
+      query: 'valid/nested/nnested/sql/test',
+    })
+
+    expect(veryNestedResult).toEqual(
+      `${ROOT_FOLDER}/valid/nested/nnested/source.yml`,
+    )
   })
 
   it('should throw a QueryNotFoundError if the .sql file does not exist', async () => {

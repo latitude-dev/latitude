@@ -1,10 +1,11 @@
-import { QUERIES_DIR } from './find_or_compute'
-import { it, describe, beforeEach, afterEach, expect } from 'vitest'
-import { vi } from 'vitest'
+import TestConnector from '@latitude-data/test-connector'
+import findOrCompute, { computeRelativeQueryPath } from './find_or_compute'
 import fs from 'fs'
 import mockFs from 'mock-fs'
-import findOrCompute from './find_or_compute'
-import TestConnector from '@latitude-data/test-connector'
+import { QUERIES_DIR } from '$lib/server/sourceManager'
+import { it, describe, beforeEach, afterEach, expect } from 'vitest'
+import { vi } from 'vitest'
+
 import type { CompiledQuery, QueryRequest } from '@latitude-data/base-connector'
 
 const runQuerySpy = vi.fn()
@@ -12,15 +13,19 @@ const connector = new TestConnector(QUERIES_DIR, {
   onRunQuery: runQuerySpy,
 })
 
-vi.mock('$lib/server/sourceManager', async () => {
+vi.mock('$lib/server/sourceManager', async (importOriginal) => {
   return {
+    ...((await importOriginal()) as Record<string, unknown>),
     default: {
       loadFromQuery: async () => {
         return {
-          compileQuery: (request: QueryRequest) =>
-            connector.compileQuery(request),
-          runCompiledQuery: (compiledQuery: CompiledQuery) =>
-            connector.runCompiled(compiledQuery),
+          source: {
+            compileQuery: (request: QueryRequest) =>
+              connector.compileQuery(request),
+            runCompiledQuery: (compiledQuery: CompiledQuery) =>
+              connector.runCompiled(compiledQuery),
+          },
+          sourceFilePath: QUERIES_DIR,
         }
       },
     },
@@ -159,5 +164,35 @@ describe('Query cache', () => {
     queryParams.usedParam = 'bar2'
     await findOrCompute({ query: queryPath, queryParams, force: false })
     expect(runQuerySpy).toHaveBeenCalledTimes(2) // Called again with different params
+  })
+})
+
+describe('computeRelativeQueryPath', () => {
+  it('should compute the relative query path correctly', () => {
+    const sourcePath = `${QUERIES_DIR}/folder/source.yml`
+    const queryPath = 'folder/query.sql'
+    const result = computeRelativeQueryPath({ sourcePath, queryPath })
+    expect(result).toBe('query.sql')
+  })
+
+  it('should compute the relative query path correctly if query is nested in subfolders', () => {
+    const sourcePath = `${QUERIES_DIR}/folder/source.yml`
+    const queryPath = 'folder/subfolder/query.sql'
+    const result = computeRelativeQueryPath({ sourcePath, queryPath })
+    expect(result).toBe('subfolder/query.sql')
+  })
+
+  it('should compute the relative query path correctly if query is in root directory', () => {
+    const sourcePath = `${QUERIES_DIR}/source.yml`
+    const queryPath = 'query.sql'
+    const result = computeRelativeQueryPath({ sourcePath, queryPath })
+    expect(result).toBe('query.sql')
+  })
+
+  it('should compute the relative query path correctly if source is in root directory and query is in subfolders', () => {
+    const sourcePath = `${QUERIES_DIR}/source.yml`
+    const queryPath = 'folder/subfolder/query.sql'
+    const result = computeRelativeQueryPath({ sourcePath, queryPath })
+    expect(result).toBe('folder/subfolder/query.sql')
   })
 })

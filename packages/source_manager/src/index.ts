@@ -24,7 +24,9 @@ export default class SourceManager {
    * Finds the source configuration file in the given path and loads it
    * @param path - The path to any file in the source directory. This could be the source configuration file itself or any other query in the directory.
    */
-  async loadFromQuery(query: string): Promise<Source> {
+  async loadFromQuery(
+    query: string,
+  ): Promise<{ source: Source; sourceFilePath: string }> {
     const filePath = path.join(
       this.queriesDir,
       query.endsWith('.sql') ? query : `${query}.sql`,
@@ -40,17 +42,20 @@ export default class SourceManager {
       throw new QueryNotFoundError(`Query file not found at ${filePath}`)
     }
 
-    const sourceFile = await findSourceConfigFromQuery({
+    const sourceFilePath = await findSourceConfigFromQuery({
       query,
       queriesDir: this.queriesDir,
     })
 
-    if (!this.instances[sourceFile]) {
-      const config = readSourceConfig(sourceFile)
-      this.instances[sourceFile] = new Source(sourceFile, config)
+    if (!this.instances[sourceFilePath]) {
+      const config = readSourceConfig(sourceFilePath)
+      this.instances[sourceFilePath] = new Source(sourceFilePath, config)
     }
 
-    return this.instances[sourceFile]!
+    return {
+      source: this.instances[sourceFilePath]!,
+      sourceFilePath: sourceFilePath,
+    }
   }
 
   /**

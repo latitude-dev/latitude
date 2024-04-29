@@ -52,7 +52,7 @@ describe('Source', () => {
   })
 
   it('initializes with the correct path and config', async () => {
-    const source = await sourceManager.loadFromQuery('query')
+    const { source } = await sourceManager.loadFromQuery('query')
 
     expect(source.path).toBe(`${QUERIES_DIR}/source.yml`)
     expect(source.type).toBe(sourceSchema.type)
@@ -60,7 +60,7 @@ describe('Source', () => {
   })
 
   it('does not instantiate the connector until it is needed', async () => {
-    const source = await sourceManager.loadFromQuery('query')
+    const { source } = await sourceManager.loadFromQuery('query')
     expect(mockCreateConnector).not.toHaveBeenCalled()
 
     await source.compileQuery({ queryPath: 'query', params: {} })
@@ -68,7 +68,7 @@ describe('Source', () => {
   })
 
   it('reuses the same connector for multiple queries', async () => {
-    const source = await sourceManager.loadFromQuery('query')
+    const { source } = await sourceManager.loadFromQuery('query')
     await source.compileQuery({ queryPath: 'query', params: {} })
     await source.compileQuery({ queryPath: 'nested/query', params: {} })
 
@@ -76,7 +76,7 @@ describe('Source', () => {
   })
 
   it('returns the source config when compiling a query', async () => {
-    const source = await sourceManager.loadFromQuery('query')
+    const { source } = await sourceManager.loadFromQuery('query')
     const compiledQuery = await source.compileQuery({
       queryPath: 'query',
       params: {},
@@ -87,7 +87,7 @@ describe('Source', () => {
 
   it('merges the source config with the defined config in the query, prioritizing the query config', async () => {
     fs.writeFileSync(`${QUERIES_DIR}/query.sql`, `{@config ttl = 12345}`)
-    const source = await sourceManager.loadFromQuery('query')
+    const { source } = await sourceManager.loadFromQuery('query')
     const compiledQuery = await source.compileQuery({
       queryPath: 'query',
       params: {},

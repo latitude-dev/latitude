@@ -6,7 +6,6 @@ type Props = { params: { query?: string }; url: URL }
 
 export async function GET({ params: args, url }: Props) {
   const { query } = args
-
   try {
     const { params, force, download } = await getQueryParams(url)
     const { queryResult, compiledQuery } = await findOrCompute({
