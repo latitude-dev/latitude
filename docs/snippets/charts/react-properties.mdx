@@ -1,0 +1,46 @@
+import CommonChartProperties from '/snippets/charts/_properties/common.mdx'
+
+## Properties
+
+Depending on the component you choose, you can pass the following properties:
+
+<Tabs>
+  <Tab title="Query-based Chart">
+    ### Query configuration
+
+    <ParamField path="queryPath" type="string" required>
+      The path to the query file that will provide the data displayed in the table.
+    </ParamField>
+
+    <ParamField path="params" type="object">
+      An object with custom parameters to be used in the query.
+    </ParamField>
+
+    <ParamField path="download" type="boolean">
+      A flag to enable the download of the table data as a CSV file.
+    </ParamField>
+  </Tab>
+
+  <Tab title="Data-based Chart">
+
+    ### Data configuration
+
+    <ParamField path="data" type="QueryResult">
+      The data to be displayed in the table. It should be an array of objects, where each object represents a row in the table.
+    </ParamField>
+
+    <ParamField path="isLoading" type="boolean" required>
+      A flag to indicate if the data is still loading. When set to `true`, the table will display a blinking animation.
+    </ParamField>
+
+    <ParamField path="error" type="error">
+      An error message to be displayed in case the data could not be loaded.
+    </ParamField>
+
+    <ParamField path="download" type="function">
+      A function to download the table data as a CSV file.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+<CommonChartProperties />

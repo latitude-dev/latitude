@@ -1,26 +1,24 @@
-import { Theme } from './types'
+import { TailwindAttributes, Theme } from './types'
 
-const LATITUDE_PREFIX = 'lat'
+const LATITUDE_PREFIX = 'lat-'
 
-export function buildCssVariables(theme: Theme) {
-  const light = theme.cssVars.light
-  const dark = theme.cssVars.dark
+function mapThemeToCssVariables(themeAttributes: TailwindAttributes): string {
+  return Object.entries(themeAttributes)
+    .map(([key, value]) => {
+      if (typeof value !== 'string' && typeof value !== 'number') return
+      return `  --${LATITUDE_PREFIX}${key}: ${value};`
+    })
+    .filter(Boolean)
+    .join('\n')
+}
 
-  let cssVariables = ':root {\n'
+export function buildCssVariables(theme: Theme): string {
+  const { dark, ...light } = theme
 
-  // Iterate over light theme properties
-  for (const [key, value] of Object.entries(light)) {
-    cssVariables += `  --${LATITUDE_PREFIX}-${key}: ${value};\n`
-  }
-
-  cssVariables += '}\n.dark {\n'
-
-  // Iterate over dark theme properties
-  for (const [key, value] of Object.entries(dark)) {
-    cssVariables += `  --${LATITUDE_PREFIX}-${key}: ${value};\n`
-  }
-
-  cssVariables += '}'
-
-  return cssVariables
+  return `:root {
+${mapThemeToCssVariables(light)}
+}
+.dark {
+${mapThemeToCssVariables(dark)}
+}`
 }

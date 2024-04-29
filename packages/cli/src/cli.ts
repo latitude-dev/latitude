@@ -18,6 +18,8 @@ import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import createTokenCommand from './commands/cloud/tokens/create'
+import addSecretCommand from './commands/cloud/secrets/add'
+import removeSecretCommand from './commands/cloud/secrets/remove'
 import { onError } from './utils'
 
 initSentry()
@@ -92,16 +94,13 @@ CLI.command('setup')
   .describe('Setup the current directory as a Latitude app')
   .action(setupCommand)
 
-CLI.command('credentials')
-  .describe('Manage credentials for the Latitude app')
+CLI.command('credentials add')
+  .describe('Generate a secret master key for ')
   .option(
     '--create-master-key',
-    "Create a master key for the Latitude app. If you didn't had one in your .env file",
+    "Create a master key for the Latitude app. If you didn't had one in your .env file. IMPORTANT: generate a new one when you deploy your app to production.",
   )
-  .option(
-    '--overwrite-master-key',
-    'Create or update a master key. Be careful with this option. If you were already using the old key you will need to change your code.',
-  )
+  .example('credentials add > .env')
   .action(credentialsCommand)
 
 CLI.command('signup').describe('Signup for a new account').action(signupCommand)
@@ -131,6 +130,14 @@ CLI.command('cancel')
 CLI.command('tokens create')
   .describe('Creates an authentication token for Latitude Cloud')
   .action(createTokenCommand)
+CLI.command('secrets add')
+  .describe('Add an environment variable to your Latitude Cloud')
+  .example('secrets add MY_SECRET=some_secret_value OTHER_SECRET=secret')
+  .action(addSecretCommand)
+CLI.command('secrets remove')
+  .describe('Remove an environment variable from your Latitude Cloud')
+  .example('secrets remove MY_SECRET')
+  .action(removeSecretCommand)
 
 async function init() {
   const argv = CLI.parse(process.argv, {

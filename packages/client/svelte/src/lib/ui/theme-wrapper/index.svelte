@@ -15,6 +15,7 @@
   export let theme: $$Props['theme'] = client.skins.defaultTheme
 
   const buildCss = client.skins.buildCssVariables
+  const createTheme = client.skins.createTheme
 
   // This component is used in the real world and in Storybook
   // Storybook does not support SSR,
@@ -29,7 +30,7 @@
     styleTag.innerHTML = styles
   }
 
-  let inlineCss = buildCss($themeConfig ?? theme)
+  let inlineCss = buildCss($themeConfig ?? createTheme(theme!))
 
   $: {
     inlineCss = buildCss($themeConfig)
@@ -51,12 +52,12 @@
 
 <ModeWatcher defaultMode="light" />
 
-<div class={cn({ 'absolute inset-0 p-4 flex flex-col gap-y-4': isStorybook })}>
+<div class={cn({ 'lat-absolute lat-inset-0 lat-p-4 lat-flex lat-flex-col lat-gap-y-4': isStorybook })}>
   {#if isStorybook}
     <ThemeSwitcher />
   {/if}
 
-  <div class="flex items-center justify-center h-full">
+  <div class="lat-flex lat-items-center lat-justify-center lat-h-full">
     <slot />
   </div>
 </div>

@@ -7,12 +7,21 @@ If you need to obfuscate the parameters in the URL, you can sign the parameter `
 
 If you don't see a `.env` file in your project you can run:
 ```bash
-latitude credentials --create-master-key
+latitude credentials add > .env
 ```
+
 This command will create `LATITUDE_MASTER_KEY` in an `.env` file
 ```sh
 LATITUDE_MASTER_KEY=SOME_SECRET_TOKEN
 ```
+
+### A note on security
+It is **crucial** to add your `.env` file to your `.gitignore` before deploying to prevent exposure of your `LATITUDE_MASTER_KEY`.
+
+<Warning>Ensure that you generate a unique `LATITUDE_MASTER_KEY` for the production environment.</Warning>
+
+<Note>If you're using Latitude Cloud, you can store the master key with `latitude secrets add LATITUDE_MASTER_KEY=<key_generated_by_previous_command>`.</Note>
+
 ### Example
 Imagine you want to obfuscate the parameter `workspace_id` to be used in your query like this:
 ```sql

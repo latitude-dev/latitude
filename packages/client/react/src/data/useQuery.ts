@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useLatitude } from '$src/data/LatitudeProvider'
+import { useLatitude } from '$src/data/ApiProvider'
 import { QueryParams, createQueryKey } from '@latitude-data/client'
 import {
   UseQueryOptions,
@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query'
 import { QueryResultPayload } from '@latitude-data/query_result'
 
-type Props = {
+export type QueryRequestProps = {
   queryPath: string
   params?: QueryParams
   tanstaskQueryOptions?: Omit<
@@ -20,7 +20,7 @@ export function useQuery({
   queryPath,
   params = {},
   tanstaskQueryOptions = { enabled: true },
-}: Props) {
+}: QueryRequestProps) {
   const [isComputing, setComputing] = useState(false)
   const [isDownloading, setDownloading] = useState(false)
   const queryClient = useQueryClient()

@@ -16,9 +16,7 @@
   import VisualizationHeader from '../_shared/VisualizationHeader.svelte'
   import BlankSlate from './_BlankSlate.svelte'
   import Error from './_Error.svelte'
-  import { theme as client } from '@latitude-data/client'
-
-  const { cn } = client.utils
+  import { theme } from '@latitude-data/client'
 
   type $$Props = WrapperProps
 
@@ -97,10 +95,10 @@
 </script>
 
 <div
-  class={cn('relative h-full w-full', { 'animate-pulse': isLoading })}
+  class={theme.ui.chart.wrapper.cssClass({ isLoading })}
   style="width: {width}px; height: {height}px"
 >
-  <Card.Root class="h-full" type={cardStyle}>
+  <Card.Root class={theme.ui.chart.wrapper.CARD_CSS_CLASS} type={cardStyle}>
     <VisualizationHeader
       {title}
       {description}

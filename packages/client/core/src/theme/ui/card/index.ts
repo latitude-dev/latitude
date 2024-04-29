@@ -4,20 +4,20 @@ import { cn } from '../../utils'
 type CardType = VariantProps<typeof cardRootVariants>['type']
 
 const cardRootVariants = tv({
-  base: 'rounded-xl bg-card text-card-foreground ',
+  base: 'lat-rounded-xl lat-bg-card lat-text-card-foreground ',
   variants: {
     type: {
-      normal: 'border shadow',
+      normal: 'lat-border lat-shadow',
       invisible: '',
     },
   },
 })
 
 const cardHeaderVariants = tv({
-  base: 'flex flex-col space-y-1.5',
+  base: 'lat-flex lat-flex-col lat-space-y-1.5',
   variants: {
     type: {
-      normal: 'pb-6',
+      normal: 'lat-pb-6',
       invisible: '',
     },
   },
@@ -27,7 +27,7 @@ const cardContentVariants = tv({
   base: '',
   variants: {
     type: {
-      normal: 'p-6 pt-0',
+      normal: 'lat-p-6 lat-pt-0',
       invisible: '',
     },
   },
@@ -45,11 +45,11 @@ export function headerCssClass({ type = 'normal', className }: CardProps) {
 }
 
 export function titleCssClass({ className }: ClassProps) {
-  return cn('font-semibold leading-none tracking-tight', className)
+  return cn('lat-font-semibold lat-leading-none lat-tracking-tight', className)
 }
 
 export function descriptionCssClass({ className }: ClassProps) {
-  return cn('text-sm text-muted-foreground', className)
+  return cn('lat-text-sm lat-text-muted-foreground', className)
 }
 
 export function contentCssClass({ type = 'normal', className }: CardProps) {
@@ -57,5 +57,5 @@ export function contentCssClass({ type = 'normal', className }: CardProps) {
 }
 
 export function footerCssClass({ className }: ClassProps) {
-  return cn('text-sm text-muted-foreground', className)
+  return cn('lat-text-sm lat-text-muted-foreground', className)
 }

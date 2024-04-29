@@ -1,0 +1,76 @@
+---
+title: 'QueryResult'
+description: 'The data returned by the query'
+---
+
+## Introduction
+
+The data returned by the [useQuery](/react/running-queries/use-query) function is an instance of `QueryResult`, which contains the results of the query along with some additional information.
+
+## Properties
+
+<ParamField path="rowCount" type="number">
+  The number of rows returned by the query.
+</ParamField>
+
+<ParamField path="fields" type="Field[]">
+  An array of `Field` objects, each one representing a column in the query result. Each `Field` object has the following properties:
+
+  - `name`: The name of the column.
+  - `type`: The type of the column data.
+
+  The `type` property can be one of the following values: `string`, `integer`, `float`, `boolean`, `datetime`, `null`, `unknown`.
+</ParamField>
+
+<ParamField path="rows" type="unknown[][]">
+  An array of rows returned by the query. Each row is represented by an array of values, where each element in the array corresponds to a field in the query result.
+</ParamField>
+
+## Methods
+
+If you need to export the data into different formats, you can use the following methods:
+
+### `.serialize()`
+
+Serializes the query result into a JavaScript object.
+
+```json
+{
+  "rowCount": 2,
+  "fields": [
+    { "name": "id", "type": "integer" },
+    { "name": "name", "type": "string" }
+  ],
+  "rows": [
+    [1, "Alice"],
+    [2, "Bob"]
+  ]
+}
+```
+
+### `.toJSON()`
+
+Serializes the query result into a JSON string.
+
+```json
+"{\"rowCount\":2,\"fields\":[{\"name\":\"id\",\"type\":\"integer\"},{\"name\":\"name\",\"type\":\"string\"}],\"rows\":[[1,\"Alice\"],[2,\"Bob\"]]}"
+```
+
+### `.toCSV()`
+
+Serializes the query result into a CSV string.
+
+```json
+"id,name \n 1,\"Alice\" \n 2,\"Bob\""
+```
+
+### `.toArray()`
+
+Serializes the query result into an array of objects, where each object represents a row in the query result.
+  
+```json
+[
+  { "id": 1, "name": "Alice" },
+  { "id": 2, "name": "Bob" }
+]
+```

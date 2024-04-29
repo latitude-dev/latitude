@@ -1,16 +1,18 @@
 {
   "name": "@latitude-data/svelte",
-  "version": "0.6.3",
+  "version": "0.7.0-next.5",
   "license": "LGPL",
   "scripts": {
     "build": "pnpm run buildAndPackage",
     "build-storybook": "storybook build",
     "build:vite": "vite build",
-    "buildAndPackage": "pnpm run build:vite && pnpm run package",
-    "dev": "svelte-package --watch",
+    "build:css": "npx tailwindcss -i ./src/assets/app.css -o ./dist/styles.css",
+    "buildAndPackage": "pnpm run build:vite && pnpm run package && pnpm run build:css",
+    "build:svelte": "svelte-package -o dist/lib",
+    "dev": "concurrently \"pnpm run build:css --watch\" \"pnpm run build:svelte --watch\"",
     "dev:vite": "vite dev",
     "lint": "eslint . --max-warnings 0",
-    "package": "pnpm run prepare && svelte-package && publint",
+    "package": "pnpm run prepare && pnpm run build:svelte  && publint",
     "prepare": "svelte-kit sync",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "storybook": "storybook dev -p 6006",
@@ -21,15 +23,16 @@
   "exports": {
     "./tailwind.preset": "./tailwind.config.js",
     "./internal": {
-      "types": "./dist/internal/index.d.ts",
-      "svelte": "./dist/internal/index.js",
-      "default": "./dist/internal/index.js"
+      "types": "./dist/lib/internal/index.d.ts",
+      "svelte": "./dist/lib/internal/index.js",
+      "default": "./dist/lib/internal/index.js"
     },
     ".": {
-      "types": "./dist/index.d.ts",
-      "svelte": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
+      "types": "./dist/lib/index.d.ts",
+      "svelte": "./dist/lib/index.js",
+      "default": "./dist/lib/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
   },
   "typesVersions": {
     ">4.0": {
@@ -83,6 +86,7 @@
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@types/echarts": "^4.9.22",
     "@types/eslint": "8.56.0",
+    "concurrently": "^8.2.2",
     "eslint-plugin-storybook": "^0.6.15",
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
@@ -90,6 +94,7 @@
     "publint": "^0.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "rollup-plugin-postcss": "^4.0.2",
     "storybook": "^7.6.17",
     "storybook-addon-deep-controls": "^0.6.0",
     "svelte": "^4.2.7",

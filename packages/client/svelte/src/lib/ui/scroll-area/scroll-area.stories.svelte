@@ -32,10 +32,10 @@
 </script>
 
 <Template let:args>
-  <div class="h-full w-full flex items-center justify-center">
+  <div class="lat-h-full lat-w-full lat-flex lat-items-center lat-justify-center">
     <ScrollArea {...args}>
-      <div class="h-[500px] w-[500px]" style="background: linear-gradient(to bottom right, blue, red);">
-        <div class="p-2 text-white">Scroll me</div>
+      <div class="lat-h-[500px] lat-w-[500px]" style="background: linear-gradient(to bottom right, blue, red);">
+        <div class="lat-p-2 lat-text-white">Scroll me</div>
       </div>
     </ScrollArea>
   </div>
@@ -45,6 +45,6 @@
   orientation: 'both',
   scrollbarXClasses: "",
   scrollbarYClasses: "",
-  class: "h-[200px] w-[200px] rounded-lg",
+  class: "lat-h-[200px] lat-w-[200px] lat-rounded-lg",
 }}>
 </Story>
