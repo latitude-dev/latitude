@@ -23,24 +23,25 @@ export type Variant = VariantProps<typeof buttonVariants>['variant']
 export type Size = VariantProps<typeof buttonVariants>['size']
 
 export const buttonVariants = tv({
-  base: 'inline-flex items-center justify-center rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+  base: 'lat-inline-flex lat-items-center lat-justify-center lat-rounded-md lat-text-sm lat-font-medium lat-whitespace-nowrap lat-transition-colors focus-visible:lat-outline-none focus-visible:lat-ring-1 focus-visible:lat-ring-ring disabled:lat-pointer-events-none disabled:lat-opacity-50',
   variants: {
     variant: {
-      default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',
+      default:
+        'lat-bg-primary lat-text-primary-foreground lat-shadow hover:lat-bg-primary/90',
       destructive:
-        'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+        'lat-bg-destructive lat-text-destructive-foreground lat-shadow-sm hover:lat-bg-destructive/90',
       outline:
-        'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
+        'lat-border lat-border-input lat-bg-background lat-shadow-sm hover:lat-bg-accent hover:lat-text-accent-foreground',
       secondary:
-        'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
-      ghost: 'hover:bg-accent hover:text-accent-foreground',
-      link: 'text-primary underline-offset-4 hover:underline',
+        'lat-bg-secondary lat-text-secondary-foreground lat-shadow-sm hover:lat-bg-secondary/80',
+      ghost: 'hover:lat-bg-accent hover:lat-text-accent-foreground',
+      link: 'lat-text-primary lat-underline-offset-4 hover:lat-underline',
     },
     size: {
-      default: 'h-9 px-4 py-2',
-      sm: 'h-8 rounded-md px-3 text-xs',
-      lg: 'h-10 rounded-md px-8',
-      icon: 'h-9 w-9',
+      default: 'lat-h-9 lat-px-4 lat-py-2',
+      sm: 'lat-h-8 lat-rounded-md lat-px-3 lat-text-xs',
+      lg: 'lat-h-10 lat-rounded-md lat-px-8',
+      icon: 'lat-h-9 lat-w-9',
     },
   },
   defaultVariants: {

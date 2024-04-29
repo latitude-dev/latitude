@@ -20,7 +20,7 @@
   {transitionConfig}
   {sideOffset}
   class={cn(
-    "z-50 overflow-hidden rounded-md bg-primary px-3 py-1.5 text-xs text-primary-foreground",
+    "lat-z-50 lat-overflow-hidden lat-rounded-md lat-bg-primary lat-px-3 lat-py-1.5 lat-text-xs lat-text-primary-foreground",
     className
   )}
   {...$$restProps}

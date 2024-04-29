@@ -1,8 +1,8 @@
 export const weights = {
-  normal: 'font-normal',
-  medium: 'font-medium',
-  semibold: 'font-semibold',
-  bold: 'font-bold',
+  normal: 'lat-font-normal',
+  medium: 'lat-font-medium',
+  semibold: 'lat-font-semibold',
+  bold: 'lat-font-bold',
 }
 
 export type FontWeight = keyof typeof weights

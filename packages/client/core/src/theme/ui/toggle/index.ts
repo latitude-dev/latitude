@@ -22,17 +22,17 @@ export type Variant = VariantProps['variant']
 export type Size = VariantProps['size']
 
 export const toggleVariants = tv({
-  base: 'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-muted hover:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 data-[state=on]:bg-accent data-[state=on]:text-accent-foreground',
+  base: 'lat-inline-flex lat-items-center lat-justify-center lat-rounded-md lat-text-sm lat-font-medium lat-transition-colors hover:lat-bg-muted hover:lat-text-muted-foreground focus-visible:lat-outline-none focus-visible:lat-ring-1 focus-visible:lat-ring-ring disabled:lat-pointer-events-none disabled:lat-opacity-50 data-[state=on]:lat-bg-accent data-[state=on]:lat-text-accent-foreground',
   variants: {
     variant: {
-      default: 'bg-transparent',
+      default: 'lat-bg-transparent',
       outline:
-        'border border-input bg-transparent shadow-sm hover:bg-accent hover:text-accent-foreground',
+        'lat-border lat-border-input lat-bg-transparent lat-shadow-sm hover:lat-bg-accent hover:lat-text-accent-foreground',
     },
     size: {
-      default: 'h-9 px-3',
-      sm: 'h-8 px-2',
-      lg: 'h-10 px-3',
+      default: 'lat-h-9 lat-px-3',
+      sm: 'lat-h-8 lat-px-2',
+      lg: 'lat-h-10 lat-px-3',
     },
   },
   defaultVariants: {
