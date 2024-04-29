@@ -1,5 +1,11 @@
 # @latitude-data/source-manager
 
+## 0.1.1
+
+### Patch Changes
+
+- 61916ed: fixes regression that caused nested queries to not be found
+
 ## 0.1.0
 
 ### Minor Changes
