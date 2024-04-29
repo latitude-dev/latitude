@@ -18,8 +18,8 @@
 
 <DropdownMenuPrimitive.SubTrigger
   class={cn(
-    "flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[highlighted]:bg-accent data-[state=open]:bg-accent data-[highlighted]:text-accent-foreground data-[state=open]:text-accent-foreground",
-    inset && "pl-8",
+    "lat-flex cursor-default lat-select-none lat-items-center lat-rounded-sm lat-px-2 lat-py-1.5 lat-text-sm outline-none data-[highlighted]:lat-bg-accent data-[state=open]:lat-bg-accent data-[highlighted]:lat-text-accent-foreground data-[state=open]:lat-text-accent-foreground",
+    inset && "lat-pl-8",
     className
   )}
   {...$$restProps}
@@ -31,5 +31,5 @@
   on:pointermove
 >
   <slot />
-  <ChevronRight class="ml-auto h-4 w-4" />
+  <ChevronRight class="lat-ml-auto lat-h-4 lat-w-4" />
 </DropdownMenuPrimitive.SubTrigger>

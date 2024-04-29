@@ -1,5 +1,8 @@
 import { cn } from '../../../utils'
 
 export function cssClass({ className }: { className?: string | null }) {
-  return cn('relative flex w-full items-center justify-between pt-1', className)
+  return cn(
+    'lat-relative lat-flex lat-w-full lat-items-center lat-justify-between lat-pt-1',
+    className,
+  )
 }
