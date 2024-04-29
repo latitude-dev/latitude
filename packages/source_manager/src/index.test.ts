@@ -47,10 +47,10 @@ describe('SourceManager', () => {
     const connector1 = await sourceManager.loadFromQuery(query1Path)
     const connector2 = await sourceManager.loadFromQuery(query2Path)
     expect(readFileSpy).toHaveBeenCalledOnce() // Only read config file once
-    expect(connector1).toBe(connector2)
+    expect(connector1.source).toBe(connector2.source)
 
-    await connector1.compileQuery({ queryPath: query1Path })
-    await connector1.compileQuery({ queryPath: query2Path })
+    await connector1.source.compileQuery({ queryPath: query1Path })
+    await connector1.source.compileQuery({ queryPath: query2Path })
     expect(mockCreateConnector).toHaveBeenCalledOnce() // Only instanced once
   })
 })
@@ -79,14 +79,14 @@ describe('loadFromQuery', () => {
 
   it('finds and loads the source from any query in the same directory', async () => {
     const sourceManager = new SourceManager('/path/to/queries')
-    const connector = await sourceManager.loadFromQuery('query')
+    const { source: connector } = await sourceManager.loadFromQuery('query')
     expect(connector).toBeDefined()
   })
 
   it('finds and loads the source from any query in a nested directory', async () => {
     const sourceManager = new SourceManager('/path/to/queries')
-    const connector = await sourceManager.loadFromQuery('query')
-    const nestedConnector =
+    const { source: connector } = await sourceManager.loadFromQuery('query')
+    const { source: nestedConnector } =
       await sourceManager.loadFromQuery('nestedQuery/query')
     expect(connector).toBeDefined()
     expect(nestedConnector).toBeDefined()
@@ -95,8 +95,8 @@ describe('loadFromQuery', () => {
 
   it('finds and loads the source from a query in a nested directory with a source file', async () => {
     const sourceManager = new SourceManager('/path/to/queries')
-    const connector = await sourceManager.loadFromQuery('query')
-    const nestedConnector =
+    const { source: connector } = await sourceManager.loadFromQuery('query')
+    const { source: nestedConnector } =
       await sourceManager.loadFromQuery('nestedSource/query')
     expect(connector).toBeDefined()
     expect(nestedConnector).toBeDefined()

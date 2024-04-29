@@ -1,15 +1,14 @@
 import cache from './query_cache'
-import sourceManager from '$lib/server/sourceManager'
+import sourceManager, { QUERIES_DIR } from '$lib/server/sourceManager'
 import QueryResult from '@latitude-data/query_result'
 import { CompiledQuery } from '@latitude-data/base-connector'
+import path from 'path'
 
 type Props = {
   query: string
   queryParams: Record<string, unknown>
   force: boolean
 }
-
-export const QUERIES_DIR = 'static/.latitude/queries'
 
 export default async function findOrCompute({
   query,
@@ -19,15 +18,18 @@ export default async function findOrCompute({
   queryResult: QueryResult
   compiledQuery: CompiledQuery
 }> {
-  const source = await sourceManager.loadFromQuery(query)
+  const { source, sourceFilePath } = await sourceManager.loadFromQuery(query)
   const compiledQuery = await source.compileQuery({
-    queryPath: query,
+    queryPath: computeRelativeQueryPath({
+      queryPath: query,
+      sourcePath: sourceFilePath,
+    }),
     params: queryParams,
   })
 
   const request = {
     queryPath: compiledQuery.sql,
-    params: compiledQuery.accessedParams, // Only cache the params that were accessed, not all the params passed in
+    params: compiledQuery.accessedParams,
   }
 
   const compute = async () => {
@@ -48,4 +50,20 @@ export default async function findOrCompute({
     queryResult,
     compiledQuery,
   }
+}
+
+export function computeRelativeQueryPath({
+  sourcePath, // /static/.latitude/queries/folder/source.yml
+  queryPath, // folder/query.sql
+}: {
+  sourcePath: string
+  queryPath: string
+}) {
+  const base = path
+    .dirname(sourcePath) // /static/.latitude/queries/folder
+    .slice(sourcePath.indexOf(QUERIES_DIR) + QUERIES_DIR.length + 1) // folder
+
+  if (!base) return queryPath
+
+  return queryPath.slice(queryPath.indexOf(base) + base.length + 1) // query.sql
 }

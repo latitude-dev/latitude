@@ -39,7 +39,7 @@ async function runQuery(
   debug = false,
 ) {
   try {
-    const source = await sourceManager.loadFromQuery(query)
+    const { source } = await sourceManager.loadFromQuery(query)
     const compiledQuery = await source.compileQuery({
       queryPath: query,
       params,
