@@ -51,12 +51,12 @@
 
 <ModeWatcher defaultMode="light" />
 
-<div class={cn({ 'absolute inset-0 p-4 flex flex-col gap-y-4': isStorybook })}>
+<div class={cn({ 'lat-absolute inset-0 p-4 lat-flex lat-flex-col lat-gap-y-4': isStorybook })}>
   {#if isStorybook}
     <ThemeSwitcher />
   {/if}
 
-  <div class="flex items-center justify-center h-full">
+  <div class="lat-flex lat-items-center lat-justify-center lat-h-full">
     <slot />
   </div>
 </div>
