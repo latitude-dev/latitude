@@ -8,3 +8,4 @@ packages/client/webcomponents/src/components/latitude-embed/readme.md
 packages/client/webcomponents/src/components.d.ts
 node_modules
 docs
+*.md
