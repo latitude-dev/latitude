@@ -4,7 +4,7 @@ import { zIndexes } from '../tokens/zIndex'
 export function cssClass({ className }: { className?: string | null }) {
   return cn(
     zIndexes.popover,
-    'lat-w-72 lat-rounded-md lat-border lat-bg-popover lat-p-4 lat-text-popover-foreground lat-shadow-md lat-outline-none',
+    'w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none',
     className,
   )
 }

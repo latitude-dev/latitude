@@ -33,13 +33,13 @@ export function cssClass({
   return {
     properties: { foreground },
     root: cn(
-      'lat-flex lat-flex-row lat-justify-between ',
-      ' lat-py-2.5 lat-px-4 lat-rounded-lg lat-gap-4',
+      'flex flex-row justify-between ',
+      ' py-2.5 px-4 rounded-lg gap-4',
       cssBgColor,
       className,
       {
-        'lat-items-start lat-overflow-y-auto custom-scrollbar': scrollable,
-        'lat-items-center': !scrollable,
+        'items-start overflow-y-auto custom-scrollbar': scrollable,
+        'items-center': !scrollable,
       },
     ),
   }

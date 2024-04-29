@@ -97,10 +97,10 @@
 </script>
 
 <div
-  class={cn('relative lat-h-full lat-w-full', { 'animate-pulse': isLoading })}
+  class={cn('relative h-full w-full', { 'animate-pulse': isLoading })}
   style="width: {width}px; height: {height}px"
 >
-  <Card.Root class="lat-h-full" type={cardStyle}>
+  <Card.Root class="h-full" type={cardStyle}>
     <VisualizationHeader
       {title}
       {description}

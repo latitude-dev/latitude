@@ -7,14 +7,14 @@
 
 <DropdownMenu.Root>
   <DropdownMenu.Trigger asChild let:builder>
-    <Button builders={[builder]} variant="outline" class="lat-relative lat-w-9 lat-px-0">
+    <Button builders={[builder]} variant="outline" class="w-9 px-0">
       <Sun
-        class="lat-absolute dark:-lat-rotate-90 lat-h-[1.2rem] lat-w-[1.2rem] lat-rotate-0 lat-scale-100 lat-transition-all dark:lat-scale-0"
+        class="dark:-roate-90 h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:scale-0"
       />
       <Moon
-        class="lat-absolute lat-h-[1.2rem] lat-w-[1.2rem] lat-rotate-90 lat-scale-0 lat-transition-all dark:lat-rotate-0 dark:lat-scale-100"
+        class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
       />
-      <span class="lat-sr-only">Toggle theme</span>
+      <span class="sr-only">Toggle theme</span>
     </Button>
   </DropdownMenu.Trigger>
   <DropdownMenu.Content align="end">

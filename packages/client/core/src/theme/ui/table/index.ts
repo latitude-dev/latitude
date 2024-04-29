@@ -4,56 +4,50 @@ type Props = { className?: string | null | undefined }
 
 function containerCssClass({ className }: Props) {
   return cn(
-    'lat-border lat-rounded-md lat-w-full lat-h-full lat-overflow-auto lat-whitespace-nowrap',
+    'border rounded-md w-full h-full overflow-auto whitespace-nowrap',
     className,
   )
 }
 
 function tableCssClass({ className }: Props) {
-  return cn(
-    'lat-w-full lat-caption-bottom lat-text-sm lat-table-auto',
-    className,
-  )
+  return cn('w-full caption-bottom text-sm table-auto', className)
 }
 
 function tableRowCssClass({ className }: Props) {
   return cn(
-    'lat-border-b lat-transition-colors hover:lat-bg-muted/50 data-[state=selected]:lat-bg-muted',
+    'border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted',
     className,
   )
 }
 
 function tableHeaderCssClass({ className }: Props) {
-  return cn('[&_tr]:lat-border-b', className)
+  return cn('[&_tr]:border-b', className)
 }
 
 function tableHeadCssClass({ className }: Props) {
   return cn(
-    'lat-h-10 lat-px-2 lat-text-left lat-align-middle lat-font-medium lat-text-muted-foreground [&:has([role=checkbox])]:lat-pr-0 [&>[role=checkbox]]:lat-translate-y-[2px]',
+    'h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
     className,
   )
 }
 
 function tableFooterCssClass({ className }: Props) {
-  return cn(
-    'lat-bg-primary lat-font-medium lat-text-primary-foreground',
-    className,
-  )
+  return cn('bg-primary font-medium text-primary-foreground', className)
 }
 
 function tableCellCssClass({ className }: Props) {
   return cn(
-    'lat-p-2 lat-align-middle [&:has([role=checkbox])]:lat-pr-0 [&>[role=checkbox]]:lat-translate-y-[2px]',
+    'p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
     className,
   )
 }
 
 function tableCaptionCssClass({ className }: Props) {
-  return cn('lat-mt-4 lat-text-sm lat-text-muted-foreground', className)
+  return cn('mt-4 text-sm text-muted-foreground', className)
 }
 
 function tableBodyCssClass({ className }: Props) {
-  return cn('[&_tr:last-child]:lat-border-0', className)
+  return cn('[&_tr:last-child]:border-0', className)
 }
 
 export default {

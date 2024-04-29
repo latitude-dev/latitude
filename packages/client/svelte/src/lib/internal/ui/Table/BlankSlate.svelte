@@ -10,28 +10,28 @@
   export let data: QueryResult | null | undefined
   export let height: number | string = '100%'
 
-  $: classes = cn('relative lat-h-full lat-w-full', { 'animate-pulse': loading })
+  $: classes = cn('relative h-full w-full', { 'animate-pulse': loading })
 </script>
 
 <div class={classes}>
   {#if !data && loading}
     <div
-      class="lat-flex lat-w-full lat-flex-col lat-gap-4 lat-overflow-hidden"
+      class="flex w-full flex-col gap-4 overflow-hidden"
       style="max-height: {height};"
     >
-      <div class="lat-grid lat-grid-cols-4 lat-gap-4 lat-rounded-lg lat-bg-muted p-4">
+      <div class="grid grid-cols-4 gap-4 rounded-lg bg-muted p-4">
         <!-- eslint-disable-next-line -->
         {#each Array(4) as _, i (i)}
           <div
-            class="animate-gradient lat-h-4 lat-rounded-full lat-bg-gradient-to-r from-muted via-white to-muted"
+            class="animate-gradient h-4 rounded-full bg-gradient-to-r from-muted via-white to-muted"
           />
         {/each}
       </div>
-      <div class="lat-grid lat-grid-cols-4 lat-gap-4">
+      <div class="grid grid-cols-4 gap-4">
         <!-- eslint-disable-next-line -->
         {#each Array(120) as _}
           <div
-            class="animate-gradient lat-h-4 lat-rounded-full lat-bg-gradient-to-r from-muted via-white to-muted"
+            class="animate-gradient h-4 rounded-full bg-gradient-to-r from-muted via-white to-muted"
           />
         {/each}
       </div>

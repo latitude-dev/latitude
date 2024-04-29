@@ -2,50 +2,50 @@ import { cn } from '../../utils'
 import { colors, weights, FontWeight, TextColor } from '../tokens'
 
 export const families = {
-  sans: 'lat-font-sans',
-  serif: 'lat-font-serif',
+  sans: 'font-sans',
+  serif: 'font-serif',
 }
 
 export const leadings = {
-  h1: ' lat-leading-[3rem]',
-  h2: ' lat-leading-10',
-  h3: ' lat-leading-8',
-  h4: ' lat-leading-6',
-  h5: ' lat-leading-5',
-  h6: ' lat-leading-4',
-  none: 'lat-leading-none',
+  h1: ' leading-[3rem]',
+  h2: ' leading-10',
+  h3: ' leading-8',
+  h4: ' leading-6',
+  h5: ' leading-5',
+  h6: ' leading-4',
+  none: 'leading-none',
 }
 
 export const sizes = {
-  h1: 'lat-text-4xl',
-  h2: 'lat-text-2xl',
-  h3: 'lat-text-xl',
-  h4: 'lat-text-normal',
-  h5: 'lat-text-sm',
-  h6: 'lat-text-xs',
+  h1: 'text-4xl',
+  h2: 'text-2xl',
+  h3: 'text-xl',
+  h4: 'text-normal',
+  h5: 'text-sm',
+  h6: 'text-xs',
 }
 
 export const spacings = {
-  normal: 'lat-tracking-normal',
-  wide: 'lat-tracking-wide',
+  normal: 'tracking-normal',
+  wide: 'tracking-wide',
 }
 export const alignments = {
-  left: 'lat-text-left',
-  center: 'lat-text-center',
-  right: 'lat-text-right',
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
 }
 export const wordBreaks = {
-  normal: 'lat-break-normal',
-  breakWord: 'lat-break-words',
-  breakAll: 'lat-break-all',
+  normal: 'break-normal',
+  breakWord: 'break-words',
+  breakAll: 'break-all',
 }
 
 export const whiteSpaces = {
-  normal: 'lat-whitespace-normal',
-  nowrap: 'lat-whitespace-nowrap',
-  pre: 'lat-whitespace-pre',
-  preLine: 'lat-whitespace-pre-line',
-  preWrap: 'lat-whitespace-pre-wrap',
+  normal: 'whitespace-normal',
+  nowrap: 'whitespace-nowrap',
+  pre: 'whitespace-pre',
+  preLine: 'whitespace-pre-line',
+  preWrap: 'whitespace-pre-wrap',
 }
 
 export type FontSize = keyof typeof sizes
@@ -119,12 +119,12 @@ export function cssClass({
     wordBreakClass,
     whiteSpaceClass,
     {
-      'lat-uppercase': uppercase,
-      'lat-capitalize': capitalize,
-      'lat-underline': underline,
-      'lat-line-through': lineThrough,
-      'lat-text-center': centered,
-      'lat-truncate': ellipsis,
+      uppercase,
+      capitalize,
+      underline,
+      'line-through': lineThrough,
+      'text-center': centered,
+      truncate: ellipsis,
     },
     className,
   )

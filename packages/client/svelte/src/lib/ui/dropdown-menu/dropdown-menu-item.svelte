@@ -17,8 +17,8 @@
 
 <DropdownMenuPrimitive.Item
   class={cn(
-    "lat-relative lat-flex cursor-default lat-select-none lat-items-center lat-rounded-sm lat-px-2 lat-py-1.5 lat-text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:lat-bg-accent data-[highlighted]:lat-text-accent-foreground data-[disabled]:opacity-50",
-    inset && "lat-pl-8",
+    "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
+    inset && "pl-8",
     className
   )}
   on:click

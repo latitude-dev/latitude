@@ -17,7 +17,7 @@
 <DropdownMenuPrimitive.CheckboxItem
   bind:checked
   class={cn(
-    "lat-relative lat-flex cursor-default lat-select-none lat-items-center lat-rounded-sm lat-py-1.5 lat-pl-8 lat-pr-2 lat-text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:lat-bg-accent data-[highlighted]:lat-text-accent-foreground data-[disabled]:opacity-50",
+    "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[disabled]:opacity-50",
     className
   )}
   {...$$restProps}
@@ -29,9 +29,9 @@
   on:pointerleave
   on:pointermove
 >
-  <span class="lat-absolute lat-left-2 lat-flex lat-h-3.5 lat-w-3.5 lat-items-center lat-justify-center">
+  <span class="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
     <DropdownMenuPrimitive.CheckboxIndicator>
-      <Check class="lat-h-4 lat-w-4" />
+      <Check class="h-4 w-4" />
     </DropdownMenuPrimitive.CheckboxIndicator>
   </span>
   <slot />
