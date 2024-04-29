@@ -41,7 +41,9 @@ export default async function getLatitudeVersions({
 
       let versions: string[] | undefined = undefined
       try {
-        versions = JSON.parse(stdout).filter((v: string) => !v.includes('next'))
+        versions = JSON.parse(stdout)?.filter(
+          (v: string) => !v.includes('next'),
+        )
       } catch (e) {
         reject(e)
       }
