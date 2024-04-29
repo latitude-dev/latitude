@@ -18,7 +18,7 @@
   {transitionConfig}
   {sideOffset}
   class={cn(
-    "lat-z-50 lat-min-w-[8rem] lat-rounded-md lat-border lat-bg-popover p-1 lat-text-popover-foreground shadow-md focus:outline-none",
+    "z-50 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-md focus:outline-none",
     className
   )}
   {...$$restProps}

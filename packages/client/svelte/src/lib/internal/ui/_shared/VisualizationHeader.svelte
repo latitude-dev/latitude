@@ -14,8 +14,8 @@
 
 {#if title || description || download}
   <Card.Header type={headerType} action={headerAction}>
-    <Row class="lat-gap-6">
-      <Column class="lat-flex-1 lat-gap-2">
+    <Row class="gap-6">
+      <Column class="flex-1 gap-2">
         {#if title}
           <Card.Title>{title}</Card.Title>
         {/if}

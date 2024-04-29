@@ -8,11 +8,11 @@ export function cssClass({
   orientation: 'horizontal' | 'vertical'
 }) {
   return cn(
-    'lat-flex touch-none lat-select-none lat-transition-colors',
+    'flex touch-none select-none transition-colors',
     orientation === 'vertical' &&
-      'lat-h-full lat-w-2.5 lat-border-l lat-border-l-transparent lat-p-px',
+      'h-full w-2.5 border-l border-l-transparent p-px',
     orientation === 'horizontal' &&
-      'lat-h-2.5 lat-w-full lat-border-t lat-border-t-transparent lat-p-px',
+      'h-2.5 w-full border-t border-t-transparent p-px',
     className,
   )
 }
@@ -23,7 +23,7 @@ export function thumbCssClass({
   orientation: 'horizontal' | 'vertical'
 }) {
   return cn(
-    'lat-relative lat-rounded-full lat-bg-border',
-    orientation === 'vertical' && 'lat-flex-1',
+    'relative rounded-full bg-border',
+    orientation === 'vertical' && 'flex-1',
   )
 }

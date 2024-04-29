@@ -52,6 +52,6 @@
     placeholder: 'Select an option',
     searchPlaceholder: 'Search...',
     emptyMessage: 'No items found.',
-    class: 'lat-w-[200px]',
+    class: 'w-[200px]',
   }}
 />

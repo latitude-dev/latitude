@@ -104,7 +104,7 @@ const calculateDimensionsText = (
   span.style.font = AXIS_NAME_STYLES.fontFamily
   span.style.fontSize = `${textObject.fontSize}px`
   span.style.top = '0px'
-  span.style.position = 'lat-absolute'
+  span.style.position = 'absolute'
   span.style.whiteSpace = 'no-wrap'
   span.innerHTML = textObject.text
 

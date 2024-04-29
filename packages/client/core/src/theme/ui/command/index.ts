@@ -2,7 +2,7 @@ import { cn } from '../../utils'
 
 export function cssClass({ className }: { className?: string | null }) {
   return cn(
-    'lat-flex lat-h-full lat-w-full lat-flex-col lat-overflow-hidden lat-rounded-md lat-bg-popover lat-text-popover-foreground',
+    'flex h-full w-full flex-col overflow-hidden rounded-md bg-popover text-popover-foreground',
     className,
   )
 }

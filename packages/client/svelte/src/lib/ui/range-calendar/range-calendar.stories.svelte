@@ -42,9 +42,9 @@
 </script>
 
 <Template let:args>
-  <div class="lat-flex lat-flex-col lat-justify-center lat-gap-8">
-    <div class="lat-flex lat-w-[250px] p-2 lat-rounded-md lat-text-primary-foreground lat-bg-secondary-foreground">
-      <div class="lat-ml-4">{label}</div>
+  <div class="flex flex-col justify-center gap-8">
+    <div class="flex w-[250px] p-2 rounded-md text-primary-foreground bg-secondary-foreground">
+      <div class="ml-4">{label}</div>
     </div>
     <RangeCalendar {value} {onValueChange} {...args} />
   </div>
