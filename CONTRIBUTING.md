@@ -141,7 +141,8 @@ To make a pre-release, follow these steps:
 
 1. Switch to the `next` branch and run `git rebase main` to ensure it's up to date with the latest package versions.
 2. Branch off `next` for your changes.
-3. Create a changeset for your modifications using `pnpm changeset pre next`. The `next` tag specifies that this version will be published on npmjs.com.
+3. Enter the pre release mode by running `pnpm changeset pre enter next`.
+3. Create a changeset for your modifications using `pnpm changeset`.
 4. Open a pull request on GitHub targeting the `next` branch.
 
 Once the pull request is merged, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `next`, triggering the publication of a pre-release.
