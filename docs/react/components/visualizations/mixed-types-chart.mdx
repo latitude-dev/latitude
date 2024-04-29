@@ -1,0 +1,73 @@
+---
+title: 'Mixed Chart'
+description: 'How to create and configure the Mixed chart'
+---
+import ReactChartProperties from '/snippets/charts/react-properties.mdx'
+import MixedChartIframe from '/snippets/charts/mixed-chart/iframe.mdx'
+
+<MixedChartIframe />
+
+## Introduction
+A mixed chart combines different chart types (for example, bars and lines) to present complementary data and give more context in a single visualization.
+
+## Syntax
+
+You can use either `MixedChart` or `QueryMixedChart` to visualize query results in a chart.
+
+Use **QueryMixedChart** when you want the component to automatically handle the query fetching.
+
+Use **MixedChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+
+<CodeGroup>
+```tsx QueryMixedChart
+import { QueryMixedChart } from '@latitude-data/react';
+
+function MyComponent() {
+  return (
+    <QueryMixedChart
+      queryPath='titles'
+      params={{
+        start_year: 2010,
+        end_year: 2014
+      }}
+      x='release_year'
+      y={[
+        {name: 'count_shows', chartType: 'bar'},
+        {name: 'count_movies', chartType: 'line'}
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+```tsx MixedChart
+import { MixedChart, useQuery } from '@latitude-data/react';
+
+function MyComponent() {
+  const { data, isLoading } = useQuery({
+    queryPath: 'titles'
+    params: {
+      start_year: 2010,
+      end_year: 2014
+    }
+  });
+
+  return (
+    <MixedChart
+      data={data}
+      isLoading={isLoading}
+      x='release_year'
+      y={[
+        {name: 'count_shows', chartType: 'bar'},
+        {name: 'count_movies', chartType: 'line'}
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+</CodeGroup>
+
+<ReactChartProperties />

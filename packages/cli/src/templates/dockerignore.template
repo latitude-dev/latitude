@@ -1,5 +1,6 @@
 .git*
 .latitude
+.env
 README.md
 build
 fly.toml

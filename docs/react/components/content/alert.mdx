@@ -1,0 +1,36 @@
+---
+title: 'Alert'
+description: 'Display a message to the user'
+---
+
+import AlertIframe from '/snippets/components/alert/iframe.mdx'
+import AlertProperties from '/snippets/components/alert/properties.mdx'
+
+<AlertIframe />
+
+## Introduction
+
+Use the `<Alert>` component to display a message to the user. The component can be used to display a success, warning, or error message.
+
+## Usage
+
+To use `<Alert>` in your React component, import it from `@latitude-data/react` and include it in your component as follows:
+
+```tsx
+import { Alert } from '@latitude-data/react';
+
+const MyComponent = () => (
+  <Alert
+    type='note'
+    secondary={true}
+    centerText={false}
+    fontWeight='medium'
+  >
+    Your text here for the alert
+  </Alert>
+);
+```
+
+## Properties
+
+<AlertProperties />

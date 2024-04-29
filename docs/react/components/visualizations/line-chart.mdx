@@ -1,0 +1,73 @@
+---
+title: 'Line Chart'
+description: 'How to create and configure the Line chart'
+---
+import ReactChartProperties from '/snippets/charts/react-properties.mdx'
+import LineChartIframe from '/snippets/charts/line-chart/iframe.mdx'
+
+<LineChartIframe />
+
+## Introduction
+The Line chart plots data points connected by straight lines to visualize trends over time or categories. It's helpful for showing changes and patterns, making it ideal for comparing different data sets and forecasting future values.
+
+## Syntax
+
+You can use either `LineChart` or `QueryLineChart` to visualize query results in a chart.
+
+Use **QueryLineChart** when you want the component to automatically handle the query fetching.
+
+Use **LineChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+
+<CodeGroup>
+```tsx QueryLineChart
+import { QueryLineChart } from '@latitude-data/react';
+
+function MyComponent() {
+  return (
+    <QueryLineChart
+      queryPath='titles'
+      params={{
+        start_year: 2012,
+        end_year: 2014
+      }}
+      x='release_year'
+      y={[
+        { name: 'count_shows' },
+        { name: 'count_movies' }
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+```tsx LineChart
+import { LineChart, useQuery } from '@latitude-data/react';
+
+function MyComponent() {
+  const { data, isLoading } = useQuery({
+    queryPath: 'titles'
+    params: {
+      start_year: 2012,
+      end_year: 2014
+    }
+  });
+
+  return (
+    <LineChart
+      data={data}
+      isLoading={isLoading}
+      x='release_year'
+      y={[
+        { name: 'count_shows' },
+        { name: 'count_movies' }
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+</CodeGroup>
+
+<ReactChartProperties />

@@ -11,7 +11,13 @@
 <script lang="ts">
   import Echart from './_Echarts.svelte'
   import { theme } from '@latitude-data/client'
+  import { themeConfig } from '$lib/ui/theme-wrapper/store'
+  import { mode } from 'mode-watcher'
+  import { derived } from 'svelte/store'
   const generate = theme.ui.chart.generateFunnelConfig
+  const visualMapColor = derived([themeConfig, mode], ([$themeConfig, $mode]) => {
+    return ($mode === 'dark' ? $themeConfig.dark.echarts.visualMapColor : $themeConfig.echarts.visualMapColor) as string[]
+  });
 
   type $$Props = FunnelChartProps
   export let data: $$Props['data'] = null
@@ -58,6 +64,7 @@
       showLabels,
       showDecal,
       showLegend,
+      visualMapColor: $visualMapColor,
     })}
     {width}
     {locale}

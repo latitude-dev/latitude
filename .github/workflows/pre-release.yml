@@ -36,5 +36,11 @@ jobs:
         with:
           publish: pnpm release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLI_SENTRY_DSN: ${{ secrets.CLI_SENTRY_DSN }}
+          CLI_SENTRY_ENABLED: 'true'
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          LATITUDE_SERVER_HOST: ${{ secrets.LATITUDE_SERVER_HOST }}
+          LATITUDE_SERVER_PORT: ${{ secrets.LATITUDE_SERVER_PORT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TELEMETRY_CLIENT_KEY: ${{ secrets.TELEMETRY_CLIENT_KEY }}
+          TELEMETRY_URL: ${{ secrets.TELEMETRY_URL }}

@@ -40,11 +40,11 @@ jobs:
           # This expects us to have a script called release which does a build for our packages and calls changeset publish
           publish: pnpm release
         env:
-          LATITUDE_SERVER_HOST: ${{ secrets.LATITUDE_SERVER_HOST }}
-          LATITUDE_SERVER_PORT: ${{ secrets.LATITUDE_SERVER_PORT }}
-          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          TELEMETRY_URL: ${{ secrets.TELEMETRY_URL }}
-          TELEMETRY_CLIENT_KEY: ${{ secrets.TELEMETRY_CLIENT_KEY }}
           CLI_SENTRY_DSN: ${{ secrets.CLI_SENTRY_DSN }}
           CLI_SENTRY_ENABLED: 'true'
+          GITHUB_TOKEN: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
+          LATITUDE_SERVER_HOST: ${{ secrets.LATITUDE_SERVER_HOST }}
+          LATITUDE_SERVER_PORT: ${{ secrets.LATITUDE_SERVER_PORT }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TELEMETRY_CLIENT_KEY: ${{ secrets.TELEMETRY_CLIENT_KEY }}
+          TELEMETRY_URL: ${{ secrets.TELEMETRY_URL }}
