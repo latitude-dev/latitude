@@ -1,0 +1,71 @@
+---
+title: 'useQuery'
+description: 'How to run queries from your React app'
+---
+
+## Introduction
+
+Although there are some components that can run queries automatically, you can also run them manually from your React app, and do whatever you want with the results.
+
+## Running queries
+
+To run a query from your React app, you can use the provided `useQuery` function.
+
+This function has the following options:
+
+### Properties
+
+<ParamField path="queryPath" type="string" required>
+  The path of the query you want to run.
+</ParamField>
+
+<ParamField path="params" type="object">
+  The variables you want to pass to the query.
+</ParamField>
+
+[See the Queries section](/queries/basics/file-structure) to learn more about the query configuration.
+
+### Returned attributes
+
+<ParamField path="data" type="QueryResult | null">
+  The data returned by the query. Will be `null` if the query is still running or if there was an error.
+  
+  Check [QueryResult](/react/running-queries/query-result) to learn more about the data structure.
+</ParamField>
+<ParamField path="isFetching" type="boolean">
+  A boolean that indicates if the query is still running.
+</ParamField>
+<ParamField path="error" type="Error">
+  The error returned by the query. Will be `null` if there was no error.
+</ParamField>
+<ParamField path="compute" type="function">
+  A function that allows you to run the query again.
+</ParamField>
+
+## Example
+
+```tsx
+import { useQuery, Table } from '@latitude-data/react'
+
+export default function Example() {
+  const { data, isFetching, error, compute } = useQuery({
+    queryPath: 'titles/titles-table'
+  })
+
+  return (
+    <div className='p-4 flex flex-col gap-y-4'>
+      <h1>React Example with Latitude</h1>
+      <Button onClick={compute}>Refresh</Button>
+
+      {isFetching && <p>Loading movies...</p>}
+      {error && <p>There has been an error: {error.message}</p>}
+      {data && (
+        <div>
+          <p>There are {data.rowCount} results:</p>
+          <Table data={data} />
+        </div>
+      )}
+    </div>
+  );
+}
+```

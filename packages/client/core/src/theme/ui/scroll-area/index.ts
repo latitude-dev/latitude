@@ -4,8 +4,8 @@ import * as scrollbar from './scrollbar'
 export { scrollbar }
 
 export function cssClass({ className }: { className?: string | null }) {
-  return cn('relative overflow-hidden', className)
+  return cn('lat-relative lat-overflow-hidden', className)
 }
 
 export const VIEWPORT_CSS_CLASS =
-  'h-full w-full max-h-[inherit] max-w-[inherit] rounded-[inherit]'
+  'lat-h-full lat-w-full lat-max-h-[inherit] lat-max-w-[inherit] lat-rounded-[inherit]'

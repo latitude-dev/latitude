@@ -17,8 +17,7 @@ function formatCssVariables(cssVariables: string) {
 
 describe('build css variables', () => {
   it('receives a Latitude theme and print css variables syntax', () => {
-    const light = defaultTheme.cssVars.light
-    const dark = defaultTheme.cssVars.dark
+    const { dark, ...light } = defaultTheme
     const cssVariables = formatCssVariables(buildCssVariables(defaultTheme))
 
     expect(cssVariables).toEqual(
@@ -64,6 +63,7 @@ describe('build css variables', () => {
         --lat-border: ${dark.border};
         --lat-input: ${dark.input};
         --lat-ring: ${dark.ring};
+        --lat-radius: ${dark.radius};
       }`,
     )
   })

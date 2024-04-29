@@ -3,7 +3,10 @@ title: 'Text'
 description: 'Render text in your data app with the Text component'
 ---
 
-<iframe class="rounded-xl" src="https://docs-charts-examples.fly.dev/components/text" width="100%" height="240"> </iframe>
+import TextIframe from '/snippets/components/text/iframe.mdx'
+import TextProperties from '/snippets/components/text/properties.mdx'
+
+<TextIframe />
 
 ## Introduction
 
@@ -44,30 +47,7 @@ These are the predefined styles available for the `<Text>` component, along with
 
 Apart from the predefined styles, you can also customize the text using the following properties:
 
-<ResponseField name="color" type="string">
-  Sets the color of the text. Options are: `primary`, `secondary`, `destructive`, `accent`, `background`, `foreground`, `link`, `inherit`.
-</ResponseField>
-<ResponseField name="size" type="string">
-  Sets the size of the text. Options are: `h1`, `h2`, `h3`, `h4`, `h5`, `h6`.
-</ResponseField>
-<ResponseField name="family" type="string">
-  Sets the font family of the text. Options are: `sans`, `mono`.
-</ResponseField>
-<ResponseField name="weight" type="string">
-  Sets the font weight of the text. Options are: `normal`, `medium`, `semibold`, `bold`.
-</ResponseField>
-<ResponseField name="spacing" type="string">
-  Sets the letter spacing of the text. Options are: `normal`, `wide`.
-</ResponseField>
-<ResponseField name="align" type="string">
-  Sets the text alignment. Options are: `left`, `center`, `right`.
-</ResponseField>
-<ResponseField name="wordBreak" type="string">
-  Sets the word break behavior. Options are: `normal`, `breakWord`, `breakAll`.
-</ResponseField>
-<ResponseField name="whiteSpace" type="string">
-  Sets the white space behavior. Options are: `normal`, `nowrap`, `pre`, `preLine`, `preWrap`.
-</ResponseField>
+<TextProperties />
 
 Here's an example of how you can use these properties:
 

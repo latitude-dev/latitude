@@ -1,0 +1,21 @@
+import CommonChartProperties from '/snippets/charts/_properties/common.mdx'
+
+## Properties
+To configure and customize the chart, you can add properties, some of which are required and some of which are optional.
+
+	### Query configuration
+	<ParamField path="query" type="string" required>
+		The path to the query file that will provide the data displayed in the visualization.
+	</ParamField>
+
+	<ParamField path="inlineParams" type="object">
+		An object with custom parameters to be used in the query, in addition to the global parameters of the view.
+	</ParamField>
+
+	<ParamField path="opts" type="object">
+		Includes options to control the behavior of the chart. For example, react to changes in the parameters to update the data immediately.
+	</ParamField>
+
+	Refer to the [Running queries](/views/basics/running-queries) section for more information about query configuration.
+
+<CommonChartProperties />

@@ -1,0 +1,44 @@
+---
+title: 'Card'
+description: 'Use Card to display content in a flexible and extensible container'
+---
+
+import CardIframe from '/snippets/components/card/iframe.mdx'
+
+<CardIframe />
+
+## Introduction
+
+The `<Card>` component is a flexible and extensible content container. It includes options for headers and footers, a wide variety of content, contextual background colors, and powerful display options.
+
+## Usage
+
+To use the `<Card>`, import it to your component and pass the content you want to display as children.
+
+There are three main parts to the card component: the header, the body, and the footer. You can use any combination of these parts to create the card you need.
+
+Here's a basic example of a card with a header, body, and footer:
+
+```tsx
+import { Card } from '@latitude-data/react';
+
+const MyComponent = () => (
+  <Card.Root>
+    <Card.Header>
+      <Text.H2>Card title</Text.H2>
+    </Card.Header>
+    <Card.Content>
+      <Text>The content of the card can be anything. Here's some arbitrary text.</Text>
+    </Card.Content>
+    <Card.Footer class='px-6 py-2'>
+      <Text color='text-muted'>This is a card footer with a long explainer</Text>
+    </Card.Footer>
+  </Card.Root>
+);
+```
+
+## Theme properties
+
+By default, the `<Card>` will use the `card` and `card-foreground` properties from the theme.
+
+To learn about themes and how to customize them, see [Theming](/react/components/theming).

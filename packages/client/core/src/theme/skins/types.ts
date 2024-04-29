@@ -1,4 +1,4 @@
-export type ThemeColor = {
+export type TailwindAttributes = {
   background: string
   foreground: string
   card: string
@@ -18,20 +18,23 @@ export type ThemeColor = {
   border: string
   input: string
   ring: string
-  radius?: string
-}
-export type SkinCss = {
-  light: ThemeColor
-  dark: ThemeColor
+  radius: string
 }
 
-export type ThemeName = 'latitude' | 'rose' | 'green' | 'orange'
+export type EchartTheme = Record<string, unknown> // Echarts does not provide an explicit type for themes https://github.com/apache/echarts/issues/18770
 
-export type Theme = {
-  name: ThemeName
-  label?: string
-  cssVars: {
-    light: ThemeColor
-    dark: ThemeColor
-  }
+export type ThemeAttributes = TailwindAttributes & {
+  echarts: EchartTheme
+}
+
+export type Theme = ThemeAttributes & {
+  dark: ThemeAttributes
+}
+
+type PartialThemeAttributes = Partial<TailwindAttributes> & {
+  echarts?: Partial<EchartTheme>
+}
+
+export type PartialTheme = PartialThemeAttributes & {
+  dark?: PartialThemeAttributes
 }

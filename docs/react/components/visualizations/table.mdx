@@ -1,0 +1,105 @@
+---
+title: 'Table'
+description: 'Rendering tables with data from queries'
+---
+
+import TableIframe from '/snippets/charts/table/iframe.mdx'
+
+<TableIframe />
+
+## Introduction
+The Table format organizes data in rows and columns, providing a clear view for comparison and detailed analysis. It's ideal for displaying precise values.
+
+## Syntax
+
+You can use either `Table` or `QueryTable` to visualize query results in a table format.
+
+Use **QueryTable** when you want the component to automatically handle the query fetching.
+
+Use **Table** when you already fetched the data using [useQuery](/react/running-query/use-query).
+
+<CodeGroup>
+```tsx QueryTable
+import { QueryTable } from '@latitude-data/react';
+
+function MyComponent() {
+  return (
+    <QueryTable
+      queryPath='sorted_titles'
+      params={
+        limit: 10
+      }
+    />
+  );
+}
+```
+```tsx Table
+import { Table, useQuery } from '@latitude-data/react';
+
+function MyComponent() {
+  const { data, isLoading } = useQuery({
+    queryPath: 'sorted_titles',
+    params: {
+      limit: 10
+    }
+  });
+
+  return (
+    <Table data={data} isLoading={isLoading} />
+  );
+}
+```
+</CodeGroup>
+
+## Properties
+
+Depending on the component you choose, you can pass the following properties:
+
+<Tabs>
+  <Tab title="QueryTable">
+    ### Query configuration
+
+    <ParamField path="queryPath" type="string" required>
+      The path to the query file that will provide the data displayed in the table.
+    </ParamField>
+
+    <ParamField path="params" type="object">
+      An object with custom parameters to be used in the query.
+    </ParamField>
+
+    <ParamField path="download" type="boolean">
+      A flag to enable the download of the table data as a CSV file.
+    </ParamField>
+  </Tab>
+
+  <Tab title="Table">
+    ### Data configuration
+
+    <ParamField path="data" type="QueryResult">
+      The data to be displayed in the table. It should be an array of objects, where each object represents a row in the table.
+    </ParamField>
+
+    <ParamField path="isLoading" type="boolean" required>
+      A flag to indicate if the data is still loading. When set to `true`, the table will display a blinking animation.
+    </ParamField>
+
+    <ParamField path="error" type="error">
+      An error message to be displayed in case the data could not be loaded.
+    </ParamField>
+
+    <ParamField path="download" type="function">
+      A function to download the table data as a CSV file.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+### Style
+
+<ParamField path="title" type="string">
+  The title of your table.
+</ParamField>
+
+<ParamField path="description" type="string">
+  You can add a brief description of your table.
+</ParamField>
+
