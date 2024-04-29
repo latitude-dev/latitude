@@ -1,6 +1,7 @@
 import QueryDisplay from './result_display'
 import chokidar from 'chokidar'
 import sourceManager, { QUERIES_DIR } from '../../src/lib/server/sourceManager'
+import computeRelativeQueryPath from '../../src/lib/query_service/computeRelativeQueryPath'
 
 type CommandArgs = {
   queryPath: string
@@ -39,9 +40,12 @@ async function runQuery(
   debug = false,
 ) {
   try {
-    const { source } = await sourceManager.loadFromQuery(query)
+    const { source, sourceFilePath } = await sourceManager.loadFromQuery(query)
     const compiledQuery = await source.compileQuery({
-      queryPath: query,
+      queryPath: computeRelativeQueryPath({
+        queryPath: query,
+        sourcePath: sourceFilePath,
+      }),
       params,
     })
 
