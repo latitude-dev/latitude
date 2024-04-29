@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies [61916ed]
+  - @latitude-data/source-manager@0.1.1
+
 ## 1.3.1
 
 ### Patch Changes
