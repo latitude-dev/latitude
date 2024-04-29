@@ -2,7 +2,7 @@ import { cn } from '../../utils'
 import { Size, Variant, VariantProps, toggleVariants } from '../toggle'
 
 export function cssClass({ className }: { className?: string | null }) {
-  return cn('flex items-center justify-center gap-1', className)
+  return cn('lat-flex lat-items-center lat-justify-center lat-gap-1', className)
 }
 
 type ClassProps = {

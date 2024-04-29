@@ -36,7 +36,7 @@
     table.createViewModel(columns))
 </script>
 
-<Card.Root type="invisible" class="flex flex-col gap-4">
+<Card.Root type="invisible" class="lat-flex lat-flex-col lat-gap-4">
   <VisualizationHeader {title} {description} {download} />
   <Card.Content type="invisible">
     <Table.Root {...$tableAttrs} class={className}>
