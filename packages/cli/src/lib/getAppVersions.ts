@@ -41,15 +41,14 @@ export default async function getLatitudeVersions({
 
       let versions: string[] | undefined = undefined
       try {
-        versions = JSON.parse(stdout)
+        versions = JSON.parse(stdout).filter((v: string) => !v.includes('next'))
       } catch (e) {
         reject(e)
       }
 
-      const loose = false // Don't include pre-release versions
       if (!versions) return resolve(DEFAULT_VERSION_LIST)
 
-      const sorted = semverSort(versions, loose).slice(0, 10) // Last 10 versions
+      const sorted = semverSort(versions).slice(0, 10) // Last 10 versions
       resolve(sorted)
     })
   })
