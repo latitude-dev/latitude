@@ -2,6 +2,7 @@ const { spawn } = require('child_process')
 const path = require('path')
 
 function dev () {
+  return new Promise((resolve) => {
   const spawned = spawn('node', [
     path.join(__dirname, '../../dist/cli.js'),
     'dev',
@@ -24,7 +25,7 @@ function dev () {
       console.log('Server started successfully!')
 
       spawned.kill()
-      process.exit()
+      resolve()
     }
   })
 
@@ -45,6 +46,7 @@ function dev () {
 
     process.exit(1)
   }, 30000)
+  })
 }
 
 module.exports = dev

@@ -1,3 +1,4 @@
+const run = require('./run.cjs')
 const dev = require('./dev.cjs')
 const path = require('path')
 const { spawn, spawnSync } = require('child_process')
@@ -22,16 +23,17 @@ const spawned = spawn('node', [
   '--template',
   'default',
   '--verbose'
-])
+], { stdio: 'inherit' })
 
-spawned.stdout.pipe(process.stdout)
-spawned.stderr.pipe(process.stderr)
-spawned.on('close', function (code) {
+spawned.on('close', async (code) => {
   if (code !== 0) process.exit(code)
 
   ok = true
 
-  dev()
+  await dev()
+  run()
+
+  process.exit()
 })
 
 spawned.on('error', function (error) {
