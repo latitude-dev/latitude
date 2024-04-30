@@ -10,38 +10,38 @@ const theme = {
   },
   extend: {
     colors: {
-      border: 'hsl(var(--lat-border) / <alpha-value>)',
-      input: 'hsl(var(--lat-input) / <alpha-value>)',
-      ring: 'hsl(var(--lat-ring) / <alpha-value>)',
-      background: 'hsl(var(--lat-background) / <alpha-value>)',
-      foreground: 'hsl(var(--lat-foreground) / <alpha-value>)',
+      border: 'var(--lat-border)',
+      input: 'var(--lat-input)',
+      ring: 'var(--lat-ring)',
+      background: 'var(--lat-background)',
+      foreground: 'var(--lat-foreground)',
       primary: {
-        DEFAULT: 'hsl(var(--lat-primary) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-primary-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-primary)',
+        foreground: 'var(--lat-primary-foreground)',
       },
       secondary: {
-        DEFAULT: 'hsl(var(--lat-secondary) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-secondary-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-secondary)',
+        foreground: 'var(--lat-secondary-foreground)',
       },
       destructive: {
-        DEFAULT: 'hsl(var(--lat-destructive) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-destructive-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-destructive)',
+        foreground: 'var(--lat-destructive-foreground)',
       },
       muted: {
-        DEFAULT: 'hsl(var(--lat-muted) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-muted-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-muted)',
+        foreground: 'var(--lat-muted-foreground)',
       },
       accent: {
-        DEFAULT: 'hsl(var(--lat-accent) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-accent-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-accent)',
+        foreground: 'var(--lat-accent-foreground)',
       },
       popover: {
-        DEFAULT: 'hsl(var(--lat-popover) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-popover-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-popover)',
+        foreground: 'var(--lat-popover-foreground)',
       },
       card: {
-        DEFAULT: 'hsl(var(--lat-card) / <alpha-value>)',
-        foreground: 'hsl(var(--lat-card-foreground) / <alpha-value>)',
+        DEFAULT: 'var(--lat-card)',
+        foreground: 'var(--lat-card-foreground)',
       },
     },
     borderRadius: {

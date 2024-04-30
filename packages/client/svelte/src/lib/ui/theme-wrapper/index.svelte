@@ -15,6 +15,7 @@
   export let theme: $$Props['theme'] = client.skins.defaultTheme
 
   const buildCss = client.skins.buildCssVariables
+  const createTheme = client.skins.createTheme
 
   // This component is used in the real world and in Storybook
   // Storybook does not support SSR,
@@ -29,7 +30,7 @@
     styleTag.innerHTML = styles
   }
 
-  let inlineCss = buildCss($themeConfig ?? theme)
+  let inlineCss = buildCss($themeConfig ?? createTheme(theme!))
 
   $: {
     inlineCss = buildCss($themeConfig)
