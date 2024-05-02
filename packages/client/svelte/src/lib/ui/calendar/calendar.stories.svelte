@@ -30,7 +30,7 @@
 
 <Template let:args>
   <div class="lat-flex lat-flex-col lat-justify-center lat-gap-8">
-    <div class="lat-flex lat-w-[250px] p-2 lat-rounded-md lat-text-primary-foreground lat-bg-secondary-foreground">
+    <div class="lat-flex lat-w-[250px] lat-p-2 lat-rounded-md lat-text-primary-foreground lat-bg-secondary-foreground">
       <div class="lat-ml-4">{label}</div>
     </div>
     <Calendar bind:value {onValueChange} {...args} />

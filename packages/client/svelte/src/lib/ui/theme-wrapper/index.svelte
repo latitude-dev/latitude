@@ -51,7 +51,7 @@
 
 <ModeWatcher defaultMode="light" />
 
-<div class={cn({ 'lat-absolute inset-0 p-4 lat-flex lat-flex-col lat-gap-y-4': isStorybook })}>
+<div class={cn({ 'lat-absolute lat-inset-0 lat-p-4 lat-flex lat-flex-col lat-gap-y-4': isStorybook })}>
   {#if isStorybook}
     <ThemeSwitcher />
   {/if}

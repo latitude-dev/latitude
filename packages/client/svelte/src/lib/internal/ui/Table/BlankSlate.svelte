@@ -19,7 +19,7 @@
       class="lat-flex lat-w-full lat-flex-col lat-gap-4 lat-overflow-hidden"
       style="max-height: {height};"
     >
-      <div class="lat-grid lat-grid-cols-4 lat-gap-4 lat-rounded-lg lat-bg-muted p-4">
+      <div class="lat-grid lat-grid-cols-4 lat-gap-4 lat-rounded-lg lat-bg-muted lat-p-4">
         <!-- eslint-disable-next-line -->
         {#each Array(4) as _, i (i)}
           <div

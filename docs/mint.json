@@ -40,6 +40,10 @@
     {
       "name": "Views",
       "url": "views"
+    },
+    {
+      "name": "React",
+      "url": "react"
     }
   ],
   "anchors": [],
@@ -81,9 +85,7 @@
     {
       "group": "Embed",
       "pages": [
-        "guides/embed/iframe",
-        "guides/embed/react-embed",
-        "guides/embed/react-components"
+        "guides/embed/iframe"
       ]
     },
     {
@@ -209,6 +211,21 @@
     {
       "group": "Advanced",
       "pages": ["views/advanced/svelte-syntax", "views/advanced/head"]
+    },
+    {
+      "group": "Getting started",
+      "pages": [
+        "react/getting-started/introduction",
+        "react/getting-started/installation",
+        "react/getting-started/embedding-views"
+      ]
+    },
+    {
+      "group": "Running queries",
+      "pages": [
+        "react/running-queries/use-query",
+        "react/running-queries/query-result"
+      ]
     }
   ],
   "footerSocials": {

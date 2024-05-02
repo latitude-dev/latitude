@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useLatitude } from '$src/data/LatitudeProvider'
+import { useLatitude } from '$src/data/ApiProvider'
 import { QueryParams, createQueryKey } from '@latitude-data/client'
 import {
   UseQueryOptions,

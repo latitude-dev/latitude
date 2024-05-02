@@ -23,7 +23,7 @@
 <Template let:args>
   <div class="lat-flex lat-flex-col lat-justify-center lat-gap-8">
     <DatePicker value={$value} on:change={onChange} {...args} />
-    <div class="lat-flex lat-w-[240px] p-2 lat-rounded-md lat-text-primary-foreground lat-bg-secondary-foreground">
+    <div class="lat-flex lat-w-[240px] lat-p-2 lat-rounded-md lat-text-primary-foreground lat-bg-secondary-foreground">
       <div class="lat-ml-4">{$label}</div>
     </div>
   </div>
