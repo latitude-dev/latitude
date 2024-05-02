@@ -1,5 +1,16 @@
 # @latitude-data/svelte
 
+## 0.7.0-next.1
+
+### Minor Changes
+
+- f8ce2e6: Added support for built-in components for Latitude's React package.
+
+### Patch Changes
+
+- Updated dependencies [f8ce2e6]
+  - @latitude-data/client@0.10.0-next.1
+
 ## 0.7.0-next.0
 
 ### Minor Changes
