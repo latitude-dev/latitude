@@ -1,7 +1,9 @@
+import chalk from 'chalk'
 import config from '$src/config'
 import { IncomingMessage } from 'http'
 import { http, https } from 'follow-redirects'
 import getAuthToken from '../getAuthToken'
+import boxedMessage from '$src/lib/boxedMessage'
 
 type Options = {
   path: string
@@ -10,9 +12,22 @@ type Options = {
   headers?: Record<string, string>
 }
 
-class ApiError extends Error {
+function safeDetailsParse(str: string) {
+  try {
+    const body = JSON.parse(str)
+    const details = body.details ?? {}
+    const error = body.error
+    return { error, details }
+  } catch {
+    return { error: null, details: {} }
+  }
+}
+
+export class ApiError extends Error {
   status: number
   body: string
+  private details: Record<string, string[]> = {}
+  private errorMessage: string
 
   constructor({
     body,
@@ -23,10 +38,39 @@ class ApiError extends Error {
     statusMessage: string
     status: number
   }) {
-    super(statusMessage)
+    const { error, details } = safeDetailsParse(body)
+    const errorMessage = error ?? statusMessage
+    super(errorMessage)
 
     this.status = status
     this.body = body
+    this.details = details
+    this.errorMessage = errorMessage
+  }
+
+  displayErrorDetails({ message }: { message: string }) {
+    const errorKeys = Object.keys(this.details)
+    if (errorKeys.length === 0) {
+      console.error(chalk.red(message, this.message))
+    } else {
+      let allErrors = `
+${this.errorMessage}
+----------------\n
+`
+      errorKeys.forEach((key) => {
+        console.error(chalk.red(`  ${key}:`))
+        const messages = this.details[key] ?? []
+        const errorMessage = messages[0]
+        if (errorMessage) {
+          allErrors += `${key}: ${errorMessage}\n`
+        }
+      })
+      boxedMessage({
+        text: allErrors,
+        title: message,
+        color: 'red',
+      })
+    }
   }
 }
 

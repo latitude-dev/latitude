@@ -1,12 +1,12 @@
 <script>
   import { theme } from '@latitude-data/client'
   const defaultTheme = theme.skins.themes[1]
-  
+
   import { Alert, ThemeProvider } from '@latitude-data/svelte'
-  
+
   import '../assets/app.css'
-  import "@latitude-data/svelte/styles.css"
-  
+  import '@latitude-data/svelte/styles.css'
+
   import { onMount } from 'svelte'
   import { init as initQueries } from '$lib/stores/queries'
   import { setUrlParam, useViewParams } from '$lib/stores/viewParams'

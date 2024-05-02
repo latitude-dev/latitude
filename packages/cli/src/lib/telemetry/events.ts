@@ -15,6 +15,8 @@ export type TelemetryEventType =
   | 'telemetryDisabled'
   | 'credentialsCommand'
   | 'createTokenCommand'
+  | 'addSecretCommand'
+  | 'removeSecretCommand'
 
 type BaseEvent<T extends TelemetryEventType> = {
   event: T
