@@ -33,6 +33,7 @@
     "@latitude-data/typescript": "0.1.0"
   },
   "changesets": [
-    "funny-jobs-lie"
+    "funny-jobs-lie",
+    "lemon-kids-tickle"
   ]
 }

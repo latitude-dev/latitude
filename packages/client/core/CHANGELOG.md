@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.10.0-next.1
+
+### Minor Changes
+
+- f8ce2e6: Added support for built-in components for Latitude's React package.
+
 ## 0.10.0-next.0
 
 ### Minor Changes
