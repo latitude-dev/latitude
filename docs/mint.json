@@ -231,6 +231,13 @@
       "group": "Components",
       "pages": [
         "react/components/theming",
+        {
+          "group": "Visualizations",
+          "pages": [
+            "react/components/visualizations/table",
+            "react/components/visualizations/area-chart"
+          ]
+        },
         "react/components/layout",
         {
           "group": "Content",

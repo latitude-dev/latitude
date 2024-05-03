@@ -1,4 +1,5 @@
 export * from './config'
+export * as wrapper from './wrapper'
 
 import type { Dataset, DBSource } from './types'
 export type { Dataset, DBSource }

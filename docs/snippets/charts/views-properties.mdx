@@ -1,26 +1,7 @@
----
-title: 'Table'
-description: 'How to create and configure the Table visualization'
----
-
-import TableIframe from '/snippets/charts/table/iframe.mdx'
-
-<TableIframe />
-
-## Introduction
-The Table format organizes data in rows and columns, providing a clear view for comparison and detailed analysis. It's ideal for displaying precise values.
-
-## Syntax
-You can use `<Table ... />` to add it to your view. Within the tag you must add the properties to configure the chart.
-
-``` js
-<Table
-	query='orders_evolution'
-/>
-```
+import CommonChartProperties from '/snippets/charts/common.mdx'
 
 ## Properties
-To configure and customize the table, simply reference the query from which you want to view the data.
+To configure and customize the chart, you can add properties, some of which are required and some of which are optional.
 
 	### Query configuration
 	<ParamField path="query" type="string" required>
@@ -37,3 +18,4 @@ To configure and customize the table, simply reference the query from which you 
 
 	Refer to the [Running queries](/views/basics/running-queries) section for more information about query configuration.
 
+<CommonChartProperties />
