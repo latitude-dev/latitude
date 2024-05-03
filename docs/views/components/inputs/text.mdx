@@ -3,7 +3,10 @@ title: 'Regular input'
 description: 'Create a regular input to control parameters in your queries'
 ---
 
-<iframe class="rounded-xl" src="https://docs-charts-examples.fly.dev/components/input" width="100%" height="180"> </iframe>
+import InputIframe from '/snippets/components/input/iframe.mdx'
+import InputProperties from '/snippets/components/input/properties.mdx'
+
+<InputIframe />
 
 ## Introduction
 
@@ -30,3 +33,9 @@ You can also specify the type of input you want to use by using the `type` prop.
 ```
 
 This will create a number input that is associated with the `age` parameter.
+
+## Properties
+
+In addition to the standard HTML input properties, the `Input` component accepts the following props:
+
+<InputProperties />

@@ -230,7 +230,18 @@
     {
       "group": "Components",
       "pages": [
-        "react/components/theming"
+        "react/components/theming",
+        "react/components/layout",
+        {
+          "group": "Content",
+          "pages": [
+            "react/components/content/alert",
+            "react/components/content/button",
+            "react/components/content/card",
+            "react/components/content/input",
+            "react/components/content/text"
+          ]
+        }
       ]
     }
   ],

@@ -1,6 +1,6 @@
 ---
 title: 'Text'
-description: 'Render text in your data app with the Text component'
+description: 'Render custom text in your app'
 ---
 
 import TextIframe from '/snippets/components/text/iframe.mdx'
@@ -10,24 +10,32 @@ import TextProperties from '/snippets/components/text/properties.mdx'
 
 ## Introduction
 
-The `<Text>` component is used to render text in your data app. It lets you easily display and customize your text content.
+The `<Text>` component is used to render text in your app. It lets you easily display and customize your text content.
 
 ## Basic usage
 
-To use the `<Text>` component, you can just include it in your views and pass the text you want to display as a child of the component.
+To use the `<Text>` component, you can just include it in your app and pass the text you want to display as a child of the component.
 
-```jsx
-<Text>
-  Hello, world!
-</Text>
+```tsx
+import { Text } from '@latitude-data/react'
+
+const MyComponent = () => (
+  <Text>
+    Hello, world!
+  </Text>
+)
 ```
 
 You can use our scale of predefined styles to quickly customize your text. Here's an example:
 
-```jsx
-<Text.H1>
-  Hello, world!
-</Text>
+```tsx
+import { Text } from '@latitude-data/react'
+
+const MyComponent = () => (
+  <Text.H1>
+    Hello, world!
+  </Text.H1>
+)
 ```
 
 This will also render the text as a `<h1>` tag.
@@ -51,7 +59,10 @@ Apart from the predefined styles, you can also customize the text using the foll
 
 Here's an example of how you can use these properties:
 
-```jsx
+```tsx
+import { Text } from '@latitude-data/react'
+
+const MyComponent = () => (
 <Text
   color="primary"
   size="h1"
@@ -65,15 +76,3 @@ Here's an example of how you can use these properties:
   Hello, world!
 </Text>
 ```
-
-## Custom styles
-
-If you want to further customize the text, you can use the `class` property to pass your own styles using Tailwind. Here's an example:
-
-```jsx
-<Text class="text-4xl font-bold text-primary">
-  Hello, world!
-</Text>
-```
-
-For a guide on how to use custom styles with Tailwind, check out the [Component styles](/views/customization/component-styles) page.
