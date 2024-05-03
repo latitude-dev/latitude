@@ -1,6 +1,5 @@
 import findOrCreateConfigFile from '../latitudeConfig/findOrCreate'
 import installLatitudeServer from '../installLatitudeServer'
-import { createMasterKey } from '$src/commands/credentials/createMasterKey'
 import installDependencies from '../installDependencies/fromSetup'
 import { addDockerfiles } from '../addDockerfiles/fromSetup'
 import addPackageJson from '../addPackageJson'
@@ -13,5 +12,4 @@ export default async function setupApp() {
   await installDependencies()
   addPackageJson()
   addDockerfiles()
-  createMasterKey()
 }

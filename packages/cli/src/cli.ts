@@ -86,16 +86,13 @@ CLI.command('setup')
   .describe('Setup the current directory as a Latitude app')
   .action(setupCommand)
 
-CLI.command('credentials')
-  .describe('Manage credentials for the Latitude app')
+CLI.command('credentials add')
+  .describe('Generate a secret master key for ')
   .option(
     '--create-master-key',
-    "Create a master key for the Latitude app. If you didn't had one in your .env file",
+    "Create a master key for the Latitude app. If you didn't had one in your .env file. IMPORTANT: generate a new one when you deploy your app to production.",
   )
-  .option(
-    '--overwrite-master-key',
-    'Create or update a master key. Be careful with this option. If you were already using the old key you will need to change your code.',
-  )
+  .example('credentials add > .env')
   .action(credentialsCommand)
 
 CLI.command('signup').describe('Signup for a new account').action(signupCommand)
