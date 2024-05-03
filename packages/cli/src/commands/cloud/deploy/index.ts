@@ -6,7 +6,20 @@ import ora from 'ora'
 import pushDockerImage from './docker/push'
 import tracked from '$src/lib/decorators/tracked'
 import { request, sseRequest } from '$src/lib/server'
+import { GITHUB_STARTS_BANNER } from '$src/commands/constants'
 
+function deployedMessage(url: string) {
+  console.log(
+    chalk.white(`
+    ${chalk.green('Deployed successfully!')}
+
+    Check your application at:
+    ${chalk.blue(url)}
+
+    ${GITHUB_STARTS_BANNER}
+`),
+  )
+}
 async function deploy({ app, digest }: { app: string; digest: string }) {
   const spinner = ora(`Deploying ${app}...`).start()
   const stream = await sseRequest({
@@ -57,11 +70,7 @@ async function deploy({ app, digest }: { app: string; digest: string }) {
   stream.on('end', () => {
     spinner.stop()
 
-    console.log(`
-${chalk.green('Deployed successfully!')}
-
-Check your application at: ${chalk.bold(output)}
-`)
+    deployedMessage(output)
 
     process.exit(0)
   })

@@ -8,6 +8,7 @@ import { OnErrorFn } from '$src/types'
 import { getLatitudeBanner } from '$src/utils'
 import { onError } from '$src/utils'
 import { runDevServer } from '$src/commands/dev/runDev'
+import { GITHUB_STARTS_BANNER } from '$src/commands/constants'
 
 export type CommonProps = { onError: OnErrorFn }
 
@@ -28,6 +29,8 @@ async function welcomeMessage() {
 
     $ cd ./${projectDir.includes(' ') ? `"${projectDir}"` : projectDir}
     $ ${config.dev ? 'pnpm latitude-dev dev' : 'latitude dev'}
+
+    ${GITHUB_STARTS_BANNER}
     `),
   )
 }
