@@ -6,16 +6,15 @@ import { ApiError, request } from '$src/lib/server'
 import { CommonCLIArgs } from '$src/types'
 
 type Props = CommonCLIArgs & { _: string[] }
-async function addSecret({ _ }: Props) {
+async function addSecret({ _: secrets }: Props) {
   const latitudeJson = findConfigFile()
   const app = latitudeJson.data.name!
-  const secret = _[0]
   const spinner = ora('Adding secret...').start()
   try {
     await request({
       method: 'POST',
       path: '/api/secrets/add',
-      data: JSON.stringify({ app, secret }),
+      data: JSON.stringify({ app, secrets }),
     })
   } catch (err) {
     const error = err as ApiError

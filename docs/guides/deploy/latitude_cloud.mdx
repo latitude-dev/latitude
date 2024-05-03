@@ -35,6 +35,7 @@ latitude deploy
 Is recomended to use secrets to store sensitive information like database credentials used in your sources. You can add secrets to your project by running the following command:
 
 ```bash
-latitude secrets add LATITUDE__DATABASE__PASSWORD=your_super_secret_password
+latitude secrets add LATITUDE__SECRET_1=secret_value LATITUDE__SECRET_2=secret_value
 ```
 <Note>Secrets are stored encrypted in our cloud infrastructure. They're only accessible by your app when is deployed</Note>
+<Note>Whenever you add/change a secret, you need to redeploy your app</Note>
