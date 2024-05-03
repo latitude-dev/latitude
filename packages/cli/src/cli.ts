@@ -18,6 +18,8 @@ import startCommand from './commands/start'
 import telemetryCommand from './commands/telemetry'
 import updateCommand from './commands/update'
 import createTokenCommand from './commands/cloud/tokens/create'
+import addSecretCommand from './commands/cloud/secrets/add'
+import removeSecretCommand from './commands/cloud/secrets/remove'
 import { onError } from './utils'
 
 initSentry()
@@ -123,6 +125,14 @@ CLI.command('cancel')
 CLI.command('tokens create')
   .describe('Creates an authentication token for Latitude Cloud')
   .action(createTokenCommand)
+CLI.command('secrets add')
+  .describe('Add an environment variable to your Latitude Cloud')
+  .example('secrets add MY_SECRET=some_secret_value')
+  .action(addSecretCommand)
+CLI.command('secrets remove')
+  .describe('Remove an environment variable from your Latitude Cloud')
+  .example('secrets remove MY_SECRET')
+  .action(removeSecretCommand)
 
 async function init() {
   const argv = CLI.parse(process.argv, {
