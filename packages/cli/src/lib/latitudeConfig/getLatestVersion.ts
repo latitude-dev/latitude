@@ -1,10 +1,13 @@
 import { onError } from '$src/utils'
 import getLatitudeVersions from '../getAppVersions'
 
-export default async function getLatestVersion() {
+export default async function getLatestVersion(
+  { next = false }: { next?: boolean } = { next: false },
+) {
   try {
-    const versions = await getLatitudeVersions()
+    const versions = await getLatitudeVersions({ next })
     const latestVersion = versions[0]
+
     if (!latestVersion) {
       onError({
         message:

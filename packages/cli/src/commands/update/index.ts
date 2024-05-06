@@ -10,12 +10,15 @@ import { cleanTerminal, onError } from '$src/utils'
 import { select } from '@inquirer/prompts'
 import setRootDir from '$src/lib/decorators/setRootDir'
 
-async function askForAppVersion() {
+async function askForAppVersion(
+  { next = false }: { next?: boolean } = { next: false },
+) {
   let versions: string[] = DEFAULT_VERSION_LIST
   try {
     console.log('Fetching Latitude versions...')
     versions = await getLatitudeVersions({
       onFetch: () => cleanTerminal(),
+      next,
     })
   } catch {
     // Already handled in onError
@@ -30,8 +33,14 @@ async function askForAppVersion() {
   })
 }
 
-async function getVersions({ fix }: { fix: boolean }) {
-  const latitudeJson = await findOrCreateConfigFile()
+async function getVersions({
+  next = false,
+  fix,
+}: {
+  next?: boolean
+  fix: boolean
+}) {
+  const latitudeJson = await findOrCreateConfigFile({ next })
 
   if (fix) {
     return {
@@ -42,7 +51,7 @@ async function getVersions({ fix }: { fix: boolean }) {
 
   let newVersion = null
   try {
-    newVersion = await askForAppVersion()
+    newVersion = await askForAppVersion({ next })
   } catch (error) {
     if (!error) {
       console.log('🙈 Mission aborted, when you are ready, try again')
@@ -61,10 +70,15 @@ async function getVersions({ fix }: { fix: boolean }) {
   }
 }
 
-async function updateCommand(args: { fix?: boolean; force?: boolean }) {
+async function updateCommand(args: {
+  fix?: boolean
+  force?: boolean
+  next?: boolean
+}) {
   const fix = args.fix ?? false
   const force = args.force ?? false
-  const { oldVersion, newVersion } = await getVersions({ fix })
+  const next = args.next ?? false
+  const { oldVersion, newVersion } = await getVersions({ next, fix })
 
   if (!newVersion) process.exit(1)
 

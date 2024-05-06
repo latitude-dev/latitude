@@ -38,11 +38,13 @@ export default async function startCommand({
   name,
   port,
   template,
+  next = false,
   open = false,
 }: {
   open: boolean
   port?: number
   name?: string
+  next?: boolean
   template?: TemplateUrl
 }) {
   const {
@@ -72,7 +74,7 @@ export default async function startCommand({
 
   config.rootDir = rootDir
 
-  await setupApp()
+  await setupApp({ next })
   await welcomeMessage()
 
   if (open) {

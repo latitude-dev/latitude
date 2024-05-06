@@ -40,6 +40,10 @@ CLI.command('start')
   .option('--name', 'Name of the project')
   .option('--template', 'Template to use for the Latitude app')
   .option('--port', 'Port to run the Latitude app on')
+  .option(
+    '--next',
+    'Whether to display next releases of Latitude as available versions',
+  )
   .action(startCommand)
 
 CLI.command('update')
@@ -49,6 +53,10 @@ CLI.command('update')
     'Forces update of dockerignore and Dockerfile files to the latest version',
   )
   .option('--fix', 'Installs the version defined in latitude.json')
+  .option(
+    '--next',
+    'Whether to display next releases of Latitude as available versions',
+  )
   .action(updateCommand)
 
 CLI.command('telemetry')
