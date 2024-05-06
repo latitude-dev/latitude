@@ -1,85 +1,12 @@
-import colors from 'picocolors'
-import {
-  MASTER_KEY_NAME,
-  createMasterKey,
-  readSecret,
-} from '$src/commands/credentials/createMasterKey'
-import boxedMessage from '$src/lib/boxedMessage'
-import { CommonCLIArgs } from '$src/types'
+import crypto from 'crypto'
 import tracked from '$src/lib/decorators/tracked'
 import setup from '$src/lib/decorators/setup'
 import setRootDir from '$src/lib/decorators/setRootDir'
 
-enum MessageStatus {
-  existing,
-  missing,
-  created,
-  alreadyCreated,
-  overwritten,
-}
-function displayKey({
-  secret,
-  status,
-}: {
-  secret: string | undefined
-  status: MessageStatus
-}) {
-  const alreadyCreated = status === MessageStatus.alreadyCreated
-  const messageStatus =
-    status === MessageStatus.created
-      ? colors.green('created')
-      : alreadyCreated
-        ? colors.red('already created')
-        : status === MessageStatus.missing
-          ? colors.red('missing')
-          : status === MessageStatus.overwritten
-            ? colors.yellow('overwritten')
-            : colors.blue('exists')
-  const secretMsg = secret
-    ? `\n${colors.blue(MASTER_KEY_NAME)}=${colors.green(secret)}\n`
-    : ''
-  const flag = alreadyCreated ? 'overwrite-master-key' : 'create-master-key'
-  const command =
-    !secret || alreadyCreated
-      ? `${colors.blue(
-          `Run ${colors.green(`latitude credentials --${flag}`)}`,
-        )}`
-      : ''
-  boxedMessage({
-    title: 'Credentials',
-    text: `Master secret key ${messageStatus}${secretMsg}\n${command}`,
-    color: 'yellow',
-  })
-}
+async function credentialsCommand() {
+  const masterKey = crypto.randomBytes(64).toString('hex')
 
-export type Props = CommonCLIArgs & {
-  'create-master-key'?: boolean
-  'overwrite-master-key'?: boolean
-}
-
-async function credentialsCommand(args: Props) {
-  let secret = readSecret()
-  const alreadyCreated = !!secret
-  const createKey = args['create-master-key'] ?? false
-  const overwriteKey = args['overwrite-master-key'] ?? false
-  const writeKey = createKey || overwriteKey
-
-  if (writeKey) {
-    secret = createMasterKey({ overwriteKey })
-  }
-
-  displayKey({
-    secret,
-    status: overwriteKey
-      ? MessageStatus.overwritten
-      : createKey
-        ? alreadyCreated
-          ? MessageStatus.alreadyCreated
-          : MessageStatus.created
-        : secret
-          ? MessageStatus.existing
-          : MessageStatus.missing,
-  })
+  console.log(`LATITUDE_MASTER_KEY=${masterKey}`)
 }
 
 export default tracked(
