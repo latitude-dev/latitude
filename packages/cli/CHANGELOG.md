@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.4.0-next.1
+
+### Minor Changes
+
+- 3ff4c4b: Allow adding multiple secrets at the same time to Latitude Cloud
+
 ## 1.4.0-next.0
 
 ### Minor Changes
