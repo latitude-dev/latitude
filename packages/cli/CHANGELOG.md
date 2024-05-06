@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 1.5.0
+
+### Minor Changes
+
+- 5a6a5d2: Adds next flag to update and start commands
+- 9d1aa7d: Added signup/login message when attempting deploy unauthorized
+
 ## 1.4.0
 
 ### Minor Changes
