@@ -3,8 +3,8 @@ import { DBSource, Dataset } from '../../types'
 import { getDataset } from '../common/getDataset'
 import setLegend from '../common/setLegend'
 import { COLORS, FONT } from '../common/designTokens'
-import { THEMES } from '../../themes'
 import { AnimationEasing } from '../cartesian'
+import { defaultTheme } from '../../../../skins'
 
 const valuesRange = (values: number[]): number[] => {
   return values.reduce(
@@ -89,6 +89,7 @@ export type FunnelChartProps = {
   animation?: boolean
   animationEasing?: AnimationEasing
   animationEasingUpdate?: AnimationEasing
+  visualMapColor?: string[]
 }
 
 export default function generateFunnelConfig({
@@ -102,13 +103,13 @@ export default function generateFunnelConfig({
   showLabels = true,
   showDecal = false,
   showLegend = false,
+  visualMapColor = defaultTheme.echarts.visualMapColor as string[],
 }: FunnelChartProps): EChartsOption {
   const { datasets } = getDataset({ dataset })
   const legend = setLegend({ show: showLegend })
   const data = showColorGradient
     ? getColoredData({
-        // TODO: Implement theming
-        visualMapColor: THEMES.latitude.visualMapColor,
+        visualMapColor,
         data: dataset.source,
         valuesIndex: 1,
         sort,
@@ -140,7 +141,7 @@ export default function generateFunnelConfig({
           minMargin: 5,
           distance: 10,
           lineHeight: FONT.sizes.h6.lineHeight,
-          formatter: '{b}\n{formattedValue|{@0}}',
+          formatter: '{b}\n{formattedValue|{@1}}',
           rich: {
             formattedValue: {
               fontSize: FONT.sizes.h6.fontSize,

@@ -2,7 +2,6 @@
   import type { ECBasicOption } from 'echarts/types/dist/shared'
   type EchartsOptions = ECBasicOption
   type Locale = 'en' | 'es'
-  type EchartsTheme = object
 
   export type Props = {
     options: EchartsOptions | null | undefined
@@ -38,7 +37,9 @@
     GaugeChart,
   } from 'echarts/charts'
 
-  import { theme as client } from '@latitude-data/client'
+  import { themeConfig } from '$lib/ui/theme-wrapper/store'
+  import { mode } from 'mode-watcher'
+  import { derived } from 'svelte/store'
 
   echarts.use([
     // Charts
@@ -64,27 +65,34 @@
 
   type ChartableProps = {
     options: EchartsOptions
-    theme: EchartsTheme
     locale: Locale | undefined
   }
 
   // TODO: Implement theming
-  const theme = client.ui.chart.THEMES.latitude
   export let options: Props['options']
   export let width: Props['width'] = undefined
   export let height: Props['height'] = undefined
   export let locale: Props['locale'] = undefined
 
+  const currentTheme = derived([themeConfig, mode], ([$themeConfig, $mode]) => {
+    return ($mode === 'dark') ? $themeConfig.dark.echarts : $themeConfig.echarts
+  });
+
   export function chartable(
     element: HTMLElement,
-    { options, theme, locale }: ChartableProps,
+    { options, locale }: ChartableProps,
   ) {
     let resizeObserver: ResizeObserver
-    const echartsInstance = echarts.init(element, theme, {
-      renderer: 'canvas',
-      locale: locale ?? 'en',
+    let echartsInstance: echarts.EChartsType
+
+    currentTheme.subscribe((newTheme) => {
+      echarts.dispose(element)
+      echartsInstance = echarts.init(element, newTheme, {
+        renderer: 'canvas',
+        locale: locale ?? 'en'
+      })
+      echartsInstance.setOption(options)
     })
-    echartsInstance.setOption(options)
 
     const onWindowResize = debounce(() => {
       echartsInstance.resize({
@@ -120,7 +128,7 @@
 <div class="lat-h-full lat-w-full">
   {#if options}
     <div
-      use:chartable={{ theme, options, locale }}
+      use:chartable={{ options, locale }}
       class="lat-min-h-full lat-min-w-full"
       style="width: {width}px; height: {height}px"
     />

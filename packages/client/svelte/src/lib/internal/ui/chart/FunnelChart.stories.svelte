@@ -1,23 +1,22 @@
 <script context="module" lang="ts">
-  import type { Meta } from '@storybook/svelte'
   import { Story, Template } from '@storybook/addon-svelte-csf'
   import QueryResult, { DataType } from '@latitude-data/query_result'
   import FunnelChart from './FunnelChart.svelte'
 
-  const data = new QueryResult({
+  const data = {
     fields: [
       { name: 'Actions', type: DataType.String },
       { name: 'Values', type: DataType.Integer },
     ],
     rows: [
-      [100, 'Visit'],
-      [60, 'Show'],
-      [80, 'Click'],
-      [40, 'Inquiry'],
-      [20, 'Deal'],
+      ['Visit', 100],
+      ['Show', 60],
+      ['Click', 80],
+      ['Inquiry', 40],
+      ['Deal', 20],
     ],
     rowCount: 33,
-  })
+  }
 
   export const meta = {
     title: 'Charts/FunnelChart',
@@ -50,13 +49,13 @@
       showLegend: false,
     },
     parameters: { layout: 'centered' },
-  } satisfies Meta<FunnelChart>
+  }
 </script>
 
 <Template id="funnel" let:args>
   <FunnelChart
     height={400}
-    data={args.data}
+    data={new QueryResult(args.data)}
     isLoading={args.isLoading}
     animation={args.animation}
     sort={args.sort}

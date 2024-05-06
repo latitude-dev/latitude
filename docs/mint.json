@@ -226,6 +226,12 @@
         "react/running-queries/use-query",
         "react/running-queries/query-result"
       ]
+    },
+    {
+      "group": "Components",
+      "pages": [
+        "react/components/theming"
+      ]
     }
   ],
   "footerSocials": {

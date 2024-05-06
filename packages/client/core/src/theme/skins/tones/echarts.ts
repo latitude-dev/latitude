@@ -1,3 +1,5 @@
+import { EchartTheme } from '../types'
+
 const colorPalette = [
   '#26a2fa',
   '#fd647a',
@@ -150,4 +152,4 @@ export default {
   datazoomHandleColor: '#cccccc',
   datazoomHandleWidth: '100',
   datazoomLabelColor: '#999999',
-}
+} as EchartTheme

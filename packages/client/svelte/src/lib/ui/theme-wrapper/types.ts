@@ -1,7 +1,7 @@
 import type { theme } from '@latitude-data/client'
 
 type Props = {
-  theme?: theme.skins.Theme
+  theme?: theme.skins.PartialTheme
   isStorybook?: boolean
 }
 

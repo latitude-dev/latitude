@@ -1,7 +1,7 @@
 <script>
   import { theme } from '@latitude-data/client'
-  const defaultTheme = theme.skins.themes[1]
-
+  const defaultTheme = theme.skins.defaultTheme
+  
   import { Alert, ThemeProvider } from '@latitude-data/svelte'
 
   import '../assets/app.css'
