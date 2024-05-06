@@ -1,5 +1,16 @@
 # @latitude-data/svelte
 
+## 0.7.0-next.2
+
+### Minor Changes
+
+- c39ebae: Improved internal Theme configuration, and added a way to change and create the theme in our React package.
+
+### Patch Changes
+
+- Updated dependencies [c39ebae]
+  - @latitude-data/client@0.10.0-next.2
+
 ## 0.7.0-next.1
 
 ### Minor Changes
