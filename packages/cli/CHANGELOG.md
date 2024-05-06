@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.4.0-next.2
+
+### Patch Changes
+
+- a5b1ff7: Empty change to trigger a release that fixes the cli build with proper build-time env variables
+
 ## 1.4.0-next.1
 
 ### Minor Changes
