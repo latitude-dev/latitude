@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.4.0
+
+### Minor Changes
+
+- 7ba4dfe: Little GitHub stars banner in deploy and start commands in CLI
+
 ## 1.3.3
 
 ### Patch Changes
