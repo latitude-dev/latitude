@@ -7,8 +7,10 @@ import addPackageJson from '../addPackageJson'
 
 export type Props = { version?: string }
 
-export default async function setupApp() {
-  const config = await findOrCreateConfigFile()
+export default async function setupApp(
+  { next = false }: { next?: boolean } = { next: false },
+) {
+  const config = await findOrCreateConfigFile({ next })
   await installLatitudeServer({ version: config.data.version })
   await installDependencies()
   addPackageJson()

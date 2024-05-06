@@ -7,11 +7,13 @@ import { onError } from '$src/utils'
 
 export default async function createConfigFile({
   version,
+  next = false,
 }: {
   version?: string
+  next?: boolean
 }): Promise<ConfigFile> {
   try {
-    version = version ?? (await getLatestVersion())
+    version = version ?? (await getLatestVersion({ next }))
   } catch (error) {
     onError({
       error: error as Error,

@@ -23,11 +23,15 @@ export function getInstalledVersion(appDir: string) {
   return version
 }
 
-export default async function getLatitudeVersions({
-  onFetch,
-}: {
-  onFetch?: () => void
-} = {}) {
+export default async function getLatitudeVersions(
+  {
+    onFetch,
+    next = false,
+  }: {
+    onFetch?: () => void
+    next?: boolean
+  } = { next: false },
+) {
   const command = `npm view ${PACKAGE_NAME} versions --json`
 
   return new Promise<string[]>((resolve, reject) => {
@@ -41,9 +45,10 @@ export default async function getLatitudeVersions({
 
       let versions: string[] | undefined = undefined
       try {
-        versions = JSON.parse(stdout)?.filter(
-          (v: string) => !v.includes('next'),
-        )
+        versions = JSON.parse(stdout)
+        versions = next
+          ? versions
+          : versions?.filter((v: string) => !v.includes('next'))
       } catch (e) {
         reject(e)
       }
