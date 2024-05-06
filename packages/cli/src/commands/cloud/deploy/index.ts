@@ -5,7 +5,7 @@ import findConfigFile from '$src/lib/latitudeConfig/findConfigFile'
 import ora from 'ora'
 import pushDockerImage from './docker/push'
 import tracked from '$src/lib/decorators/tracked'
-import { request, sseRequest } from '$src/lib/server'
+import { ApiError, request, sseRequest } from '$src/lib/server'
 import { GITHUB_STARTS_BANNER } from '$src/commands/constants'
 
 function deployedMessage(url: string) {
@@ -94,7 +94,21 @@ async function deployCommand(
   })
     .then(({ body }) => JSON.parse(body))
     .catch((err) => {
-      console.error(chalk.red('Failed to get/create registry:', err.message))
+      if ((err as ApiError).status === 401) {
+        console.error(
+          chalk.yellow(`
+You are not logged in. Please run the following command to sign up:
+  
+    ${chalk.cyan('latitude signup')}
+
+If you have already signed up, please run the following command to log in:
+
+    ${chalk.cyan('latitude login')}
+`),
+        )
+      } else {
+        console.error(chalk.red('Failed to get/create registry:', err.message))
+      }
 
       process.exit(1)
     })

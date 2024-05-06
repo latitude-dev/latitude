@@ -15,8 +15,10 @@ const SELECT_ARGS = {
 }
 
 process.env['PACKAGE_VERSION'] = '1.0.0'
+
 vi.spyOn(os, 'platform').mockImplementation(() => 'darwin')
 vi.spyOn(os, 'release').mockImplementation(() => '20.6.0')
+
 const mockedCrypto = vi
   .spyOn(crypto, 'randomBytes')
   .mockImplementation(() => ({ toString: () => 'mocked-random-user-id' }))
@@ -55,6 +57,12 @@ vi.mock('@inquirer/prompts', async () => {
     select: mockedSelect,
   }
 })
+
+vi.mock('$src/config', () => ({
+  default: {
+    dev: false,
+  },
+}))
 
 const consoleMock = vi.spyOn(console, 'log').mockImplementation(() => undefined)
 
