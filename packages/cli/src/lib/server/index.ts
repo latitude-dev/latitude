@@ -10,7 +10,7 @@ type Options = {
   headers?: Record<string, string>
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   status: number
   body: string
 

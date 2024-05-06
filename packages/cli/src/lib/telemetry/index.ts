@@ -6,6 +6,7 @@ import { select } from '@inquirer/prompts'
 import type { TelemetryEvent, TelemetryEventType } from './events'
 import chalk from 'chalk'
 import configStore from '$src/lib/configStore'
+import config from '$src/config'
 
 type TelemetryConfig = {
   enabled: boolean | undefined
@@ -61,6 +62,10 @@ export class Telemetry {
   }
 
   private async setup() {
+    if (config.dev) {
+      this.disable()
+      return this.enabled
+    }
     if (this.initialized) return this.enabled
     if (this.enabled !== undefined) return this.enabled
 
