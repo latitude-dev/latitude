@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 1.4.0-next.0
+
+### Minor Changes
+
+- c78b717: Add the ability of adding secure environment variables to Latitude Cloud
+- 7397d7f: Only generate LATITUDE_MASTER_KEY with the CLI. Do not include in the build. This improve security
+
 ## 1.3.2
 
 ### Patch Changes

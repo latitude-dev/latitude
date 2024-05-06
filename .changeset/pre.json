@@ -33,7 +33,9 @@
     "@latitude-data/typescript": "0.1.0"
   },
   "changesets": [
+    "bright-rules-try",
     "funny-jobs-lie",
-    "lemon-kids-tickle"
+    "lemon-kids-tickle",
+    "swift-pets-cheer"
   ]
 }
