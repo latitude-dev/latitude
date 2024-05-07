@@ -1,5 +1,12 @@
 # example-react
 
+## 0.0.8-next.3
+
+### Patch Changes
+
+- Updated dependencies [6b2a69e]
+  - @latitude-data/react@0.7.0-next.3
+
 ## 0.0.8-next.2
 
 ### Patch Changes

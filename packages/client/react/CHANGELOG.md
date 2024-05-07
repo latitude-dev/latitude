@@ -1,5 +1,11 @@
 # @latitude-data/react
 
+## 0.7.0-next.3
+
+### Minor Changes
+
+- 6b2a69e: Added basic components to react package
+
 ## 0.7.0-next.2
 
 ### Minor Changes
