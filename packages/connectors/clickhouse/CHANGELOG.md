@@ -1,5 +1,12 @@
 # @latitude-data/clickhouse-connector
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies [18e7195]
+  - @latitude-data/base-connector@1.1.1
+
 ## 1.1.0
 
 ### Minor Changes

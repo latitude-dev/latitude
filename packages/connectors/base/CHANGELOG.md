@@ -1,5 +1,11 @@
 # @latitude-data/base-connector
 
+## 1.1.1
+
+### Patch Changes
+
+- 18e7195: fix: runQuery did not work if the parent had parameters
+
 ## 1.1.0
 
 ### Minor Changes
