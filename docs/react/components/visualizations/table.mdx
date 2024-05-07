@@ -57,6 +57,8 @@ Depending on the component you choose, you can pass the following properties:
 
 <Tabs>
   <Tab title="QueryTable">
+    ### Query configuration
+
     <ParamField path="queryPath" type="string" required>
       The path to the query file that will provide the data displayed in the table.
     </ParamField>
@@ -71,6 +73,8 @@ Depending on the component you choose, you can pass the following properties:
   </Tab>
 
   <Tab title="Table">
+    ### Data configuration
+
     <ParamField path="data" type="QueryResult">
       The data to be displayed in the table. It should be an array of objects, where each object represents a row in the table.
     </ParamField>
@@ -88,6 +92,8 @@ Depending on the component you choose, you can pass the following properties:
     </ParamField>
   </Tab>
 </Tabs>
+
+### Style
 
 <ParamField path="title" type="string">
   The title of your table.

@@ -1,16 +1,16 @@
-import Table, {
+import QueryResult from '@latitude-data/query_result'
+import LineChart, {
   type Props as RawProps,
-} from '$src/lib/visualizations/raw/table'
+} from '$src/lib/visualizations/raw/charts/LineChart'
 import { useQuery, type QueryRequestProps } from '$src/data'
 import { useMemo } from 'react'
-import QueryResult from '@latitude-data/query_result'
 
-type Props = Omit<RawProps, 'data' | 'download'> &
+type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
   QueryRequestProps & {
     download?: boolean
   }
 
-function QueryTable({
+function QueryLineChart({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryTable({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <Table
+    <LineChart
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryTable({
   )
 }
 
-export default QueryTable
+export default QueryLineChart
