@@ -1,5 +1,11 @@
 # @latitude-data/svelte
 
+## 0.7.0-next.3
+
+### Patch Changes
+
+- 6b2a69e: Fixed blank slate for tables was rendering incorrectly
+
 ## 0.7.0-next.2
 
 ### Minor Changes
