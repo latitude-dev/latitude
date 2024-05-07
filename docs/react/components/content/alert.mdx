@@ -14,17 +14,21 @@ Use the `<Alert>` component to display a message to the user. The component can 
 
 ## Usage
 
-To use the `<Alert>` component, include it in your views as follows:
+To use `<Alert>` in your React component, import it from `@latitude-data/react` and include it in your component as follows:
 
-```jsx
-<Alert
-  type='note'
-  secondary={true}
-  centerText={false}
-  fontWeight='medium'
->
-  Your text here for the alert
-</Alert>
+```tsx
+import { Alert } from '@latitude-data/react';
+
+const MyComponent = () => (
+  <Alert
+    type='note'
+    secondary={true}
+    centerText={false}
+    fontWeight='medium'
+  >
+    Your text here for the alert
+  </Alert>
+);
 ```
 
 ## Properties

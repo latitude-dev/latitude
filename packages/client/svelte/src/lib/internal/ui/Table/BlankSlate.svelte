@@ -23,7 +23,7 @@
         <!-- eslint-disable-next-line -->
         {#each Array(4) as _, i (i)}
           <div
-            class="animate-gradient lat-h-4 lat-rounded-full lat-bg-gradient-to-r from-muted via-white to-muted"
+            class="lat-animate-gradient lat-h-4 lat-rounded-full lat-bg-gradient-to-r lat-from-muted lat-via-white lat-to-muted"
           />
         {/each}
       </div>
@@ -31,7 +31,7 @@
         <!-- eslint-disable-next-line -->
         {#each Array(120) as _}
           <div
-            class="animate-gradient lat-h-4 lat-rounded-full lat-bg-gradient-to-r from-muted via-white to-muted"
+            class="lat-animate-gradient lat-h-4 lat-rounded-full lat-bg-gradient-to-r lat-from-muted lat-via-white lat-to-muted"
           />
         {/each}
       </div>
