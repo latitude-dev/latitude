@@ -14,7 +14,7 @@ export default {
     }),
   ],
   external: [
-    '@latitude-data/base-connector',
+    '@latitude-data/source-manager',
     '@latitude-data/query_result',
     'snowflake-sdk',
   ],

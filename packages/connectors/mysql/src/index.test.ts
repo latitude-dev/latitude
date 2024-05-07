@@ -17,12 +17,15 @@ describe('MysqlConnector SSL Configurations', () => {
   })
 
   it('passes boolean SSL config correctly', () => {
-    new MysqlConnector('rootPath', {
-      user: 'user',
-      password: 'password',
-      database: 'database',
-      host: 'host',
-      ssl: true,
+    new MysqlConnector({
+      source: vi.fn(),
+      connectionParams: {
+        user: 'user',
+        password: 'password',
+        database: 'database',
+        host: 'host',
+        ssl: true,
+      },
     })
 
     // @ts-expect-error - mock
@@ -31,15 +34,18 @@ describe('MysqlConnector SSL Configurations', () => {
   })
 
   it('uses readFileSync and passes SSL files content', () => {
-    new MysqlConnector('rootPath', {
-      user: 'user',
-      password: 'password',
-      database: 'database',
-      host: 'host',
-      ssl: {
-        ca: 'path/to/ca',
-        key: 'path/to/key',
-        cert: 'path/to/cert',
+    new MysqlConnector({
+      source: vi.fn(),
+      connectionParams: {
+        user: 'user',
+        password: 'password',
+        database: 'database',
+        host: 'host',
+        ssl: {
+          ca: 'path/to/ca',
+          key: 'path/to/key',
+          cert: 'path/to/cert',
+        },
       },
     })
 
@@ -68,11 +74,14 @@ describe('runQuery', () => {
     // @ts-expect-error - mock
     vi.mocked(createPool).mockReturnValue(poolMock)
 
-    const connector = new MysqlConnector('rootPath', {
-      user: 'user',
-      password: 'password',
-      database: 'database',
-      host: 'host',
+    const connector = new MysqlConnector({
+      source: vi.fn(),
+      connectionParams: {
+        user: 'user',
+        password: 'password',
+        database: 'database',
+        host: 'host',
+      },
     })
 
     await expect(
@@ -99,11 +108,14 @@ describe('runQuery', () => {
     // @ts-expect-error - mock
     vi.mocked(createPool).mockReturnValue(poolMock)
 
-    const connector = new MysqlConnector('rootPath', {
-      user: 'user',
-      password: 'password',
-      database: 'database',
-      host: 'host',
+    const connector = new MysqlConnector({
+      source: vi.fn(),
+      connectionParams: {
+        user: 'user',
+        password: 'password',
+        database: 'database',
+        host: 'host',
+      },
     })
 
     await connector.runQuery({

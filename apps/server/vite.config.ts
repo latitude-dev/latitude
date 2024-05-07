@@ -45,7 +45,10 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@latitude-data/source-manager'],
+      external: [
+        '@latitude-data/source-manager',
+        '@latitude-data/query_result',
+      ],
     },
   },
 })

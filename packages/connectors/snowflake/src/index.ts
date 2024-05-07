@@ -4,7 +4,8 @@ import {
   CompiledQuery,
   ResolvedParam,
   ConnectorError,
-} from '@latitude-data/base-connector'
+  ConnectorOptions,
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType } from '@latitude-data/query_result'
 import pkg from 'snowflake-sdk'
 
@@ -20,16 +21,19 @@ export type ConnectionParams = {
   privateKeyPass?: string
 }
 
-export default class SnowflakeConnector extends BaseConnector {
+export default class SnowflakeConnector extends BaseConnector<ConnectionParams> {
   private pool
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
 
-    this.pool = createPool(this.buildConnectionParams(connectionParams), {
-      max: 10,
-      min: 0,
-    })
+    this.pool = createPool(
+      this.buildConnectionParams(options.connectionParams),
+      {
+        max: 10,
+        min: 0,
+      },
+    )
   }
 
   resolve(value: unknown, index: number): ResolvedParam {

@@ -5,7 +5,8 @@ import {
   CompiledQuery,
   ResolvedParam,
   ConnectorError,
-} from '@latitude-data/base-connector'
+  ConnectorOptions,
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { OAuth2Client } from 'google-auth-library'
 import { JSONClient } from 'google-auth-library/build/src/auth/googleauth'
@@ -19,13 +20,13 @@ type ConnectionParams = {
   token?: string
 }
 
-export default class BigQueryConnector extends BaseConnector {
+export default class BigQueryConnector extends BaseConnector<ConnectionParams> {
   private params: ConnectionParams
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
 
-    this.params = connectionParams
+    this.params = options.connectionParams
   }
 
   resolve(value: unknown, index: number): ResolvedParam {

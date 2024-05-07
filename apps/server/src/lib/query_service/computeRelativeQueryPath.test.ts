@@ -1,6 +1,6 @@
-import computeRelativeQueryPath from './computeRelativeQueryPath'
-import { QUERIES_DIR } from '$lib/server/sourceManager'
 import { it, describe, expect } from 'vitest'
+import { QUERIES_DIR } from '$lib/server/sourceManager'
+import computeRelativeQueryPath from './computeRelativeQueryPath'
 
 describe('computeRelativeQueryPath', () => {
   it('should compute the relative query path correctly', () => {

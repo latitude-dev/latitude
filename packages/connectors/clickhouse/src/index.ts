@@ -4,12 +4,13 @@ import {
   CompiledQuery,
   ResolvedParam,
   QueryError,
-} from '@latitude-data/base-connector'
+} from '@latitude-data/source-manager'
 import { readFileSync } from 'fs'
 import { ClickHouseSettings, createClient } from '@clickhouse/client'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { NodeClickHouseClientConfigOptions } from '@clickhouse/client/dist/config'
 import { NodeClickHouseClient } from '@clickhouse/client/dist/client'
+import { ConnectorOptions } from '@latitude-data/source-manager'
 
 export type TLSOptions = {
   ca_cert: string
@@ -29,14 +30,16 @@ export type ConnectionParams = {
   tls?: TLSOptions
 }
 
-export default class ClickHouseConnector extends BaseConnector {
+export default class ClickHouseConnector extends BaseConnector<ConnectionParams> {
   private client: NodeClickHouseClient
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
 
     try {
-      this.client = createClient(this.buildConnectionParams(connectionParams))
+      this.client = createClient(
+        this.buildConnectionParams(options.connectionParams),
+      )
     } catch (error) {
       throw new ConnectionError((error as Error).message)
     }

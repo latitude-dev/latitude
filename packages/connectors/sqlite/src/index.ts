@@ -2,8 +2,9 @@ import {
   BaseConnector,
   CompiledQuery,
   ConnectorError,
+  ConnectorOptions,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import pkg from 'sqlite3'
 
@@ -13,13 +14,13 @@ export type ConnectionParams = {
   url?: string
 }
 
-export default class SqliteConnector extends BaseConnector {
+export default class SqliteConnector extends BaseConnector<ConnectionParams> {
   private url: string
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
 
-    this.url = connectionParams.url || ':memory:'
+    this.url = options.connectionParams.url || ':memory:'
   }
 
   resolve(value: unknown): ResolvedParam {

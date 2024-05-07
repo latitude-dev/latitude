@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@clickhouse/client": "^1.0.1",
-    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/query_result": "workspace:^"
   }
 }

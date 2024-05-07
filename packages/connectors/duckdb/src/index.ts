@@ -2,8 +2,9 @@ import {
   BaseConnector,
   CompiledQuery,
   ConnectorError,
+  ConnectorOptions,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { Database, OPEN_READONLY, OPEN_READWRITE } from 'duckdb-async'
 
@@ -11,13 +12,13 @@ export type ConnectionParams = {
   url?: string
 }
 
-export default class DuckdbConnector extends BaseConnector {
+export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
   private client?: Database
   private url: string
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
-    this.url = connectionParams.url || ':memory:'
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
+    this.url = options.connectionParams.url || ':memory:'
   }
 
   end(): Promise<void> {
