@@ -6,11 +6,17 @@ interface Props {
   loading: boolean
   error: Error | null | undefined
   data: QueryResult | null | undefined
-  height: number | string
+  height?: number | string
   children?: React.ReactNode
 }
 
-function BlankSlate({ loading, error, data, height, children }: Props) {
+export default function BlankSlate({
+  loading,
+  error,
+  data,
+  height,
+  children,
+}: Props) {
   const classes = useMemo(
     () =>
       cn('lat-relative lat-h-full lat-w-full', {
@@ -46,10 +52,8 @@ function BlankSlate({ loading, error, data, height, children }: Props) {
       ) : error ? (
         <div>error: {error.message}</div>
       ) : (
-        <React.Fragment>{children}</React.Fragment>
+        children
       )}
     </div>
   )
 }
-
-export default BlankSlate

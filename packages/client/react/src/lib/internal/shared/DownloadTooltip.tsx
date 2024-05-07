@@ -4,7 +4,8 @@ import { theme } from '@latitude-data/client'
 type Props = {
   download?: () => Promise<void>
 }
-function DownloadTooltip({ download }: Props) {
+
+export default function DownloadTooltip({ download }: Props) {
   return (
     <Popover.Root>
       <Popover.Trigger>
@@ -40,5 +41,3 @@ function DownloadTooltip({ download }: Props) {
     </Popover.Root>
   )
 }
-
-export default DownloadTooltip

@@ -1,0 +1,73 @@
+---
+title: 'Area Chart'
+description: 'How to create and configure the Area chart'
+---
+import ReactChartProperties from '/snippets/charts/react-properties.mdx'
+import AreaChartIframe from '/snippets/charts/area-chart/iframe.mdx'
+
+<AreaChartIframe />
+
+## Introduction
+An Area Chart visualizes quantitative data over time through filled areas below the line, highlighting volume and trends. It's useful for comparing multiple data sets and understanding the relative significance of each.
+
+## Syntax
+
+You can use either `AreaChart` or `QueryAreaChart` to visualize query results in a chart.
+
+Use **QueryAreaChart** when you want the component to automatically handle the query fetching.
+
+Use **AreaChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+
+<CodeGroup>
+```tsx QueryAreaChart
+import { QueryAreaChart } from '@latitude-data/react';
+
+function MyComponent() {
+  return (
+    <QueryAreaChart
+      queryPath='titles'
+      params={{
+        start_year: 2010,
+        end_year: 2020
+      }}
+      x='launch_year'
+      y={[
+        {name: 'count_shows', chartType: 'line'},
+        {name: 'count_movies', chartType: 'line'}
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+```tsx AreaChart
+import { AreaChart, useQuery } from '@latitude-data/react';
+
+function MyComponent() {
+  const { data, isLoading } = useQuery({
+    queryPath: 'titles'
+    params: {
+      start_year: 2010,
+      end_year: 2020
+    }
+  });
+
+  return (
+    <AreaChart
+      data={data}
+      isLoading={isLoading}
+      x='launch_year'
+      y={[
+        {name: 'count_shows', chartType: 'line'},
+        {name: 'count_movies', chartType: 'line'}
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+</CodeGroup>
+
+<ReactChartProperties />
