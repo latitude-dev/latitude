@@ -1,5 +1,12 @@
 # @latitude-data/server
 
+## 1.1.4
+
+### Patch Changes
+
+- 18e7195: Adds error logs when a request fails to process
+  - @latitude-data/source-manager@0.1.1
+
 ## 1.1.3
 
 ### Patch Changes
