@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.10.0-next.3
+
+### Patch Changes
+
+- c26e405: Abstracted a missing class from a Svelte component to the Client core package.
+
 ## 0.10.0-next.2
 
 ### Minor Changes
