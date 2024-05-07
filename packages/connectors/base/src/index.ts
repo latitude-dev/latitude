@@ -307,6 +307,7 @@ export abstract class BaseConnector {
           ...context,
           request: { queryPath: queryName, params: {} },
           queryConfig: {}, // Subquery config does not affect the root query
+          resolvedParams: [], // Subquery should not have access to parent queries' resolved parameters
         })
 
         const subQueryResults = await this.runQuery(compiledSubQuery).then(

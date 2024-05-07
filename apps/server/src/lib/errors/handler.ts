@@ -9,5 +9,8 @@ export default function handleError(e: Error) {
     return new Response(e.message, { status: 404 })
   }
 
+  // TODO: Add sentry reporting
+  console.error(e)
+
   return new Response(clientError.message, { status: 500 })
 }
