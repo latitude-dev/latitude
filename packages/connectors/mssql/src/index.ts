@@ -1,8 +1,9 @@
 import {
   BaseConnector,
   CompiledQuery,
+  ConnectorOptions,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import sql from 'mssql'
 
@@ -22,13 +23,13 @@ export type ConnectionParams = {
   }
 }
 
-export default class MssqlConnector extends BaseConnector {
+export default class MssqlConnector extends BaseConnector<ConnectionParams> {
   private pool: sql.ConnectionPool
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
 
-    this.pool = new sql.ConnectionPool(connectionParams)
+    this.pool = new sql.ConnectionPool(options.connectionParams)
   }
 
   end(): Promise<void> {

@@ -3,9 +3,6 @@
   "version": "0.1.1",
   "license": "LGPL",
   "description": "Manage Latitude sources",
-  "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -15,9 +12,16 @@
     "test:watch": "vitest",
     "prettier": "prettier --write src/**/*.ts"
   },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@latitude-data/query_result": "workspace:*",
+    "@latitude-data/sql-compiler": "workspace:*",
+    "dotenv": "^16.4.5",
+    "yaml": "^2.3.4"
+  },
   "devDependencies": {
-    "@latitude-data/base-connector": "workspace:^",
-    "@latitude-data/test-connector": "workspace:^",
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/query_result": "workspace:^",
     "@latitude-data/typescript": "workspace:*",
@@ -28,10 +32,7 @@
     "mock-fs": "^5.2.0",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2",
-    "vitest": "^1.2.2"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.5",
-    "yaml": "^2.3.4"
+    "vitest": "^1.2.2",
+    "vite-tsconfig-paths": "^4.3.1"
   }
 }

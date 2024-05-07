@@ -19,13 +19,16 @@ describe('PostgresConnector SSL Configurations', () => {
   })
 
   it('passes boolean SSL config correctly', () => {
-    new PostgresConnector('rootPath', {
-      user: 'user',
-      password: 'password',
-      database: 'database',
-      host: 'host',
-      port: 5432,
-      ssl: true,
+    new PostgresConnector({
+      source: vi.fn(),
+      connectionParams: {
+        user: 'user',
+        password: 'password',
+        database: 'database',
+        host: 'host',
+        port: 5432,
+        ssl: true,
+      },
     })
 
     const poolConfig = vi.mocked(pg.Pool).mock.calls[0]?.[0]
@@ -33,17 +36,20 @@ describe('PostgresConnector SSL Configurations', () => {
   })
 
   it('uses readFileSync and passes SSL files content', () => {
-    new PostgresConnector('rootPath', {
-      user: 'user',
-      password: 'password',
-      database: 'database',
-      host: 'host',
-      port: 5432,
-      ssl: {
-        sslmode: 'require',
-        ca: 'path/to/ca',
-        key: 'path/to/key',
-        cert: 'path/to/cert',
+    new PostgresConnector({
+      source: vi.fn(),
+      connectionParams: {
+        user: 'user',
+        password: 'password',
+        database: 'database',
+        host: 'host',
+        port: 5432,
+        ssl: {
+          sslmode: 'require',
+          ca: 'path/to/ca',
+          key: 'path/to/key',
+          cert: 'path/to/cert',
+        },
       },
     })
 

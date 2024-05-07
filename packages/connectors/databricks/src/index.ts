@@ -3,7 +3,8 @@ import {
   CompiledQuery,
   ConnectionError,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+  ConnectorOptions,
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { DBSQLClient } from '@databricks/sql'
 import { ConnectionOptions } from '@databricks/sql/dist/contracts/IDBSQLClient'
@@ -21,12 +22,13 @@ export type ConnectionParams = {
   oauthClientSecret?: string
 }
 
-export default class DatabricksConnector extends BaseConnector {
+export default class DatabricksConnector extends BaseConnector<ConnectionParams> {
   private client: DBSQLClient
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
     this.client = new DBSQLClient()
+    const connectionParams = options.connectionParams
     const { host, port, path } = connectionParams
     const connection = { host, port, path }
 

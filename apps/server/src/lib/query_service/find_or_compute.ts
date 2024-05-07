@@ -1,28 +1,26 @@
-import cache from './query_cache'
-import sourceManager from '$lib/server/sourceManager'
 import QueryResult from '@latitude-data/query_result'
-import { CompiledQuery } from '@latitude-data/base-connector'
+import { type CompiledQuery, type Source } from '@latitude-data/source-manager'
+import cache from './query_cache'
 import computeRelativeQueryPath from './computeRelativeQueryPath'
 
-type Props = {
-  query: string
-  queryParams: Record<string, unknown>
-  force: boolean
-}
-
 export default async function findOrCompute({
+  source,
   query,
   queryParams,
   force,
-}: Props): Promise<{
+}: {
+  source: Source
+  query: string
+  queryParams: Record<string, unknown>
+  force: boolean
+}): Promise<{
   queryResult: QueryResult
   compiledQuery: CompiledQuery
 }> {
-  const { source, sourceFilePath } = await sourceManager.loadFromQuery(query)
   const compiledQuery = await source.compileQuery({
     queryPath: computeRelativeQueryPath({
       queryPath: query,
-      sourcePath: sourceFilePath,
+      sourcePath: source.path,
     }),
     params: queryParams,
   })
@@ -43,7 +41,7 @@ export default async function findOrCompute({
     queryResult = await compute()
   } else {
     queryResult =
-      cache.find(request, compiledQuery.config.ttl) || (await compute())
+      cache.find(request, compiledQuery.config?.ttl) || (await compute())
   }
 
   return {

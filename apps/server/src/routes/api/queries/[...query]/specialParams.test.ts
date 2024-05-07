@@ -1,8 +1,12 @@
+import mockFs from 'mock-fs'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
 import findOrCompute from '$lib/query_service/find_or_compute'
 import { signJwt } from '@latitude-data/jwt'
 import { GET } from './+server'
-import { describe, it, expect, vi, afterEach } from 'vitest'
 import QueryResult from '@latitude-data/query_result'
+import { QUERIES_DIR } from '$lib/server/sourceManager'
+import { Source } from '@latitude-data/source-manager'
 
 const PAYLOAD = { fields: [], rows: [], rowCount: 0 }
 const queryResult = new QueryResult(PAYLOAD)
@@ -17,6 +21,16 @@ vi.mock('$lib/query_service/find_or_compute', () => ({
 }))
 
 describe('Special params', async () => {
+  beforeEach(() => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'testQuery.sql': 'SELCET * FROM table',
+      },
+      '/tmp/.latitude': {},
+    })
+  })
+
   afterEach(() => {
     mockedFindOrCompute.mockRestore()
   })
@@ -31,6 +45,7 @@ describe('Special params', async () => {
       url: new URL('http://localhost?param=42&__force=true'),
     })
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
+      source: expect.any(Source),
       query: 'testQuery',
       queryParams: { param: 42 },
       force: true,
@@ -50,6 +65,7 @@ describe('Special params', async () => {
       url: new URL('http://localhost?param=42&__force=$text:true'),
     })
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
+      source: expect.any(Source),
       query: 'testQuery',
       queryParams: { param: 42 },
       force: true,
@@ -76,6 +92,7 @@ describe('Special params', async () => {
       url: new URL(`http://localhost?__token=${token}`),
     })
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
+      source: expect.any(Source),
       query: 'testQuery',
       queryParams: { company_id: 33 },
       force: false,
@@ -92,6 +109,7 @@ describe('Special params', async () => {
       url: new URL('http://localhost?param=42&__download=true'),
     })
     expect(mockedFindOrCompute).toHaveBeenCalledWith({
+      source: expect.any(Source),
       query: 'testQuery',
       queryParams: { param: 42 },
       force: false,

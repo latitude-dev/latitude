@@ -1,48 +1,12 @@
-import cache from '$lib/query_service/query_cache'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import QueryResult, { DataType } from '@latitude-data/query_result'
-import { MISSING_KEY } from '$lib/loadToken'
 import mockFs from 'mock-fs'
 import fs from 'fs'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+
+import QueryResult, { DataType } from '@latitude-data/query_result'
+import cache from '$lib/query_service/query_cache'
+import { MISSING_KEY } from '$lib/loadToken'
 import { QUERIES_DIR } from '$lib/server/sourceManager'
 import { GET } from './+server'
-import TestConnector from '@latitude-data/test-connector'
-import type { CompiledQuery, QueryRequest } from '@latitude-data/base-connector'
-import path from 'path'
-import { QueryNotFoundError } from '@latitude-data/source-manager'
-
-const runQuerySpy = vi.fn()
-const connector = new TestConnector(QUERIES_DIR, {
-  onRunQuery: runQuerySpy,
-})
-
-vi.mock('$lib/server/sourceManager', async () => {
-  const QUERIES_DIR = 'static/.latitude/queries'
-  return {
-    default: {
-      loadFromQuery: async (query: string) => {
-        const filePath = path.join(
-          QUERIES_DIR,
-          query.endsWith('.sql') ? query : `${query}.sql`,
-        )
-        if (!fs.existsSync(filePath)) {
-          throw new QueryNotFoundError(`Query file not found at ${filePath}`)
-        }
-
-        return {
-          source: {
-            compileQuery: (request: QueryRequest) =>
-              connector.compileQuery(request),
-            runCompiledQuery: (compiledQuery: CompiledQuery) =>
-              connector.runCompiled(compiledQuery),
-          },
-          sourceFilePath: filePath,
-        }
-      },
-    },
-    QUERIES_DIR,
-  }
-})
 
 const PAYLOAD = {
   fields: [{ name: 'value', type: DataType.String }],
@@ -50,16 +14,15 @@ const PAYLOAD = {
   rowCount: 1,
 }
 
-mockFs({
-  [QUERIES_DIR]: {
-    'source.yml': 'type: duckdb',
-    'query.sql': 'test',
-  },
-  '/tmp/.latitude': {},
-})
-
 describe('GET endpoint', async () => {
   beforeEach(() => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query.sql': 'test',
+      },
+      '/tmp/.latitude': {},
+    })
     vi.spyOn(cache, 'find').mockReturnValue(null)
     vi.resetAllMocks()
     import.meta.env.PROD = false

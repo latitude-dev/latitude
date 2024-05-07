@@ -1,14 +1,14 @@
 import * as fs from 'fs'
-import * as path from 'path'
-import { QueryNotFoundError, SourceFileNotFoundError } from '../../types'
+import path from 'path'
+import { SourceFileNotFoundError, QueryNotFoundError } from '@/types'
 
-export default async function findSourceConfigFromQuery({
+export default function findSourceConfigFromQuery({
   query,
   queriesDir,
 }: {
   query: string
   queriesDir: string
-}): Promise<string> {
+}) {
   const fullPath = path.join(
     queriesDir,
     query.endsWith('.sql') ? query : `${query}.sql`,
@@ -44,5 +44,5 @@ export default async function findSourceConfigFromQuery({
     currentDir = path.dirname(currentDir)
   }
 
-  throw new SourceFileNotFoundError('Source file not found')
+  throw new SourceFileNotFoundError(`Source file not found at ${fullPath}`)
 }
