@@ -305,6 +305,19 @@ describe('ref function', async () => {
 describe('runQuery function', async () => {
   afterEach(clearQueries)
 
+  it('does not contain resolvedParams from the parent query', async () => {
+    const connector = new MockConnector()
+    const mainQuery =
+      '{param("foo", "bar")} {result = runQuery("referenced_query")}'
+    const refQuery = 'ref'
+    const mainQueryPath = addFakeQuery(mainQuery)
+    addFakeQuery(refQuery, 'referenced_query')
+
+    await connector.run({ queryPath: mainQueryPath })
+
+    expect(ranQueries.length).toBe(2)
+  })
+
   it('runs a subquery and returns it as a value', async () => {
     const connector = new MockConnector()
     const mainQuery = "{result = runQuery('referenced_query')} {result.length}"
