@@ -1,5 +1,16 @@
 # @latitude-data/react
 
+## 0.7.0-next.4
+
+### Minor Changes
+
+- c26e405: Added Table, AreaChart and QueryAreaChart components
+
+### Patch Changes
+
+- Updated dependencies [c26e405]
+  - @latitude-data/client@0.10.0-next.3
+
 ## 0.7.0-next.3
 
 ### Minor Changes
