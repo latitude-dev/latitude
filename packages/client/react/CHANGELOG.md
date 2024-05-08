@@ -1,5 +1,11 @@
 # @latitude-data/react
 
+## 0.7.0-next.5
+
+### Minor Changes
+
+- 4661d83: Implemented missing visualization charts
+
 ## 0.7.0-next.4
 
 ### Minor Changes
