@@ -103,7 +103,7 @@
     onWindowResize()
     return {
       update({ options: newOptions }: ChartableProps) {
-        echartsInstance.setOption({ ...options, ...newOptions })
+        echartsInstance.setOption({ ...options, ...newOptions }, { notMerge: true })
       },
       destroy() {
         if (resizeObserver) {
