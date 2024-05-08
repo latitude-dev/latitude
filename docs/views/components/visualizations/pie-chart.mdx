@@ -3,7 +3,9 @@ title: 'Pie Chart'
 description: 'How to create and configure the Pie chart'
 ---
 
-<iframe class="rounded-xl" src="https://docs-charts-examples.fly.dev/visualizations/pie" width="100%" height="450"> </iframe>
+import PieChartIframe from '/snippets/charts/pie-chart/iframe.mdx'
+
+<PieChartIframe />
 
 ## Introduction
 A pie chart visualizes data as proportional segments of a circle. It makes easier to see relative sizes of categories at a glance, ideal for highlighting distribution and composition.
@@ -41,13 +43,13 @@ To configure and customize the chart, you can add properties, some of which are 
     The name of your `.sql` file from which your chart will get the data. It's not necessary to specify the full path, just the name, because we will search all folders until we find it
 </ParamField>
 
-<ParamField path="config" type="array">
+<ParamField path="config" type="object">
     Contains some options to customize your chart.
     
     [See the Config section](#config) to learn more about the options.
 </ParamField>
 
-<ParamField path="opts" type="array">
+<ParamField path="opts" type="object">
     Includes options to control the behavior of the chart. For example, react to changes in the parameters to update the data immediately.
     
     [See the Reactive To Params section](#reactive-to-params) to learn more about it.

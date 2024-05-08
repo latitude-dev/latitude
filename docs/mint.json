@@ -235,7 +235,13 @@
           "group": "Visualizations",
           "pages": [
             "react/components/visualizations/table",
-            "react/components/visualizations/area-chart"
+            "react/components/visualizations/area-chart",
+            "react/components/visualizations/bar-chart",
+            "react/components/visualizations/funnel-chart",
+            "react/components/visualizations/line-chart",
+            "react/components/visualizations/mixed-types-chart",
+            "react/components/visualizations/pie-chart",
+            "react/components/visualizations/scatter-chart"
           ]
         },
         "react/components/layout",

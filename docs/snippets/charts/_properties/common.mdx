@@ -18,6 +18,11 @@
     [See the sort section](#sort-options) to learn more about the sort options
 </ParamField>
 
+<ParamField path="sizeColumn" type="string">
+  **(Only for Scatter chart)**
+  The column to use for the size of the dots.
+</ParamField>
+
 ### Style
 
 <ParamField path="title" type="string">
@@ -32,13 +37,13 @@
   If you want to wrap the chart in a bordered and rounded box set `bordered` to `true` in the chart properties.
 </ParamField>
 
-<ParamField path="xAxisFormat" type="array">
+<ParamField path="xAxisFormat" type="object">
     It allows you to customize how the information is displayed in the given axis. It contains several options.
 
     [See the section xAxisFormat](#axis-x-and-y-options) to learn more about the options.
 </ParamField>
 
-<ParamField path="yFormat" type="array">
+<ParamField path="yFormat" type="object">
     It allows you to customize how the information is displayed in the given axis. It contains several options.
 
     [See the section yFormat](#axis-x-and-y-options) to learn more about the options.
@@ -60,7 +65,7 @@
     Swap the axis orientation. Visually swap the (x) axis with the (y) axis.
 </ParamField>
 
-<ParamField path="config" type="array">
+<ParamField path="config" type="object">
     Contains some options to customize your chart.
 
     [See the Config section](#additional-style-configuration) to learn more about the options.
@@ -95,12 +100,12 @@
 
   Example of syntax for multiple series:
 
-  ``` javascript
-    y={[
-      { name: 'column_a' },
-      { name: 'column_b', axisIndex: 0 },
-      { name: 'column_c', axisIndex: 1 }
-    ]}
+  ```jsx
+  y={[
+    { name: 'column_a' },
+    { name: 'column_b', axisIndex: 0 },
+    { name: 'column_c', axisIndex: 1 }
+  ]}
   ```
 
   #### Pivoted table
@@ -110,10 +115,10 @@
   - `*` + `suffix`
 
   Example to add all columns starting wiht `sum_`:
-  ```
-      y={[
-      {name: 'sum_*'},
-      ]}
+  ```jsx
+  y={[
+    {name: 'sum_*'},
+  ]}
   ```
 
   #### Sort options
@@ -138,23 +143,16 @@
 
   Example of syntax for multiple column order:
 
-  ```
-      order={[
-      {name: 'column_a', order: 'asc'},
-      {name: 'column_b', order: 'desc', incomparable: 'min', parser: 'time' },
-      ]}
+  ```jsx
+  order={[
+    {name: 'column_a', order: 'asc'},
+    {name: 'column_b', order: 'desc', incomparable: 'min', parser: 'time' },
+  ]}
   ```
 
 #### Axis Format
-  Example of different axis format. The order of the array will determine the axisIndex where `0` = the first format in the list.
+  The `xAxisFormat` and `yAxisFormat` properties allow you to customize how the information is displayed in the given axis.
 
-  ```
-      yAxisFormat={[
-      {type: 'value', stack: 'true'},
-      {type: 'category', stack: 'false'},
-      {type: 'value', stack: 'false;}
-      ]}
-  ```
   <ParamField path="type" type="string">
       The format of the data displayed in the axis. The options are:
       - `category`
@@ -193,9 +191,20 @@
       - `end`: in axis (x) means right and for (y) axis means bottom.
   </ParamField>
 
+  Example of syntax for multiple series:
+
+  ```jsx
+  yAxisFormat={[
+    {type: 'value', stack: 'true'},
+    {type: 'category', stack: 'false'},
+    {type: 'value', stack: 'false'}
+  ]}
+  ```
 
   #### Additional style configuration
     Allows you to add more configuration and customize your chart.
+
+    All of these properties must be set inside the `config` property.
 
     <ParamField path="showDots" type="boolean">
         Show a dot or not at the intersection of the values.

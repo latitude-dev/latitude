@@ -84,7 +84,7 @@ export default function Echart({
   // Update options when props change
   useEffect(() => {
     if (options) {
-      chartInstance.current?.setOption(options)
+      chartInstance.current?.setOption(options, { notMerge: true })
     }
   }, [options])
 

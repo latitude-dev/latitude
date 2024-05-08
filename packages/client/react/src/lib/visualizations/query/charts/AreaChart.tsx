@@ -19,11 +19,11 @@ function QueryAreaChart({
 }: Props) {
   const {
     data,
-    isLoading,
+    isFetching: isLoading,
     error,
     download: downloadFn,
   } = useQuery({ queryPath, params, tanstaskQueryOptions })
-  const result = useMemo(() => new QueryResult(data), [data])
+  const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
     <AreaChart

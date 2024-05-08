@@ -1,0 +1,73 @@
+---
+title: 'Bar Chart'
+description: 'How to create and configure the Bar chart'
+---
+import ReactChartProperties from '/snippets/charts/react-properties.mdx'
+import BarChartIframe from '/snippets/charts/bar-chart/iframe.mdx'
+
+<BarChartIframe />
+
+## Introduction
+The Bar chart represents quantitative data with vertical or horizontal bars, showing comparisons across categories or time. It highlights differences in values, making it ideal for comparing multiple datasets and identifying trends or outliers.
+
+## Syntax
+
+You can use either `BarChart` or `QueryBarChart` to visualize query results in a chart.
+
+Use **QueryBarChart** when you want the component to automatically handle the query fetching.
+
+Use **BarChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+
+<CodeGroup>
+```tsx QueryBarChart
+import { QueryBarChart } from '@latitude-data/react';
+
+function MyComponent() {
+  return (
+    <QueryBarChart
+      queryPath='titles'
+      params={{
+        start_year: 2010,
+        end_year: 2014
+      }}
+      x='release_year'
+      y={[
+        { name: 'count_shows' },
+        { name: 'count_movies' }
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+```tsx BarChart
+import { BarChart, useQuery } from '@latitude-data/react';
+
+function MyComponent() {
+  const { data, isLoading } = useQuery({
+    queryPath: 'titles'
+    params: {
+      start_year: 2010,
+      end_year: 2014
+    }
+  });
+
+  return (
+    <BarChart
+      data={data}
+      isLoading={isLoading}
+      x='release_year'
+      y={[
+        { name: 'count_shows' },
+        { name: 'count_movies' }
+      ]}
+      xTitle='Year'
+      yTitle='Titles'
+    />
+  );
+}
+```
+</CodeGroup>
+
+<ReactChartProperties />

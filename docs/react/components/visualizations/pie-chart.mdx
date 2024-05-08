@@ -1,0 +1,146 @@
+---
+title: 'Pie Chart'
+description: 'How to create and configure the Pie chart'
+---
+import PieChartIframe from '/snippets/charts/pie-chart/iframe.mdx'
+import ReactChartProperties from '/snippets/charts/react-properties.mdx'
+
+<PieChartIframe />
+
+## Introduction
+A pie chart visualizes data as proportional segments of a circle. It makes easier to see relative sizes of categories at a glance, ideal for highlighting distribution and composition.
+
+## Preparation
+The query `.sql` file that the Pie Chart accepts must contain only 2 columns, one for the labels and another one for the values.
+
+
+| type      | count    |
+| --------- | -------- |
+| MOVIE     | 3309     |
+| SHOW      | 1967     |
+
+## Syntax
+
+You can use either `PieChart` or `QueryPieChart` to visualize query results in a chart.
+
+Use **QueryPieChart** when you want the component to automatically handle the query fetching.
+
+Use **PieChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+
+<CodeGroup>
+```tsx QueryPieChart
+import { QueryPieChart } from '@latitude-data/react';
+
+function MyComponent() {
+  return (
+    <QueryPieChart
+      queryPath='titles'
+      params={{
+        start_year: 2010,
+        end_year: 2014
+      }}
+      x='type'
+      y='count'
+      config={{
+        showHole: true
+      }}
+    />
+  );
+}
+```
+```tsx PieChart
+import { PieChart, useQuery } from '@latitude-data/react';
+
+function MyComponent() {
+  const { data, isLoading } = useQuery({
+    queryPath: 'titles'
+    params: {
+      start_year: 2010,
+      end_year: 2014
+    }
+  });
+
+  return (
+    <PieChart
+      data={data}
+      isLoading={isLoading}
+      x='type'
+      y='count'
+      config={{
+        showHole: true
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Properties
+
+Depending on the component you choose, you can pass the following properties:
+
+<Tabs>
+  <Tab title="QueryPieChart">
+    ### Query configuration
+
+    <ParamField path="queryPath" type="string" required>
+      The path to the query file that will provide the data displayed in the table.
+    </ParamField>
+
+    <ParamField path="params" type="object">
+      An object with custom parameters to be used in the query.
+    </ParamField>
+
+    <ParamField path="download" type="boolean">
+      A flag to enable the download of the table data as a CSV file.
+    </ParamField>
+  </Tab>
+
+  <Tab title="PieChart">
+    ### Data configuration
+
+    <ParamField path="data" type="QueryResult">
+      The data to be displayed in the table. It should be an array of objects, where each object represents a row in the table.
+    </ParamField>
+
+    <ParamField path="isLoading" type="boolean" required>
+      A flag to indicate if the data is still loading. When set to `true`, the table will display a blinking animation.
+    </ParamField>
+
+    <ParamField path="error" type="error">
+      An error message to be displayed in case the data could not be loaded.
+    </ParamField>
+
+    <ParamField path="download" type="function">
+      A function to download the table data as a CSV file.
+    </ParamField>
+  </Tab>
+</Tabs>
+
+<ParamField path="config" type="object">
+  Contains some additional options to customize your chart.
+  
+  [See the Config section](#config) to learn more about the options.
+</ParamField>
+
+### Config
+
+<ParamField path="showLabels" type="boolean">
+    Display the category name directly on the chart.
+</ParamField>
+
+<ParamField path="showHole" type="boolean">
+    Display a circular space withing the pie allowing to show the total sum of the values.
+</ParamField>
+
+<ParamField path="showTotalValue" type="boolean">
+    When the `showHole` property is true allow to show the total sum of the values.
+</ParamField>
+
+<ParamField path="showLegend" type="boolean">
+    Display the color legend for each series displayed.
+</ParamField>
+
+<ParamField path="showDecal" type="boolean">
+    Add a visual pattern to each series to help colorblind people distinguish them.
+</ParamField>
