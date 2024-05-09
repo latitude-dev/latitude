@@ -294,63 +294,6 @@ export class Compiler {
       return UNARY_OPERATOR_METHODS[unaryOperator]?.(unaryArgument, unaryPrefix)
     }
 
-    if (node.type === 'AssignmentExpression') {
-      const assignedVariableName = (node.left as Identifier).name
-      let assignedValue = await this.resolveLogicNodeExpression(
-        node.right,
-        localScope,
-      )
-      const assignmentOperator = node.operator
-
-      if (assignmentOperator != '=') {
-        if (!(assignmentOperator in ASSIGNMENT_OPERATOR_METHODS)) {
-          this.expressionError(
-            errors.unsupportedOperator(assignmentOperator),
-            node,
-          )
-        }
-        if (!localScope.exists(assignedVariableName)) {
-          this.expressionError(
-            errors.variableNotDeclared(assignedVariableName),
-            node,
-          )
-        }
-        assignedValue = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]?.(
-          localScope.get(assignedVariableName),
-          assignedValue,
-        )
-      }
-      if (localScope.isConst(assignedVariableName)) {
-        this.expressionError(errors.constantReassignment, node)
-      }
-      localScope.set(assignedVariableName, assignedValue)
-      return assignedValue
-    }
-
-    if (node.type === 'UpdateExpression') {
-      const updateOperator = node.operator
-      if (!['++', '--'].includes(updateOperator)) {
-        this.expressionError(errors.unsupportedOperator(updateOperator), node)
-      }
-      const updatedVariableName = (node.argument as Identifier).name
-      if (!localScope.exists(updatedVariableName)) {
-        this.expressionError(
-          errors.variableNotDeclared(updatedVariableName),
-          node,
-        )
-      }
-      if (localScope.isConst(updatedVariableName)) {
-        this.expressionError(errors.constantReassignment, node)
-      }
-      const originalValue = localScope.get(updatedVariableName)
-      const updatedValue =
-        updateOperator === '++'
-          ? (originalValue as number) + 1
-          : (originalValue as number) - 1
-      localScope.set(updatedVariableName, updatedValue)
-      return node.prefix ? updatedValue : originalValue
-    }
-
     if (node.type === 'MemberExpression') {
       const object = (await this.resolveLogicNodeExpression(
         node.object,
@@ -359,9 +302,140 @@ export class Compiler {
         [key: string]: any
       }
       const property = node.computed
-        ? await this.resolveLogicNodeExpression(node.property, localScope)
+        ? ((await this.resolveLogicNodeExpression(
+            node.property,
+            localScope,
+          )) as string)
         : (node.property as Identifier).name
+
+      const isOptional = node.optional
+      if (object == null && isOptional) return undefined
+
       return MEMBER_EXPRESSION_METHOD(object, property)
+    }
+
+    if (node.type === 'AssignmentExpression') {
+      const assignmentOperator = node.operator
+      if (!(assignmentOperator in ASSIGNMENT_OPERATOR_METHODS)) {
+        this.expressionError(
+          errors.unsupportedOperator(assignmentOperator),
+          node,
+        )
+      }
+      const assignmentMethod = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]!
+
+      const assignmentValue = await this.resolveLogicNodeExpression(
+        node.right,
+        localScope,
+      )
+
+      if (node.left.type === 'Identifier') {
+        const assignedVariableName = (node.left as Identifier).name
+
+        if (localScope.isConst(assignedVariableName)) {
+          this.expressionError(errors.constantReassignment, node)
+        }
+
+        if (
+          assignmentOperator != '=' &&
+          !localScope.exists(assignedVariableName)
+        ) {
+          this.expressionError(
+            errors.variableNotDeclared(assignedVariableName),
+            node,
+          )
+        }
+
+        const updatedValue = assignmentMethod(
+          localScope.exists(assignedVariableName)
+            ? localScope.get(assignedVariableName)
+            : undefined,
+          assignmentValue,
+        )
+
+        localScope.set(assignedVariableName, updatedValue)
+        return updatedValue
+      }
+      if (node.left.type === 'MemberExpression') {
+        const object = (await this.resolveLogicNodeExpression(
+          node.left.object,
+          localScope,
+        )) as { [key: string]: any }
+
+        const property = node.left.computed
+          ? ((await this.resolveLogicNodeExpression(
+              node.left.property,
+              localScope,
+            )) as string)
+          : (node.left.property as Identifier).name
+
+        if (assignmentOperator != '=' && !(property in object)) {
+          this.expressionError(errors.propertyNotExists(property), node)
+        }
+
+        const originalValue = object[property]
+        const updatedValue = assignmentMethod(originalValue, assignmentValue)
+        object[property] = updatedValue
+        return updatedValue
+      }
+
+      this.expressionError(errors.invalidAssignment, node)
+    }
+
+    if (node.type === 'UpdateExpression') {
+      const updateOperator = node.operator
+      if (!['++', '--'].includes(updateOperator)) {
+        this.expressionError(errors.unsupportedOperator(updateOperator), node)
+      }
+
+      if (node.argument.type == 'Identifier') {
+        const updatedVariableName = (node.argument as Identifier).name
+        if (!localScope.exists(updatedVariableName)) {
+          this.expressionError(
+            errors.variableNotDeclared(updatedVariableName),
+            node,
+          )
+        }
+        if (localScope.isConst(updatedVariableName)) {
+          this.expressionError(errors.constantReassignment, node)
+        }
+        const originalValue = localScope.get(updatedVariableName)
+        if (typeof originalValue !== 'number') {
+          this.expressionError(
+            errors.invalidUpdate(updateOperator, typeof originalValue),
+            node,
+          )
+        }
+        const updatedValue =
+          updateOperator === '++'
+            ? (originalValue as number) + 1
+            : (originalValue as number) - 1
+        localScope.set(updatedVariableName, updatedValue)
+        return node.prefix ? updatedValue : originalValue
+      }
+      if (node.argument.type == 'MemberExpression') {
+        const object = (await this.resolveLogicNodeExpression(
+          node.argument.object,
+          localScope,
+        )) as { [key: string]: any }
+
+        const property = node.argument.computed
+          ? ((await this.resolveLogicNodeExpression(
+              node.argument.property,
+              localScope,
+            )) as string)
+          : (node.argument.property as Identifier).name
+
+        const originalValue = object[property]
+        const updatedValue =
+          updateOperator === '++'
+            ? (originalValue as number) + 1
+            : (originalValue as number) - 1
+        object[property] = updatedValue
+        return node.prefix ? updatedValue : originalValue
+      }
+
+      this.expressionError(errors.invalidAssignment, node)
     }
 
     if (node.type === 'ConditionalExpression') {
@@ -379,6 +453,10 @@ export class Compiler {
 
     if (node.type === 'CallExpression') {
       return await this.handleFunction(node, false, localScope)
+    }
+
+    if (node.type === 'ChainExpression') {
+      return await this.resolveLogicNodeExpression(node.expression, localScope)
     }
 
     if (node.type === 'NewExpression') {
@@ -446,6 +524,25 @@ export class Compiler {
     interpolation: T,
     localScope: Scope,
   ): Promise<T extends true ? string : unknown> => {
+    if (node.callee.type === 'Identifier') {
+      return await this.handleSupportedMethod(node, interpolation, localScope)
+    }
+
+    if (node.callee.type === 'MemberExpression') {
+      const result = await this.handleMethodFromCallExpression(node, localScope)
+      if (!interpolation) return result as T extends true ? string : unknown
+      if (result === undefined) return '' // Method was a void
+      return await this.resolveFn(result)
+    }
+
+    this.expressionError(errors.unknownFunction(''), node)
+  }
+
+  private handleSupportedMethod = async <T extends boolean>(
+    node: SimpleCallExpression,
+    interpolation: T,
+    localScope: Scope,
+  ): Promise<T extends true ? string : unknown> => {
     const methodName = (node.callee as Identifier).name
     if (!(methodName in this.supportedMethods)) {
       this.expressionError(errors.unknownFunction(methodName), node)
@@ -467,7 +564,35 @@ export class Compiler {
     } catch (error: unknown) {
       if (error instanceof CompileError) throw error
       this.expressionError(
-        errors.functionCallError(methodName, (error as Error).message),
+        errors.namedFunctionCallError(methodName, (error as Error).message),
+        node,
+      )
+    }
+  }
+
+  private handleMethodFromCallExpression = async (
+    node: SimpleCallExpression,
+    localScope: Scope,
+  ): Promise<unknown> => {
+    const method = await this.resolveLogicNodeExpression(
+      node.callee,
+      localScope,
+    )
+    const args: unknown[] = []
+    for (const arg of node.arguments) {
+      args.push(await this.resolveLogicNodeExpression(arg, localScope))
+    }
+
+    if (typeof method !== 'function') {
+      this.expressionError(errors.notAFunction(typeof method), node)
+    }
+
+    try {
+      return await method(...args)
+    } catch (error: unknown) {
+      if (error instanceof CompileError) throw error
+      this.expressionError(
+        errors.unnamedFunctionCallError((error as Error).message),
         node,
       )
     }

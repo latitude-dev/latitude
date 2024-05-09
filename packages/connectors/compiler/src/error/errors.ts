@@ -102,13 +102,34 @@ export default {
     code: 'constant-reassignment',
     message: 'Cannot reassign a constant',
   },
+  invalidAssignment: {
+    code: 'invalid-assignment',
+    message: 'Invalid assignment',
+  },
+  invalidUpdate: (operation: string, type: string) => ({
+    code: 'invalid-update',
+    message: `Cannot use ${operation} operation on ${type}`,
+  }),
+
+  propertyNotExists: (property: string) => ({
+    code: 'property-not-exists',
+    message: `Property '${property}' does not exist on object`,
+  }),
   unknownFunction: (name: string) => ({
     code: 'unknown-function',
     message: `Unknown function: ${name}`,
   }),
-  functionCallError: (name: string, message: string) => ({
+  notAFunction: (objectType: string) => ({
+    code: 'not-a-function',
+    message: `Object '${objectType}' is callable`,
+  }),
+  namedFunctionCallError: (name: string, message: string) => ({
     code: 'function-call-error',
     message: `Error calling function '${name}': ${message}`,
+  }),
+  unnamedFunctionCallError: (message: string) => ({
+    code: 'function-call-error',
+    message: `Error calling function: ${message}`,
   }),
   invalidFunctionResultInterpolation: {
     code: 'invalid-function-result-interpolation',

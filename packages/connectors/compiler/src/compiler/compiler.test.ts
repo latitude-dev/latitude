@@ -1,11 +1,14 @@
 import compile from '..'
 import CompileError from '../error/error'
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
+
+const configFn = async () => ({})
 
 const compileQuery = (query: string) => {
   return compile({
     query,
     resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+    configFn,
     supportedMethods: {},
   })
 }
@@ -68,6 +71,7 @@ describe('parameterisation of interpolated values', async () => {
     const result = await compile({
       query: sql,
       resolveFn,
+      configFn,
       supportedMethods: {},
     })
 
@@ -125,6 +129,69 @@ describe('variable assignment', async () => {
     const result = await compileQuery(sql)
 
     expect(result).toBe('$[[7]]')
+  })
+
+  it('can update nested values', async () => {
+    const sql = `
+      {foo = { a: 1, b: 2 }}
+      {foo.a += 2}
+      {foo.b += 3}
+      {foo.a} {foo.b}
+    `
+    const result = await compileQuery(sql)
+
+    expect(result).toBe('$[[3]] $[[5]]')
+  })
+
+  it('fails when nested value does not exist', async () => {
+    const sql = `
+      {foo = { a: 1, b: 2 }}
+      {foo.c += 2}
+      {foo.c}
+    `
+    const action = () => compileQuery(sql)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('property-not-exists')
+  })
+
+  it('does not allow optional chaining operator', async () => {
+    const sql = `
+      {foo = { a: 1, b: 2 }}
+      {foo?.a = 2}
+    `
+    const action = () => compileQuery(sql)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('parse-error') // Requirement is already implemented in the parser
+  })
+
+  it('allow reassigning elements in an array', async () => {
+    const sql = `
+      {foo = [1, 2, 3, 4, 5, 6]}
+      {foo[3] = 'bar'}
+
+      {foo}
+    `
+
+    const result = await compileQuery(sql)
+    expect(result).toBe('$[[1,2,3,bar,5,6]]')
+  })
+
+  it('can modify variables with update operators', async () => {
+    const sql1 = '{foo = 0} {foo++} {foo}'
+    const sql2 = '{foo = 0} {++foo} {foo}'
+
+    const result1 = await compileQuery(sql1)
+    const result2 = await compileQuery(sql2)
+
+    expect(result1).toBe('$[[0]] $[[1]]')
+    expect(result2).toBe('$[[1]] $[[1]]')
+  })
+
+  it('fails when trying to update a variable that is not a number', async () => {
+    const sql = '{foo = "bar"} {++foo}'
+    const action = () => compileQuery(sql)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('invalid-update')
   })
 })
 
@@ -408,6 +475,7 @@ describe('custom methods', async () => {
     const result = await compile({
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+      configFn,
       supportedMethods: {
         fooFn: async () => 'bar',
       },
@@ -422,6 +490,7 @@ describe('custom methods', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        configFn,
         supportedMethods: {
           fooFn: async <T extends boolean>(
             _: T,
@@ -440,6 +509,7 @@ describe('custom methods', async () => {
     const result = await compile({
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+      configFn,
       supportedMethods: {
         fooFn: async <T extends boolean>(
           _: T,
@@ -459,6 +529,7 @@ describe('custom methods', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        configFn,
         supportedMethods: {
           fooFn: async () => {
             throw new Error('bar')
@@ -468,5 +539,84 @@ describe('custom methods', async () => {
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
     expect(error.message).toBe("Error calling function 'fooFn': bar")
+  })
+})
+
+describe('variable member access', async () => {
+  it('correctly evaluates member access', async () => {
+    const sql = `
+      {foo = { bar: 'val' } }
+      {foo.bar}
+    `
+    const result = await compileQuery(sql)
+    expect(result).toBe('$[[val]]')
+  })
+
+  it('allows optional chaining operator', async () => {
+    const sql1 = `
+      {foo = { bar: 'val' } }
+      {foo?.bar}
+    `
+    const sql2 = `
+      {foo = undefined() }
+      {foo?.bar}
+    `
+
+    function compileQuery(sql: string) {
+      return compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        configFn,
+        supportedMethods: {
+          undefined: async <T extends boolean>(): Promise<
+            T extends true ? string : unknown
+          > => {
+            return undefined as T extends true ? string : unknown
+          },
+        },
+      })
+    }
+
+    const result1 = await compileQuery(sql1)
+    const result2 = await compileQuery(sql2)
+
+    expect(result1).toBe('$[[val]]')
+    expect(result2).toBe('$[[undefined]]')
+  })
+
+  it('runs methods from variables', async () => {
+    const nowDate = new Date()
+
+    const sql = `
+      {currentTime = now()}
+      {currentTime.toISOString()}
+    `
+
+    const result = await compile({
+      query: sql,
+      resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+      configFn,
+      supportedMethods: {
+        now: async <T extends boolean>(): Promise<
+          T extends true ? string : unknown
+        > => {
+          return nowDate as T extends true ? string : unknown
+        },
+      },
+    })
+
+    const expectedString = nowDate.toISOString()
+    expect(result).toBe(`$[[${expectedString}]]`)
+  })
+
+  it('fails when trying to run non-function methods', async () => {
+    const sql = `
+      {foo = 'bar'}
+      {foo.bar()}
+    `
+
+    const action = () => compileQuery(sql)
+    const error = await getExpectedError(action, CompileError)
+    expect(error.code).toBe('not-a-function')
   })
 })

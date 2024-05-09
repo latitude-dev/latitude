@@ -45,22 +45,28 @@ export const UNARY_OPERATOR_METHODS: {
 }
 
 // https://github.com/estree/estree/blob/master/es5.md#memberexpression
-export const MEMBER_EXPRESSION_METHOD = (object: any, property: any): unknown =>
-  object[property]
+export const MEMBER_EXPRESSION_METHOD = (
+  object: any,
+  property: any,
+): unknown => {
+  const value = object[property]
+  return typeof value === 'function' ? value.bind(object) : value
+}
 
 // https://github.com/estree/estree/blob/master/es5.md#assignmentexpression
 export const ASSIGNMENT_OPERATOR_METHODS: {
   [operator: string]: (left: any, right: any) => unknown
 } = {
-  '+=': (left, right) => (left += right),
-  '-=': (left, right) => (left -= right),
-  '*=': (left, right) => (left *= right),
-  '/=': (left, right) => (left /= right),
-  '%=': (left, right) => (left %= right),
-  '<<=': (left, right) => (left <<= right),
-  '>>=': (left, right) => (left >>= right),
-  '>>>=': (left, right) => (left >>>= right),
-  '|=': (left, right) => (left |= right),
-  '^=': (left, right) => (left ^= right),
-  '&=': (left, right) => (left &= right),
+  '=': (_, right) => right,
+  '+=': (left, right) => left + right,
+  '-=': (left, right) => left - right,
+  '*=': (left, right) => left * right,
+  '/=': (left, right) => left / right,
+  '%=': (left, right) => left % right,
+  '<<=': (left, right) => left << right,
+  '>>=': (left, right) => left >> right,
+  '>>>=': (left, right) => left >>> right,
+  '|=': (left, right) => left | right,
+  '^=': (left, right) => left ^ right,
+  '&=': (left, right) => left & right,
 }
