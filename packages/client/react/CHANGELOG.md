@@ -1,5 +1,12 @@
 # @latitude-data/react
 
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [8fe3742]
+  - @latitude-data/client@0.9.1
+
 ## 0.6.2
 
 ### Patch Changes

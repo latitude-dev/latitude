@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.9.1
+
+### Patch Changes
+
+- 8fe3742: Fix combobox button text overflowding parent's width when space is reduced
+
 ## 0.9.0
 
 ### Minor Changes
