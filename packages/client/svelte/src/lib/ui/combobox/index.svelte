@@ -74,11 +74,15 @@
         builders={[builder]}
         variant="outline"
         role="combobox"
+        ellipsis
         aria-expanded={open}
         class={theme.ui.combobox.cssClass({ className })}
       >
         {selectedValue}
-        <CaretSort class={theme.ui.combobox.BUTTON_ICON_CSS_CLASS} />
+
+        <slot slot="icon">
+          <CaretSort class={theme.ui.combobox.BUTTON_ICON_CSS_CLASS} />
+        </slot>
       </Button>
     </Popover.Trigger>
     <Popover.Content {align} class={theme.ui.combobox.POPOVER_CSS_CLASS}>

@@ -57,3 +57,6 @@ type ClassProps = {
 export function cssClass({ variant, size, className }: ClassProps) {
   return cn(buttonVariants({ variant, size, className }))
 }
+export function textClass({ ellipsis = false }: { ellipsis?: boolean }) {
+  return cn({ truncate: ellipsis })
+}

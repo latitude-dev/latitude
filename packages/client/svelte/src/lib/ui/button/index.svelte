@@ -3,6 +3,7 @@
     variant?: theme.ui.button.Variant
     size?: theme.ui.button.Size
     class?: string | null | undefined
+    ellipsis?: boolean
   }
 </script>
 
@@ -14,6 +15,7 @@
 
   export let variant: Props['variant'] = 'default'
   export let size: Props['size'] = 'default'
+  export let ellipsis: Props['ellipsis'] = false
   export let builders: Props['builders'] = []
   export { className as class }
 </script>
@@ -26,5 +28,7 @@
   on:click
   on:keydown
 >
-  <slot />
+  <div class={theme.ui.button.textClass({ ellipsis })}><slot /></div>
+  <!-- TODO: review margin. And move what we have in Combobox.trigger to here -->
+  <slot name="icon" />
 </ButtonPrimitive.Root>
