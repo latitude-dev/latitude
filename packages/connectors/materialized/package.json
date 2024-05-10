@@ -1,0 +1,34 @@
+{
+  "name": "@latitude-data/materialized-connector",
+  "version": "0.0.0",
+  "license": "LGPL",
+  "description": "Materialized Queries Connector for Latitude Data.",
+  "type": "module",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prettier": "prettier --write src/**/*.ts"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@latitude-data/duckdb-connector": "workspace:^",
+    "@latitude-data/query_result": "workspace:^",
+    "@latitude-data/source-manager": "workspace:^"
+  },
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/mock-fs": "^4.13.4",
+    "@types/node": "^20.10.6",
+    "mock-fs": "^5.2.0",
+    "rollup": "^4.10.0",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.6.0"
+  }
+}
