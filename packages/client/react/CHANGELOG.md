@@ -1,5 +1,11 @@
 # @latitude-data/react
 
+## 0.7.0-next.6
+
+### Patch Changes
+
+- 5e52691: Changed react peer dependency to 16.8 and upwards
+
 ## 0.7.0-next.5
 
 ### Minor Changes

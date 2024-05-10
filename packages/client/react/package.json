@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/react",
-  "version": "0.7.0-next.5",
+  "version": "0.7.0-next.6",
   "license": "LGPL",
   "scripts": {
     "build:rollup": "rollup -c",
