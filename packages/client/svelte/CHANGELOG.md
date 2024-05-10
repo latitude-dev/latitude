@@ -1,5 +1,36 @@
 # @latitude-data/svelte
 
+## 0.7.0
+
+### Minor Changes
+
+- f89e566: '@latitude-data/svelte' package can now be used in svelte projects without needing to configure tailwind.
+- f8ce2e6: Added support for built-in components for Latitude's React package.
+- dad171b: This release implements the following changes.
+
+  You can now add secrets to production apps deployed to [Latitude Cloud](https://docs.latitude.so/guides/deploy/latitude_cloud#sign-up-to-latitude-cloud). To do so run:
+
+  ```bash
+  latitude secrets add SECRET_NAME=SECRET_VALUE
+  ```
+
+  These secrets become available as environment variables in the production environment of your Latitude project, which means they can replace any values users write in .env files during development.
+
+  We've added native react component to our React library. This release implements all the [visualization components](https://docs.latitude.so/views/components/visualizations/table) available at Latitude. Combined with useQuery hook, it means users now have a complete, native way to embed their Latitude visualizations into their React apps. On top of this, we've also added complete support for themes, so users can quickly and easily change the color schema of Latitude visualizations to match their website's style.
+
+- c39ebae: Improved internal Theme configuration, and added a way to change and create the theme in our React package.
+
+### Patch Changes
+
+- c26e405: Abstracted a missing class from a Svelte component to the Client core package.
+- 6b2a69e: Fixed blank slate for tables was rendering incorrectly
+- Updated dependencies [f89e566]
+- Updated dependencies [f8ce2e6]
+- Updated dependencies [c26e405]
+- Updated dependencies [dad171b]
+- Updated dependencies [c39ebae]
+  - @latitude-data/client@0.10.0
+
 ## 0.7.0-next.4
 
 ### Patch Changes

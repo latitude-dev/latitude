@@ -1,5 +1,28 @@
 # @latitude-data/cli
 
+## 1.4.0
+
+### Minor Changes
+
+- c78b717: Add the ability of adding secure environment variables to Latitude Cloud
+- 3ff4c4b: Allow adding multiple secrets at the same time to Latitude Cloud
+- 7397d7f: Only generate LATITUDE_MASTER_KEY with the CLI. Do not include in the build. This improve security
+- dad171b: This release implements the following changes.
+
+  You can now add secrets to production apps deployed to [Latitude Cloud](https://docs.latitude.so/guides/deploy/latitude_cloud#sign-up-to-latitude-cloud). To do so run:
+
+  ```bash
+  latitude secrets add SECRET_NAME=SECRET_VALUE
+  ```
+
+  These secrets become available as environment variables in the production environment of your Latitude project, which means they can replace any values users write in .env files during development.
+
+  We've added native react component to our React library. This release implements all the [visualization components](https://docs.latitude.so/views/components/visualizations/table) available at Latitude. Combined with useQuery hook, it means users now have a complete, native way to embed their Latitude visualizations into their React apps. On top of this, we've also added complete support for themes, so users can quickly and easily change the color schema of Latitude visualizations to match their website's style.
+
+### Patch Changes
+
+- a5b1ff7: Empty change to trigger a release that fixes the cli build with proper build-time env variables
+
 ## 1.4.0-next.2
 
 ### Patch Changes

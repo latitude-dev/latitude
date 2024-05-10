@@ -1,5 +1,37 @@
 # @latitude-data/react
 
+## 0.7.0
+
+### Minor Changes
+
+- f8ce2e6: Added support for built-in components for Latitude's React package.
+- 4661d83: Implemented missing visualization charts
+- 6b2a69e: Added basic components to react package
+- dad171b: This release implements the following changes.
+
+  You can now add secrets to production apps deployed to [Latitude Cloud](https://docs.latitude.so/guides/deploy/latitude_cloud#sign-up-to-latitude-cloud). To do so run:
+
+  ```bash
+  latitude secrets add SECRET_NAME=SECRET_VALUE
+  ```
+
+  These secrets become available as environment variables in the production environment of your Latitude project, which means they can replace any values users write in .env files during development.
+
+  We've added native react component to our React library. This release implements all the [visualization components](https://docs.latitude.so/views/components/visualizations/table) available at Latitude. Combined with useQuery hook, it means users now have a complete, native way to embed their Latitude visualizations into their React apps. On top of this, we've also added complete support for themes, so users can quickly and easily change the color schema of Latitude visualizations to match their website's style.
+
+- c39ebae: Improved internal Theme configuration, and added a way to change and create the theme in our React package.
+- c26e405: Added Table, AreaChart and QueryAreaChart components
+
+### Patch Changes
+
+- 5e52691: Changed react peer dependency to 16.8 and upwards
+- Updated dependencies [f89e566]
+- Updated dependencies [f8ce2e6]
+- Updated dependencies [c26e405]
+- Updated dependencies [dad171b]
+- Updated dependencies [c39ebae]
+  - @latitude-data/client@0.10.0
+
 ## 0.7.0-next.6
 
 ### Patch Changes
