@@ -96,7 +96,7 @@ const options = ({ method = 'GET', path, headers }: Options) => {
 export const request = (opts: Options) => {
   return new Promise<{ response: IncomingMessage; body: string }>(
     (resolve, reject) => {
-      const httpModule = config.pro ? https : http
+      const httpModule = config.prod ? https : http
       const req = httpModule.request(options(opts), (res: IncomingMessage) => {
         let body = ''
 
@@ -133,7 +133,7 @@ export const request = (opts: Options) => {
 
 export const sseRequest = (opts: Options): Promise<IncomingMessage> => {
   return new Promise((resolve, reject) => {
-    const httpModule = config.pro ? https : http
+    const httpModule = config.prod ? https : http
     const req = httpModule.request(
       options({
         ...opts,

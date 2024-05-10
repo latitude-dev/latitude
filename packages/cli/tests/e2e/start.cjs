@@ -1,18 +1,8 @@
 const dev = require('./dev.cjs')
 const path = require('path')
-const { spawn, spawnSync } = require('child_process')
+const { spawn } = require('child_process')
 
 let ok = false
-
-// Disable telemetry
-spawnSync(
-  'node',
-  [
-    path.join(__dirname, '../../dist/cli.js'),
-    'telemetry',
-    '--disable'
-  ]
-)
 
 const spawned = spawn('node', [
   path.join(__dirname, '../../dist/cli.js'),
@@ -21,7 +11,9 @@ const spawned = spawn('node', [
   'test-project',
   '--template',
   'default',
-  '--verbose'
+  '--verbose',
+  '--tty',
+  false
 ])
 
 spawned.stdout.pipe(process.stdout)

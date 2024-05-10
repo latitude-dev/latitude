@@ -7,5 +7,5 @@ export default function installLatitudeServer({
 }: {
   version?: string
 }) {
-  return config.pro ? cloneAppFromNpm({ version }) : symlinkAppFromLocal()
+  return config.prod ? cloneAppFromNpm({ version }) : symlinkAppFromLocal()
 }

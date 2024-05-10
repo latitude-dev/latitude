@@ -1,32 +1,34 @@
 import RudderAnalytics from '@rudderstack/rudder-sdk-node'
+import config from '$src/config'
+import configStore from '$src/lib/configStore'
 import crypto from 'crypto'
 import os from 'os'
 import { select } from '@inquirer/prompts'
 
 import type { TelemetryEvent, TelemetryEventType } from './events'
-import chalk from 'chalk'
-import configStore from '$src/lib/configStore'
-import config from '$src/config'
-
-type TelemetryConfig = {
-  enabled: boolean | undefined
-  anonymousUserId: string | undefined
-}
 
 type TelemetryCredentials = {
   clientKey: string
   clientUrl: string
 }
+
 export class Telemetry {
-  private static instance: Telemetry
-  private client: RudderAnalytics | undefined = undefined
-  private initialized: boolean = false
+  public readonly client
 
-  public static getInstance(): Telemetry {
-    if (Telemetry.instance) return this.instance
+  public get enabled() {
+    return configStore.get('telemetry.enabled')
+  }
 
-    this.instance = new Telemetry()
-    return this.instance
+  public set enabled(value: boolean) {
+    configStore.set('telemetry.enabled', value)
+  }
+
+  public get anonymousId() {
+    return `cli-${configStore.get('telemetry.anonymousUserId')}`
+  }
+
+  public set anonymousId(value: string) {
+    configStore.set('telemetry.anonymousUserId', value)
   }
 
   constructor() {
@@ -37,69 +39,45 @@ export class Telemetry {
     })
   }
 
-  showStatus() {
-    console.log(
-      chalk.green(`Telemetry is ${this.enabled ? 'enabled' : 'disabled'}`),
-    )
-  }
-
   async track<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
-    const canTrack = await this.setup()
-
-    if (!canTrack) return
-
-    this.trackWithoutCheck(event)
-  }
-
-  enable() {
-    this.trackWithoutCheck({ event: 'telemetryEnabled' })
-    configStore.set('telemetry.enabled', true)
-  }
-
-  disable() {
-    this.trackWithoutCheck({ event: 'telemetryDisabled' })
-    configStore.set('telemetry.enabled', false)
-  }
-
-  private async setup() {
-    if (config.dev) {
-      this.disable()
-      return this.enabled
+    if (await this.canTrack()) {
+      this._track(event)
     }
-    if (this.initialized) return this.enabled
-    if (this.enabled !== undefined) return this.enabled
+  }
 
-    let enabled = false
-    try {
-      enabled = await select<boolean>({
-        message:
-          '🌟 Help us make Latitude better for you by sharing anonymous usage data—it’s a simple way \n to contribute, with full control to opt-in or opt-out at any time.',
-        default: true,
-        choices: [
-          { value: true, name: 'Yes, count me in!' },
-          { value: false, name: 'No, maybe later' },
-        ],
-      })
-    } catch {
-      // Ignore Ctrl+C
-    }
+  private async canTrack() {
+    if (this.enabled === undefined) return await this.askPermission()
 
-    this.identifyAnonymous(enabled)
+    return this.enabled
+  }
+
+  private async askPermission() {
+    if (!config.tty) return false
+
+    const enabled = await select<boolean>({
+      message:
+        '🌟 Help us make Latitude better for you by sharing anonymous usage data—it’s a simple way \n to contribute, with full control to opt-in or opt-out at any time.',
+      default: true,
+      choices: [
+        { value: true, name: 'Yes, count me in!' },
+        { value: false, name: 'No, maybe later' },
+      ],
+    })
 
     if (enabled) {
-      this.enable()
+      this._track({ event: 'telemetryEnabled' })
     } else {
-      this.disable()
+      this._track({ event: 'telemetryDisabled' })
     }
 
-    this.initialized = true
+    this.enabled = enabled
+    this.anonymousId = `${crypto.randomBytes(16).toString('hex')}`
+    this.identifyAnonymous()
 
     return enabled
   }
 
-  async trackWithoutCheck<T extends TelemetryEventType>(
-    event: TelemetryEvent<T>,
-  ) {
+  private async _track<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
     this.client?.track({
       anonymousId: this.anonymousId,
       event: event.event,
@@ -107,13 +85,11 @@ export class Telemetry {
     })
   }
 
-  private identifyAnonymous(enabled: boolean) {
-    const anonymousId = this.anonymousId
-
+  private identifyAnonymous() {
     this.client?.identify({
-      anonymousId,
+      anonymousId: this.anonymousId,
       context: {
-        telemetry: { enabled },
+        telemetry: { enabled: this.enabled },
         cliVersion: process.env.PACKAGE_VERSION,
         operatingSystem: {
           platform: os.platform(),
@@ -121,27 +97,6 @@ export class Telemetry {
         },
       },
     })
-  }
-
-  private get enabled() {
-    return this.config.enabled
-  }
-
-  private get anonymousId() {
-    return `cli-${this.randomUserId}`
-  }
-
-  private get randomUserId(): string | undefined {
-    if (this.config.anonymousUserId) return this.config.anonymousUserId
-
-    const anonymousUserId = crypto.randomBytes(16).toString('hex')
-    configStore.set('telemetry.anonymousUserId', anonymousUserId)
-
-    return anonymousUserId
-  }
-
-  private get config(): TelemetryConfig {
-    return configStore.get('telemetry')
   }
 
   private get credentials(): TelemetryCredentials | undefined {
@@ -156,4 +111,4 @@ export class Telemetry {
   }
 }
 
-export default Telemetry.getInstance()
+export default new Telemetry()

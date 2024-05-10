@@ -13,13 +13,13 @@ export default function telemetryCommand(args: Args = {}): void {
   const showStatus = args?.status !== undefined
 
   if (enable) {
-    telemetry.enable()
+    telemetry.enabled = true
     console.log(colors.blue('Telemetry enabled'))
   } else if (disable) {
-    telemetry.disable()
+    telemetry.enabled = false
     console.log(colors.blue('Telemetry disabled'))
   } else if (showStatus) {
-    telemetry.showStatus()
+    telemetry.enabled
   } else {
     console.log(
       colors.red(

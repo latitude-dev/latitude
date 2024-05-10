@@ -12,8 +12,7 @@ WORKDIR /usr/src/app
 COPY package.jso[n] .
 COPY latitude.json .
 
-RUN latitude telemetry --disable
-RUN latitude setup
+RUN latitude setup --tty false
 
 FROM builder AS runner
 
@@ -24,7 +23,7 @@ COPY --from=builder /usr/src/app/.latitude ./
 COPY --from=builder /usr/src/app/latitude.json ./latitude.json
 COPY . .
 
-RUN latitude build
+RUN latitude build --tty false
 
 WORKDIR /usr/src/app/build
 

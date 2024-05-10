@@ -11,14 +11,14 @@ import versionCheck from '$src/lib/decorators/versionCheck'
 
 export type Props = CommonCLIArgs & { open?: boolean; port?: number }
 
-async function devCommand(args: Props = {}) {
+async function devCommand(
+  { open = config.prod, port }: Props = { open: config.prod },
+) {
   await sync({
     watch: true,
   })
 
-  runDevServer(
-    await buildServerProps({ open: args?.open ?? config.pro, port: args.port }),
-  )
+  runDevServer(await buildServerProps({ open, port }))
 }
 
 const buildServerProps = async ({
