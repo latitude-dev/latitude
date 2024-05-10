@@ -9,7 +9,7 @@ export function blankSlateCssRoot(_: { loading: boolean }) {
 }
 
 export function blankSlateCssContent() {
-  return 'lat-overflow-hidden animate-gradient lat-absolute lat-left-0 lat-right-0 lat-bottom-0 lat-max-h-full lat-w-full lat-bg-gradient-to-r from-transparent via-white to-transparent'
+  return 'lat-overflow-hidden lat-animate-gradient lat-absolute lat-left-0 lat-right-0 lat-top-1/2 lat-transform -lat-translate-y-1/2 lat-max-h-full lat-w-full lat-bg-gradient-to-r lat-from-transparent lat-via-white lat-to-transparent'
 }
 
 export const ERROR_CLASS = {
