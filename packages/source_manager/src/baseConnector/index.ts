@@ -232,11 +232,7 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
           currentQueryPath: request.queryPath,
         })
 
-        if (queriesBeingCompiled.includes(fullSubQueryPath)) {
-          throw new Error(
-            'Query reference to a parent, resulting in cyclic references.',
-          )
-        }
+        this.ensureQueryNotCompiled(fullSubQueryPath, queriesBeingCompiled)
 
         await this.ensureSameSource(fullSubQueryPath)
 
@@ -282,15 +278,11 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
             : QueryResultArray
         }
 
-        if (queriesBeingCompiled.includes(fullSubQueryPath)) {
-          throw new Error(
-            'Query reference to a parent, resulting in cyclic references.',
-          )
-        }
+        this.ensureQueryNotCompiled(fullSubQueryPath, queriesBeingCompiled)
 
-        await this.ensureSameSource(fullSubQueryPath)
-
-        const compiledSubQuery = await this.source.compileQuery(
+        const refSource =
+          await this.source.manager.loadFromQuery(fullSubQueryPath)
+        const compiledSubQuery = await refSource.compileQuery(
           {
             queryPath: fullSubQueryPath,
             params: {},
@@ -325,7 +317,7 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
     return refSource
   }
 
-  private getFullQueryPath({
+  protected getFullQueryPath({
     referencedQueryPath,
     currentQueryPath,
   }: {
@@ -335,5 +327,18 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
     return referencedQueryPath.startsWith('/')
       ? referencedQueryPath
       : path.join(path.dirname(currentQueryPath), referencedQueryPath)
+  }
+
+  protected ensureQueryNotCompiled(
+    queryPath: string,
+    queriesBeingCompiled: string[],
+  ): void {
+    const queryName = queryPath.replace(/.sql$/, '')
+
+    if (!queriesBeingCompiled.includes(queryName)) return
+
+    throw new Error(
+      'Query reference to a parent, resulting in cyclic references.',
+    )
   }
 }

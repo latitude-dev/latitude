@@ -20,6 +20,7 @@ const CONNECTOR_PACKAGES = {
   [ConnectorType.Mssql]: 'mssql-connector',
   [ConnectorType.Databricks]: 'databricks-connector',
   [ConnectorType.Test]: 'test-connector',
+  [ConnectorType.Materialized]: 'materialized-connector',
 }
 
 class ConnectorNotInstalledError extends Error {

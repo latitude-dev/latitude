@@ -1,5 +1,6 @@
 import { QueryResultArray } from '@latitude-data/query_result'
 import { type SupportedMethod } from '@latitude-data/sql-compiler'
+export { CompileError } from '@latitude-data/sql-compiler'
 
 export enum ConnectorType {
   Athena = 'athena',
@@ -16,6 +17,7 @@ export enum ConnectorType {
   Databricks = 'databricks',
   Test = 'test', // Used for testing purposes
   TestInternal = 'internal_test', // Used for testing inside this package purposes
+  Materialized = 'materialized',
 }
 
 export type QueryConfig = {
