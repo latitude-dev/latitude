@@ -1,30 +1,18 @@
 import path from 'path'
-import * as fs from 'fs'
-import compile, {
-  type CompileError,
-  type SupportedMethod,
-} from '@latitude-data/sql-compiler'
+import compile, { type CompileError } from '@latitude-data/sql-compiler'
 import type QueryResult from '@latitude-data/query_result'
 import { type QueryResultArray } from '@latitude-data/query_result'
 
+import { Source } from '@/source'
 import {
-  type QueryRequest,
   type ResolvedParam,
   type CompiledQuery,
   ConnectorError,
   QueryConfig,
-  QueryParams,
-} from './types'
-import { Source } from '@/source'
-
-type CompilationContext = {
-  request: QueryRequest // Requested query
-  accessedParams: QueryParams // Parameters used in the query
-  resolvedParams: ResolvedParam[] // Parameters resolved by the connector, in order of appearance
-  queryConfig: QueryConfig // Configuration set by the user in the query
-  ranQueries: Record<string, QueryResultArray> // Cache of already ran queries
-  queriesBeingCompiled: string[] // Used to detect cyclic references
-}
+  CompilationContext,
+  BuildSupportedMethodsArgs,
+  SupportedMethodsResponse,
+} from '@/types'
 
 export const CAST_METHODS: {
   [type: string]: (value: any) => unknown
@@ -38,17 +26,15 @@ export const CAST_METHODS: {
   boolean: (value) => Boolean(value),
   date: (value) => new Date(value),
 }
-
 export type ConnectorAttributes = {
   [key: string]: unknown
 }
-
-export * from './types'
 export { CompileError }
 export type ConnectorOptions<P extends ConnectorAttributes> = {
   source: Source
   connectionParams: P
 }
+
 export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
   protected source: Source
 
@@ -79,38 +65,7 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
    * Compile the given query. This method returns the compiled SQL, resolved parameters,
    * and information about the compilation process.
    */
-  async compileQuery({
-    queryPath,
-    params,
-  }: QueryRequest): Promise<CompiledQuery> {
-    const accessedParams: QueryParams = {}
-    const resolvedParams: ResolvedParam[] = []
-    const ranQueries: Record<string, QueryResultArray> = {}
-    const queriesBeingCompiled: string[] = []
-    const queryConfig: QueryConfig = {}
-
-    return await this._compileQuery({
-      request: { queryPath, params },
-      accessedParams,
-      resolvedParams,
-      queryConfig,
-      ranQueries,
-      queriesBeingCompiled,
-    })
-  }
-
-  runCompiled(request: CompiledQuery): Promise<QueryResult> {
-    return this.runQuery(request)
-  }
-
-  async run(request: QueryRequest): Promise<QueryResult> {
-    const compiledQuery = await this.compileQuery(request)
-    return this.runQuery(compiledQuery)
-  }
-
-  private async _compileQuery(
-    context: CompilationContext,
-  ): Promise<CompiledQuery> {
+  async compileQuery(context: CompilationContext): Promise<CompiledQuery> {
     const {
       request,
       resolvedParams,
@@ -118,17 +73,8 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
       queryConfig,
       queriesBeingCompiled,
     } = context
+    queriesBeingCompiled.push(request.queryPath)
 
-    const fullQueryName = this.fullQueryPath(request.queryPath)
-    queriesBeingCompiled.push(fullQueryName)
-
-    const query = this.readQuery(fullQueryName)
-
-    const resolveFn = async (value: unknown): Promise<string> => {
-      const resolved = this.resolve(value, resolvedParams.length)
-      resolvedParams.push(resolved)
-      return resolved.resolvedAs
-    }
     const configFn = (key: string, value: unknown) => {
       if (key in queryConfig) {
         throw new ConnectorError('Option already configured')
@@ -137,6 +83,11 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
       queryConfig[key as keyof QueryConfig] =
         value as QueryConfig[keyof QueryConfig]
     }
+    const resolveFn = async (value: unknown): Promise<string> => {
+      const resolved = this.resolve(value, resolvedParams.length)
+      resolvedParams.push(resolved)
+      return resolved.resolvedAs
+    }
 
     const supportedMethods = this.buildSupportedMethods({
       context,
@@ -144,14 +95,14 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
     })
 
     const compiledSql = await compile({
-      query,
+      supportedMethods,
+      query: request.sql,
       resolveFn,
       configFn,
-      supportedMethods,
     })
 
-    // NOTE: To avoid compiling subqueries that have already been compiled in
-    // the current call stack.
+    // NOTE: To avoid compiling subqueries that have already
+    // been compiled in the current call stack.
     queriesBeingCompiled.pop()
 
     return {
@@ -162,29 +113,21 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
     }
   }
 
-  private fullQueryPath(queryName: string): string {
-    return path.join(
-      this.source.path,
-      queryName.endsWith('.sql') ? queryName : `${queryName}.sql`,
-    )
+  runCompiled(request: CompiledQuery): Promise<QueryResult> {
+    return this.runQuery(request)
   }
 
-  private readQuery(fullQueryPath: string): string {
-    if (!fs.existsSync(fullQueryPath)) {
-      throw new ConnectorError(`Query file not found: ${fullQueryPath}`)
-    }
-    return fs.readFileSync(fullQueryPath, 'utf8')
-  }
-
-  private buildSupportedMethods({
+  buildSupportedMethods({
     context,
     resolveFn,
-  }: {
-    context: CompilationContext
-    resolveFn: (value: unknown) => Promise<string>
-  }): Record<string, SupportedMethod> {
-    const { request, accessedParams, ranQueries, queriesBeingCompiled } =
-      context
+  }: BuildSupportedMethodsArgs): SupportedMethodsResponse {
+    const {
+      request,
+      resolvedParams,
+      accessedParams,
+      ranQueries,
+      queriesBeingCompiled,
+    } = context
 
     const requestParams = request.params ?? {}
 
@@ -276,31 +219,42 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
        */
       ref: async <T extends boolean>(
         interpolation: T,
-        queryName: unknown,
+        referencedQuery: unknown,
       ): Promise<T extends true ? string : unknown> => {
-        if (typeof queryName !== 'string') throw new Error('Invalid query name')
+        if (typeof referencedQuery !== 'string')
+          throw new Error('Invalid query name')
         if (!interpolation) {
           throw new Error('ref function cannot be used inside a logic block')
         }
-        const fullSubQueryPath = this.fullQueryPath(queryName)
+
+        const fullSubQueryPath = this.getFullQueryPath({
+          referencedQueryPath: referencedQuery,
+          currentQueryPath: request.queryPath,
+        })
+
         if (queriesBeingCompiled.includes(fullSubQueryPath)) {
           throw new Error(
             'Query reference to a parent, resulting in cyclic references.',
           )
         }
 
-        queriesBeingCompiled.push(fullSubQueryPath)
-        const subQuery = this.readQuery(fullSubQueryPath)
+        await this.ensureSameSource(fullSubQueryPath)
 
-        const compiledSubQuery = await compile({
-          query: subQuery,
-          resolveFn,
-          configFn: () => {}, // Subquery config does not affect the root query
-          supportedMethods,
-        })
-        queriesBeingCompiled.pop()
+        const compiledSubQuery = await this.source.compileQuery(
+          {
+            queryPath: fullSubQueryPath,
+            params: context.request.params,
+          },
+          {
+            accessedParams,
+            resolvedParams,
+            queryConfig: {}, // Subquery config does not affect the root query
+            ranQueries,
+            queriesBeingCompiled,
+          },
+        )
 
-        return `(${compiledSubQuery})`
+        return `(${compiledSubQuery.sql})`
       },
 
       /**
@@ -308,32 +262,47 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
        */
       runQuery: async <T extends boolean>(
         interpolation: T,
-        queryName: unknown,
+        referencedQuery: unknown,
       ): Promise<T extends true ? string : QueryResultArray> => {
-        if (typeof queryName !== 'string') throw new Error('Invalid query name')
+        if (typeof referencedQuery !== 'string')
+          throw new Error('Invalid query name')
         if (interpolation) {
           throw new Error(
             'runQuery function cannot be directly interpolated into the query',
           )
         }
-        const fullSubQueryPath = this.fullQueryPath(queryName)
+        const fullSubQueryPath = this.getFullQueryPath({
+          referencedQueryPath: referencedQuery,
+          currentQueryPath: request.queryPath,
+        })
+
         if (fullSubQueryPath in ranQueries) {
           return ranQueries[fullSubQueryPath] as T extends true
             ? string
             : QueryResultArray
         }
+
         if (queriesBeingCompiled.includes(fullSubQueryPath)) {
           throw new Error(
             'Query reference to a parent, resulting in cyclic references.',
           )
         }
 
-        const compiledSubQuery = await this._compileQuery({
-          ...context,
-          request: { queryPath: queryName, params: {} },
-          queryConfig: {}, // Subquery config does not affect the root query
-          resolvedParams: [], // Subquery should not have access to parent queries' resolved parameters
-        })
+        await this.ensureSameSource(fullSubQueryPath)
+
+        const compiledSubQuery = await this.source.compileQuery(
+          {
+            queryPath: fullSubQueryPath,
+            params: {},
+          },
+          {
+            accessedParams,
+            resolvedParams: [], // Subquery should not have access to parent queries' resolved parameters
+            queryConfig: {}, // Subquery config does not affect the root query
+            ranQueries,
+            queriesBeingCompiled,
+          },
+        )
 
         const subQueryResults = await this.runQuery(compiledSubQuery).then(
           (result) => result.toArray(),
@@ -344,5 +313,27 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
     }
 
     return supportedMethods
+  }
+
+  private async ensureSameSource(refQueryPath: string): Promise<Source> {
+    const refSource = await this.source.manager.loadFromQuery(refQueryPath)
+
+    if (refSource !== this.source) {
+      throw new Error('Query reference to a different source')
+    }
+
+    return refSource
+  }
+
+  private getFullQueryPath({
+    referencedQueryPath,
+    currentQueryPath,
+  }: {
+    referencedQueryPath: string
+    currentQueryPath: string
+  }): string {
+    return referencedQueryPath.startsWith('/')
+      ? referencedQueryPath
+      : path.join(path.dirname(currentQueryPath), referencedQueryPath)
   }
 }

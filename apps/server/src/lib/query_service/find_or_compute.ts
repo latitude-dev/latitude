@@ -1,15 +1,13 @@
 import QueryResult from '@latitude-data/query_result'
-import { type CompiledQuery, type Source } from '@latitude-data/source-manager'
+import sourceManager from '$lib/server/sourceManager'
+import { type CompiledQuery } from '@latitude-data/source-manager'
 import cache from './query_cache'
-import computeRelativeQueryPath from './computeRelativeQueryPath'
 
 export default async function findOrCompute({
-  source,
   query,
   queryParams,
   force,
 }: {
-  source: Source
   query: string
   queryParams: Record<string, unknown>
   force: boolean
@@ -17,11 +15,9 @@ export default async function findOrCompute({
   queryResult: QueryResult
   compiledQuery: CompiledQuery
 }> {
+  const source = await sourceManager.loadFromQuery(query)
   const compiledQuery = await source.compileQuery({
-    queryPath: computeRelativeQueryPath({
-      queryPath: query,
-      sourcePath: source.path,
-    }),
+    queryPath: query,
     params: queryParams,
   })
 

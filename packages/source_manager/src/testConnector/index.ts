@@ -1,11 +1,10 @@
+import { BaseConnector, ConnectorOptions } from '@/baseConnector'
 import {
-  BaseConnector,
   CompiledQuery,
   ConnectionError,
-  ConnectorOptions,
   ConnectorError,
   ResolvedParam,
-} from '@/baseConnector'
+} from '@/types'
 import QueryResult, { DataType } from '@latitude-data/query_result'
 
 export type ConnectionParams = {

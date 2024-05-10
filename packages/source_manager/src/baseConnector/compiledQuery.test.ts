@@ -1,129 +1,132 @@
-import { describe, it, expect, afterEach, vi } from 'vitest'
+import mockFs from 'mock-fs'
+import { describe, it, expect, afterEach } from 'vitest'
+import { getSource } from '@/tests/helper'
+import TestConnector from '@/testConnector'
+import { buildDefaultContext } from '@/source'
 import { CompileError } from '@latitude-data/sql-compiler'
-import QueryResult from '@latitude-data/query_result'
-import { DataType } from '@latitude-data/query_result'
-import { type ResolvedParam, type CompiledQuery } from './types'
-import { BaseConnector } from './index'
-import { createDummySource } from '@/tests/helper'
-
-const source = createDummySource()
-
-vi.mock('fs', (importOriginal) => ({
-  ...importOriginal(),
-  existsSync: () => true,
-  readFileSync: (path: unknown) => {
-    return fakeQueries[(path as string).split('/').pop()!]
-  },
-}))
-
-const fakeQueries: Record<string, string> = {}
-const addFakeQuery = (sql: string, queryPath?: string) => {
-  queryPath = queryPath || `query_${Object.keys(fakeQueries).length}`
-  const fullQueryPath = queryPath.endsWith('.sql')
-    ? queryPath
-    : `${queryPath}.sql`
-  fakeQueries[fullQueryPath] = sql
-
-  return queryPath
-}
-
-const ranQueries: CompiledQuery[] = []
-class MockConnector extends BaseConnector {
-  constructor() {
-    super({ source, connectionParams: {} })
-  }
-
-  protected resolve(value: unknown, _: number): ResolvedParam {
-    return { value, resolvedAs: `$[[${value}]]` }
-  }
-
-  protected async runQuery(request: CompiledQuery): Promise<QueryResult> {
-    ranQueries.push(request)
-    return new QueryResult({
-      rowCount: 1,
-      fields: [
-        {
-          name: 'var',
-          type: DataType.String,
-        },
-      ],
-      rows: [['foo']],
-    })
-  }
-}
-
-const clearQueries = () => {
-  Object.keys(fakeQueries).forEach((key) => delete fakeQueries[key])
-  vi.clearAllMocks()
-  ranQueries.length = 0
-}
-
-const getExpectedError = async <T>(
-  action: () => Promise<unknown>,
-  errorClass: new () => T,
-): Promise<T> => {
-  try {
-    await action()
-  } catch (err) {
-    expect(err).toBeInstanceOf(errorClass)
-    return err as T
-  }
-  throw new Error('Expected an error to be thrown')
-}
 
 describe('queryConfig', async () => {
-  afterEach(clearQueries)
+  afterEach(() => {
+    mockFs.restore()
+  })
 
   it('sets an option to a value during query compilation', async () => {
-    const connector = new MockConnector()
-    const sql = '{@config ttl = 420}'
-    const queryPath = addFakeQuery(sql)
-
-    const compiledQuery = await connector.compileQuery({ queryPath })
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': '{@config ttl = 420}',
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: {},
+        sql: '{@config ttl = 420}',
+      },
+    })
     expect(compiledQuery.config.ttl).toBe(420)
   })
 
   it('cannot set the same option twice', async () => {
-    const connector = new MockConnector()
-    const sql = '{@config ttl = 420}\n{@config ttl = 421}'
-    const queryPath = addFakeQuery(sql)
-
-    const action = () => connector.compileQuery({ queryPath })
-
-    const error = await getExpectedError(action, CompileError)
-    expect(error.code).toBe('config-definition-failed')
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': '{@config ttl = 420}',
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    await expect(
+      connector.compileQuery({
+        ...context,
+        request: {
+          queryPath,
+          params: {},
+          sql: '{@config ttl = 420}\n{@config ttl = 421}',
+        },
+      }),
+    ).rejects.toThrowError(
+      new CompileError(
+        "Config definition for 'ttl' failed: Option already configured",
+      ),
+    )
   })
 
   it('ignores configurations from referenced queries', async () => {
-    const connector = new MockConnector()
-    const refQuerySql = '{@config ttl = 420}'
-    const refQueryPath = addFakeQuery(refQuerySql, 'ref_query.sql')
-
-    const mainQuerySql = `{ref('${refQueryPath}')}`
-    const queryPath = addFakeQuery(mainQuerySql)
-
-    const compiledQuery = await connector.compileQuery({ queryPath })
+    const refQuery = "ref('ref_query.sql')"
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': refQuery,
+        'ref_query.sql': '{@config ttl = 420}',
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: {},
+        sql: refQuery,
+      },
+    })
     expect(compiledQuery.config.ttl).toBeUndefined()
   })
 
   it('ignores configurations from ran queries', async () => {
-    const connector = new MockConnector()
-    const ranQuerySql = '{@config ttl = 420}'
-    const ranQueryPath = addFakeQuery(ranQuerySql, 'ref_query.sql')
-
-    const mainQuerySql = `{results = runQuery('${ranQueryPath}')}`
-    const queryPath = addFakeQuery(mainQuerySql)
-
-    const compiledQuery = await connector.compileQuery({ queryPath })
+    const refQuery = "results = runQuery('ref_query.sql')"
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': refQuery,
+        'ref_query.sql': '{@config ttl = 420}',
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: {},
+        sql: refQuery,
+      },
+    })
     expect(compiledQuery.config.ttl).toBeUndefined()
   })
 
   it('can set unknown options', async () => {
-    const connector = new MockConnector()
-    const sql = '{@config foo = "bar"}'
-    const queryPath = addFakeQuery(sql)
-
-    const compiledQuery = await connector.compileQuery({ queryPath })
+    const refQuery = '{@config foo = "bar"}'
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': refQuery,
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: {},
+        sql: refQuery,
+      },
+    })
 
     // @ts-expect-error foo is not a QueryConfig option registered in the linter
     expect(compiledQuery.config.foo).toBe('bar')
@@ -131,16 +134,31 @@ describe('queryConfig', async () => {
 })
 
 describe('accessedParams', async () => {
-  afterEach(clearQueries)
-
   it('records all accessed params', async () => {
-    const connector = new MockConnector()
-    const sql = `SELECT {param('foo')} FROM {param('bar')}`
-    const queryPath = addFakeQuery(sql)
-
-    const params = { foo: 'foo', bar: 'bar', baz: 'baz', qux: 'qux' }
-
-    const compiledQuery = await connector.compileQuery({ queryPath, params })
+    const refQuery = `SELECT {param('foo')} FROM {param('bar')}`
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': refQuery,
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: {
+          foo: 'foo',
+          bar: 'bar',
+          baz: 'baz',
+          qux: 'qux',
+        },
+        sql: refQuery,
+      },
+    })
     expect(compiledQuery.accessedParams['foo']).toBe('foo')
     expect(compiledQuery.accessedParams['bar']).toBe('bar')
     expect(compiledQuery.accessedParams['baz']).toBeUndefined()
@@ -148,17 +166,32 @@ describe('accessedParams', async () => {
   })
 
   it('records all accessed params in nested queries', async () => {
-    const connector = new MockConnector()
+    const refQuery = "SELECT {param('par3')} FROM {ref('nested/query.sql')}"
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': refQuery,
+        nested: { 'query.sql': "SELECT {param('par1')} FROM {param('par2')}" },
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: {
+          par1: 1,
+          par2: 2,
+          par3: 3,
+          par4: 4,
+        },
+        sql: refQuery,
+      },
+    })
 
-    const nestedQuerySql = `SELECT {param('par1')} FROM {param('par2')}`
-    const nestedQueryPath = addFakeQuery(nestedQuerySql)
-
-    const sql = `SELECT {param('par3')} FROM {ref('${nestedQueryPath}')}`
-    const queryPath = addFakeQuery(sql)
-
-    const params = { par1: 1, par2: 2, par3: 3, par4: 4 }
-
-    const compiledQuery = await connector.compileQuery({ queryPath, params })
     expect(compiledQuery.accessedParams['par1']).toBe(1)
     expect(compiledQuery.accessedParams['par2']).toBe(2)
     expect(compiledQuery.accessedParams['par3']).toBe(3)
@@ -166,13 +199,25 @@ describe('accessedParams', async () => {
   })
 
   it('allows accessing the same param multiple times', async () => {
-    const connector = new MockConnector()
-    const sql = `SELECT {param('foo')} FROM {param('foo')}`
-    const queryPath = addFakeQuery(sql)
-
-    const params = { foo: 'foo' }
-
-    const compiledQuery = await connector.compileQuery({ queryPath, params })
-    expect(compiledQuery.accessedParams).toEqual({ foo: 'foo' })
+    const refQuery = "SELECT {param('foo')} FROM {param('foo')}"
+    mockFs({
+      '/my-queries': {
+        'source.yml': 'type: internal_test',
+        'query.sql': refQuery,
+      },
+    })
+    const queryPath = 'query'
+    const source = await getSource(queryPath, '/my-queries')
+    const context = buildDefaultContext()
+    const connector = new TestConnector({ source, connectionParams: {} })
+    const compiledQuery = await connector.compileQuery({
+      ...context,
+      request: {
+        queryPath,
+        params: { foo: 'bar' },
+        sql: refQuery,
+      },
+    })
+    expect(compiledQuery.accessedParams).toEqual({ foo: 'bar' })
   })
 })

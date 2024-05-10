@@ -8,14 +8,10 @@ import readSourceConfig from '@/source/readConfig'
 
 export default class SourceManager {
   private instances: Record<string, Source> = {}
-  private _queriesDir: string
+  readonly queriesDir: string
 
   constructor(queriesDir: string) {
-    this._queriesDir = queriesDir
-  }
-
-  get queriesDir() {
-    return this._queriesDir
+    this.queriesDir = queriesDir
   }
 
   /**
@@ -43,7 +39,10 @@ export default class SourceManager {
       queriesDir: this.queriesDir,
     })
 
-    const sourcePath = path.dirname(sourceFilePath)
+    const sourcePath = path.relative(
+      this.queriesDir,
+      path.dirname(sourceFilePath),
+    )
 
     if (!this.instances[sourcePath]) {
       this.buildSource({ sourcePath, sourceFile: sourceFilePath })
