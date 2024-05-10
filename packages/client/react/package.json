@@ -44,8 +44,8 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "peerDependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^17.0.0"
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
   },
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",

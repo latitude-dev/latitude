@@ -20,11 +20,11 @@ At this point if you have a running Netflix latitude project in `localhost:3000`
 you should see everything ok.
 
 ### Copy `examples/sample-react`
-This is another way of running this React example. After copy the folder you need to change in the `examples/sample-react/package.json`
+This is another way of running this React example. After you've copied the folder you need to change in the `examples/sample-react/package.json`
 
 ```diff
 - "@latitude-data/react": "workspace:*",
-+ "@latitude-data/react": "0.2.0", // Or the version you want
++ "@latitude-data/react": "*", // Or the version you want
 ```
 
 After this change:
