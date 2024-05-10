@@ -1,5 +1,4 @@
 import handleError from '$lib/errors/handler'
-import sourceManager from '$lib/server/sourceManager'
 import findOrCompute from '$lib/query_service/find_or_compute'
 import getQueryParams from './getQueryParams'
 
@@ -9,9 +8,7 @@ export async function GET({ params: args, url }: Props) {
   try {
     const { params, force, download } = await getQueryParams(url)
     const query = args.query ?? ''
-    const source = await sourceManager.loadFromQuery(query)
     const { queryResult, compiledQuery } = await findOrCompute({
-      source,
       query,
       queryParams: params,
       force,

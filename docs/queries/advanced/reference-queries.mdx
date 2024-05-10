@@ -21,6 +21,21 @@ FROM {ref ('other_query')}
 ```
 This will dynamically insert the SQL code from `other_query.sql` into your current query, allowing you to build complex queries by reusing existing blocks of code.
 
+<Note>Reference can handle relative paths</Note>
+
+```
+queries/
+  users/
+    query.sql
+    orders/
+      query.sql
+```
+
+```sql
+-- queries/users/orders/query.sql
+SELECT * FROM {ref('../query.sql')} -- This will reference queries/users/query.sql
+```
+
 ### Referencing queries as a source
 
 An important use case for referencing queries is adding them as source. You can do this as follows:
@@ -40,7 +55,7 @@ FROM users
 ```
 SELECT *
 FROM (
-    SELECT 
+    SELECT
         id,
         first_name,
         last_name,

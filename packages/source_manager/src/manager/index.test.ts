@@ -17,8 +17,8 @@ describe('SourceManager', () => {
     expect(readFileSpy).toHaveBeenCalledOnce()
     expect(source1).toBe(source2)
 
-    await source1.compileQuery({ queryPath: 'query' })
-    await source1.compileQuery({ queryPath: 'nested/query' })
+    await source1.compileQuery({ queryPath: 'valid-source/query' })
+    await source1.compileQuery({ queryPath: 'valid-source/nested/query' })
     expect(factorySpy).toHaveBeenCalledOnce()
   })
 })
