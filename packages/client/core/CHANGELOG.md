@@ -1,5 +1,17 @@
 # @latitude-data/client
 
+## 0.10.0
+
+### Minor Changes
+
+- f89e566: '@latitude-data/svelte' package can now be used in svelte projects without needing to configure tailwind.
+- f8ce2e6: Added support for built-in components for Latitude's React package.
+- c39ebae: Improved internal Theme configuration, and added a way to change and create the theme in our React package.
+
+### Patch Changes
+
+- c26e405: Abstracted a missing class from a Svelte component to the Client core package.
+
 ## 0.10.0-next.3
 
 ### Patch Changes

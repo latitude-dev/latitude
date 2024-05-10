@@ -1,5 +1,24 @@
 # @latitude-data/react
 
+## 0.7.0
+
+### Minor Changes
+
+- f8ce2e6: Added support for built-in components for Latitude's React package.
+- 4661d83: Implemented missing visualization charts
+- 6b2a69e: Added basic components to react package
+- c39ebae: Improved internal Theme configuration, and added a way to change and create the theme in our React package.
+- c26e405: Added Table, AreaChart and QueryAreaChart components
+
+### Patch Changes
+
+- 5e52691: Changed react peer dependency to 16.8 and upwards
+- Updated dependencies [f89e566]
+- Updated dependencies [f8ce2e6]
+- Updated dependencies [c26e405]
+- Updated dependencies [c39ebae]
+  - @latitude-data/client@0.10.0
+
 ## 0.7.0-next.6
 
 ### Patch Changes
