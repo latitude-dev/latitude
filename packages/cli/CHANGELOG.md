@@ -1,5 +1,13 @@
 # @latitude-data/cli
 
+## 1.6.0
+
+### Minor Changes
+
+- 25c614f: Add the ability of adding secure environment variables to Latitude Cloud
+- 25c614f: Allow adding multiple secrets at the same time to Latitude Cloud
+- 25c614f: Only generate LATITUDE_MASTER_KEY with the CLI. Do not include in the build. This improve security
+
 ## 1.5.0
 
 ### Minor Changes

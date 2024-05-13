@@ -1,5 +1,23 @@
 # @latitude-data/server
 
+## 1.2.0
+
+### Minor Changes
+
+- 25c614f: '@latitude-data/svelte' package can now be used in svelte projects without needing to configure tailwind.
+
+### Patch Changes
+
+- 25c614f: Improved internal Theme configuration, and added a way to change and create the theme in our React package.
+- Updated dependencies [25c614f]
+- Updated dependencies [25c614f]
+- Updated dependencies [25c614f]
+- Updated dependencies [25c614f]
+- Updated dependencies [25c614f]
+- Updated dependencies [25c614f]
+  - @latitude-data/svelte@0.7.0
+  - @latitude-data/client@0.10.0
+
 ## 1.1.6
 
 ### Patch Changes
