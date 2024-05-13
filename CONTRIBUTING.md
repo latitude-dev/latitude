@@ -159,11 +159,12 @@ Here's how this workflow should be performed:
 1. Lock `next` branch to prevent new changes from being added.
 2. Open a PR from `next` to `main`.
 3. Rebase the PR to ensure it's up to date with the latest changes in main branch.
-4. This PR has to:
+4. Run `pnpm changeset pre exit` to exit pre-release mode.
+5. This PR has to:
   - Keep all changes in `.changeset` folder
   - Ensure no mentions to `next` packages are made in CHANGELOGs
   - Ensure no changes to `package.json` version numbers are made. We want to keep the main branch version numbers as they.
-5. Merge the PR into `main` branch.
+6. Merge the PR into `main` branch.
 
 Once the PR is merged into the main branch, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `main`, triggering the publication of a release.
 
