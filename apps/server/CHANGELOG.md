@@ -1,5 +1,13 @@
 # @latitude-data/server
 
+## 1.2.0-next.5
+
+### Patch Changes
+
+- Updated dependencies [67e3665]
+  - @latitude-data/svelte@0.7.0-next.5
+  - @latitude-data/client@0.10.0-next.4
+
 ## 1.2.0-next.4
 
 ### Patch Changes

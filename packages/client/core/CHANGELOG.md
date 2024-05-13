@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.10.0-next.4
+
+### Patch Changes
+
+- 67e3665: Fixed broken style for DatePicker and RangeDatePicker components
+
 ## 0.10.0-next.3
 
 ### Patch Changes
