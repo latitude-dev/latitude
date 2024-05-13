@@ -7,8 +7,10 @@ export function cssClass({ className }: { className?: string }) {
   )
 }
 
-export const SELECT_CSS_CLASS = 'lat-w-full lat-overflow-hidden lat-bg-background'
-export const SELECT_TEXT_CSS_CLASS = 'lat-w-full lat-text-left lat-font-normal lat-whitespace-nowrap lat-text-ellipsis lat-overflow-hidden'
+export const SELECT_CSS_CLASS =
+  'lat-w-full lat-overflow-hidden lat-bg-background'
+export const SELECT_TEXT_CSS_CLASS =
+  'lat-w-full lat-text-left lat-font-normal lat-whitespace-nowrap lat-text-ellipsis lat-overflow-hidden'
 
 export const POPOVER_CONTENT_CSS_CLASS =
   'lat-flex lat-w-auto lat-flex-col lat-space-y-2 lat-p-2'
