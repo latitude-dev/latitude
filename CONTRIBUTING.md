@@ -147,6 +147,26 @@ To make a pre-release, follow these steps:
 
 Once the pull request is merged, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `next`, triggering the publication of a pre-release.
 
+#### Merging prereleases to main branch
+
+Once we are ready to release the pre-release to the main branch, we can merge
+the `next` branch into the `main` branch. This will trigger the release
+workflow to publish the pre-release to the `latest` distribution tag on
+npmjs.com. 
+
+Here's how this workflow should be performed:
+
+1. Lock `next` branch to prevent new changes from being added.
+2. Open a PR from `next` to `main`.
+3. Rebase the PR to ensure it's up to date with the latest changes in main branch.
+4. This PR has to:
+  - Keep all changes in `.changesets` folder
+  - Ensure no mentions to `next` packages are made in CHANGELOGs
+  - Ensure no changes to `package.json` version numbers are made. We want to keep the main branch version numbers as they.
+5. Merge the PR into `main` branch.
+
+Once the PR is merged into the main branch, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `main`, triggering the publication of a release.
+
 #### How to Do Releases
 
 Our [release.yml](./.github/workflow/release.yml) CI workflow publishes to the `latest` distribution tag on npmjs.com (the default) when changes are merged into the `main` branch.
