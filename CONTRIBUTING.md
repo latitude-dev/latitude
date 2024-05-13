@@ -160,7 +160,7 @@ Here's how this workflow should be performed:
 2. Open a PR from `next` to `main`.
 3. Rebase the PR to ensure it's up to date with the latest changes in main branch.
 4. This PR has to:
-  - Keep all changes in `.changesets` folder
+  - Keep all changes in `.changeset` folder
   - Ensure no mentions to `next` packages are made in CHANGELOGs
   - Ensure no changes to `package.json` version numbers are made. We want to keep the main branch version numbers as they.
 5. Merge the PR into `main` branch.
