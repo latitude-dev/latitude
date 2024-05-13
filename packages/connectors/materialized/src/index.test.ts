@@ -8,15 +8,19 @@ import {
 } from '@latitude-data/source-manager'
 import MaterializedConnector from '$/index'
 
+const MATERIALIZED_SQL = `
+{@config materialize_query = true}
+SELECT * FROM users
+`
 describe('materializedRef function', async () => {
-  beforeEach(() => {})
+  beforeEach(() => { })
 
-  it('find queries in a folder out of current source', async () => {
+  it.only('find queries in a folder out of current source', async () => {
     const sql = "SELECT * FROM {materializedRef('../query.sql')}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
-        'query.sql': 'SELECT * FROM users',
+        'query.sql': MATERIALIZED_SQL,
         'materialized-queries': {
           'source.yml': 'type: materialized',
           'query.sql': sql,
@@ -74,12 +78,82 @@ describe('materializedRef function', async () => {
     )
   })
 
+  it('fails when used materialized config is not defined', async () => {
+    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: internal_test',
+        'query.sql': 'SELECT * FROM users',
+        'materialized-queries': {
+          'source.yml': 'type: materialized',
+          'query.sql': sql,
+        },
+      },
+    })
+    const context = buildDefaultContext()
+    const { connector } = await buildMaterializedConnector({
+      sourceParams: {
+        path: 'materialize-queries',
+      },
+    })
+
+    await expect(
+      connector.compileQuery({
+        ...context,
+        request: {
+          queryPath: 'materialized-queries/query',
+          params: {},
+          sql,
+        },
+      }),
+    ).rejects.toThrowError(
+      new CompileError(
+        "Error calling function 'materializedRef': \nError Query 'query.sql' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file."
+      ),
+    )
+  })
+
+  it('fails when used materialized config is set to false', async () => {
+    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: internal_test',
+        'query.sql': '{@config materialize_query = false}\nSELECT * FROM users',
+        'materialized-queries': {
+          'source.yml': 'type: materialized',
+          'query.sql': sql,
+        },
+      },
+    })
+    const context = buildDefaultContext()
+    const { connector } = await buildMaterializedConnector({
+      sourceParams: {
+        path: 'materialize-queries',
+      },
+    })
+
+    await expect(
+      connector.compileQuery({
+        ...context,
+        request: {
+          queryPath: 'materialized-queries/query',
+          params: {},
+          sql,
+        },
+      }),
+    ).rejects.toThrowError(
+      new CompileError(
+        "Error calling function 'materializedRef': \nError Query 'query.sql' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file."
+      ),
+    )
+  })
+
   it('fails when used in a logic block', async () => {
     const sql = "{result = materializedRef('../query')} {result}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
-        'query.sql': 'SELECT * FROM users',
+        'query.sql': MATERIALIZED_SQL,
         'materialized-queries': {
           'source.yml': 'type: materialized',
           'query.sql': "{result = materializedRef('../query')} {result}",

@@ -46,7 +46,8 @@ export default class MaterializedConnector extends DuckdbConnector {
 
         this.checkQueryNotCompiled(fullSubQueryPath, queriesBeingCompiled)
 
-        // Check query does not have accessedParams.
+        // 1. Check referencedQuery does not have accessedParams.
+        // 2. Check referencedQuery has `@config materialized_query = true`
 
         const refSource =
           await this.source.manager.loadFromQuery(fullSubQueryPath)
@@ -64,6 +65,18 @@ export default class MaterializedConnector extends DuckdbConnector {
           },
         )
 
+        if (!compiledSubQuery.config.materialize_query) {
+          throw new Error(
+            `Query '${fullSubQueryPath}' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file.`,
+          )
+        }
+
+        // TODO: Read stored materielized query from MaterializeStorage
+        // materializeStorage will be done in a separate PR
+        // Fail with a specific error if the query is not materialized?
+
+        // TODO: Get somehow from DuckDB when the query was last materialized
+        // Or maybe just the timestamp from the file system
         return `(${compiledSubQuery.sql})`
       },
     }
