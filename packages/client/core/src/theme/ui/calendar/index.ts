@@ -1,11 +1,11 @@
 import { cn } from '../../utils'
 
 export function cssClass({ className }: { className?: string | null }) {
-  return cn('p-3', className)
+  return cn('lat-p-3', className)
 }
 
-export const HEADER_ROW_CSS_CLASS = 'flex'
-export const BODY_ROW_CSS_CLASS = 'mt-2 w-full'
+export const HEADER_ROW_CSS_CLASS = 'lat-flex'
+export const BODY_ROW_CSS_CLASS = 'lat-mt-2 lat-w-full'
 
 import * as cell from './cell'
 import * as day from './day'

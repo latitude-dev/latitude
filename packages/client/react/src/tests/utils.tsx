@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { http, HttpResponse } from 'msw'
-import { EMPTY_PAYLOAD, LatitudeProvider } from '$src/data/LatitudeProvider'
+import { EMPTY_PAYLOAD, LatitudeApiProvider } from '$src/data/ApiProvider'
 import { server } from '$src/tests/setup'
 import { QueryClient } from '@tanstack/react-query'
 import { QueryResultPayload } from '@latitude-data/query_result'
@@ -38,9 +38,9 @@ export function createWrapper(prevStates: KeyValue[] = []) {
   })
 
   return ({ children }: { children: ReactNode }) => (
-    <LatitudeProvider apiConfig={{ host: MOCKED_HOST }}>
+    <LatitudeApiProvider apiConfig={{ host: MOCKED_HOST }}>
       {children}
-    </LatitudeProvider>
+    </LatitudeApiProvider>
   )
 }
 

@@ -3,7 +3,10 @@ title: 'Alert'
 description: 'Display a message to the user'
 ---
 
-<iframe class="rounded-xl" src="https://docs-charts-examples.fly.dev/components/alert" width="100%" height="340"> </iframe>
+import AlertIframe from '/snippets/components/alert/iframe.mdx'
+import AlertProperties from '/snippets/components/alert/properties.mdx'
+
+<AlertIframe />
 
 ## Introduction
 
@@ -26,26 +29,4 @@ To use the `<Alert>` component, include it in your views as follows:
 
 ## Properties
 
-<ResponseField name="type" type="string" required>
-  Change the style of the alert. Options are:
-  - `note`
-  - `success`
-  - `warning`
-  - `error`
-</ResponseField>
-
-<ResponseField name="secondary" type="boolean">
-  In combination with `type` it produce a different style for the alert with a softer background when is set to `true`
-</ResponseField>
-
-<ResponseField name="centerText" type="boolean">
-  By default text in the alert is centered. If you want to be left aligned set it to `false`
-</ResponseField>
-
-<ResponseField name="fontWeight" type="string">
-  Controls how the text inside the alert is presented. Options are:
-  - `normal`
-  - `medium`
-  - `bold`
-  By defaul is set to `normal`.
-</ResponseField>
+<AlertProperties />

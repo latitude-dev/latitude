@@ -132,8 +132,8 @@
         onSelectedChange={onSelectChange}
         bind:open={isSelectorOpen}
       >
-        <Select.Trigger class={theme.ui.datePicker.selectCssClass({ isRange: true })}>
-          <Select.Value placeholder="Select Date" />
+        <Select.Trigger class={theme.ui.datePicker.SELECT_CSS_CLASS}>
+          <Select.Value class={theme.ui.datePicker.SELECT_TEXT_CSS_CLASS} placeholder="Select Date" />
         </Select.Trigger>
         <Select.Content>
           {#each selectorItems as item}
@@ -146,10 +146,12 @@
         <Popover.Trigger asChild let:builder>
           <Button
             variant="outline"
-            class={theme.ui.datePicker.buttonCssClass({ isRange: true })}}
+            class={theme.ui.datePicker.SELECT_CSS_CLASS}
             builders={[builder]}
           >
-            {calendarLabel}
+            <Text class={theme.ui.datePicker.SELECT_TEXT_CSS_CLASS}>
+              {calendarLabel}
+            </Text>
           </Button>
         </Popover.Trigger>
         <Popover.Content class={theme.ui.datePicker.POPOVER_CONTENT_CSS_CLASS}>

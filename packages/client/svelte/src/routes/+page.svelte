@@ -5,7 +5,7 @@
   import { Table } from '$lib/internal'
   import QueryResult, { DataType } from '@latitude-data/query_result'
 
-  const defaultTheme = theme.skins.themes[1]
+  const defaultTheme = theme.skins.defaultTheme
 </script>
 
 <ThemeProvider theme={defaultTheme} />

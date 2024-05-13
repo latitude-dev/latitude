@@ -1,0 +1,23 @@
+<ResponseField name="type" type="string" required>
+  Change the style of the alert. Options are:
+  - `note`
+  - `success`
+  - `warning`
+  - `error`
+</ResponseField>
+
+<ResponseField name="secondary" type="boolean">
+  In combination with `type` it produce a different style for the alert with a softer background when is set to `true`
+</ResponseField>
+
+<ResponseField name="centerText" type="boolean">
+  By default text in the alert is centered. If you want to be left aligned set it to `false`
+</ResponseField>
+
+<ResponseField name="fontWeight" type="string">
+  Controls how the text inside the alert is presented. Options are:
+  - `normal`
+  - `medium`
+  - `bold`
+  By defaul is set to `normal`.
+</ResponseField>

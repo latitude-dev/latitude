@@ -1,0 +1,28 @@
+---
+title: 'Button'
+description: 'A simple button component'
+---
+
+import ButtonIframe from '/snippets/components/button/iframe.mdx'
+
+<ButtonIframe />
+
+## Introduction
+
+The `Button` component is a simple button that can be used to trigger actions in your app.
+
+## Usage
+
+To use the `Button` component, add the text you want to display on the button as children, and pass any additional props you need.
+
+```tsx
+const MyComponent = () => (
+  <Button
+    type='primary'
+    size='md'
+    onClick={() => alert('Button clicked!')}
+  >
+    Click me
+  </Button>
+);
+```

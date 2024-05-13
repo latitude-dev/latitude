@@ -1,0 +1,37 @@
+---
+title: 'Input'
+description: 'A text input component for your React app'
+---
+
+import InputIframe from '/snippets/components/input/iframe.mdx'
+import InputProperties from '/snippets/components/input/properties.mdx'
+
+<InputIframe />
+
+## Introduction
+
+The `Input` component is a text input that can be used to modify the value of any variable in your app.
+
+## Usage
+
+```tsx
+import { Input } from '@latitude-data/react'
+import { useState } from 'react'
+
+const MyComponent = () => {
+  const [value, setValue] = useState('')
+
+  return (
+    <Input
+      value={value}
+      onChange={e => setValue(e.target.value)}
+    />
+  )
+}
+```
+
+## Properties
+
+In addition to the standard HTML input properties, the `Input` component accepts the following props:
+
+<InputProperties />

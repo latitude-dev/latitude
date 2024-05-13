@@ -5,7 +5,7 @@ import { createWrapper } from '$src/tests/utils'
 
 const mockDownloadQuery = vi.fn()
 
-vi.mock('$src/data/LatitudeProvider', async (importOriginal) => ({
+vi.mock('$src/data/ApiProvider', async (importOriginal) => ({
   ...((await importOriginal()) as Record<string, unknown>),
   useLatitude: () => ({ api: { downloadQuery: mockDownloadQuery } }),
 }))

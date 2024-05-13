@@ -6,18 +6,18 @@
   import { mode } from 'mode-watcher'
   import { theme as client } from '@latitude-data/client'
   import { Check } from 'radix-icons-svelte'
-  import { COLORS, COLOR_KEYS } from './colors'
 
   const { cn } = client.utils
   const themes = client.skins.themes
+  const themeKeys = Object.keys(themes)
 </script>
 
 <Card.Root>
-  <Card.Content class="flex items-center justify-between pt-6">
-    <div class="flex items-center space-x-0.5">
-      {#each COLOR_KEYS as color (color)}
-        {@const theme = themes.find((tm) => tm.name === color)}
-        {@const isActive = $themeConfig.name === color}
+  <Card.Content class="lat-flex lat-items-center lat-justify-between lat-pt-6">
+    <div class="lat-flex lat-items-center lat-space-x-0.5">
+      {#each themeKeys as color}
+        {@const theme = themes[color]}
+        {@const isActive = JSON.stringify($themeConfig) === JSON.stringify(themes[color])}
         {#if theme}
           <Tooltip.Root>
             <Tooltip.Trigger asChild let:builder>
@@ -26,30 +26,28 @@
                 use:builder.action
                 on:click={() => themeConfig.update(() => theme)}
                 class={cn(
-                  'flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs',
-                  isActive ? 'border-[--theme-primary]' : 'border-transparent',
+                  'lat-flex lat-h-9 lat-w-9 lat-items-center lat-justify-center lat-rounded-full lat-border-2 lat-text-xs',
+                  isActive ? 'lat-border-[--theme-primary]' : 'lat-border-transparent',
                 )}
-                style="--theme-primary: hsl({COLORS[theme.name][
-                  $mode === 'dark' ? 'dark' : 'light'
-                ]}"
+                style="--theme-primary: {$mode === 'dark' ? themes[color].dark.primary : themes[color].primary}"
               >
                 <span
                   class={cn(
-                    'flex h-6 w-6 items-center justify-center rounded-full bg-[--theme-primary]',
+                    'lat-flex lat-h-6 lat-w-6 lat-items-center lat-justify-center lat-rounded-full lat-bg-[--theme-primary]',
                   )}
                 >
                   {#if isActive}
-                    <Check class="h-4 w-4 text-white" />
+                    <Check class="lat-h-4 lat-w-4 lat-text-white" />
                   {/if}
                 </span>
-                <span class="sr-only">{theme.label}</span>
+                <span class="lat-sr-only">{color}</span>
               </button>
             </Tooltip.Trigger>
             <Tooltip.Content
               align="center"
-              class="rounded-[0.5rem] bg-zinc-900 text-zinc-50"
+              class="lat-rounded-[0.5rem] lat-bg-zinc-900 lat-text-zinc-50"
             >
-              {theme.label}
+              {color}
             </Tooltip.Content>
           </Tooltip.Root>
         {/if}

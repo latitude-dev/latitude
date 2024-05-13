@@ -19,7 +19,7 @@
   {transition}
   {transitionConfig}
   class={cn(
-    "z-50 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-lg focus:outline-none",
+    "lat-z-50 lat-min-w-[8rem] lat-rounded-md lat-border lat-bg-popover lat-p-1 lat-text-popover-foreground shadow-lg focus:outline-none",
     className
   )}
   {...$$restProps}

@@ -12,7 +12,7 @@
 </script>
 
 <Template let:args>
-  <div class="max-w-100">
+  <div class="lat-max-w-100">
     <Input {...args} />
   </div>
 </Template>

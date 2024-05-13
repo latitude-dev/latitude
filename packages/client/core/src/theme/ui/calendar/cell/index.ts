@@ -9,14 +9,14 @@ export function cssClass({
   isRangeCalendar?: boolean
 }) {
   return cn(
-    'relative p-0 text-center text-sm',
-    `focus-within:relative focus-within:${zIndexes.focusedCalendarCell}`,
-    '[&:has([data-selected])]:bg-accent [&:has([data-selected][data-outside-month])]:bg-accent/50',
+    'lat-relative lat-p-0 lat-text-center lat-text-sm',
+    `focus-within:lat-relative focus-within:${zIndexes.focusedCalendarCell}`,
+    '[&:has([data-selected])]:lat-bg-accent [&:has([data-selected][data-outside-month])]:lat-bg-accent/50',
     {
-      '[&:has([data-selected])]:rounded-md': !isRangeCalendar,
-      'first:[&:has([data-selected])]:rounded-l-md last:[&:has([data-selected])]:rounded-r-md':
+      '[&:has([data-selected])]:lat-rounded-md': !isRangeCalendar,
+      'first:[&:has([data-selected])]:lat-rounded-l-md last:[&:has([data-selected])]:lat-rounded-r-md':
         isRangeCalendar,
-      '[&:has([data-selected][data-selection-end])]:rounded-r-md [&:has([data-selected][data-selection-start])]:rounded-l-md':
+      '[&:has([data-selected][data-selection-end])]:lat-rounded-r-md [&:has([data-selected][data-selection-start])]:lat-rounded-l-md':
         isRangeCalendar,
     },
     className,
