@@ -1,5 +1,13 @@
 # @latitude-data/svelte
 
+## 0.7.0-next.5
+
+### Patch Changes
+
+- 67e3665: Fixed broken style for DatePicker and RangeDatePicker components
+- Updated dependencies [67e3665]
+  - @latitude-data/client@0.10.0-next.4
+
 ## 0.7.0-next.4
 
 ### Patch Changes
