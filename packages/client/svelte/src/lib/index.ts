@@ -17,9 +17,10 @@ export { default as RangeDatePicker } from './ui/range-date-picker'
 export { default as Row } from './ui/row'
 export { default as ScrollArea } from './ui/scroll-area'
 export { default as Text } from './ui/text'
-export { default as ThemeProvider } from './ui/theme-wrapper'
 export { default as Toggle } from './ui/toggle/toggle.svelte'
 export { default as View } from './ui/view'
+
+export { default as ThemeProvider } from './ui/theme-provider/index.svelte'
 
 export { type DatePickerProps } from './ui/date-picker'
 export type {

@@ -1,14 +1,11 @@
 <script lang="ts">
-  import ThemeProvider from '$lib/ui/theme-wrapper'
-  import { theme } from '@latitude-data/client'
+  import ThemeWrapper from '$lib/storybook/theme-wrapper'
   import { Button, Text } from '$lib'
   import { Table } from '$lib/internal'
   import QueryResult, { DataType } from '@latitude-data/query_result'
-
-  const defaultTheme = theme.skins.defaultTheme
 </script>
 
-<ThemeProvider theme={defaultTheme} />
+<ThemeWrapper />
 
 <Text.H1>Header 1</Text.H1>
 <Text.H2>Header 2</Text.H2>

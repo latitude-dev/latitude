@@ -1,7 +1,4 @@
 <script>
-  import { theme } from '@latitude-data/client'
-  const defaultTheme = theme.skins.defaultTheme
-  
   import { Alert, ThemeProvider } from '@latitude-data/svelte'
 
   import '../assets/app.css'
@@ -32,14 +29,14 @@
   })
 </script>
 
-<ThemeProvider theme={defaultTheme} />
-
-<div>
-  {#if validToken}
-    <slot />
-  {:else}
-    <div class="mt-20 container flex justify-center">
-      <Alert type="error" secondary>{tokenError}</Alert>
-    </div>
-  {/if}
-</div>
+<ThemeProvider>
+  <div>
+    {#if validToken}
+      <slot />
+    {:else}
+      <div class="mt-20 container flex justify-center">
+        <Alert type="error" secondary>{tokenError}</Alert>
+      </div>
+    {/if}
+  </div>
+</ThemeProvider>
