@@ -91,7 +91,7 @@ export default function Embedding() {
         {/* Use the URL to this data project. You can run it locally */}
         {/* https://github.com/latitude-dev/netflix-starwars */}
         <LatitudeEmbed
-          url='https://netflix-starwars-black-shadow-3482.fly.dev'
+          url='https://sample-netflix-north-katarina.latitude.page'
           params={{ start_year: '2003', end_year: endYear }}
           onParamsChanged={(event: CustomEvent<EmbeddingEventData<EmbeddingEvent.ParamsChanged>>) => {
             const params = event.detail.params
