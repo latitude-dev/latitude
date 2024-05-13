@@ -1,6 +1,6 @@
 <script lang="ts">
-  import * as Tooltip from '../../tooltip'
-  import DarkModeButton from '../../dark-mode-button'
+  import * as Tooltip from '$lib/ui/tooltip'
+  import DarkModeButton from '$lib/ui/dark-mode-button'
   import { Card } from '$lib'
   import { themeConfig } from '../store'
   import { mode } from 'mode-watcher'
