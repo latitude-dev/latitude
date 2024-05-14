@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.2
+
+### Patch Changes
+
+- b1d8c13: update CLI command overrides docker config with new config
+
 ## 1.6.1
 
 ### Patch Changes
