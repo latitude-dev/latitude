@@ -1,5 +1,5 @@
 import QueryResult from '@latitude-data/query_result'
-import MixedChart, {
+import MixedChartData, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/charts/MixedChart'
 import { useQuery, type QueryRequestProps } from '$src/data'
@@ -10,7 +10,7 @@ type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
     download?: boolean
   }
 
-function QueryMixedChart({
+function MixedChart({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryMixedChart({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <MixedChart
+    <MixedChartData
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryMixedChart({
   )
 }
 
-export default QueryMixedChart
+export default MixedChart

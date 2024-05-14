@@ -12,19 +12,19 @@ The Scatter chart displays data points on a grid, representing variable values w
 
 ## Syntax
 
-You can use either `ScatterChart` or `QueryScatterChart` to visualize query results in a chart.
+You can use either `ScatterChart` or `ScatterChartData` to visualize query results in a chart.
 
-Use **QueryScatterChart** when you want the component to automatically handle the query fetching.
+Use **ScatterChart** when you want the component to automatically handle the query fetching.
 
-Use **ScatterChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+Use **ScatterChartData** when you already fetched the data using [useQuery](/react/running-query/use-query).
 
 <CodeGroup>
-```tsx QueryScatterChart
-import { QueryScatterChart } from '@latitude-data/react';
+```tsx ScatterChart
+import { ScatterChart } from '@latitude-data/react';
 
 function MyComponent() {
   return (
-    <QueryScatterChart
+    <ScatterChart
       queryPath='titles'
       params={{
         start_year: 2010,
@@ -37,7 +37,7 @@ function MyComponent() {
 }
 ```
 ```tsx ScatterChart
-import { ScatterChart, useQuery } from '@latitude-data/react';
+import { ScatterChartData, useQuery } from '@latitude-data/react';
 
 function MyComponent() {
   const { data, isLoading } = useQuery({
@@ -49,7 +49,7 @@ function MyComponent() {
   });
 
   return (
-    <ScatterChart
+    <ScatterChartData
       data={data}
       isLoading={isLoading}
       x='imbd_score'

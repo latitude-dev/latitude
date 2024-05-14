@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function BarChart({
+function BarChartData({
   data,
   isLoading,
   error,
@@ -81,4 +81,4 @@ function BarChart({
 }
 
 export { type Props }
-export default BarChart
+export default BarChartData

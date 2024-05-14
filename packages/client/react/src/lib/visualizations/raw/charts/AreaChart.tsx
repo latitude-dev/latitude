@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function AreaChart({
+function AreaChartData({
   data,
   isLoading,
   error,
@@ -81,4 +81,4 @@ function AreaChart({
 }
 
 export { type Props }
-export default AreaChart
+export default AreaChartData

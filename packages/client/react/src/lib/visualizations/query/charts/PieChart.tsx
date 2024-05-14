@@ -1,5 +1,5 @@
 import QueryResult from '@latitude-data/query_result'
-import PieChart, {
+import PieChartData, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/charts/PieChart'
 import { useQuery, type QueryRequestProps } from '$src/data'
@@ -10,7 +10,7 @@ type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
     download?: boolean
   }
 
-function QueryPieChart({
+function PieChart({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryPieChart({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <PieChart
+    <PieChartData
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryPieChart({
   )
 }
 
-export default QueryPieChart
+export default PieChart

@@ -12,19 +12,19 @@ An Area Chart visualizes quantitative data over time through filled areas below 
 
 ## Syntax
 
-You can use either `AreaChart` or `QueryAreaChart` to visualize query results in a chart.
+You can use either `AreaChart` or `AreaChartData` to visualize query results in a chart.
 
-Use **QueryAreaChart** when you want the component to automatically handle the query fetching.
+Use **AreaChart** when you want the component to automatically handle the query fetching.
 
-Use **AreaChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+Use **AreaChartData** when you already fetched the data using [useQuery](/react/running-query/use-query).
 
 <CodeGroup>
-```tsx QueryAreaChart
-import { QueryAreaChart } from '@latitude-data/react';
+```tsx AreaChart
+import { AreaChart } from '@latitude-data/react';
 
 function MyComponent() {
   return (
-    <QueryAreaChart
+    <AreaChart
       queryPath='titles'
       params={{
         start_year: 2010,
@@ -42,7 +42,7 @@ function MyComponent() {
 }
 ```
 ```tsx AreaChart
-import { AreaChart, useQuery } from '@latitude-data/react';
+import { AreaChartData, useQuery } from '@latitude-data/react';
 
 function MyComponent() {
   const { data, isLoading } = useQuery({
@@ -54,7 +54,7 @@ function MyComponent() {
   });
 
   return (
-    <AreaChart
+    <AreaChartData
       data={data}
       isLoading={isLoading}
       x='release_year'

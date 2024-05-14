@@ -1,5 +1,5 @@
 import QueryResult from '@latitude-data/query_result'
-import ScatterChart, {
+import ScatterChartData, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/charts/ScatterChart'
 import { useQuery, type QueryRequestProps } from '$src/data'
@@ -10,7 +10,7 @@ type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
     download?: boolean
   }
 
-function QueryScatterChart({
+function ScatterChart({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryScatterChart({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <ScatterChart
+    <ScatterChartData
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryScatterChart({
   )
 }
 
-export default QueryScatterChart
+export default ScatterChart

@@ -1,5 +1,5 @@
 import QueryResult from '@latitude-data/query_result'
-import AreaChart, {
+import AreaChartData, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/charts/AreaChart'
 import { useQuery, type QueryRequestProps } from '$src/data'
@@ -10,7 +10,7 @@ type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
     download?: boolean
   }
 
-function QueryAreaChart({
+function AreaChart({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryAreaChart({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <AreaChart
+    <AreaChartData
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryAreaChart({
   )
 }
 
-export default QueryAreaChart
+export default AreaChart

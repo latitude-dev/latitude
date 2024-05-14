@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function ScatterChart({
+function ScatterChartData({
   data,
   isLoading,
   error,
@@ -83,4 +83,4 @@ function ScatterChart({
 }
 
 export { type Props }
-export default ScatterChart
+export default ScatterChartData

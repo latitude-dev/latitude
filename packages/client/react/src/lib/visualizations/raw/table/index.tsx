@@ -10,7 +10,7 @@ type Props = Omit<TableProps, 'data'> & {
   error?: Error
 }
 
-function Table({ data, isLoading = false, error, ...rest }: Props) {
+function TableData({ data, isLoading = false, error, ...rest }: Props) {
   return (
     <TableBlankSlate loading={isLoading} data={data} error={error}>
       {data && <TableComponent data={data} {...rest} />}
@@ -19,4 +19,4 @@ function Table({ data, isLoading = false, error, ...rest }: Props) {
 }
 
 export { type Props }
-export default Table
+export default TableData

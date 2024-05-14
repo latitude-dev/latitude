@@ -23,19 +23,19 @@ The query `.sql` file that the Funnel chart accepts must contain only 2 columns,
 
 ## Syntax
 
-You can use either `FunnelChart` or `QueryFunnelChart` to visualize query results in a chart.
+You can use either `FunnelChart` or `FunnelChartData` to visualize query results in a chart.
 
-Use **QueryFunnelChart** when you want the component to automatically handle the query fetching.
+Use **FunnelChart** when you want the component to automatically handle the query fetching.
 
-Use **FunnelChart** when you already fetched the data using [useQuery](/react/running-query/use-query).
+Use **FunnelChartData** when you already fetched the data using [useQuery](/react/running-query/use-query).
 
 <CodeGroup>
-```tsx QueryFunnelChart
-import { QueryFunnelChart } from '@latitude-data/react';
+```tsx FunnelChart
+import { FunnelChart } from '@latitude-data/react';
 
 function MyComponent() {
   return (
-    <QueryFunnelChart
+    <FunnelChart
       queryPath='seasons_per_title'
       params={{
         start_year: 2010,
@@ -48,7 +48,7 @@ function MyComponent() {
 }
 ```
 ```tsx FunnelChart
-import { FunnelChart, useQuery } from '@latitude-data/react';
+import { FunnelChartData, useQuery } from '@latitude-data/react';
 
 function MyComponent() {
   const { data, isLoading } = useQuery({
@@ -60,7 +60,7 @@ function MyComponent() {
   });
 
   return (
-    <FunnelChart
+    <FunnelChartData
       data={data}
       isLoading={isLoading}
       sort='descending'
@@ -76,7 +76,7 @@ function MyComponent() {
 Depending on the component you choose, you can pass the following properties:
 
 <Tabs>
-  <Tab title="QueryFunnelChart">
+  <Tab title="FunnelChart">
     ### Query configuration
 
     <ParamField path="queryPath" type="string" required>

@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function MixedChart({
+function MixedChartData({
   data,
   isLoading,
   error,
@@ -81,4 +81,4 @@ function MixedChart({
 }
 
 export { type Props }
-export default MixedChart
+export default MixedChartData

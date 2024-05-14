@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function LineChart({
+function LineChartData({
   data,
   isLoading,
   error,
@@ -81,4 +81,4 @@ function LineChart({
 }
 
 export { type Props }
-export default LineChart
+export default LineChartData

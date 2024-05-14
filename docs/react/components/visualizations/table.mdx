@@ -12,19 +12,19 @@ The Table format organizes data in rows and columns, providing a clear view for 
 
 ## Syntax
 
-You can use either `Table` or `QueryTable` to visualize query results in a table format.
+You can use either `Table` or `TableData` to visualize query results in a table format.
 
-Use **QueryTable** when you want the component to automatically handle the query fetching.
+Use **Table** when you want the component to automatically handle the query fetching.
 
-Use **Table** when you already fetched the data using [useQuery](/react/running-query/use-query).
+Use **TableData** when you already fetched the data using [useQuery](/react/running-query/use-query).
 
 <CodeGroup>
-```tsx QueryTable
-import { QueryTable } from '@latitude-data/react';
+```tsx Table
+import { Table } from '@latitude-data/react';
 
 function MyComponent() {
   return (
-    <QueryTable
+    <Table
       queryPath='sorted_titles'
       params={
         limit: 10
@@ -34,7 +34,7 @@ function MyComponent() {
 }
 ```
 ```tsx Table
-import { Table, useQuery } from '@latitude-data/react';
+import { TableData, useQuery } from '@latitude-data/react';
 
 function MyComponent() {
   const { data, isLoading } = useQuery({
@@ -45,7 +45,7 @@ function MyComponent() {
   });
 
   return (
-    <Table data={data} isLoading={isLoading} />
+    <TableData data={data} isLoading={isLoading} />
   );
 }
 ```
@@ -56,7 +56,7 @@ function MyComponent() {
 Depending on the component you choose, you can pass the following properties:
 
 <Tabs>
-  <Tab title="QueryTable">
+  <Tab title="Table">
     ### Query configuration
 
     <ParamField path="queryPath" type="string" required>
@@ -102,4 +102,3 @@ Depending on the component you choose, you can pass the following properties:
 <ParamField path="description" type="string">
   You can add a brief description of your table.
 </ParamField>
-

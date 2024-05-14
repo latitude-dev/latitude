@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function PieChart({
+function PieChartData({
   data,
   isLoading,
   error,
@@ -69,4 +69,4 @@ function PieChart({
 }
 
 export { type Props }
-export default PieChart
+export default PieChartData

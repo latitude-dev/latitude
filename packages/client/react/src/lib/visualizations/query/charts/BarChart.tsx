@@ -1,5 +1,5 @@
 import QueryResult from '@latitude-data/query_result'
-import BarChart, {
+import BarChartData, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/charts/BarChart'
 import { useQuery, type QueryRequestProps } from '$src/data'
@@ -10,7 +10,7 @@ type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
     download?: boolean
   }
 
-function QueryBarChart({
+function BarChart({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryBarChart({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <BarChart
+    <BarChartData
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryBarChart({
   )
 }
 
-export default QueryBarChart
+export default BarChart

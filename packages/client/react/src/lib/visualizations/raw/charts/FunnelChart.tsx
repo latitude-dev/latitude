@@ -16,7 +16,7 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   WrapperProps
 
 /* eslint-disable react/prop-types */
-function FunnelChart({
+function FunnelChartData({
   data,
   isLoading,
   error,
@@ -75,4 +75,4 @@ function FunnelChart({
 }
 
 export { type Props }
-export default FunnelChart
+export default FunnelChartData

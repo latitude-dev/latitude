@@ -1,4 +1,4 @@
-import Table, {
+import TableData, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/table'
 import { useQuery, type QueryRequestProps } from '$src/data'
@@ -10,7 +10,7 @@ type Props = Omit<RawProps, 'data' | 'download'> &
     download?: boolean
   }
 
-function QueryTable({
+function Table({
   queryPath,
   params,
   download = false,
@@ -26,7 +26,7 @@ function QueryTable({
   const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
-    <Table
+    <TableData
       data={result}
       isLoading={isLoading}
       error={error}
@@ -36,4 +36,4 @@ function QueryTable({
   )
 }
 
-export default QueryTable
+export default Table
