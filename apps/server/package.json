@@ -19,12 +19,12 @@
     "query": "vite-node scripts/run_query/index.ts"
   },
   "devDependencies": {
-    "@latitude-data/test-connector": "workspace:^",
     "@latitude-data/client": "workspace:*",
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/query_result": "workspace:*",
     "@latitude-data/sql-compiler": "workspace:^",
     "@latitude-data/sveltekit-autoimport": "^1.7.1",
+    "@latitude-data/test-connector": "workspace:^",
     "@rollup/pluginutils": "^5.1.0",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/adapter-node": "^4.0.1",
@@ -38,7 +38,6 @@
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.17",
     "blessed": "^0.1.81",
-    "chokidar": "^3.5.3",
     "jsdom": "^24.0.0",
     "mock-fs": "^5.2.0",
     "postcss": "^8.4.35",
@@ -52,6 +51,7 @@
     "uuid": "^9.0.1",
     "vite": "^5.0.3",
     "vite-node": "^1.3.1",
+    "chokidar": "^3.5.3",
     "vitest": "^1.2.2"
   },
   "dependencies": {

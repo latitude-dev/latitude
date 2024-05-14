@@ -8,6 +8,8 @@
   import { init as initQueries } from '$lib/stores/queries'
   import { setUrlParam, useViewParams } from '$lib/stores/viewParams'
   import { initIframeCommunication } from '$lib/iframeEmbedding'
+  import { browser } from '$app/environment'
+  import { config } from '$lib/stores/config'
 
   /**
    * FIXME: https://github.com/latitude-dev/latitude/issues/158
@@ -16,6 +18,7 @@
   export let data
   const validToken = data.valid
   const tokenError = data.errorMessage
+  if (browser) config.set(data.config)
 
   onMount(async () => {
     await initQueries()
@@ -29,7 +32,7 @@
   })
 </script>
 
-<ThemeProvider>
+<ThemeProvider theme={$config?.theme ?? {}} mode={$config?.themeMode}>
   <div>
     {#if validToken}
       <slot />

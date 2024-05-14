@@ -43,7 +43,7 @@ describe('build css variables', () => {
         --lat-ring: ${light.ring};
         --lat-radius: ${light.radius};
       }
-      .dark {
+      .lat-dark {
         --lat-card: ${dark.card};
         --lat-card-foreground: ${dark['card-foreground']};
         --lat-popover: ${dark.popover};
