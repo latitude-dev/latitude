@@ -1,18 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useQuery, init as initQueries } from './queries'
-import { type ViewParams } from './viewParams'
 import { get, Writable, writable } from 'svelte/store'
 import { v4 as uuidv4 } from 'uuid'
-
-// @ts-expect-error - This imported functions are defined in the mock below, but not in the actual file
-import { resetQueryState, mockFetchFn } from '@latitude-data/client'
+import { store } from '@latitude-data/client'
 import { setViewParam } from './viewParams'
 
-vi.mock('$app/environment', () => {
-  return {
-    browser: true,
-  }
-})
+import type { ViewParams } from './viewParams'
 
 type MockQueryState = {
   queries: Record<string, unknown>
@@ -20,13 +13,23 @@ type MockQueryState = {
   fetch: (request: unknown) => Promise<void>
 }
 
-vi.mock('@latitude-data/client', () => {
-  const mockFetchFn = vi.fn(async () => {})
-  const initialQueryState: MockQueryState = {
-    queries: {},
-    forceRefetch: mockFetchFn,
-    fetch: mockFetchFn,
+vi.mock('$app/environment', () => {
+  return {
+    browser: true,
   }
+})
+
+const mockFetchFn = vi.hoisted(() => vi.fn(async () => {}))
+const initialQueryState = {
+  queries: {},
+  forceRefetch: mockFetchFn,
+  fetch: mockFetchFn,
+}
+const resetQueryState = () => {
+  mockFetchFn.mockClear()
+  store.setState(initialQueryState)
+}
+vi.mock('@latitude-data/client', () => {
   let queryState: Writable<MockQueryState>
 
   return {
@@ -35,6 +38,9 @@ vi.mock('@latitude-data/client', () => {
         return queryState.subscribe(subscription)
       }),
       getState: vi.fn(() => get(queryState)),
+      setState: vi.fn((state: MockQueryState) => {
+        queryState = writable(state)
+      }),
       update: vi.fn((updater) => {
         queryState.update(updater)
       }),
@@ -44,10 +50,6 @@ vi.mock('@latitude-data/client', () => {
       params: Record<string, unknown>,
     ): string => {
       return queryPath + JSON.stringify(params)
-    },
-    resetQueryState: () => {
-      queryState = writable(initialQueryState)
-      mockFetchFn.mockReset()
     },
     mockFetchFn,
   }
@@ -74,6 +76,7 @@ describe('useQuery with reactiveParams', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     resetQueryState()
+    vi.clearAllMocks()
     mockViewParams = writable<ViewParams>({})
   })
 
@@ -133,6 +136,20 @@ describe('useQuery with reactiveParams', () => {
 
     // The 'fetch' method should have been called the 1 initial time + 1 time after the debounce time has passed
     expect(mockFetchFn).toHaveBeenCalledTimes(2)
+  })
+
+  it('should not include undefined view parameters to run requests', () => {
+    setViewParam('foo', undefined)
+
+    const query = uuidv4()
+    const opts = { reactToParams: 100 } // 100ms debounce time
+    useQuery({ query, opts })
+    vi.runAllTimers()
+
+    // @ts-expect-error - Typescript is wrong here
+    const lastCallArgs = mockFetchFn.mock.calls[0][0]
+    // @ts-expect-error - Typescript is wrong here
+    expect(lastCallArgs!.params).toStrictEqual({})
   })
 
   it('show a console warning when using the deprecated reactiveToParams option', () => {

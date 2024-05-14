@@ -11,6 +11,8 @@ import { debounce } from 'lodash-es'
 
 let loaded = false
 
+// TODO: Refactor this madness
+
 /**
  * The middlewareQueryStore is a store that keeps track of the queries being
  * used in the current view, and points to the key in the core query store with
@@ -42,16 +44,52 @@ function computeQueryParams(
   inlineParams: InlineParams,
 ): Record<string, unknown> {
   const viewParams = getAllViewParams()
-  return Object.entries(inlineParams).reduce(
-    (params, [key, inlineParam]) => {
-      params[key] =
-        typeof inlineParam === 'object' && 'callback' in inlineParam
-          ? inlineParam.callback(viewParams)
-          : inlineParam // Inline params can be just a hardcoded value
-      return params
-    },
-    { ...viewParams },
+  const sanitizedViewParams = sanitizeParams(viewParams)
+  const composedParams = composeParams(inlineParams, viewParams)
+
+  return { ...sanitizedViewParams, ...composedParams }
+}
+
+function sanitizeParams(
+  params: Record<string, unknown>,
+): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(params).filter(([_, value]) => value !== undefined),
   )
+}
+
+function composeParams(
+  inlineParams: InlineParams,
+  viewParams: Record<string, unknown>,
+): Record<string, unknown> {
+  return Object.entries(inlineParams).reduce<Record<string, unknown>>(
+    (accumulatedParams, [key, inlineParam]) => {
+      const paramValue = resolveParamValue(inlineParam, viewParams)
+      if (paramValue !== undefined) {
+        accumulatedParams[key] = paramValue
+      }
+      return accumulatedParams
+    },
+    {},
+  )
+}
+
+function resolveParamValue(
+  inlineParam: unknown,
+  viewParams: Record<string, unknown>,
+): unknown {
+  if (
+    typeof inlineParam === 'object' &&
+    inlineParam !== null &&
+    'callback' in inlineParam
+  ) {
+    return (
+      inlineParam as {
+        callback: (viewParams: Record<string, unknown>) => string
+      }
+    ).callback(viewParams)
+  }
+  return inlineParam
 }
 
 function createMiddlewareKey(
