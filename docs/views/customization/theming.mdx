@@ -1,0 +1,275 @@
+---
+title: 'Theming'
+description: 'Personalize the theme of your Latitude Views'
+---
+
+All Latitude components are designed to be easily customized to match your brand. This guide will walk you through the process of customizing the look and feel of Latitude Views.
+
+## Creating a custom theme
+
+In your `latitude.json` file, you can define a custom theme by adding a `theme` object with your chosen values.
+Each theme includes a set of attributes specifying CSS colors or values for different elements.
+
+Take a look at the default values for the `latitude` theme:
+```json
+{
+  "background": "hsl(0 0% 100%)",
+  "foreground": "hsl(222.2 84% 4.9%)",
+  "primary": "hsl(221.2 83.2% 53.3%)",
+  "primary-foreground": "hsl(210 40% 98%)",
+  "secondary": "hsl(210 40% 96.1%)",
+  "secondary-foreground": "hsl(222.2 47.4% 11.2%)",
+  "muted": "hsl(210 40% 96.1%)",
+  "muted-foreground": "hsl(215.4 16.3% 46.9%)",
+  "accent": "hsl(210 40% 96.1%)",
+  "accent-foreground": "hsl(222.2 47.4% 11.2%)",
+  "destructive": "hsl(0 72.22% 50.59%)",
+  "destructive-foreground": "hsl(210 40% 98%)",
+  "border": "hsl(214.3 31.8% 91.4%)",
+  "input": "hsl(214.3 31.8% 91.4%)",
+  "ring": "hsl(221.2 83.2% 53.3%)",
+  "radius": "0.5rem",
+}
+```
+
+Create your own theme by building on this structure. Color definitions can be in [any format that CSS supports](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value), such as hex, rgb, hsl, etc.
+You do not have to redefine every property, only the ones you want to change from the default theme.
+  
+```json latitude.json
+{
+  "name": "my-latitude-project",
+  "theme": {
+    "primary": "#254E70",
+    "background": "#c1c1c1",
+    "foreground": "#000012",
+  }
+}
+```
+
+### Dark mode
+
+You can add a `dark` version of your theme by adding a `dark` object to your theme. This object should have the same properties as the main theme, but with the colors inverted. If a property is not defined in the `dark` object, the default value will be used.
+
+With a dark version defined, you can configure the behaviour of your theme with the `themeMode` property. By default, the theme mode is set to `light`, but you can change it to `dark` to force dark mode, or `system` to use the system's preference.
+
+```json latitude.json
+{
+  "name": "my-latitude-project",
+  "theme": {
+    "primary": "#254E70",
+    "background": "#c1c1c1",
+    "foreground": "#000012",
+    "dark": {
+      "primary": "#254E70",
+      "background": "#000012",
+      "foreground": "#c1c1c1",
+    }
+  },
+  "themeMode": "system"
+}
+```
+
+### Chart styles
+
+Each chart component within Latitude is built on top of [echarts](https://echarts.apache.org/en/index.html), which already has its own theming system.
+By default, we create a basic theme for echarts that matches the attributes from your Latitude theme. However, you can customize the echarts theme to match your brand.
+To customize the styles of your charts, include a `echarts` object in your theme and define any echarts properties you want to use.
+
+To learn more about each property, please refer to the official echarts documentation.
+
+You can find the complete echart properties used in Latitude's default theme below:
+<Expandable title="Latitude's echarts theme properties">
+```json
+{
+	"color": [
+		"#26a2fa",
+		"#fd647a",
+		"#fed772",
+		"#78dcd3",
+		"#975194",
+		"#fa7f38",
+		"#32ae64",
+		"#5254ab",
+		"#a7dcd2",
+		"#8f7dff",
+		"#fd5335",
+		"#fcb3aa"
+	],
+	"seriesCnt": "9",
+	"backgroundColor": "rgba(252,252,252,0)",
+	"titleColor": "#071324",
+	"subtitleColor": "#63676d",
+	"textColorShow": false,
+	"textColor": "#333",
+	"markTextColor": "#ffffff",
+	"borderColor": "#ffffff",
+	"borderWidth": "2",
+	"visualMapColor": [
+		"#003085",
+		"#0046c6",
+		"#205dd1",
+		"#3a73db",
+		"#5389e3",
+		"#6d9fea",
+		"#89b4f0",
+		"#a6c9f5",
+		"#c4defa",
+		"#e5f2ff"
+	],
+	"legendTextColor": "#63676d",
+	"kColor": "#096db1",
+	"kColor0": "transparent",
+	"kBorderColor": "#32b3ea",
+	"kBorderColor0": "#e8326c",
+	"kBorderWidth": "2",
+	"lineWidth": "2",
+	"symbolSize": "8",
+	"symbol": "emptyCircle",
+	"symbolBorderWidth": "2",
+	"lineSmooth": false,
+	"graphLineWidth": "2",
+	"graphLineColor": "#d3d6da",
+	"mapLabelColor": "#ffffff",
+	"mapLabelColorE": "#3fb1e3",
+	"mapBorderColor": "#aaaaaa",
+	"mapBorderColorE": "#3fb1e3",
+	"mapBorderWidth": 0.5,
+	"mapBorderWidthE": 1,
+	"mapAreaColor": "#eeeeee",
+	"mapAreaColorE": "rgba(63,177,227,0.25)",
+	"axes": [
+		{
+			"type": "all",
+			"name": "All",
+			"axisLineShow": true,
+			"axisLineColor": "#d3d6da",
+			"axisTickShow": false,
+			"axisTickColor": "#333",
+			"axisLabelShow": true,
+			"axisLabelColor": "#a2a6ac",
+			"splitLineShow": true,
+			"splitLineColor": [
+				"#eff0f1"
+			],
+			"splitAreaShow": false,
+			"splitAreaColor": [
+				"rgba(250,250,250,0.05)",
+				"rgba(200,200,200,0.02)"
+			]
+		},
+		{
+			"type": "category",
+			"name": "Category",
+			"axisLineShow": true,
+			"axisLineColor": "#333",
+			"axisTickShow": true,
+			"axisTickColor": "#333",
+			"axisLabelShow": true,
+			"axisLabelColor": "#333",
+			"splitLineShow": false,
+			"splitLineColor": [
+				"#ccc"
+			],
+			"splitAreaShow": false,
+			"splitAreaColor": [
+				"rgba(250,250,250,0.3)",
+				"rgba(200,200,200,0.3)"
+			]
+		},
+		{
+			"type": "value",
+			"name": "Value",
+			"axisLineShow": true,
+			"axisLineColor": "#333",
+			"axisTickShow": true,
+			"axisTickColor": "#333",
+			"axisLabelShow": true,
+			"axisLabelColor": "#333",
+			"splitLineShow": true,
+			"splitLineColor": [
+				"#ccc"
+			],
+			"splitAreaShow": false,
+			"splitAreaColor": [
+				"rgba(250,250,250,0.3)",
+				"rgba(200,200,200,0.3)"
+			]
+		},
+		{
+			"type": "log",
+			"name": "Log",
+			"axisLineShow": true,
+			"axisLineColor": "#333",
+			"axisTickShow": true,
+			"axisTickColor": "#333",
+			"axisLabelShow": true,
+			"axisLabelColor": "#333",
+			"splitLineShow": true,
+			"splitLineColor": [
+				"#ccc"
+			],
+			"splitAreaShow": false,
+			"splitAreaColor": [
+				"rgba(250,250,250,0.3)",
+				"rgba(200,200,200,0.3)"
+			]
+		},
+		{
+			"type": "time",
+			"name": "Time",
+			"axisLineShow": true,
+			"axisLineColor": "#333",
+			"axisTickShow": true,
+			"axisTickColor": "#333",
+			"axisLabelShow": true,
+			"axisLabelColor": "#333",
+			"splitLineShow": true,
+			"splitLineColor": [
+				"#ccc"
+			],
+			"splitAreaShow": false,
+			"splitAreaColor": [
+				"rgba(250,250,250,0.3)",
+				"rgba(200,200,200,0.3)"
+			]
+		}
+	],
+	"axisSeperateSetting": false,
+	"toolboxColor": "#a2a6ac",
+	"toolboxEmphasisColor": "#63676d",
+	"tooltipAxisColor": "#d3d6da",
+	"tooltipAxisWidth": "1",
+	"timelineLineColor": "#626c91",
+	"timelineLineWidth": 1,
+	"timelineItemColor": "#63676d",
+	"timelineItemColorE": "#63676d",
+	"timelineCheckColor": "#ffffff",
+	"timelineCheckBorderColor": "#0080ff",
+	"timelineItemBorderWidth": 1,
+	"timelineControlColor": "#626c91",
+	"timelineControlBorderColor": "#626c91",
+	"timelineControlBorderWidth": 0.5,
+	"timelineLabelColor": "#626c91",
+	"datazoomBackgroundColor": "rgba(255,255,255,0)",
+	"datazoomDataColor": "rgba(222,222,222,1)",
+	"datazoomFillColor": "rgba(114,230,212,0.25)",
+	"datazoomHandleColor": "#cccccc",
+	"datazoomHandleWidth": "100",
+	"datazoomLabelColor": "#999999"
+}
+```
+</Expandable>
+
+If you want to personalize the styles for your charts, we recommend using [echart's online theme builder](https://echarts.apache.org/en/theme-builder.html) to easily create your own styles.
+To do this, simply select the colors you want to use, click on the "Download" at the top-left corner and copy the "JSON version" object into the `echarts` property in your theme.
+
+```json latitude.json
+{
+  "name": "my-latitude-project",
+  "theme": {
+    "echarts": {
+      "color": [ "#52B788", "#95D5B2", "#40916C" ],
+    }
+  }
+}
+```

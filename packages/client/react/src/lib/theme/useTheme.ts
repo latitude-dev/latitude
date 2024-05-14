@@ -1,17 +1,25 @@
 import { createContext, useContext } from 'react'
 import { theme as client } from '@latitude-data/client'
 
-export const themes = client.skins.themes
-export const defaultTheme = client.skins.defaultTheme
+const themes = client.skins.themes
+const defaultTheme = client.skins.defaultTheme
 
 type Theme = client.skins.Theme
 type PartialTheme = client.skins.PartialTheme
+type ThemeMode = 'light' | 'dark'
 
-export const ThemeContext = createContext({
-  currentTheme: defaultTheme as Theme,
-  setCurrentTheme: (_: Theme) => {},
+const ThemeContext = createContext({
+  theme: defaultTheme as Theme,
+  setTheme: (_: Theme) => {},
+  mode: 'light' as ThemeMode,
 })
 
-export const useLatitudeTheme = () => useContext(ThemeContext)
+const useLatitudeTheme = () => useContext(ThemeContext)
 
-export { type PartialTheme as Theme }
+export {
+  themes,
+  defaultTheme,
+  ThemeContext,
+  useLatitudeTheme,
+  type PartialTheme as Theme,
+}

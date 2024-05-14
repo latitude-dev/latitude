@@ -1,11 +1,16 @@
+import Cursor from 'pg-cursor'
 import {
   BaseConnector,
   ConnectionError,
   QueryError,
   CompiledQuery,
   ResolvedParam,
-} from '@latitude-data/base-connector'
-import QueryResult, { DataType } from '@latitude-data/query_result'
+  ConnectorOptions,
+  BatchedRow,
+  BatchedQueryOptions,
+  BatchResponse,
+} from '@latitude-data/source-manager'
+import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import pg from 'pg'
 import { readFileSync } from 'fs'
 
@@ -29,11 +34,12 @@ export type ConnectionParams = {
   ssl?: boolean | SSLConfig
 }
 
-export default class PostgresConnector extends BaseConnector {
+export default class PostgresConnector extends BaseConnector<ConnectionParams> {
   private pool: pg.Pool
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
+    const connectionParams = options.connectionParams
     this.pool = new Pool(this.buildConnectionParams(connectionParams))
 
     if (connectionParams.schema) {
@@ -85,6 +91,65 @@ export default class PostgresConnector extends BaseConnector {
     }
   }
 
+  async batchQuery(
+    compiledQuery: CompiledQuery,
+    { batchSize, onBatch }: BatchedQueryOptions,
+  ): Promise<void> {
+    const client = await this.createClient()
+    const cursor = client.query(
+      new Cursor(
+        compiledQuery.sql,
+        compiledQuery.resolvedParams.map((param) => param.value),
+      ),
+    )
+    let fields: Field[] = []
+    try {
+      const readRows = (rowsByBatch: number) => {
+        return new Promise<BatchResponse>((resolve, reject) => {
+          cursor.read(
+            rowsByBatch,
+            (err, rows: BatchedRow[], result: pg.QueryResult) => {
+              if (err) {
+                return reject(err)
+              }
+
+              if (!fields.length) {
+                for (let i = 0; i < result.fields.length; i++) {
+                  fields.push({
+                    name: result.fields[i]!.name,
+                    type: this.convertDataType(
+                      result.fields[i]!.dataTypeID!,
+                      DataType.Unknown,
+                    ),
+                  })
+                }
+              }
+
+              resolve({ rows, fields, lastBatch: rows.length === 0 })
+            },
+          )
+        })
+      }
+
+      let response: BatchResponse
+
+      do {
+        response = await readRows(batchSize)
+
+        await onBatch(response)
+      } while (response.rows.length > 0)
+    } catch (error) {
+      client.release()
+      const errorObj = error as pg.DatabaseError
+      console.error('Error in batch query', errorObj)
+      throw new QueryError(errorObj.message, errorObj)
+    } finally {
+      cursor.close(() => {
+        client.release()
+      })
+    }
+  }
+
   private async createClient() {
     try {
       return await this.pool.connect()
@@ -102,13 +167,13 @@ export default class PostgresConnector extends BaseConnector {
       case pgtypes.builtins.BOOL:
         return DataType.Boolean
 
-      case pgtypes.builtins.NUMERIC:
       case pgtypes.builtins.MONEY:
       case pgtypes.builtins.INT2:
       case pgtypes.builtins.INT4:
       case pgtypes.builtins.INT8:
         return DataType.Integer
 
+      case pgtypes.builtins.NUMERIC:
       case pgtypes.builtins.FLOAT4:
       case pgtypes.builtins.FLOAT8:
         return DataType.Float
@@ -159,12 +224,20 @@ export default class PostgresConnector extends BaseConnector {
     return this.compact(payload)
   }
 
-  private readSecureFile(filePath: string) {
+  private readSecureFile(filePathOrContent: string) {
+    // Users can set in the .env file the content of the certificate
+    // This way is easier to read from Docker secrets or any other secret manager
+    if (filePathOrContent.startsWith('-----BEGIN CERTIFICATE-----')) {
+      return filePathOrContent
+    }
+
     try {
-      return readFileSync(filePath).toString()
+      return readFileSync(filePathOrContent).toString()
     } catch (error) {
       throw new Error(
-        `Failed to read file at ${filePath}: ${(error as Error).message}`,
+        `Failed to read file at ${filePathOrContent}: ${
+          (error as Error).message
+        }`,
       )
     }
   }

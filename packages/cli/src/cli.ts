@@ -11,6 +11,7 @@ import initSentry from '$src/integrations/sentry'
 import loginCommand from './commands/cloud/login'
 import logoutCommand from './commands/cloud/logout'
 import runCommand from './commands/run'
+import materializeCommand from './commands/materialize'
 import sade from 'sade'
 import setupCommand from './commands/setup'
 import signupCommand from './commands/cloud/signup'
@@ -87,6 +88,14 @@ CLI.command('run <query_name>')
   .example('run users --param user_id=foo --param limit=10')
   .action(runCommand)
 
+CLI.command('materialize')
+  .describe(
+    'Materialize all queries that are configured with \n    {@config materialize: true}',
+  )
+  .option('--debug', 'Show time taken to materialize the queries')
+  .option('--queries', 'Run only the specified queries')
+  .action(materializeCommand)
+
 CLI.command('setup')
   .describe('Setup the current directory as a Latitude app')
   .action(setupCommand)
@@ -114,6 +123,10 @@ CLI.command('deploy')
   .describe('Deploy your Latitude app to the cloud')
   .option('--force', 'Force the deployment even if the build has not changed')
   .option('--nocache', 'Do not use cache when building the Docker image')
+  .option(
+    '--materialize',
+    'Materialize the queries and store it in Docker image before deploying',
+  )
   .action(deployCommand)
 
 CLI.command('destroy')

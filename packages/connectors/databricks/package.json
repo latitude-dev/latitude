@@ -23,7 +23,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/query_result": "workspace:*",
     "@databricks/sql": "^1.8.1"
   },

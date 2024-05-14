@@ -1,3 +1,8 @@
+function getKlassName(error: unknown): string {
+  const errorKlass = error as Error
+  return errorKlass.constructor ? errorKlass.constructor.name : 'Error'
+}
+
 export default {
   unexpectedEof: {
     code: 'unexpected-eof',
@@ -78,9 +83,22 @@ export default {
     code: 'invalid-config-definition',
     message: 'Config definitions must assign a value to an option',
   },
+  invalidConfigValue: {
+    code: 'invalid-config-value',
+    message:
+      'Config values must be literals. Cannot use variables or expressions',
+  },
+  configInsideBlock: {
+    code: 'config-inside-block',
+    message: 'Cannot must be defined at root level. Cannot be inside a block',
+  },
   configDefinitionFailed: (name: string, message: string) => ({
     code: 'config-definition-failed',
     message: `Config definition for '${name}' failed: ${message}`,
+  }),
+  configAlreadyDefined: (name: string) => ({
+    code: 'config-already-defined',
+    message: `Config definition for '${name}' failed: Option already configured`,
   }),
   variableAlreadyDeclared: (name: string) => ({
     code: 'variable-already-declared',
@@ -102,13 +120,46 @@ export default {
     code: 'constant-reassignment',
     message: 'Cannot reassign a constant',
   },
+  invalidAssignment: {
+    code: 'invalid-assignment',
+    message: 'Invalid assignment',
+  },
+  invalidUpdate: (operation: string, type: string) => ({
+    code: 'invalid-update',
+    message: `Cannot use ${operation} operation on ${type}`,
+  }),
+
+  propertyNotExists: (property: string) => ({
+    code: 'property-not-exists',
+    message: `Property '${property}' does not exist on object`,
+  }),
   unknownFunction: (name: string) => ({
     code: 'unknown-function',
     message: `Unknown function: ${name}`,
   }),
-  functionCallError: (name: string, message: string) => ({
-    code: 'function-call-error',
-    message: `Error calling function '${name}': ${message}`,
+  notAFunction: (objectType: string) => ({
+    code: 'not-a-function',
+    message: `Object '${objectType}' is callable`,
+  }),
+  functionCallError: (err: unknown) => {
+    const error = err as Error
+    const errorKlassName = getKlassName(error)
+    return {
+      code: 'function-call-error',
+      message: `Error calling function: \n${errorKlassName} ${error.message}`,
+    }
+  },
+  functionRequiresStaticArguments: (name: string) => ({
+    code: 'function-requires-static-arguments',
+    message: `Function '${name}' can only receive literal values as arguments`,
+  }),
+  functionRequiresInterpolation: (name: string) => ({
+    code: 'function-requires-interpolation',
+    message: `Function '${name}' cannot be used inside a logic block. It must be directly interpolated into the query`,
+  }),
+  functionDisallowsInterpolation: (name: string) => ({
+    code: 'function-disallows-interpolation',
+    message: `Function '${name}' cannot be directly interpolated into the query`,
   }),
   invalidFunctionResultInterpolation: {
     code: 'invalid-function-result-interpolation',

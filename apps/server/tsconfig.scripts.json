@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "esModuleInterop": true,
+    "target": "ES2018",
+    "moduleResolution": "node",
+    "outDir": "./scripts/dist",
+    "rootDir": ".",
+    "baseUrl": "..",
+    "paths": {
+      "@/*": ["./packages/source_manager/src/*"]
+    }
+  },
+  "include": ["./scripts/**/*.ts"],
+  "exclude": ["node_modules", "**/*.svelte"]
+}

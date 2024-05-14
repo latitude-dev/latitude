@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { debounce } from 'lodash-es'
 import * as echarts from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -58,24 +58,24 @@ export default function Echart({
 }: Props) {
   const chartRef = useRef<HTMLDivElement | null>(null)
   const chartInstance = useRef<echarts.ECharts | null>(null)
-  const { currentTheme } = useLatitudeTheme()
+  const { theme, mode } = useLatitudeTheme()
+
+  const echartsTheme = useMemo(() => {
+    return mode === 'dark' ? theme.dark.echarts : theme.echarts
+  }, [theme, mode])
 
   // Initialize the chart
   useEffect(() => {
     if (!chartRef.current) return
-    chartInstance.current = echarts.init(
-      chartRef.current,
-      currentTheme.echarts,
-      {
-        renderer: 'canvas',
-        locale,
-      },
-    )
+    chartInstance.current = echarts.init(chartRef.current, echartsTheme, {
+      renderer: 'canvas',
+      locale,
+    })
 
     return () => {
       chartInstance.current?.dispose()
     }
-  }, [currentTheme, locale])
+  }, [echartsTheme, locale])
 
   useEffect(() => {
     chartInstance.current?.resize()

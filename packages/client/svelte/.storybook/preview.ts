@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/svelte'
-import { ThemeProvider } from '../src/lib'
+import { ThemeWrapper } from '../src/lib/storybook'
 
 import '@latitude-data/client/latitude.css'
 
@@ -17,10 +17,7 @@ const preview: Preview = {
   },
   decorators: [
     () => ({
-      Component: ThemeProvider,
-      props: {
-        isStorybook: true,
-      },
+      Component: ThemeWrapper,
     }),
   ],
 }

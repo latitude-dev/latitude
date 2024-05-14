@@ -7,8 +7,10 @@
   "scripts": {
     "dev": "vite dev",
     "build:server": "svelte-kit sync && vite build",
+    "build:scripts": "rollup -c scripts.rollup.config.mjs",
+    "build:scripts:dev": "pnpm run build:scripts -w",
     "build:shutdownScript": "mv build/index.js build/server.js && cp scripts/shutdownOnDemand.js build/index.js",
-    "build": "npm run build:server && npm run build:shutdownScript",
+    "build": "npm run build:server && npm run build:shutdownScript && npm run build:scripts",
     "preview": "vite preview",
     "prettier": "prettier --write src/**/*.ts src/**/*.svelte",
     "test": "svelte-kit sync && vitest --run",
@@ -16,16 +18,17 @@
     "lint": "eslint .",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --output human-verbose",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "query": "vite-node scripts/run_query/index.ts"
+    "query": "vite-node scripts/run_query/index.ts",
+    "materialize_queries": "node scripts/dist/materialize_queries.js"
   },
   "devDependencies": {
-    "@latitude-data/base-connector": "workspace:^",
-    "@latitude-data/test-connector": "workspace:^",
     "@latitude-data/client": "workspace:*",
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/query_result": "workspace:*",
     "@latitude-data/sql-compiler": "workspace:^",
     "@latitude-data/sveltekit-autoimport": "^1.7.1",
+    "@latitude-data/test-connector": "workspace:^",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@rollup/pluginutils": "^5.1.0",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/adapter-node": "^4.0.1",
@@ -45,6 +48,7 @@
     "postcss": "^8.4.35",
     "prettier": "^3.1.1",
     "prettier-plugin-svelte": "^3.1.2",
+    "rollup": "^4.10.0",
     "svelte": "^4.2.7",
     "svelte-check": "^3.6.0",
     "tailwindcss": "^3.4.1",
@@ -63,6 +67,7 @@
     "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/svelte": "workspace:*",
     "cheerio": "1.0.0-rc.12",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "ora": "^8.0.1"
   }
 }

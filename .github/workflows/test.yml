@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - next
+      - canary
   pull_request:
     branches:
       - main
-      - next
+      - canary
 
 jobs:
   test:
@@ -17,6 +17,21 @@ jobs:
     strategy:
       matrix:
         node-version: [18.x] # Specify node versions you want to test against
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: 'latitude'
+          POSTGRES_PASSWORD: 'secret'
+          POSTGRES_DB: postgresql_adapter_test
+        ports:
+          - '5436:5432'
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repository

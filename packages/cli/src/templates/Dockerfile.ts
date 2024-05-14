@@ -14,6 +14,12 @@ COPY latitude.json .
 
 RUN latitude setup --tty false
 
+ARG MATERIALIZE_QUERIES='false'
+RUN if [ "$MATERIALIZE_QUERIES" = "true" ]; then \
+      echo "Materializing queries..."; \
+      latitude materialize; \
+    fi
+
 FROM builder AS runner
 
 WORKDIR /usr/src/app

@@ -1,7 +1,7 @@
 import QueryResult from '@latitude-data/query_result'
 import { screen, text, box, listtable, type Widgets } from 'blessed'
 import { CompileError } from '@latitude-data/sql-compiler'
-import { type CompiledQuery } from '@latitude-data/base-connector'
+import { type CompiledQuery } from '@latitude-data/source-manager'
 
 export default class QueryDisplay {
   private static instance: QueryDisplay

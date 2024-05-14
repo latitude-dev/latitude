@@ -8,6 +8,8 @@
     "dev": "rollup -c -w",
     "build": "rollup -c",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "tc": "tsc --noEmit",
     "prettier": "prettier --write src/**/*.ts"
   },
@@ -16,12 +18,17 @@
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/typescript": "workspace:*",
+    "@latitude-data/sql-compiler": "workspace:*",
+    "@types/mock-fs": "^4.13.4",
+    "mock-fs": "^5.2.0",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/node": "^20.10.6",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.6.0",
     "rollup": "^4.10.0"
   },
   "dependencies": {
-    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/query_result": "workspace:^",
     "duckdb-async": "^0.9.2"
   }

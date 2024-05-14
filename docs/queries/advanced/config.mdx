@@ -16,6 +16,10 @@ SELECT *
 FROM my_table
 ```
 
+<Note>
+  Any `@config` value must be defined using a literal value, without any variables or expressions. Using variables or expressions will result in a syntax error.
+</Note>
+
 ## Default configuration
 
 If you want to set a default configuration for all the queries in a source, you can do so by adding a `config` object in the source schema. Go to [Source additional configuration](/sources/additional-config) for more information.

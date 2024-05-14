@@ -9,12 +9,13 @@ type LatitudeProviderProps = QueryClientProviderProps &
 function LatitudeProvider({
   children,
   theme,
+  mode,
   ...props
 }: LatitudeProviderProps) {
   return (
     <LatitudeApiProvider {...props}>
       {theme !== false ? (
-        <LatitudeThemeProvider theme={theme} {...props}>
+        <LatitudeThemeProvider theme={theme} mode={mode}>
           {children}
         </LatitudeThemeProvider>
       ) : (

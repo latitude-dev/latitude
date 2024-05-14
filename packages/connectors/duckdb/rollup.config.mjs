@@ -14,7 +14,9 @@ export default {
     }),
   ],
   external: [
-    '@latitude-data/base-connector',
+    'path',
+    '@latitude-data/sql-compiler',
+    '@latitude-data/source-manager',
     '@latitude-data/query_result',
     'duckdb-async',
   ],

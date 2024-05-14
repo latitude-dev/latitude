@@ -6,11 +6,13 @@ import { defineConfig } from 'vite'
 import autoImport from '@latitude-data/sveltekit-autoimport'
 import latitudePlugin from './plugins/latitude'
 import watchQueries from './plugins/queriesWatcher'
+import watchLatitudeJson from './plugins/configWatcher'
 
 export default defineConfig({
   plugins: [
     latitudePlugin(),
     watchQueries(),
+    watchLatitudeJson(),
     autoImport({
       module: {
         '@latitude-data/svelte': [

@@ -1,8 +1,11 @@
+import mockFs from 'mock-fs'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+
 import findOrCompute from '$lib/query_service/find_or_compute'
 import { signJwt } from '@latitude-data/jwt'
 import { GET } from './+server'
-import { describe, it, expect, vi, afterEach } from 'vitest'
 import QueryResult from '@latitude-data/query_result'
+import { QUERIES_DIR } from '$lib/constants'
 
 const PAYLOAD = { fields: [], rows: [], rowCount: 0 }
 const queryResult = new QueryResult(PAYLOAD)
@@ -17,6 +20,16 @@ vi.mock('$lib/query_service/find_or_compute', () => ({
 }))
 
 describe('Special params', async () => {
+  beforeEach(() => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'testQuery.sql': 'SELCET * FROM table',
+      },
+      '/tmp/.latitude': {},
+    })
+  })
+
   afterEach(() => {
     mockedFindOrCompute.mockRestore()
   })
