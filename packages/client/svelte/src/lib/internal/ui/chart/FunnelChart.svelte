@@ -10,13 +10,15 @@
 
 <script lang="ts">
   import Echart from './_Echarts.svelte'
-  import { theme } from '@latitude-data/client'
-  import { themeConfig } from '$lib/ui/theme-wrapper/store'
+  import { theme as client } from '@latitude-data/client'
+  import { getContext } from 'svelte'
   import { mode } from 'mode-watcher'
-  import { derived } from 'svelte/store'
-  const generate = theme.ui.chart.generateFunnelConfig
-  const visualMapColor = derived([themeConfig, mode], ([$themeConfig, $mode]) => {
-    return ($mode === 'dark' ? $themeConfig.dark.echarts.visualMapColor : $themeConfig.echarts.visualMapColor) as string[]
+  import { derived, type Readable } from 'svelte/store'
+  const generate = client.ui.chart.generateFunnelConfig
+
+  const theme = getContext('lat_theme') as Readable<client.skins.Theme>
+  const visualMapColor = derived([theme, mode], ([$theme, $mode]) => {
+    return ($mode === 'dark' ? $theme.dark.echarts.visualMapColor : $theme.echarts.visualMapColor) as string[]
   });
 
   type $$Props = FunnelChartProps

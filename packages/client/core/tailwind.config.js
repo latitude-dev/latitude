@@ -72,9 +72,8 @@ const theme = {
 
 /** @type {import('tailwindcss').Config} */
 const config = {
-  darkMode: ['class'],
+  darkMode: ['selector'],
   content: ['./src/theme/ui/**/*.ts', './src/theme/tokens/*.ts'],
-  safelist: ['dark'],
   theme,
   prefix: 'lat-',
 }

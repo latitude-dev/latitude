@@ -37,9 +37,10 @@
     GaugeChart,
   } from 'echarts/charts'
 
-  import { themeConfig } from '$lib/ui/theme-wrapper/store'
+  import { theme as client } from '@latitude-data/client'
+  import { getContext } from 'svelte'
   import { mode } from 'mode-watcher'
-  import { derived } from 'svelte/store'
+  import { derived, type Readable } from 'svelte/store'
 
   echarts.use([
     // Charts
@@ -74,8 +75,9 @@
   export let height: Props['height'] = undefined
   export let locale: Props['locale'] = undefined
 
-  const currentTheme = derived([themeConfig, mode], ([$themeConfig, $mode]) => {
-    return ($mode === 'dark') ? $themeConfig.dark.echarts : $themeConfig.echarts
+  const theme = getContext('lat_theme') as Readable<client.skins.Theme>
+  const echartsTheme = derived([theme, mode], ([$theme, $mode]) => {
+    return ($mode === 'dark') ? $theme.dark.echarts : $theme.echarts
   });
 
   export function chartable(
@@ -85,13 +87,15 @@
     let resizeObserver: ResizeObserver
     let echartsInstance: echarts.EChartsType
 
-    currentTheme.subscribe((newTheme) => {
+    echartsTheme.subscribe((newTheme) => {
       echarts.dispose(element)
       echartsInstance = echarts.init(element, newTheme, {
         renderer: 'canvas',
-        locale: locale ?? 'en'
+        locale: locale ?? 'en',
       })
-      echartsInstance.setOption(options)
+      // Disable animation just for changing the theme
+      echartsInstance.setOption({ ...options, animation: false })
+      setTimeout(() => echartsInstance.setOption({ animation: true }), 0)
     })
 
     const onWindowResize = debounce(() => {
