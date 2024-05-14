@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import chalk from 'chalk'
 import { existsSync } from 'fs'
 import { writeFile } from './_shared'
 import { addDockerfiles } from './fromUpdate'
@@ -37,20 +36,9 @@ describe('addDockerfiles', () => {
     })
   })
 
-  it('should not add .dockerignore or Dockerfile if they exist and force is false', () => {
+  it('should add .dockerignore and Dockerfile even if they exist', () => {
     vi.mocked(existsSync).mockReturnValue(true)
     addDockerfiles()
-    expect(writeFile).not.toHaveBeenCalled()
-    expect(console.log).toHaveBeenCalledWith(
-      chalk.yellow(
-        'Dockerignore file already exists. Run latitude update --force to update it.',
-      ),
-    )
-  })
-
-  it('should add .dockerignore and Dockerfile even if they exist when force is true', () => {
-    vi.mocked(existsSync).mockReturnValue(true)
-    addDockerfiles({ force: true })
     expect(writeFile).toHaveBeenCalledTimes(2)
   })
 })
