@@ -11,6 +11,8 @@ import { debounce } from 'lodash-es'
 
 let loaded = false
 
+// TODO: Refactor this madness
+
 /**
  * The middlewareQueryStore is a store that keeps track of the queries being
  * used in the current view, and points to the key in the core query store with
@@ -39,24 +41,60 @@ export const input = (key: string, defaultValue?: unknown): InlineParam => ({
 })
 
 function computeQueryParams(
-  inlineParams: InlineParams,
+  inlineParams: InlineParams
 ): Record<string, unknown> {
   const viewParams = getAllViewParams()
-  return Object.entries(inlineParams).reduce(
-    (params, [key, inlineParam]) => {
-      params[key] =
-        typeof inlineParam === 'object' && 'callback' in inlineParam
-          ? inlineParam.callback(viewParams)
-          : inlineParam // Inline params can be just a hardcoded value
-      return params
-    },
-    { ...viewParams },
+  const sanitizedViewParams = sanitizeParams(viewParams)
+  const composedParams = composeParams(inlineParams, viewParams)
+
+  return { ...sanitizedViewParams, ...composedParams }
+}
+
+function sanitizeParams(
+  params: Record<string, unknown>
+): Record<string, unknown> {
+  return Object.fromEntries(
+    Object.entries(params).filter(([_, value]) => value !== undefined)
   )
+}
+
+function composeParams(
+  inlineParams: InlineParams,
+  viewParams: Record<string, unknown>
+): Record<string, unknown> {
+  return Object.entries(inlineParams).reduce<Record<string, unknown>>(
+    (accumulatedParams, [key, inlineParam]) => {
+      const paramValue = resolveParamValue(inlineParam, viewParams)
+      if (paramValue !== undefined) {
+        accumulatedParams[key] = paramValue
+      }
+      return accumulatedParams
+    },
+    {}
+  )
+}
+
+function resolveParamValue(
+  inlineParam: unknown,
+  viewParams: Record<string, unknown>
+): unknown {
+  if (
+    typeof inlineParam === 'object' &&
+    inlineParam !== null &&
+    'callback' in inlineParam
+  ) {
+    return (
+      inlineParam as {
+        callback: (viewParams: Record<string, unknown>) => string
+      }
+    ).callback(viewParams)
+  }
+  return inlineParam
 }
 
 function createMiddlewareKey(
   queryPath: string,
-  inlineParams: InlineParams = {},
+  inlineParams: InlineParams = {}
 ): string {
   const hashedParams = Object.keys(inlineParams)
     .sort()
@@ -64,7 +102,7 @@ function createMiddlewareKey(
       (paramName) =>
         `${paramName}=${
           inlineParams[paramName].key ?? String(inlineParams[paramName])
-        }`,
+        }`
     )
     .join('&')
   return `query:${queryPath}?${hashedParams}`
@@ -141,7 +179,7 @@ export function useQuery({
   }
 
   const coreQueryKeyStore = writable<string>(
-    get(middlewareQueryStore)[middlewareKey]!.coreQueryKey,
+    get(middlewareQueryStore)[middlewareKey]!.coreQueryKey
   )
   // Update coreQueryKey when middlewareQueryStore changes
   middlewareQueryStore.subscribe((state) => {
@@ -167,7 +205,7 @@ export function useQuery({
 
   if (opts.reactiveToParams) {
     console.warn(
-      'The "reactiveToParams" option is deprecated. Please use "reactToParams" instead.',
+      'The "reactiveToParams" option is deprecated. Please use "reactToParams" instead.'
     )
   }
 
@@ -206,7 +244,7 @@ export function useQuery({
 export function runQuery(
   query: string,
   inlineParams: InlineParams = {},
-  opts: QuerySubscriptionOptions = {},
+  opts: QuerySubscriptionOptions = {}
 ): Readable<Promise<QueryResultArray>> {
   const pendingPromise = () => new Promise<QueryResultArray>(() => {})
   const resolvedPromise = (value: QueryResultArray) =>
@@ -224,7 +262,7 @@ export function runQuery(
     useQuery({ query, inlineParams, opts }),
     ($queryResultState, set) => {
       set(queryStateToPromise($queryResultState))
-    },
+    }
   )
 }
 
@@ -244,7 +282,7 @@ export async function computeQueries({
     Object.values(queriesInView)
       .filter(
         (queryInView) =>
-          queryPaths.length === 0 || queryPaths.includes(queryInView.queryPath),
+          queryPaths.length === 0 || queryPaths.includes(queryInView.queryPath)
       )
       .map((queryInView) =>
         fetchQueryFromCore({
@@ -252,8 +290,8 @@ export async function computeQueries({
           inlineParams: queryInView.inlineParams,
           force,
           skipIfParamsUnchanged,
-        }),
-      ),
+        })
+      )
   )
 }
 
