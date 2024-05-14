@@ -5,13 +5,20 @@ import findSourceConfigFromQuery from './findSourceConfig'
 import { QueryNotFoundError, SourceFileNotFoundError } from '@/types'
 import { Source } from '@/source'
 import readSourceConfig from '@/source/readConfig'
+import { StorageDriver } from '@/materialize/drivers/StorageDriver'
+import DummyDriver from '@/materialize/drivers/dummy/DummyDriver'
 
 export default class SourceManager {
   private instances: Record<string, Source> = {}
+  readonly materializeStorage: StorageDriver
   readonly queriesDir: string
 
-  constructor(queriesDir: string) {
+  constructor(
+    queriesDir: string,
+    options: { materializeStorage?: StorageDriver } = {},
+  ) {
     this.queriesDir = queriesDir
+    this.materializeStorage = options.materializeStorage ?? new DummyDriver()
   }
 
   /**

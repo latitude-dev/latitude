@@ -5,7 +5,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import QueryResult, { DataType } from '@latitude-data/query_result'
 import cache from '$lib/query_service/query_cache'
 import { MISSING_KEY } from '$lib/loadToken'
-import { QUERIES_DIR } from '$lib/server/sourceManager'
+import { QUERIES_DIR } from '$lib/constants'
 import { GET } from './+server'
 
 const PAYLOAD = {
@@ -63,7 +63,7 @@ describe('GET endpoint', async () => {
   it('should return 500 status on query execution error', async () => {
     vi.spyOn(cache, 'find').mockReturnValueOnce(null) // No cached query
     const customErrorMessage = 'Custom error message'
-    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, `FAIL ${customErrorMessage}`) // (TestConnector feature)
+    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, `FAIL ${customErrorMessage}`)
 
     const response = await GET({
       params: { query: 'query' },

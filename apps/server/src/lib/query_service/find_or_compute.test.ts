@@ -2,8 +2,8 @@ import mockFs from 'mock-fs'
 import { vi, it, describe, beforeEach, afterEach, expect } from 'vitest'
 import sourceManager from '$lib/server/sourceManager'
 
-import { QUERIES_DIR } from '$lib/server/sourceManager'
 import findOrCompute from './find_or_compute'
+import { QUERIES_DIR } from '$lib/constants'
 
 async function buildConnector(queryPath: string) {
   const source = await sourceManager.loadFromQuery(queryPath)

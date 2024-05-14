@@ -15,13 +15,7 @@ export default class MaterializedConnector extends DuckdbConnector {
     args: BuildSupportedMethodsArgs,
   ): SupportedMethodsResponse {
     const context = args.context
-    const {
-      request,
-      queriesBeingCompiled,
-      accessedParams,
-      ranQueries,
-      resolvedParams,
-    } = context
+    const { request, queriesBeingCompiled, ranQueries } = context
     const supportedMethods = super.buildSupportedMethods(args)
     return {
       ...supportedMethods,
@@ -54,8 +48,8 @@ export default class MaterializedConnector extends DuckdbConnector {
             params: context.request.params,
           },
           {
-            accessedParams,
-            resolvedParams,
+            accessedParams: {},
+            resolvedParams: [],
             queryConfig: {}, // Subquery config does not affect the root query
             ranQueries,
             queriesBeingCompiled,
@@ -73,32 +67,21 @@ export default class MaterializedConnector extends DuckdbConnector {
           throw new Error(
             `Query '${fullSubQueryPath}' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file.`,
           )
-        } else if (Object.keys(accessedParams).length > 0) {
-          const usedParams = this.concatenateParams(accessedParams)
+        } else if (Object.keys(compiledSubQuery.accessedParams).length > 0) {
           throw new Error(
-            `'${referencedQuery}' query can not have parameters to filter the SQL query. You're using ${usedParams} params in the query`,
+            `'${referencedQuery}' query can not have parameters to filter the SQL query.`,
           )
         }
 
-        // TODO: Read stored materielized query from MaterializeStorage
-        // materializeStorage will be done in a separate PR
-        // Fail with a specific error if the query is not materialized?
+        const storage = await this.source.manager.materializeStorage
+        const materializeUrl = await storage.getUrl({
+          sql: compiledSubQuery.sql,
+          queryPath: refSource.path,
+          queryName: `materializedRef('${referencedQuery}')`,
+        })
 
-        // TODO: Get somehow from DuckDB when the query was last materialized
-        // Or maybe just the timestamp from the file system
-        return `(${compiledSubQuery.sql})`
+        return `(read_parquet('${materializeUrl}'))`
       },
     }
-  }
-
-  private concatenateParams(params: Record<string, unknown>): string {
-    const paramsKeys = Object.keys(params)
-    if (paramsKeys.length === 0) return ''
-
-    const quotedKeys = paramsKeys.map((key) => `'${key}'`)
-
-    const restKeys = quotedKeys.slice(0, -1).join(', ')
-    const lastKey = quotedKeys.slice(-1)
-    return `${restKeys} and ${lastKey}`
   }
 }
