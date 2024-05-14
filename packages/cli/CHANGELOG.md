@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.1
+
+### Patch Changes
+
+- c916f6e: Allows cli to run on non-tty environments
+
 ## 1.6.0
 
 ### Minor Changes
