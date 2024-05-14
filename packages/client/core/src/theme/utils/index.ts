@@ -1,5 +1,7 @@
-import { type ClassValue, clsx } from 'clsx'
+import { clsx } from 'clsx'
 import { extendTailwindMerge } from 'tailwind-merge'
+
+import type { ClassValue } from 'clsx'
 
 const customTwMerge = extendTailwindMerge({
   prefix: 'lat-',

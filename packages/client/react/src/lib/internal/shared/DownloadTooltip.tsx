@@ -1,4 +1,4 @@
-import { Popover, Text } from '$src'
+import { Popover, Text } from '$src/lib/ui'
 import { theme } from '@latitude-data/client'
 
 type Props = {

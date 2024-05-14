@@ -1,6 +1,7 @@
-import { Text } from '$src/lib'
-import type { ExtendsUnion, FontWeight, TextColor } from '@latitude-data/client'
 import * as React from 'react'
+
+import type { ExtendsUnion, FontWeight, TextColor } from '@latitude-data/client'
+import Text from '../text'
 
 export type AlertFontWeight = ExtendsUnion<
   FontWeight,

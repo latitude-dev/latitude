@@ -1,7 +1,7 @@
-import * as React from 'react'
 import * as LabelPrimitive from '@radix-ui/react-label'
+import * as React from 'react'
 import { theme } from '@latitude-data/client'
-import { Text } from 'src/lib/ui'
+import Text from '../text'
 
 interface LabelProps
   extends React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> {}

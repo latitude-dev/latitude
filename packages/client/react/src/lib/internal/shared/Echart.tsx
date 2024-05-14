@@ -21,7 +21,7 @@ import {
   GaugeChart,
 } from 'echarts/charts'
 import { ECBasicOption } from 'echarts/types/dist/shared'
-import { useLatitudeTheme } from '$src'
+import { useLatitudeTheme } from '$src/lib/theme/useTheme'
 
 type Locale = 'en' | 'es'
 

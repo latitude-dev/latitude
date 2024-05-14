@@ -15,7 +15,6 @@ type AreaChartProps = Omit<EchartProps, 'options' | 'isComputing'> &
   Omit<CartesianChartProps, 'dataset'> &
   WrapperProps
 
-/* eslint-disable react/prop-types */
 function AreaChart({
   data,
   isLoading,

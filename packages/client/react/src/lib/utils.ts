@@ -1,4 +1,5 @@
 import { theme as client } from '@latitude-data/client'
-const cn = client.utils.cn
 
-export { cn }
+import type { ClassValue } from '@latitude-data/client'
+
+export const cn = client.utils.cn as (...inputs: ClassValue[]) => string

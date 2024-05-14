@@ -1,7 +1,8 @@
-import React from 'react'
-import { Card, Column, Row } from '$src'
-import type { theme } from '@latitude-data/client'
 import DownloadTooltip from './DownloadTooltip'
+import React from 'react'
+
+import type { theme } from '@latitude-data/client'
+import { Card, Column, Row } from '$src/lib/ui'
 
 interface VisualizationHeaderProps {
   title?: string

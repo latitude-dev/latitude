@@ -15,7 +15,6 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   Omit<CartesianChartProps, 'dataset'> &
   WrapperProps
 
-/* eslint-disable react/prop-types */
 function MixedChart({
   data,
   isLoading,
