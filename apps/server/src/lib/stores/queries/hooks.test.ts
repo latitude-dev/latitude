@@ -1,10 +1,14 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useQuery, init as initQueries } from './queries'
-import { type ViewParams } from './viewParams'
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest'
 import { get, Writable, writable } from 'svelte/store'
-import { v4 as uuidv4 } from 'uuid'
+import { init as initQueries } from './functions'
 import { store } from '@latitude-data/client'
-import { setViewParam } from './viewParams'
+import { useQuery } from './hooks'
+import { v4 as uuidv4 } from 'uuid'
+
+// @ts-expect-error - mocking resetviewparams
+import { resetViewParams, getAllViewParams, setViewParam } from '../viewParams'
+
+import type { ViewParams } from '../viewParams'
 
 type MockQueryState = {
   queries: Record<string, unknown>
@@ -18,7 +22,7 @@ vi.mock('$app/environment', () => {
   }
 })
 
-const mockFetchFn = vi.hoisted(() => vi.fn(async () => {}))
+const mockFetchFn = vi.hoisted(vi.fn)
 const initialQueryState = {
   queries: {},
   forceRefetch: mockFetchFn,
@@ -26,6 +30,7 @@ const initialQueryState = {
 }
 const resetQueryState = () => {
   mockFetchFn.mockClear()
+  // @ts-expect-error - mock types conflict
   store.setState(initialQueryState)
 }
 vi.mock('@latitude-data/client', () => {
@@ -54,11 +59,15 @@ vi.mock('@latitude-data/client', () => {
   }
 })
 
-let mockViewParams: Writable<ViewParams>
+vi.mock('../viewParams', () => {
+  let mockViewParams: Writable<ViewParams> = writable({})
+  const resetViewParams = () => {
+    mockViewParams = writable({}) // Reset to initial state
+  }
 
-vi.mock('./viewParams', () => {
   return {
-    useViewParams: () => mockViewParams,
+    resetViewParams,
+    useViewParams: vi.fn(() => mockViewParams),
     getAllViewParams: vi.fn(() => get(mockViewParams)),
     setViewParam: vi.fn((key: string, value: unknown) => {
       mockViewParams.update((params) => {
@@ -72,11 +81,13 @@ vi.mock('./viewParams', () => {
 initQueries() // Initialize the queries store. Otherwise the fetch function would never be called
 
 describe('useQuery with reactiveParams', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     vi.useFakeTimers()
+  })
+
+  beforeEach(() => {
     resetQueryState()
-    vi.clearAllMocks()
-    mockViewParams = writable<ViewParams>({})
+    resetViewParams() // Reset the viewParams state explicitly
   })
 
   it('should not run the refetch function when reactiveParams is not set', () => {
@@ -145,9 +156,7 @@ describe('useQuery with reactiveParams', () => {
     useQuery({ query, opts })
     vi.runAllTimers()
 
-    // @ts-expect-error - Typescript is wrong here
     const lastCallArgs = mockFetchFn.mock.calls[0][0]
-    // @ts-expect-error - Typescript is wrong here
     expect(lastCallArgs!.params).toStrictEqual({})
   })
 
@@ -156,6 +165,7 @@ describe('useQuery with reactiveParams', () => {
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
     const query = uuidv4()
     const opts = { reactiveToParams: true }
+
     useQuery({ query, opts })
 
     // The 'fetch' method should be called once when the query is first subscribed
@@ -163,6 +173,7 @@ describe('useQuery with reactiveParams', () => {
 
     // Update the viewParams
     setViewParam('param', 'value')
+
     vi.runAllTimers()
 
     // The 'fetch' method should have been called the 1 initial time + 1 time after the viewParams were updated

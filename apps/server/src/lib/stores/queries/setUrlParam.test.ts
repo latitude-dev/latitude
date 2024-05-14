@@ -1,5 +1,5 @@
 import { replaceState } from '$app/navigation'
-import { setUrlParam, ViewParams } from './viewParams'
+import { setUrlParam, ViewParams } from '../viewParams'
 import { describe, it, expect, vi } from 'vitest'
 
 vi.mock('$app/navigation', () => ({
