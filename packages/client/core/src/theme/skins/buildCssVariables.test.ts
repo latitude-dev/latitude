@@ -22,12 +22,12 @@ describe('build css variables', () => {
 
     expect(cssVariables).toEqual(
       `:root {
-        --lat-background: ${light.background};
-        --lat-foreground: ${light.foreground};
         --lat-card: ${light.card};
         --lat-card-foreground: ${light['card-foreground']};
         --lat-popover: ${light.popover};
         --lat-popover-foreground: ${light['popover-foreground']};
+        --lat-background: ${light.background};
+        --lat-foreground: ${light.foreground};
         --lat-primary: ${light.primary};
         --lat-primary-foreground: ${light['primary-foreground']};
         --lat-secondary: ${light.secondary};
@@ -44,12 +44,12 @@ describe('build css variables', () => {
         --lat-radius: ${light.radius};
       }
       .dark {
-        --lat-background: ${dark.background};
-        --lat-foreground: ${dark.foreground};
         --lat-card: ${dark.card};
         --lat-card-foreground: ${dark['card-foreground']};
         --lat-popover: ${dark.popover};
         --lat-popover-foreground: ${dark['popover-foreground']};
+        --lat-background: ${dark.background};
+        --lat-foreground: ${dark.foreground};
         --lat-primary: ${dark.primary};
         --lat-primary-foreground: ${dark['primary-foreground']};
         --lat-secondary: ${dark.secondary};

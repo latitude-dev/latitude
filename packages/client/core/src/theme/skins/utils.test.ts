@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { defaultsDeep } from '.'
+import { defaultsDeep, removeUndefined } from './utils'
 
 describe('defaultsDeep', () => {
   it('merges a partial object with the default object', () => {
@@ -70,12 +70,48 @@ describe('defaultsDeep', () => {
     })
   })
 
-  it('does not add new attributes not present in the default object', () => {
+  it('adds new attributes not present in the default object', () => {
     const defaultObject = { a: 'def_a' }
     const partialObject = { b: 'new_b' } as Partial<typeof defaultObject>
     const result = defaultsDeep(partialObject, defaultObject)
     expect(result).toEqual({
       a: 'def_a',
+      b: 'new_b',
+    })
+  })
+})
+
+describe('removeUndefined', () => {
+  it('removes undefined values from the object', () => {
+    const obj = { a: 'a', b: undefined, c: 'c' }
+    const result = removeUndefined(obj)
+    expect(result).toEqual({
+      a: 'a',
+      c: 'c',
+    })
+  })
+
+  it('does not remove falsey or null values', () => {
+    const obj = { a: undefined, b: null, c: '', d: 0, e: false, f: NaN }
+    const result = removeUndefined(obj)
+    expect(result).toEqual({
+      b: null,
+      c: '',
+      d: 0,
+      e: false,
+      f: NaN,
+    })
+  })
+
+  it('does not remove undefined values from nested objects', () => {
+    const obj = { a: 'a', b: { c: undefined, d: 'd' } }
+    const result = removeUndefined(obj)
+    expect(result).toEqual({
+      a: 'a',
+      b: {
+        c: undefined,
+        d: 'd',
+      },
     })
   })
 })
