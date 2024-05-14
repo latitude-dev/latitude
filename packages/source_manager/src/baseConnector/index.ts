@@ -15,6 +15,7 @@ import {
   QueryConfig,
   QueryParams,
 } from './types'
+import { Source } from '@/source'
 
 type CompilationContext = {
   request: QueryRequest // Requested query
@@ -25,11 +26,34 @@ type CompilationContext = {
   queriesBeingCompiled: string[] // Used to detect cyclic references
 }
 
-export abstract class BaseConnector {
-  private rootPath: string
+export const CAST_METHODS: {
+  [type: string]: (value: any) => unknown
+} = {
+  string: (value) => String(value),
+  text: (value) => String(value),
+  int: (value) => parseInt(value),
+  float: (value) => parseFloat(value),
+  number: (value) => Number(value),
+  bool: (value) => Boolean(value),
+  boolean: (value) => Boolean(value),
+  date: (value) => new Date(value),
+}
 
-  constructor(rootPath: string) {
-    this.rootPath = rootPath
+export type ConnectorAttributes = {
+  [key: string]: unknown
+}
+
+export * from './types'
+export { CompileError }
+export type ConnectorOptions<P extends ConnectorAttributes> = {
+  source: Source
+  connectionParams: P
+}
+export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
+  protected source: Source
+
+  constructor({ source }: ConnectorOptions<P>) {
+    this.source = source
   }
 
   /**
@@ -140,14 +164,15 @@ export abstract class BaseConnector {
 
   private fullQueryPath(queryName: string): string {
     return path.join(
-      this.rootPath,
+      this.source.path,
       queryName.endsWith('.sql') ? queryName : `${queryName}.sql`,
     )
   }
 
   private readQuery(fullQueryPath: string): string {
-    if (!fs.existsSync(fullQueryPath))
+    if (!fs.existsSync(fullQueryPath)) {
       throw new ConnectorError(`Query file not found: ${fullQueryPath}`)
+    }
     return fs.readFileSync(fullQueryPath, 'utf8')
   }
 
@@ -321,19 +346,3 @@ export abstract class BaseConnector {
     return supportedMethods
   }
 }
-
-export const CAST_METHODS: {
-  [type: string]: (value: any) => unknown
-} = {
-  string: (value) => String(value),
-  text: (value) => String(value),
-  int: (value) => parseInt(value),
-  float: (value) => parseFloat(value),
-  number: (value) => Number(value),
-  bool: (value) => Boolean(value),
-  boolean: (value) => Boolean(value),
-  date: (value) => new Date(value),
-}
-
-export * from './types'
-export { CompileError }

@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - next
+      - canary
   pull_request:
     branches:
       - main
-      - next
+      - canary
 
 jobs:
   test:

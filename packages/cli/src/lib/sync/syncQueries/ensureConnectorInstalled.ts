@@ -1,7 +1,7 @@
 import fs from 'fs'
 import colors from 'picocolors'
 import config from '$src/config'
-import SourceManager from '@latitude-data/source-manager'
+import { SourceManager } from '@latitude-data/source-manager'
 import isSourceFile from '$src/lib/isSourceFile'
 
 let _sourceManager: SourceManager

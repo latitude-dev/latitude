@@ -1,6 +1,6 @@
 import CacheManager from '$lib/cache_manager'
 import QueryResult from '@latitude-data/query_result'
-import { QueryRequest } from '@latitude-data/base-connector'
+import { QueryRequest } from '@latitude-data/source-manager'
 
 class QueryCache {
   private cache: CacheManager

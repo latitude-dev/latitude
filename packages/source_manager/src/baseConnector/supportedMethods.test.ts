@@ -4,6 +4,9 @@ import { type ResolvedParam, type CompiledQuery } from './types'
 import { describe, it, expect, afterEach, vi } from 'vitest'
 import { CompileError } from '@latitude-data/sql-compiler'
 import { BaseConnector } from './index'
+import { createDummySource } from '@/tests/helper'
+
+const source = createDummySource()
 
 vi.mock('fs', (importOriginal) => ({
   ...importOriginal(),
@@ -27,7 +30,7 @@ const addFakeQuery = (sql: string, queryPath?: string) => {
 const ranQueries: CompiledQuery[] = []
 class MockConnector extends BaseConnector {
   constructor() {
-    super('root')
+    super({ source, connectionParams: {} })
   }
 
   protected resolve(value: unknown, _: number): ResolvedParam {

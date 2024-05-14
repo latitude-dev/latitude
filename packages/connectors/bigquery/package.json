@@ -21,7 +21,7 @@
     "rollup": "^4.10.0"
   },
   "dependencies": {
-    "@latitude-data/base-connector": "workspace:^",
+    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/query_result": "workspace:^",
     "@google-cloud/bigquery": "^7.4.0",
     "google-auth-library": "^9.6.3"

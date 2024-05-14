@@ -1,26 +1,40 @@
 import 'dotenv/config'
-import type {
+
+import type QueryResult from '@latitude-data/query_result'
+import {
   CompiledQuery,
   QueryConfig,
   QueryRequest,
   BaseConnector,
-} from '@latitude-data/base-connector'
-import createConnector, {
+} from '@/baseConnector'
+import createConnectorFactory, {
   ConnectorType,
   getConnectorPackage,
-} from './lib/createConnector'
-import path from 'path'
-import { SourceSchema } from './types'
-import type QueryResult from '@latitude-data/query_result'
+} from '@/baseConnector/connectorFactory'
+import { SourceSchema } from '@/types'
+import SourceManager from '@/manager'
 
 export class Source {
   private _schema: SourceSchema
   private _path: string
   private _connector?: BaseConnector
+  manager: SourceManager
 
-  constructor(path: string, config: any) {
+  constructor({
+    path,
+    schema,
+    sourceManager,
+    connector,
+  }: {
+    path: string
+    schema: SourceSchema
+    sourceManager: SourceManager
+    connector?: BaseConnector
+  }) {
     this._path = path
-    this._schema = config
+    this._schema = schema
+    this.manager = sourceManager
+    this._connector = connector
   }
 
   get config(): QueryConfig {
@@ -35,20 +49,13 @@ export class Source {
     return this._path
   }
 
-  get connectorPackageName(): string {
-    return getConnectorPackage(this.type as ConnectorType)
+  // Testing purposes only
+  setConnector(connector: BaseConnector) {
+    this._connector = connector
   }
 
-  private async connector(): Promise<BaseConnector> {
-    if (!this._connector) {
-      this._connector = await createConnector(
-        path.dirname(this.path),
-        this.type as ConnectorType,
-        this._schema.details ?? {},
-      )
-    }
-
-    return this._connector
+  get connectorPackageName(): string {
+    return getConnectorPackage(this.type as ConnectorType)
   }
 
   async endConnection(): Promise<void> {
@@ -70,5 +77,19 @@ export class Source {
   async runCompiledQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     const connector = await this.connector()
     return await connector.runCompiled(compiledQuery)
+  }
+
+  private async connector(): Promise<BaseConnector> {
+    if (!this._connector) {
+      this._connector = await createConnectorFactory({
+        type: this.type,
+        connectorOptions: {
+          source: this,
+          connectionParams: this._schema.details ?? {},
+        },
+      })
+    }
+
+    return this._connector
   }
 }

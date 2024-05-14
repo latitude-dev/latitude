@@ -24,7 +24,7 @@
     "tslib": "^2.4.1"
   },
   "dependencies": {
-    "@latitude-data/base-connector": "workspace:*",
+    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/query_result": "workspace:*",
     "trino-client": "^0.2.2"
   }

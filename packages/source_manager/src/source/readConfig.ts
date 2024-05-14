@@ -1,6 +1,7 @@
-import yaml from 'yaml'
-import { SourceSchema, SourceFileNotFoundError } from '../../types'
 import fs from 'fs'
+import yaml from 'yaml'
+import { SourceSchema, SourceFileNotFoundError } from '@/types'
+
 export class InvalidSourceConfigError extends Error {
   constructor(message: string) {
     super(message)
@@ -8,7 +9,7 @@ export class InvalidSourceConfigError extends Error {
   }
 }
 
-export function readSourceConfig(sourcePath: string): SourceSchema {
+export default function readSourceConfig(sourcePath: string): SourceSchema {
   if (!fs.existsSync(sourcePath)) {
     throw new SourceFileNotFoundError(`Source file not found at ${sourcePath}`)
   }
@@ -28,10 +29,13 @@ export function readSourceConfig(sourcePath: string): SourceSchema {
   })
 
   // Validation requirements
-  if (!config?.type)
+  if (!config?.type) {
     throw new InvalidSourceConfigError(`Missing 'type' in configuration`)
-  if (typeof config.type !== 'string')
+  }
+
+  if (typeof config.type !== 'string') {
     throw new InvalidSourceConfigError(`Invalid 'type' in configuration`)
+  }
 
   return config
 }

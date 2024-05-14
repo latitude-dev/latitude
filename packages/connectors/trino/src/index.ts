@@ -3,7 +3,8 @@ import {
   QueryError,
   CompiledQuery,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+  ConnectorOptions,
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 import { Trino, BasicAuth } from 'trino-client'
 
@@ -15,11 +16,12 @@ export type ConnectionParams = {
   password?: string
 }
 
-export default class TrinoConnector extends BaseConnector {
+export default class TrinoConnector extends BaseConnector<ConnectionParams> {
   private client: Trino
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
+    const connectionParams = options.connectionParams
     this.client = Trino.create({
       server: connectionParams.server,
       catalog: connectionParams.catalog,

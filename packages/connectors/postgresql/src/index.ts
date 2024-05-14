@@ -4,7 +4,8 @@ import {
   QueryError,
   CompiledQuery,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+  ConnectorOptions,
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType } from '@latitude-data/query_result'
 import pg from 'pg'
 import { readFileSync } from 'fs'
@@ -29,11 +30,12 @@ export type ConnectionParams = {
   ssl?: boolean | SSLConfig
 }
 
-export default class PostgresConnector extends BaseConnector {
+export default class PostgresConnector extends BaseConnector<ConnectionParams> {
   private pool: pg.Pool
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
+    const connectionParams = options.connectionParams
     this.pool = new Pool(this.buildConnectionParams(connectionParams))
 
     if (connectionParams.schema) {

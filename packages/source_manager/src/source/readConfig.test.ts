@@ -1,5 +1,5 @@
 import { it, describe, beforeEach, afterEach, expect } from 'vitest'
-import { readSourceConfig } from '.'
+import readSourceConfig from './readConfig'
 import mockFs from 'mock-fs'
 import fs from 'fs'
 import yaml from 'yaml'
@@ -26,7 +26,7 @@ const restoreEnvVars = () => {
   process.env = { ...envVars }
 }
 
-describe('readSourceConfig', () => {
+describe('readConfig', () => {
   beforeEach(() => {
     mockFs({
       '/source.yaml': yaml.stringify(mockConfig),
@@ -77,7 +77,7 @@ describe('readSourceConfig', () => {
     )
   })
 
-  it('does not resolve environment variabls that do not start with LATITUDE__', () => {
+  it('does not resolve environment variables that do not start with LATITUDE__', () => {
     const config = { ...mockConfig }
     config.details.password = 'DB_PASSWORD'
     setSourceConfig(config)

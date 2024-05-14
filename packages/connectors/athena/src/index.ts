@@ -10,8 +10,9 @@ import {
   BaseConnector,
   CompiledQuery,
   ConnectorError,
+  ConnectorOptions,
   ResolvedParam,
-} from '@latitude-data/base-connector'
+} from '@latitude-data/source-manager'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
 
 type AthenaQueryClientOptions = {
@@ -21,7 +22,7 @@ type AthenaQueryClientOptions = {
     secretAccessKey: string
   }
 }
-interface AthenaQueryClientConfig {
+type AthenaQueryClientConfig = {
   client: AthenaQueryClientOptions
   database: string
   catalog: string
@@ -36,7 +37,7 @@ interface AthenaQueryClientConfig {
 
 export type ConnectionParams = AthenaQueryClientConfig
 
-export default class AthenaConnector extends BaseConnector {
+export default class AthenaConnector extends BaseConnector<ConnectionParams> {
   private client: AthenaClient
   private database: string = 'default'
   private catalog: string = 'AwsDataCatalog'
@@ -47,9 +48,10 @@ export default class AthenaConnector extends BaseConnector {
     },
   }
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
 
+    const connectionParams = options.connectionParams
     this.database = connectionParams.database || this.database
     this.catalog = connectionParams.catalog || this.catalog
     this.workgroup = connectionParams.workgroup || this.workgroup
