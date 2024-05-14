@@ -51,10 +51,6 @@ CLI.command('start')
 
 CLI.command('update')
   .describe('Update latitude app. You can define the version with --version')
-  .option(
-    '--force',
-    'Forces update of dockerignore and Dockerfile files to the latest version',
-  )
   .option('--fix', 'Installs the version defined in latitude.json')
   .option(
     '--next',

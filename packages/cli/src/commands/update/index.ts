@@ -70,13 +70,8 @@ async function getVersions({
   }
 }
 
-async function updateCommand(args: {
-  fix?: boolean
-  force?: boolean
-  next?: boolean
-}) {
+async function updateCommand(args: { fix?: boolean; next?: boolean }) {
   const fix = args.fix ?? false
-  const force = args.force ?? false
   const next = args.next ?? false
   const { oldVersion, newVersion } = await getVersions({ next, fix })
 
@@ -87,7 +82,7 @@ async function updateCommand(args: {
     properties: { fixingVersion: fix, oldVersion, newVersion },
   })
 
-  return updateApp({ version: newVersion, force })
+  return updateApp({ version: newVersion })
 }
 
 export default setRootDir(updateCommand)
