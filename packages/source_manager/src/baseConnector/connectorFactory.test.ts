@@ -1,6 +1,7 @@
 import { it, describe, expect } from 'vitest'
 import { vi } from 'vitest'
-import createConnectorFactory, { ConnectorType } from './connectorFactory'
+import createConnectorFactory from './connectorFactory'
+import { ConnectorType } from '@/types'
 import { createDummySource } from '@/tests/helper'
 
 const source = createDummySource()

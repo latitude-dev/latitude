@@ -1,15 +1,12 @@
 import { it, describe, expect } from 'vitest'
-import SourceManager from '@/manager'
+import { getSource } from '@/tests/helper'
+import { ConnectorError } from '@/types'
 
-import { QUERIES_DIR } from '@/tests/helper'
-
-describe('Source', () => {
-  const sourceManager = new SourceManager(QUERIES_DIR)
-
+describe('compileQuery', () => {
   it('returns the source config when compiling a query', async () => {
-    const source = await sourceManager.loadFromQuery('valid-source/query')
+    const source = await getSource('valid-source/query')
     const compiledQuery = await source.compileQuery({
-      queryPath: 'query',
+      queryPath: 'valid-source/query',
       params: {},
     })
 
@@ -17,13 +14,36 @@ describe('Source', () => {
   })
 
   it('merge source config with query config', async () => {
-    const queryPath = 'valid-source/nested/query_with_ttl'
-    const source = await sourceManager.loadFromQuery(queryPath)
+    const source = await getSource('valid-source/nested/query_with_ttl')
     const compiledQuery = await source.compileQuery({
-      queryPath: 'nested/query_with_ttl',
+      queryPath: 'valid-source/nested/query_with_ttl',
       params: {},
     })
 
     expect(compiledQuery.config.ttl).toBe(42069)
+  })
+
+  it('resolve when query path comes with slash', async () => {
+    const source = await getSource('valid-source/nested/query_with_ttl')
+    const compiledQuery = await source.compileQuery({
+      queryPath: '/valid-source/nested/query_with_ttl',
+      params: {},
+    })
+
+    expect(compiledQuery.config.ttl).toBe(42069)
+  })
+
+  it('it fails when trying to get a query from another source', async () => {
+    const source = await getSource('valid-source/nested/query_with_ttl')
+    await expect(
+      source.compileQuery({
+        queryPath: 'another-source/query',
+        params: {},
+      }),
+    ).rejects.toThrowError(
+      new ConnectorError(
+        'Query path "another-source/query" is not in source "valid-source"',
+      ),
+    )
   })
 })

@@ -3,23 +3,8 @@ import {
   ConnectorAttributes,
   ConnectorOptions,
 } from '@/baseConnector'
-
-export enum ConnectorType {
-  Athena = 'athena',
-  Clickhouse = 'clickhouse',
-  Duckdb = 'duckdb',
-  Postgres = 'postgres',
-  Bigquery = 'bigquery',
-  Mysql = 'mysql',
-  Redshift = 'redshift',
-  Snowflake = 'snowflake',
-  Trino = 'trino',
-  Sqlite = 'sqlite',
-  Mssql = 'mssql',
-  Databricks = 'databricks',
-  Test = 'test', // Used for testing purposes
-  TestInternal = 'internal_test', // Used for testing inside this package purposes
-}
+import { ConnectorType } from '@/types'
+import TestConnector from '@/testConnector'
 
 const CONNECTOR_PACKAGES = {
   [ConnectorType.Postgres]: 'postgresql-connector',
@@ -78,7 +63,7 @@ async function importConnector(
 export class InvalidConnectorType extends Error {}
 
 export function getConnectorPackage(type: ConnectorType) {
-  if (type === ConnectorType.TestInternal) return '../testConnector'
+  if (type === ConnectorType.TestInternal) return null
 
   if (!(type in CONNECTOR_PACKAGES)) {
     throw new InvalidConnectorType(`Unsupported connector type: ${type}`)
@@ -96,6 +81,9 @@ export default async function createConnectorFactory({
   connectorOptions: ConnectorOptions<ConnectorAttributes>
 }): Promise<BaseConnector> {
   const packageName = getConnectorPackage(type)
-  const ConnectorClass = await importConnector(packageName)
+  const ConnectorClass = !packageName
+    ? TestConnector // If no package is found, use the test connector
+    : await importConnector(packageName)
+
   return new ConnectorClass(connectorOptions)
 }

@@ -1,12 +1,14 @@
 import compile from '..'
 import CompileError from '../error/error'
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 
+const configFn = async () => ({})
 const compileQuery = (query: string) => {
   return compile({
     query,
     resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
     supportedMethods: {},
+    configFn,
   })
 }
 
@@ -69,6 +71,7 @@ describe('parameterisation of interpolated values', async () => {
       query: sql,
       resolveFn,
       supportedMethods: {},
+      configFn,
     })
 
     const matches = result.match(/\[\d+\]/g) || [] // resolved values in order of appearance in the string
@@ -407,6 +410,7 @@ describe('custom methods', async () => {
     const sql = '{fooFn()}'
     const result = await compile({
       query: sql,
+      configFn,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
       supportedMethods: {
         fooFn: async () => 'bar',
@@ -422,6 +426,7 @@ describe('custom methods', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        configFn,
         supportedMethods: {
           fooFn: async <T extends boolean>(
             _: T,
@@ -440,6 +445,7 @@ describe('custom methods', async () => {
     const result = await compile({
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+      configFn,
       supportedMethods: {
         fooFn: async <T extends boolean>(
           _: T,
@@ -459,6 +465,7 @@ describe('custom methods', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        configFn,
         supportedMethods: {
           fooFn: async () => {
             throw new Error('bar')
@@ -467,6 +474,6 @@ describe('custom methods', async () => {
       })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
-    expect(error.message).toBe("Error calling function 'fooFn': bar")
+    expect(error.message).toBe("Error calling function 'fooFn': \nError bar")
   })
 })

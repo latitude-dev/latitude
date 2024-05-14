@@ -466,10 +466,8 @@ export class Compiler {
       return returnedValue
     } catch (error: unknown) {
       if (error instanceof CompileError) throw error
-      this.expressionError(
-        errors.functionCallError(methodName, (error as Error).message),
-        node,
-      )
+
+      this.expressionError(errors.functionCallError(methodName, error), node)
     }
   }
 }

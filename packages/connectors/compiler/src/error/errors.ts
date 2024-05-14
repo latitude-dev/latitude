@@ -1,3 +1,8 @@
+function getKlassName(error: unknown): string {
+  const errorKlass = error as Error
+  return errorKlass.constructor ? errorKlass.constructor.name : 'Error'
+}
+
 export default {
   unexpectedEof: {
     code: 'unexpected-eof',
@@ -106,10 +111,14 @@ export default {
     code: 'unknown-function',
     message: `Unknown function: ${name}`,
   }),
-  functionCallError: (name: string, message: string) => ({
-    code: 'function-call-error',
-    message: `Error calling function '${name}': ${message}`,
-  }),
+  functionCallError: (name: string, err: unknown) => {
+    const error = err as Error
+    const errorKlassName = getKlassName(error)
+    return {
+      code: 'function-call-error',
+      message: `Error calling function '${name}': \n${errorKlassName} ${error.message}`,
+    }
+  },
   invalidFunctionResultInterpolation: {
     code: 'invalid-function-result-interpolation',
     message: 'Functions called for interpolation must return a string',
