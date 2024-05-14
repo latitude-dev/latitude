@@ -29,6 +29,7 @@ const CLI = sade('latitude')
 CLI.version(process.env.PACKAGE_VERSION ?? 'development')
   .option('--verbose', 'Enables verbose console logs')
   .option('--simulate-pro', 'Enable pro mode in development')
+  .option('--tty', 'Enables or disables TTY mode.')
 
 if (process.env.NODE_ENV === 'development') {
   CLI.option(
