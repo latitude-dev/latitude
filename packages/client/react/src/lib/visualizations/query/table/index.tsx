@@ -1,9 +1,8 @@
 import Table, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/table'
-import { useQuery, type QueryRequestProps } from '$src/data'
-import { useMemo } from 'react'
-import QueryResult from '@latitude-data/query_result'
+import { type QueryRequestProps } from '$src/data'
+import useQuery from '$src/lib/internal/shared/useQuery'
 
 type Props = Omit<RawProps, 'data' | 'download'> &
   QueryRequestProps & {
@@ -19,15 +18,14 @@ function QueryTable({
 }: Props) {
   const {
     data,
-    isFetching: isLoading,
+    isLoading,
     error,
     download: downloadFn,
   } = useQuery({ queryPath, params, tanstaskQueryOptions })
-  const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
     <Table
-      data={result}
+      data={data}
       isLoading={isLoading}
       error={error}
       download={download ? downloadFn : undefined}

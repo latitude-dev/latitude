@@ -7,9 +7,10 @@ import { default as TableCell } from './table-cell'
 
 import { useMemo } from 'react'
 import { useTable, useSortBy } from 'react-table'
-import type QueryResult from '@latitude-data/query_result'
-import { Card } from '$src/lib'
+import { Card } from '$src/lib/ui'
 import VisualizationHeader from '$src/lib/internal/shared/VisualizationHeader'
+
+import type QueryResult from '@latitude-data/query_result'
 
 interface Props {
   data: QueryResult

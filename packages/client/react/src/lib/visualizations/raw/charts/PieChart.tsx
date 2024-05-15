@@ -15,7 +15,6 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   Omit<PieChartProps, 'dataset'> &
   WrapperProps
 
-/* eslint-disable react/prop-types */
 function PieChart({
   data,
   isLoading,

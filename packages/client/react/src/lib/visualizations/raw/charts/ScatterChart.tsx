@@ -15,7 +15,6 @@ type Props = Omit<EchartProps, 'options' | 'isComputing'> &
   Omit<ScatterChartProps, 'dataset'> &
   WrapperProps
 
-/* eslint-disable react/prop-types */
 function ScatterChart({
   data,
   isLoading,

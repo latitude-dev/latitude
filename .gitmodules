@@ -10,3 +10,6 @@
 [submodule "examples/file-over-app"]
 	path = examples/file-over-app
 	url = git@github.com:latitude-dev/file-over-app.git
+[submodule "examples/sample-react"]
+	path = examples/sample-react
+	url = git@github.com:latitude-dev/sample-react.git

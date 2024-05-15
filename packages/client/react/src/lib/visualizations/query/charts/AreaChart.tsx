@@ -1,9 +1,8 @@
-import QueryResult from '@latitude-data/query_result'
 import AreaChart, {
   type Props as RawProps,
 } from '$src/lib/visualizations/raw/charts/AreaChart'
-import { useQuery, type QueryRequestProps } from '$src/data'
-import { useMemo } from 'react'
+import { type QueryRequestProps } from '$src/data'
+import useQuery from '$src/lib/internal/shared/useQuery'
 
 type Props = Omit<RawProps, 'data' | 'isLodaing' | 'error' | 'download'> &
   QueryRequestProps & {
@@ -19,15 +18,14 @@ function QueryAreaChart({
 }: Props) {
   const {
     data,
-    isFetching: isLoading,
+    isLoading,
     error,
     download: downloadFn,
   } = useQuery({ queryPath, params, tanstaskQueryOptions })
-  const result = useMemo(() => data && new QueryResult(data), [data])
 
   return (
     <AreaChart
-      data={result}
+      data={data}
       isLoading={isLoading}
       error={error}
       download={download ? downloadFn : undefined}

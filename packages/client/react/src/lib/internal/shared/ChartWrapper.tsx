@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Card } from '$src/lib'
 import VisualizationHeader from './VisualizationHeader'
 import BlankSlate from './ChartBlankSlate'
 import ErrorAlert from './ErrorAlert'
@@ -8,6 +7,7 @@ import {
   type Dataset,
   type QueryResultState,
 } from '@latitude-data/client'
+import { Card } from '$src/lib/ui'
 
 export type WrapperProps = QueryResultState & {
   bordered?: boolean

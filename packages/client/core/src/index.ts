@@ -1,17 +1,16 @@
-import { type PieChartProps as PieChartPropsOriginal } from './theme/ui/chart/config/pie'
-import { type Props as CartesianChartPropsOriginal } from './theme/ui/chart/config/cartesian'
-import { type FunnelChartProps as FunnelChartPropsOriginal } from './theme/ui/chart/config/funnel'
-import { type ScatterChartProps as ScatterChartPropsOriginal } from './theme/ui/chart/config/scatter'
-import { type Dataset } from './theme/ui/chart/types'
 export * as theme from './theme'
+export * from './constants'
 export * from './data/api'
 export * from './stores/queries'
+export * from './theme/ui/tokens'
 
-export type CartesianChartProps = CartesianChartPropsOriginal
-export type PieChartProps = PieChartPropsOriginal
-export type FunnelChartProps = FunnelChartPropsOriginal
-export type ScatterChartProps = ScatterChartPropsOriginal
-export type { Dataset }
+export type { ExtendsUnion } from './lib/commonTypes'
+export type { PieChartProps } from './theme/ui/chart/config/pie'
+export type { Props as CartesianChartProps } from './theme/ui/chart/config/cartesian'
+export type { FunnelChartProps } from './theme/ui/chart/config/funnel'
+export type { ScatterChartProps } from './theme/ui/chart/config/scatter'
+export type { Dataset } from './theme/ui/chart/types'
+export type { ClassValue } from 'clsx'
 export type {
   FontSize,
   LetterSpacing,
@@ -22,7 +21,3 @@ export type {
   FontFamily,
   TextProps,
 } from './theme/ui/text'
-
-export * from './theme/ui/tokens'
-export * from './constants'
-export type { ExtendsUnion } from './lib/commonTypes'

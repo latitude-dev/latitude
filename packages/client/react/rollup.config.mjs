@@ -9,7 +9,17 @@ const EXTERNAL_DEPENDENCIES = [
   '@tanstack/react-query',
   'react/jsx-runtime',
   'react-dom',
-  'react'
+  'react',
+  '@radix-ui/react-popover',
+  '@radix-ui/react-slot',
+  '@radix-ui/react-label',
+  'react-table',
+  'lodash-es',
+  'echarts/core',
+  'echarts/renderers',
+  'echarts/components',
+  'echarts/charts',
+  'echarts/charts',
 ]
 
 export default [

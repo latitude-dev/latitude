@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { theme } from '@latitude-data/client'
 import { cn } from 'src/lib/utils'
-import { Text, Label } from 'src/lib/ui'
+import Text from '../text'
+import Label from '../label'
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
