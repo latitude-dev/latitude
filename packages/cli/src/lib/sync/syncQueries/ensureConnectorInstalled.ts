@@ -55,6 +55,32 @@ ${colors.cyan(`npm install --save ${npmPackage}`)}
   }
 }
 
+function lastTwoDirs(sourcePath: string) {
+  return sourcePath.replace(
+    /^(.*\/)([^\/]+\/[^\/]+\/[^\/]+)$/, // eslint-disable-line no-useless-escape
+    '.../$2',
+  )
+}
+
+function trimErrorMessage(message: string) {
+  return message.replace(/\s+/g, ' ').trim()
+}
+
+async function loadConfigFromSourcePath(sourcePath: string) {
+  const sourceManager = currentSourceManager()
+  try {
+    return await sourceManager.loadFromConfigFile(sourcePath)
+  } catch (e) {
+    const simplifiedPath = lastTwoDirs(sourcePath)
+    const errorMessage = trimErrorMessage((e as Error).message)
+    console.log(
+      colors.yellow(
+        `Could not read source file at ${simplifiedPath}. ${errorMessage}`,
+      ),
+    )
+  }
+}
+
 export default async function ensureConnectorInstalled(
   sourcePath: string,
   type: 'add' | 'change' | 'unlink',
@@ -62,16 +88,14 @@ export default async function ensureConnectorInstalled(
   if (!isSourceFile(sourcePath)) return
 
   const sourceManager = currentSourceManager()
-  let source = await sourceManager.loadFromConfigFile(sourcePath)
+  let source = await loadConfigFromSourcePath(sourcePath)
+  if (!source) return
 
-  if (type === 'unlink') {
-    await sourceManager.clear(source)
-    return
-  }
-
+  if (type === 'unlink') return await sourceManager.clear(source)
   if (type === 'change') {
     await sourceManager.clear(source)
-    source = await sourceManager.loadFromConfigFile(sourcePath)
+    source = await loadConfigFromSourcePath(sourcePath)
+    if (!source) return
   }
 
   const npmPackage = source.connectorPackageName
