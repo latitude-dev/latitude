@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.10.1
+
+### Patch Changes
+
+- cf26e21: fix: muted text color in Text component was too muted. Changed it to the proper color.
+
 ## 0.10.0
 
 ### Minor Changes

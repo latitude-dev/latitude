@@ -1,5 +1,13 @@
 # @latitude-data/react
 
+## 0.7.1
+
+### Patch Changes
+
+- 39f536a: Fix: react charts lose state when running a new query.
+- Updated dependencies [cf26e21]
+  - @latitude-data/client@0.10.1
+
 ## 0.7.0
 
 ### Minor Changes

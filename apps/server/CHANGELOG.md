@@ -1,5 +1,14 @@
 # @latitude-data/server
 
+## 1.2.1
+
+### Patch Changes
+
+- a6306fc: Fix: undefined parameters were getting passed to query compute requests
+- Updated dependencies [cf26e21]
+  - @latitude-data/client@0.10.1
+  - @latitude-data/svelte@0.7.1
+
 ## 1.2.0
 
 ### Minor Changes
