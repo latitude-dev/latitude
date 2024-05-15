@@ -17,6 +17,7 @@ export default {
     '@latitude-data/source-manager',
     '@latitude-data/query_result',
     'pg',
+    'pg-cursor',
     'fs',
   ],
 }

@@ -26,7 +26,10 @@ export async function buildMaterializedConnector({
   const connParams = connectionParams ?? {}
   const sourceSchema = sourceParams.schema ?? {}
   const sourceManager = new SourceManager(queriesDir ?? QUERIES_DIR, {
-    materializeStorage: new DiskDriver({ path: MATERIALIZE_QUERIES_DIR }),
+    materialize: {
+      Klass: DiskDriver,
+      config: { path: MATERIALIZE_QUERIES_DIR },
+    },
   })
   const source = new Source({
     path: sourceParams.path,

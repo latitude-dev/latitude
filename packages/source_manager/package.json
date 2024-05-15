@@ -16,12 +16,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@dsnp/parquetjs": "^1.7.0",
     "@latitude-data/query_result": "workspace:*",
     "@latitude-data/sql-compiler": "workspace:*",
     "dotenv": "^16.4.5",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/query_result": "workspace:^",
     "@latitude-data/typescript": "workspace:*",
@@ -32,7 +34,7 @@
     "mock-fs": "^5.2.0",
     "rollup": "^4.10.0",
     "typescript": "^5.2.2",
-    "vitest": "^1.2.2",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.2.2"
   }
 }

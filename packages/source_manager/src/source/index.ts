@@ -7,7 +7,12 @@ import { BaseConnector } from '@/baseConnector'
 import createConnectorFactory, {
   getConnectorPackage,
 } from '@/baseConnector/connectorFactory'
-import { CompilationContext, ConnectionError, ConnectorType } from '@/types'
+import {
+  BatchedQueryOptions,
+  CompilationContext,
+  ConnectionError,
+  ConnectorType,
+} from '@/types'
 import { CompiledQuery, QueryConfig, QueryRequest, SourceSchema } from '@/types'
 import SourceManager from '@/manager'
 import { QueryMetadata } from '@latitude-data/sql-compiler'
@@ -50,6 +55,10 @@ export class Source {
 
   get type(): SourceSchema['type'] {
     return this._schema.type
+  }
+
+  get connectionParams() {
+    return this._schema.details ?? {}
   }
 
   get connectorPackageName(): string {
@@ -98,13 +107,21 @@ export class Source {
     return await connector.runCompiled(compiledQuery)
   }
 
+  async batchQuery(
+    compiledQuery: CompiledQuery,
+    options: BatchedQueryOptions,
+  ): Promise<void> {
+    const connector = await this.connector()
+    return connector.batchQuery(compiledQuery, options)
+  }
+
   private async connector(): Promise<BaseConnector> {
     if (!this._connector) {
       this._connector = await createConnectorFactory({
         type: this.type,
         connectorOptions: {
           source: this,
-          connectionParams: this._schema.details ?? {},
+          connectionParams: this.connectionParams,
         },
       })
     }

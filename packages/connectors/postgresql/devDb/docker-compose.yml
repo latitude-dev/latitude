@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: 'latitude'
+      POSTGRES_PASSWORD: 'secret'
+    ports:
+      - '5436:5432'
+    volumes:
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh

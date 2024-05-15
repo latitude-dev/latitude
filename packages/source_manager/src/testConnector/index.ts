@@ -1,5 +1,6 @@
 import { BaseConnector, ConnectorOptions } from '@/baseConnector'
 import {
+  BatchedQueryOptions,
   CompiledQuery,
   ConnectionError,
   ConnectorError,
@@ -57,6 +58,20 @@ export default class TestConnector extends BaseConnector<ConnectionParams> {
     }
     this?.onResolve?.(value, resolvedParam)
     return resolvedParam
+  }
+
+  async batchQuery(
+    compiledQuery: CompiledQuery,
+    options: BatchedQueryOptions,
+  ): Promise<void> {
+    return Promise.reject(
+      new Error(`
+        batchQuery not implemented for TestConnector
+        Mock it in your tests
+        CompiledQuery: ${JSON.stringify(compiledQuery)}
+        batchOptions: ${JSON.stringify(options)}
+      `),
+    )
   }
 
   async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {

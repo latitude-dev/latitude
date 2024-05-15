@@ -1,3 +1,4 @@
+import SourceManager from '@/manager'
 import {
   GetUrlParams,
   ResolveUrlParams,
@@ -5,6 +6,13 @@ import {
 } from '@/materialize/drivers/StorageDriver'
 
 export default class DummyDriver extends StorageDriver {
+  constructor({ manager }: { manager: SourceManager }) {
+    super({ manager })
+  }
+
+  get basePath(): string {
+    return '/dummy-base-path'
+  }
   getUrl(args: GetUrlParams): Promise<string> {
     return this.resolveUrl({
       ...args,

@@ -10,8 +10,8 @@ export type CompileContext = {
   supportedMethods: Record<string, SupportedMethod> // Supported methods by the connector
   resolveFn: ResolveFn // Resolves a value to a string that can be injected in the query
 }
-
-export type QueryMetadata = {
-  config: Record<string, unknown>
+type Config = Record<string, unknown>
+export type QueryMetadata<T extends Config = Config> = {
+  config: T
   methods: Set<string>
 }

@@ -1,4 +1,4 @@
-import { QueryResultArray } from '@latitude-data/query_result'
+import { Field, QueryResultArray } from '@latitude-data/query_result'
 import { type SupportedMethod } from '@latitude-data/sql-compiler'
 export { CompileError } from '@latitude-data/sql-compiler'
 
@@ -24,6 +24,7 @@ export enum ConnectorType {
 
 export type QueryConfig = {
   ttl?: number
+  materialize_query?: boolean
 }
 
 export type QueryParams = {
@@ -78,4 +79,46 @@ export interface SourceSchema {
   type: ConnectorType
   details?: Record<string, unknown>
   config?: QueryConfig
+}
+
+export type BatchedRow = Record<string, unknown>
+export type BatchResponse = {
+  rows: BatchedRow[]
+  fields: Field[]
+  lastBatch: boolean
+}
+export type BatchedQueryOptions = {
+  batchSize: number
+  onBatch: (_r: BatchResponse) => Promise<void>
+}
+
+// Parquet logical types
+// https://github.com/LibertyDSNP/parquetjs?tab=readme-ov-file#list-of-supported-types--encodings
+export enum ParquetLogicalType {
+  BOOLEAN = 'BOOLEAN',
+  INT32 = 'INT32',
+  INT64 = 'INT64',
+  INT96 = 'INT96',
+  FLOAT = 'FLOAT',
+  DOUBLE = 'DOUBLE',
+  BYTE_ARRAY = 'BYTE_ARRAY',
+  FIXED_LEN_BYTE_ARRAY = 'FIXED_LEN_BYTE_ARRAY',
+  UTF8 = 'UTF8',
+  ENUM = 'ENUM',
+  DATE = 'DATE',
+  TIME_MILLIS = 'TIME_MILLIS',
+  TIMESTAMP_MILLIS = 'TIMESTAMP_MILLIS',
+  TIMESTAMP_MICROS = 'TIMESTAMP_MICROS',
+  TIME_MICROS = 'TIME_MICROS',
+  UINT_8 = 'UINT_8',
+  UINT_16 = 'UINT_16',
+  UINT_32 = 'UINT_32',
+  UINT_64 = 'UINT_64',
+  INT_8 = 'INT_8',
+  INT_16 = 'INT_16',
+  INT_32 = 'INT_32',
+  INT_64 = 'INT_64',
+  JSON = 'JSON',
+  BSON = 'BSON',
+  INTERVAL = 'INTERVAL',
 }

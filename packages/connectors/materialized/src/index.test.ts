@@ -48,7 +48,7 @@ describe('materializedRef function', async () => {
       },
     })
     expect(compiled.sql).toBe(
-      `SELECT * FROM (read_parquet('${MATERIALIZE_QUERIES_DIR}/c669ba7574cadcfd9527e449feeb6a3fe8c23e23d0fef0893d3011c85ac88624.parquet'))`,
+      `SELECT * FROM read_parquet('${MATERIALIZE_QUERIES_DIR}/c669ba7574cadcfd9527e449feeb6a3fe8c23e23d0fef0893d3011c85ac88624.parquet')`,
     )
   })
 

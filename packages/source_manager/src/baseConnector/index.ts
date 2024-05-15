@@ -15,6 +15,8 @@ import type {
   CompilationContext,
   BuildSupportedMethodsArgs,
   SupportedMethodsResponse,
+  BatchedQueryOptions,
+  QueryConfig,
 } from '@/types'
 
 export const CAST_METHODS: {
@@ -56,6 +58,14 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
    * Perform the actual query execution on the data source.
    */
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
+
+  /**
+   * The connector is able to perform streaming (batching) of the results
+   * of a query. If the connector does not define this method it will throw
+   */
+  async batchQuery(_c: CompiledQuery, _o: BatchedQueryOptions): Promise<void> {
+    throw new Error('Batching not supported')
+  }
 
   /**
    * Close the connection to the data source.
@@ -106,7 +116,7 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
    * This definition is static, and only depends on the contents of the query
    * itself.
    */
-  readMetadata(sql: string): Promise<QueryMetadata> {
+  readMetadata(sql: string): Promise<QueryMetadata<QueryConfig>> {
     // The supported methods object is only needed for their keys, but the actual
     // function implementations are not used, since they won't be called in this
     // process. Since some functions require context-specific information just to
@@ -135,7 +145,7 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
     return this.runQuery(request)
   }
 
-  private buildSupportedMethods({
+  protected buildSupportedMethods({
     context,
     resolveFn,
   }: BuildSupportedMethodsArgs): SupportedMethodsResponse {
