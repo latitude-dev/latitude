@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.4
+
+### Patch Changes
+
+- 5e373c9: Notify users when source file is invalid instead of hardcrashing
+
 ## 1.6.3
 
 ### Patch Changes
