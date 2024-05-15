@@ -17,8 +17,19 @@ export default function syncFiles({
   ready: boolean
 }) {
   if (type === 'add' || type === 'change') {
-    // Make sure all directories in the path exist
-    mkdirSync(path.dirname(destPath), { recursive: true })
+    try {
+      // Make sure all directories in the path exist
+      mkdirSync(path.dirname(destPath), { recursive: true })
+    } catch (err) {
+      return output(
+        colors.red(
+          `${path.dirname(destPath)} could not be created: ${
+            (err as Error).message
+          }`,
+        ),
+        ready,
+      )
+    }
 
     try {
       copyFileSync(srcPath, destPath)
