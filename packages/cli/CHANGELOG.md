@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.3
+
+### Patch Changes
+
+- 2f156b0: minor: handle mkdir sync errors and inform the user gracefully
+
 ## 1.6.2
 
 ### Patch Changes
