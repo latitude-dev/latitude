@@ -83,7 +83,6 @@
 
   $: valuesKey = findValuesKey()
   $: labelsKey = findLabelsKey()
-
   $: userDefinedItems =
     options?.map((item) => {
       if (item && typeof item === 'object' && 'value' in item) {
