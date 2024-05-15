@@ -8,7 +8,7 @@ const TYPES: Record<AlertyType, Type> = {
   muted: {
     normal: {
       background: 'muted',
-      foreground: 'mutedForeground',
+      foreground: 'muted',
     },
     secondary: {
       background: 'mutedForeground',

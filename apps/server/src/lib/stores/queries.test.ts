@@ -47,7 +47,7 @@ vi.mock('@latitude-data/client', () => {
     },
     createQueryKey: (
       queryPath: string,
-      params: Record<string, unknown>,
+      params: Record<string, unknown>
     ): string => {
       return queryPath + JSON.stringify(params)
     },
@@ -171,7 +171,7 @@ describe('useQuery with reactiveParams', () => {
 
     // The console should have a warning
     expect(consoleSpy).toBeCalledWith(
-      'The "reactiveToParams" option is deprecated. Please use "reactToParams" instead.',
+      'The "reactiveToParams" option is deprecated. Please use "reactToParams" instead.'
     )
   })
 })
