@@ -1,6 +1,10 @@
 import mockFs from 'mock-fs'
-import { describe, it, expect, beforeEach } from 'vitest'
-import { QUERIES_DIR, buildMaterializedConnector } from '$/tests/helpers'
+import { describe, it, expect } from 'vitest'
+import {
+  QUERIES_DIR,
+  MATERIALIZE_QUERIES_DIR,
+  buildMaterializedConnector,
+} from '$/tests/helpers'
 import {
   CompileError,
   SourceManager,
@@ -13,8 +17,6 @@ const MATERIALIZED_SQL = `
 SELECT * FROM users
 `
 describe('materializedRef function', async () => {
-  beforeEach(() => {})
-
   it('find queries in a folder out of current source', async () => {
     const sql = "SELECT * FROM {materializedRef('../query.sql')}"
     mockFs({
@@ -25,6 +27,10 @@ describe('materializedRef function', async () => {
           'source.yml': 'type: materialized',
           'query.sql': sql,
         },
+      },
+      [MATERIALIZE_QUERIES_DIR]: {
+        'c669ba7574cadcfd9527e449feeb6a3fe8c23e23d0fef0893d3011c85ac88624.parquet':
+          'PARQUET_QUERY_CONTENT', // Not important in this tests
       },
     })
     const { connector } = await buildMaterializedConnector({
@@ -41,7 +47,46 @@ describe('materializedRef function', async () => {
         sql,
       },
     })
-    expect(compiled.sql).toBe('SELECT * FROM (SELECT * FROM users)')
+    expect(compiled.sql).toBe(
+      `SELECT * FROM (read_parquet('${MATERIALIZE_QUERIES_DIR}/c669ba7574cadcfd9527e449feeb6a3fe8c23e23d0fef0893d3011c85ac88624.parquet'))`,
+    )
+  })
+
+  it('fails when materialized sql is not found', async () => {
+    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: internal_test',
+        'query.sql': `
+          {@config materialize_query = true}
+          SELECT * FROM projects
+        `,
+        'materialized-queries': {
+          'source.yml': 'type: materialized',
+          'query.sql': sql,
+        },
+      },
+    })
+    const { connector } = await buildMaterializedConnector({
+      sourceParams: {
+        path: 'materialize-queries',
+      },
+    })
+    const context = buildDefaultContext()
+    await expect(
+      connector.compileQuery({
+        ...context,
+        request: {
+          queryPath: 'materialized-queries/query',
+          params: {},
+          sql,
+        },
+      }),
+    ).rejects.toThrowError(
+      new CompileError(
+        "Error calling function 'materializedRef': \nMaterializedFileNotFoundError materialize query not found for: materializedRef('../query.sql')",
+      ),
+    )
   })
 
   it('fails when ref query is not a string', async () => {
@@ -111,7 +156,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nError '../query.sql' query can not have parameters to filter the SQL query. You're using 'id' and 'name' params in the query",
+        "Error calling function 'materializedRef': \nError '../query.sql' query can not have parameters to filter the SQL query.",
       ),
     )
   })

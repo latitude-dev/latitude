@@ -1,12 +1,14 @@
 import MaterializedConnector, { type ConnectionParams } from '$/index'
 import {
   ConnectorType,
+  DiskDriver,
   Source,
   SourceManager,
   type SourceSchema,
 } from '@latitude-data/source-manager'
 
 export const QUERIES_DIR = 'static/.latitude/queries'
+export const MATERIALIZE_QUERIES_DIR = 'static/.latitude/materialize_queries'
 
 export async function buildMaterializedConnector({
   connectionParams,
@@ -19,10 +21,13 @@ export async function buildMaterializedConnector({
     schema?: Omit<SourceSchema, 'type'>
   }
   queriesDir?: string
+  materializedQueriesDir?: string
 }) {
   const connParams = connectionParams ?? {}
   const sourceSchema = sourceParams.schema ?? {}
-  const sourceManager = new SourceManager(queriesDir ?? QUERIES_DIR)
+  const sourceManager = new SourceManager(queriesDir ?? QUERIES_DIR, {
+    materializeStorage: new DiskDriver({ path: MATERIALIZE_QUERIES_DIR }),
+  })
   const source = new Source({
     path: sourceParams.path,
     schema: { type: ConnectorType.Materialized, ...sourceSchema },

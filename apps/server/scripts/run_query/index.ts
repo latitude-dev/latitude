@@ -1,6 +1,7 @@
 import QueryDisplay from './result_display'
 import chokidar from 'chokidar'
-import sourceManager, { QUERIES_DIR } from '../../src/lib/server/sourceManager'
+import sourceManager from '../../src/lib/server/sourceManager'
+import { QUERIES_DIR } from '../../src/lib/constants'
 
 type CommandArgs = {
   queryPath: string

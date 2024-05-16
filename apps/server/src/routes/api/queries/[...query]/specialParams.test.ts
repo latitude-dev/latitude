@@ -5,7 +5,7 @@ import findOrCompute from '$lib/query_service/find_or_compute'
 import { signJwt } from '@latitude-data/jwt'
 import { GET } from './+server'
 import QueryResult from '@latitude-data/query_result'
-import { QUERIES_DIR } from '$lib/server/sourceManager'
+import { QUERIES_DIR } from '$lib/constants'
 
 const PAYLOAD = { fields: [], rows: [], rowCount: 0 }
 const queryResult = new QueryResult(PAYLOAD)

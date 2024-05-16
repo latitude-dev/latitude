@@ -17,6 +17,7 @@ export default {
     'yaml',
     'fs',
     'path',
+    'crypto',
     'dotenv/config',
     '@latitude-data/sql-compiler',
     '@latitude-data/query_result',
