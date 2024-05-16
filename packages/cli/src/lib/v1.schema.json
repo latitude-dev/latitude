@@ -9,8 +9,17 @@
       "type": "string",
       "minLength": 5,
       "maxLength": 14,
-      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)$",
+      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-next\\.(?:0|[1-9]\\d*))?$",
       "description": "Latitude app version used."
+    },
+    "theme": {
+      "type": "object",
+      "description": "Theme configuration."
+    },
+    "themeMode": {
+      "type": "string",
+      "enum": ["light", "dark", "system"],
+      "description": "Theme mode for the app. 'system' will follow the system theme."
     }
   },
   "required": ["version"],

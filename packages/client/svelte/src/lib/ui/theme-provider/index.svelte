@@ -1,7 +1,7 @@
 <script lang="ts">
   import { setContext } from 'svelte'
   import { theme as client } from '@latitude-data/client'
-  import { ModeWatcher, mode } from 'mode-watcher'
+  import { ModeWatcher, mode, setMode } from 'mode-watcher'
   import { derived, writable } from 'svelte/store'
 
   const buildCss = client.skins.buildCssVariables
@@ -9,6 +9,7 @@
 
   type $$Props = {
     theme?: client.skins.PartialTheme
+    mode?: 'light' | 'dark' | 'system'
   }
 
   const LATITUDE_STYLE_ID = 'latitude-variables'
@@ -16,6 +17,10 @@
 
   let partialTheme: $$Props['theme'] = client.skins.defaultTheme
   export { partialTheme as theme }
+
+  let initialMode: $$Props['mode'] = 'light'
+  export { initialMode as mode }
+  $: setMode(initialMode || 'light')
 
   const theme = writable<client.skins.Theme>(partialTheme ? createTheme(partialTheme) : client.skins.defaultTheme)
   $: if (partialTheme) theme.set(createTheme(partialTheme))

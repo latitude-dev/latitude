@@ -1,38 +1,13 @@
 ---
 title: 'Theming'
-description: 'Customize the look and feel of specific Latitude components in your views'
+description: 'Personalize the theme of your Latitude Views'
 ---
 
-All Latitude components are designed to be easily customized to match your brand. This guide will walk you through the process of customizing the look and feel of Latitude components.
-
-## Changing theme
-
-When Latitude is added to your app, the `LatitudeProvider` component provides a theme for all components. By default, the theme uses the Latitude color palette, but we have a few predefined themes that you can use.
-
-The available themes are available in the `themes` object, which currently has 4 themes:
-
-- **latitude**
-- **rose**
-- **green**
-- **orange**
-
-To use a theme, you can pass the theme name to the `theme` prop of the `LatitudeProvider` component.
-
-```jsx
-import { LatitudeProvider, themes } from '@latitude/core';
-
-function App() {
-  return (
-    <LatitudeProvider theme={themes["rose"]}>
-      <AppContent />
-    </LatitudeProvider>
-  );
-}
-```
+All Latitude components are designed to be easily customized to match your brand. This guide will walk you through the process of customizing the look and feel of Latitude Views.
 
 ## Creating a custom theme
 
-Themes consist of attribute definitions. You can create your own theme by assembling a new object with your chosen values.
+In your `latitude.json` file, you can define a custom theme by adding a `theme` object with your chosen values.
 Each theme includes a set of attributes specifying CSS colors or values for different elements.
 
 Take a look at the default values for the `latitude` theme:
@@ -57,55 +32,42 @@ Take a look at the default values for the `latitude` theme:
 }
 ```
 
-Create your own theme by building on this structure. Color definitions can be in [any format that CSS supports](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value), such as hex, rgb, hsl, etc. You do not have to redefine every property, only the ones you want to change from the default theme.
+Create your own theme by building on this structure. Color definitions can be in [any format that CSS supports](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value), such as hex, rgb, hsl, etc.
+You do not have to redefine every property, only the ones you want to change from the default theme.
   
-```jsx
-import { LatitudeProvider } from '@latitude/react';
-
-const myTheme = {
-  primary: '#254E70',
-  secondary: '#F2F2F2',
-}
-
-function App() {
-  return (
-    <LatitudeProvider theme={myTheme}>
-      <AppContent />
-    </LatitudeProvider>
-  );
+```json latitude.json
+{
+  "name": "my-latitude-project",
+  "theme": {
+    "primary": "#254E70",
+    "background": "#c1c1c1",
+    "foreground": "#000012",
+  }
 }
 ```
 
 ### Dark mode
 
-You can add a `dark` version of your theme by adding a `dark` object to your theme. This object should have the same properties as the main theme, but with the colors inverted.
-With a dark version defined, you can configure the behaviour of your theme with the `mode` property. By default, the mode is set to `light`, but you can change it to `dark` to force dark mode, or `system` to use the system's preference.
+You can add a `dark` version of your theme by adding a `dark` object to your theme. This object should have the same properties as the main theme, but with the colors inverted. If a property is not defined in the `dark` object, the default value will be used.
 
-```jsx
-import { LatitudeProvider } from '@latitude/react';
+With a dark version defined, you can configure the behaviour of your theme with the `themeMode` property. By default, the theme mode is set to `light`, but you can change it to `dark` to force dark mode, or `system` to use the system's preference.
 
-const myTheme = {
-  primary: '#254E70',
-  secondary: '#F2F2F2',
-  background: '#fff',
-  foreground: '#000',
-
-  dark: {
-    background: '#000',
-    foreground: '#fff',
-  }
-}
-
-function App() {
-  return (
-    <LatitudeProvider theme={myTheme} mode="system">
-      <AppContent />
-    </LatitudeProvider>
-  );
+```json latitude.json
+{
+  "name": "my-latitude-project",
+  "theme": {
+    "primary": "#254E70",
+    "background": "#c1c1c1",
+    "foreground": "#000012",
+    "dark": {
+      "primary": "#254E70",
+      "background": "#000012",
+      "foreground": "#c1c1c1",
+    }
+  },
+  "themeMode": "system"
 }
 ```
-
-Then, you can enable dark mode in you app by setting the `mode` prop of the `LatitudeProvider` component to `dark`.
 
 ### Chart styles
 
@@ -301,24 +263,13 @@ You can find the complete echart properties used in Latitude's default theme bel
 If you want to personalize the styles for your charts, we recommend using [echart's online theme builder](https://echarts.apache.org/en/theme-builder.html) to easily create your own styles.
 To do this, simply select the colors you want to use, click on the "Download" at the top-left corner and copy the "JSON version" object into the `echarts` property in your theme.
 
-```jsx
-import { LatitudeProvider } from '@latitude/react';
-
-const myTheme = {
-  echarts: {
-    color: [ '#52B788', '#95D5B2', '#40916C' ],
-  },
-}
-
-function App() {
-  return (
-    <LatitudeProvider theme={myTheme}>
-      <AppContent />
-    </LatitudeProvider>
-  );
+```json latitude.json
+{
+  "name": "my-latitude-project",
+  "theme": {
+    "echarts": {
+      "color": [ "#52B788", "#95D5B2", "#40916C" ],
+    }
+  }
 }
 ```
-
-## Customizing components
-
-For more advanced customization, we recommend using [Tailwind](https://tailwindcss.com/docs/installation), since all Latitude components are built with Tailwind and accept Tailwind classes as props. However, you can use any styling solution you prefer.

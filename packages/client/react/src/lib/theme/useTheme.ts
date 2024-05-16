@@ -6,10 +6,12 @@ const defaultTheme = client.skins.defaultTheme
 
 type Theme = client.skins.Theme
 type PartialTheme = client.skins.PartialTheme
+type ThemeMode = 'light' | 'dark'
 
 const ThemeContext = createContext({
-  currentTheme: defaultTheme as Theme,
-  setCurrentTheme: (_: Theme) => {},
+  theme: defaultTheme as Theme,
+  setTheme: (_: Theme) => {},
+  mode: 'light' as ThemeMode,
 })
 
 const useLatitudeTheme = () => useContext(ThemeContext)
