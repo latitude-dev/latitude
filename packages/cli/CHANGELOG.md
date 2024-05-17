@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.5
+
+### Patch Changes
+
+- 3d05887: Added install analytics tracking
+
 ## 1.6.4
 
 ### Patch Changes
