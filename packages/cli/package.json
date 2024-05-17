@@ -55,9 +55,10 @@
     "echarts"
   ],
   "dependencies": {
-    "@latitude-data/source-manager": "workspace:*",
     "@inquirer/prompts": "^4.2.1",
+    "@latitude-data/source-manager": "workspace:*",
     "@rudderstack/rudder-sdk-node": "^2.0.7",
+    "@scarf/scarf": "^1.3.0",
     "@sentry/node": "^7.108.0",
     "ajv": "^8.12.0",
     "axios": "^1.6.7",
