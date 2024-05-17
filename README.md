@@ -342,3 +342,5 @@ contribute a pull request.
 - [Documentation](https://docs.latitude.so/)
 - [Slack community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
 - [X / Twitter](https://x.com/trylatitude)
+
+![scarf](https://static.scarf.sh/a.png?x-pxid=30def4cf-704f-435e-8dac-69a412e86cd6)
