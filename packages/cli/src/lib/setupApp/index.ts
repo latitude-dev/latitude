@@ -7,9 +7,9 @@ import addPackageJson from '../addPackageJson'
 export type Props = { version?: string }
 
 export default async function setupApp(
-  { next = false }: { next?: boolean } = { next: false },
+  { canary = false }: { canary?: boolean } = { canary: false },
 ) {
-  const config = await findOrCreateConfigFile({ next })
+  const config = await findOrCreateConfigFile({ canary })
   await installLatitudeServer({ version: config.data.version })
   await installDependencies()
   addPackageJson()

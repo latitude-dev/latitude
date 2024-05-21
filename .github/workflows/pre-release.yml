@@ -3,7 +3,7 @@ name: Pre-Release
 on:
   push:
     branches:
-      - next
+      - canary
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

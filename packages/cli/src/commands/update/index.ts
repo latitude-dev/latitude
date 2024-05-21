@@ -11,14 +11,14 @@ import { select } from '@inquirer/prompts'
 import setRootDir from '$src/lib/decorators/setRootDir'
 
 async function askForAppVersion(
-  { next = false }: { next?: boolean } = { next: false },
+  { canary = false }: { canary?: boolean } = { canary: false },
 ) {
   let versions: string[] = DEFAULT_VERSION_LIST
   try {
     console.log('Fetching Latitude versions...')
     versions = await getLatitudeVersions({
       onFetch: () => cleanTerminal(),
-      next,
+      canary,
     })
   } catch {
     // Already handled in onError
@@ -34,13 +34,13 @@ async function askForAppVersion(
 }
 
 async function getVersions({
-  next = false,
+  canary = false,
   fix,
 }: {
-  next?: boolean
+  canary?: boolean
   fix: boolean
 }) {
-  const latitudeJson = await findOrCreateConfigFile({ next })
+  const latitudeJson = await findOrCreateConfigFile({ canary })
 
   if (fix) {
     return {
@@ -51,7 +51,7 @@ async function getVersions({
 
   let newVersion = null
   try {
-    newVersion = await askForAppVersion({ next })
+    newVersion = await askForAppVersion({ canary })
   } catch (error) {
     if (!error) {
       console.log('🙈 Mission aborted, when you are ready, try again')
@@ -70,10 +70,10 @@ async function getVersions({
   }
 }
 
-async function updateCommand(args: { fix?: boolean; next?: boolean }) {
+async function updateCommand(args: { fix?: boolean; canary?: boolean }) {
   const fix = args.fix ?? false
-  const next = args.next ?? false
-  const { oldVersion, newVersion } = await getVersions({ next, fix })
+  const canary = args.canary ?? false
+  const { oldVersion, newVersion } = await getVersions({ canary, fix })
 
   if (!newVersion) process.exit(1)
 
