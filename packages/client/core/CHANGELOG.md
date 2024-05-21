@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.10.2
+
+### Patch Changes
+
+- 4ff0c19: fix some select component styles that affected total width in some situations
+
 ## 0.10.1
 
 ### Patch Changes

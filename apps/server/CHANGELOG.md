@@ -1,5 +1,14 @@
 # @latitude-data/server
 
+## 1.2.2
+
+### Patch Changes
+
+- 4ff0c19: fix some select component styles that affected total width in some situations
+- Updated dependencies [4ff0c19]
+  - @latitude-data/client@0.10.2
+  - @latitude-data/svelte@0.7.2
+
 ## 1.2.1
 
 ### Patch Changes
