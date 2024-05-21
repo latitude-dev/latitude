@@ -8,4 +8,4 @@ export function cssClass({ className }: { className?: string | null }) {
 }
 
 export const WRAPPER_CSS_CLASS =
-  'lat-grid lat-w-full lat-items-center lat-gap-1.5'
+  'lat-flex lat-flex-col lat-w-full lat-gap-1.5 lat-min-w-0'

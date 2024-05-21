@@ -111,7 +111,7 @@
   }
 </script>
 
-<div class={$result.isLoading ? 'animate-pulse' : ''}>
+<div class={$result.isLoading ? 'lat-w-full animate-pulse' : 'lat-w-full'}>
   <Combobox
     items={allItems}
     value={$inputStore}
