@@ -1,5 +1,5 @@
 import { Field, QueryResultArray } from '@latitude-data/query_result'
-import { type SupportedMethod } from '@latitude-data/sql-compiler'
+import { Source } from './source'
 export { CompileError } from '@latitude-data/sql-compiler'
 
 export type { GetUrlParams } from './materialize/drivers/StorageDriver'
@@ -55,10 +55,9 @@ export type CompilationContext = {
 }
 
 export type BuildSupportedMethodsArgs = {
+  source: Source
   context: CompilationContext
-  resolveFn: (value: unknown) => Promise<string>
 }
-export type SupportedMethodsResponse = Record<string, SupportedMethod>
 
 export type CompiledQuery = {
   sql: string

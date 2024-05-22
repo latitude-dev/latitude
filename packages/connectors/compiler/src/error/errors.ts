@@ -149,6 +149,18 @@ export default {
       message: `Error calling function: \n${errorKlassName} ${error.message}`,
     }
   },
+  functionRequiresStaticArguments: (name: string) => ({
+    code: 'function-requires-static-arguments',
+    message: `Function '${name}' can only receive literal values as arguments`,
+  }),
+  functionRequiresInterpolation: (name: string) => ({
+    code: 'function-requires-interpolation',
+    message: `Function '${name}' cannot be used inside a logic block. It must be directly interpolated into the query`,
+  }),
+  functionDisallowsInterpolation: (name: string) => ({
+    code: 'function-disallows-interpolation',
+    message: `Function '${name}' cannot be directly interpolated into the query`,
+  }),
   invalidFunctionResultInterpolation: {
     code: 'invalid-function-result-interpolation',
     message: 'Functions called for interpolation must return a string',

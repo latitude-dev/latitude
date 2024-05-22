@@ -16,7 +16,7 @@ export default class DummyDriver extends StorageDriver {
   getUrl(args: GetUrlParams): Promise<string> {
     return this.resolveUrl({
       ...args,
-      filename: `ENCRYPTED[${args.sql}].parquet`,
+      filename: `ENCRYPTED[${args.sqlHash}].parquet`,
     })
   }
 

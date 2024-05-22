@@ -34,7 +34,7 @@ export default class DiskDriver extends StorageDriver {
 
     return Promise.reject(
       new MaterializedFileNotFoundError(
-        `materialize query not found for: ${queryName}`,
+        `materialize query not found for: '${queryName}'`,
       ),
     )
   }

@@ -23,6 +23,7 @@
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
     "@latitude-data/typescript": "workspace:*",
+    "@latitude-data/sql-compiler": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.10.6",

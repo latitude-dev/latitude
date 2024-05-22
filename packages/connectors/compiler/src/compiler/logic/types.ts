@@ -1,6 +1,6 @@
 import { Node } from 'estree'
 import Scope from '../scope'
-import { SupportedMethod } from '../types'
+import type { ResolveFn, SupportedMethod } from '../types'
 
 export enum NodeType {
   Literal = 'Literal',
@@ -28,6 +28,7 @@ export type ResolveNodeProps<N extends Node> = {
   ) => never
   supportedMethods: Record<string, SupportedMethod>
   willInterpolate: boolean
+  resolveFn: ResolveFn
 }
 
 export type ReadNodeMetadataProps<N extends Node> = {

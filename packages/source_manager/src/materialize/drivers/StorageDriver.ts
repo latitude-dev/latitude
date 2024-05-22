@@ -7,7 +7,7 @@ import { ParquetWriter, ParquetSchema } from '@dsnp/parquetjs'
 import { FieldDefinition, ParquetType } from '@dsnp/parquetjs/dist/lib/declare'
 
 export type GetUrlParams = {
-  sql: string
+  sqlHash: string
   queryName: string
   sourcePath: string
   ignoreMissingFile?: boolean
@@ -67,7 +67,7 @@ export abstract class StorageDriver {
   }): Promise<string> {
     const source = await this.manager.loadFromQuery(queryPath)
     const compiled = await source.compileQuery({ queryPath, params })
-    const { config } = await source.getMetadataFromQuery(queryPath)
+    const { config, sqlHash } = await source.getMetadataFromQuery(queryPath)
 
     if (!config.materialize_query) {
       throw new Error('Query is not configured as materialized')
@@ -86,7 +86,7 @@ export abstract class StorageDriver {
           if (!writer) {
             const schema = this.buildParquetSchema(batch.fields)
             url = await this.getUrl({
-              sql: compiled.sql,
+              sqlHash: sqlHash!,
               queryName: queryPath,
               sourcePath: source.path,
               ignoreMissingFile: true,
@@ -130,7 +130,7 @@ export abstract class StorageDriver {
   }
 
   getUrl(args: GetUrlParams): Promise<string> {
-    const name = this.hashName(args)
+    const name = StorageDriver.hashName(args)
     const filename = `${name}.parquet`
 
     return this.resolveUrl({ ...args, filename })
@@ -141,9 +141,11 @@ export abstract class StorageDriver {
    */
   abstract resolveUrl({ filename }: ResolveUrlParams): Promise<string>
 
-  private hashName({ sql, sourcePath }: GetUrlParams) {
+  static hashName({ sqlHash, sourcePath }: GetUrlParams) {
     const hash = createHash('sha256')
-    return hash.update(`${sql}__${sourcePath}`).digest('hex')
+    hash.update(sqlHash)
+    hash.update(sourcePath)
+    return hash.digest('hex')
   }
 
   private buildParquetSchema(fields: Field[]) {

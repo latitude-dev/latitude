@@ -8,6 +8,7 @@ import { NodeType } from './logic/types'
 import type { CompileContext, QueryMetadata } from './types'
 import { getLogicNodeMetadata, resolveLogicNode } from './logic'
 import { emptyMetadata, mergeMetadata } from './utils'
+import { createHash } from 'crypto'
 
 export class Compiler {
   private context: CompileContext
@@ -39,10 +40,13 @@ export class Compiler {
    */
   async readMetadata(): Promise<QueryMetadata> {
     const fragment = parse(this.context.sql)
-    return await this.getBaseNodeMetadata({
+    const rawSql = this.context.sql
+    const sqlHash = createHash('sha256').update(rawSql).digest('hex')
+    const baseMetadata = await this.getBaseNodeMetadata({
       baseNode: fragment,
       depth: 0,
     })
+    return mergeMetadata(baseMetadata, { ...emptyMetadata(), sqlHash, rawSql })
   }
 
   /**
@@ -81,6 +85,7 @@ export class Compiler {
           raiseError: this.expressionError.bind(this),
           supportedMethods: this.context.supportedMethods,
           willInterpolate: false,
+          resolveFn: this.context.resolveFn,
         })
         return ''
       }
@@ -97,6 +102,7 @@ export class Compiler {
           raiseError: this.expressionError.bind(this),
           supportedMethods: this.context.supportedMethods,
           willInterpolate: true,
+          resolveFn: this.context.resolveFn,
         })) as string
       }
 
@@ -106,6 +112,7 @@ export class Compiler {
         raiseError: this.expressionError.bind(this),
         supportedMethods: this.context.supportedMethods,
         willInterpolate: false,
+        resolveFn: this.context.resolveFn,
       })
       const resolvedValue = await this.context.resolveFn(value)
 
@@ -130,6 +137,7 @@ export class Compiler {
         raiseError: this.expressionError.bind(this),
         supportedMethods: this.context.supportedMethods,
         willInterpolate: false,
+        resolveFn: this.context.resolveFn,
       })
       if (localScope.exists(constName)) {
         this.baseNodeError(errors.variableAlreadyDeclared(constName), baseNode)
@@ -166,6 +174,7 @@ export class Compiler {
         raiseError: this.expressionError.bind(this),
         supportedMethods: this.context.supportedMethods,
         willInterpolate: false,
+        resolveFn: this.context.resolveFn,
       })
       return condition
         ? this.resolveBaseNodeChildren(baseNode.children, localScope, depth + 1)
@@ -187,6 +196,7 @@ export class Compiler {
         raiseError: this.expressionError.bind(this),
         supportedMethods: this.context.supportedMethods,
         willInterpolate: false,
+        resolveFn: this.context.resolveFn,
       })
       if (!Array.isArray(iterableElement) || !iterableElement.length) {
         return await this.resolveBaseNode(baseNode.else, localScope, depth + 1)

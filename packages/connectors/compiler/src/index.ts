@@ -38,4 +38,5 @@ export function readMetadata({
 }
 
 export { default as CompileError } from './error/error'
-export { type SupportedMethod, type QueryMetadata } from './compiler/types'
+export * from './compiler/types'
+export * from './compiler/utils'
