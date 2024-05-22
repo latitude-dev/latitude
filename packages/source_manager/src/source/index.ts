@@ -10,6 +10,7 @@ import createConnectorFactory, {
 import { CompilationContext, ConnectionError, ConnectorType } from '@/types'
 import { CompiledQuery, QueryConfig, QueryRequest, SourceSchema } from '@/types'
 import SourceManager from '@/manager'
+import { QueryMetadata } from '@latitude-data/sql-compiler'
 
 export function buildDefaultContext(): Omit<CompilationContext, 'request'> {
   return {
@@ -17,7 +18,6 @@ export function buildDefaultContext(): Omit<CompilationContext, 'request'> {
     resolvedParams: [],
     ranQueries: {},
     queriesBeingCompiled: [],
-    queryConfig: {},
   }
 }
 
@@ -63,33 +63,34 @@ export class Source {
     this._connector = undefined
   }
 
+  async getMetadataFromQuery(queryPath: string): Promise<QueryMetadata> {
+    const sql = await this.getSql(queryPath)
+    const connector = await this.connector()
+    const { config: queryConfig, ...rest } = await connector.readMetadata(sql)
+    return {
+      config: {
+        ...this.config,
+        ...queryConfig,
+      },
+      ...rest,
+    }
+  }
+
   async compileQuery(
     { queryPath, params }: QueryRequest,
     context?: Omit<CompilationContext, 'request'>,
   ): Promise<CompiledQuery> {
-    const defaultContext = buildDefaultContext()
-    const querySource = await this.manager.loadFromQuery(queryPath)
-
-    if (this !== querySource) {
-      throw new ConnectionError(
-        `Query path "${queryPath}" is not in source "${this.path}"`,
-      )
-    }
-
+    const sql = await this.getSql(queryPath)
     const connector = await this.connector()
-    const sql = this.getSql(queryPath)
+
+    const defaultContext = buildDefaultContext()
     const fullContext = {
       ...defaultContext,
       ...context,
       request: { queryPath, sql, params: params ?? {} },
     }
 
-    const compiledQuery = await connector.compileQuery(fullContext)
-    compiledQuery.config = {
-      ...this.config, // Default options from the source config file
-      ...compiledQuery.config, // Options defined in the query file
-    }
-    return compiledQuery
+    return await connector.compileQuery(fullContext)
   }
 
   async runCompiledQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
@@ -111,7 +112,15 @@ export class Source {
     return this._connector
   }
 
-  private getSql(queryPath: string): string {
+  private async getSql(queryPath: string): Promise<string> {
+    const querySource = await this.manager.loadFromQuery(queryPath)
+
+    if (this !== querySource) {
+      throw new ConnectionError(
+        `Query path "${queryPath}" is not in source "${this.path}"`,
+      )
+    }
+
     const cleanPath = queryPath.replace(/^\//, '')
     const sqlPath = path.resolve(
       this.manager.queriesDir,

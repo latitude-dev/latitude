@@ -1,28 +1,20 @@
-import type { BaseNode, TemplateNode } from '../parser/interfaces'
-import type { Node, Identifier } from 'estree'
-import type { CompileContext, CompilerAttrs } from './types'
+import { BaseNode, type TemplateNode } from '../parser/interfaces'
+import type { Node, Identifier, Literal } from 'estree'
 import parse from '../parser/index'
 import { error } from '../error/error'
 import errors from '../error/errors'
 import Scope from './scope'
 import { NodeType } from './logic/types'
-import { resolveLogicNode } from './logic'
+import type { CompileContext, QueryMetadata } from './types'
+import { getLogicNodeMetadata, resolveLogicNode } from './logic'
+import { emptyMetadata, mergeMetadata } from './utils'
 
 export class Compiler {
   private context: CompileContext
+  private currentConfig: Record<string, unknown> = {}
 
-  constructor({
-    query,
-    resolveFn,
-    configFn,
-    supportedMethods = {},
-  }: CompilerAttrs) {
-    this.context = {
-      sql: query,
-      supportedMethods,
-      resolveFn,
-      configFn,
-    }
+  constructor({ sql, supportedMethods = {}, resolveFn }: CompileContext) {
+    this.context = { sql, supportedMethods, resolveFn }
   }
 
   /**
@@ -34,11 +26,23 @@ export class Compiler {
   async compileSQL(): Promise<string> {
     const fragment = parse(this.context.sql)
     const localScope = new Scope()
-    const compiledSql = (await this.resolveBaseNode(fragment, localScope))
+    const compiledSql = (await this.resolveBaseNode(fragment, localScope, 0))
       .replace(/ +/g, ' ') // Remove extra spaces
       .trim() // Remove leading and trailing spaces
 
     return compiledSql
+  }
+
+  /**
+   * Without compiling the SQL or resolving any expression, quickly reads the config and calls
+   * to the supported methods present in the SQL.
+   */
+  async readMetadata(): Promise<QueryMetadata> {
+    const fragment = parse(this.context.sql)
+    return await this.getBaseNodeMetadata({
+      baseNode: fragment,
+      depth: 0,
+    })
   }
 
   /**
@@ -47,12 +51,13 @@ export class Compiler {
   private resolveBaseNode = async (
     baseNode: BaseNode,
     localScope: Scope,
+    depth: number,
   ): Promise<string> => {
     if (!baseNode) return ''
 
     if (baseNode.type === 'Fragment') {
       // Parent node, only one of its kind
-      return this.resolveBaseNodeChildren(baseNode.children, localScope)
+      return this.resolveBaseNodeChildren(baseNode.children, localScope, depth)
     }
 
     if (baseNode.type === 'Comment') {
@@ -134,6 +139,10 @@ export class Compiler {
     }
 
     if (baseNode.type === 'ConfigTag') {
+      if (depth > 0) {
+        this.baseNodeError(errors.configInsideBlock, baseNode)
+      }
+
       const expression = baseNode.expression
       if (
         expression.type !== 'AssignmentExpression' ||
@@ -143,22 +152,8 @@ export class Compiler {
         this.baseNodeError(errors.invalidConfigDefinition, baseNode)
       }
 
-      const optionKey = (expression.left as Identifier).name
-      const optionValue = await resolveLogicNode({
-        node: expression.right,
-        scope: localScope,
-        raiseError: this.expressionError.bind(this),
-        supportedMethods: this.context.supportedMethods,
-        willInterpolate: false,
-      })
-      try {
-        this.context.configFn(optionKey, optionValue)
-      } catch (error: unknown) {
-        const errorMessage = (error as Error).message
-        this.baseNodeError(
-          errors.configDefinitionFailed(optionKey, errorMessage),
-          baseNode,
-        )
+      if (expression.right.type !== 'Literal') {
+        this.baseNodeError(errors.invalidConfigValue, baseNode)
       }
 
       return ''
@@ -173,12 +168,16 @@ export class Compiler {
         willInterpolate: false,
       })
       return condition
-        ? this.resolveBaseNodeChildren(baseNode.children, localScope)
-        : await this.resolveBaseNode(baseNode.else, localScope)
+        ? this.resolveBaseNodeChildren(baseNode.children, localScope, depth + 1)
+        : await this.resolveBaseNode(baseNode.else, localScope, depth + 1)
     }
 
     if (baseNode.type === 'ElseBlock') {
-      return this.resolveBaseNodeChildren(baseNode.children, localScope)
+      return this.resolveBaseNodeChildren(
+        baseNode.children,
+        localScope,
+        depth + 1,
+      )
     }
 
     if (baseNode.type === 'EachBlock') {
@@ -190,7 +189,7 @@ export class Compiler {
         willInterpolate: false,
       })
       if (!Array.isArray(iterableElement) || !iterableElement.length) {
-        return await this.resolveBaseNode(baseNode.else, localScope)
+        return await this.resolveBaseNode(baseNode.else, localScope, depth + 1)
       }
 
       const contextVar = baseNode.context.name
@@ -208,7 +207,11 @@ export class Compiler {
         if (indexVar) localScope.set(indexVar, i)
         localScope.set(contextVar, element)
         parsedChildren.push(
-          await this.resolveBaseNodeChildren(baseNode.children, localScope),
+          await this.resolveBaseNodeChildren(
+            baseNode.children,
+            localScope,
+            depth + 1,
+          ),
         )
       }
       return parsedChildren.join('') || ''
@@ -223,14 +226,144 @@ export class Compiler {
   private resolveBaseNodeChildren = async (
     children: TemplateNode[] | undefined,
     localScope: Scope,
+    depth: number,
   ): Promise<string> => {
     const parsedChildren: string[] = []
     const childrenScope = localScope.copy() // All children share the same scope
     for (const child of children || []) {
-      const parsedChild = await this.resolveBaseNode(child, childrenScope)
+      const parsedChild = await this.resolveBaseNode(
+        child,
+        childrenScope,
+        depth,
+      )
       parsedChildren.push(parsedChild)
     }
     return parsedChildren.join('') || ''
+  }
+
+  /**
+   * Given a base node, returns the list of defined configs and present methods from the supportedMethods.
+   */
+  private getBaseNodeMetadata = async ({
+    baseNode,
+    depth,
+  }: {
+    baseNode: BaseNode
+    depth: number
+  }): Promise<QueryMetadata> => {
+    if (!baseNode) return emptyMetadata()
+
+    if (baseNode.type === 'Fragment') {
+      const childrenMetadata = await Promise.all(
+        (baseNode.children || []).map((child) =>
+          this.getBaseNodeMetadata({
+            baseNode: child,
+            depth,
+          }),
+        ),
+      )
+      return mergeMetadata(...childrenMetadata)
+    }
+
+    // Not computed nodes. Do not contain any configs or methods
+    if (['Comment', 'Text'].includes(baseNode.type)) {
+      return emptyMetadata()
+    }
+
+    if (baseNode.type === 'MustacheTag') {
+      const expression = baseNode.expression
+
+      return await getLogicNodeMetadata({
+        node: expression,
+        supportedMethods: this.context.supportedMethods,
+      })
+    }
+
+    if (baseNode.type === 'ConstTag') {
+      // Only allow equal expressions to define constants
+      const expression = baseNode.expression
+
+      return await getLogicNodeMetadata({
+        node: expression,
+        supportedMethods: this.context.supportedMethods,
+      })
+    }
+
+    if (baseNode.type === 'ConfigTag') {
+      if (depth > 0) {
+        this.baseNodeError(errors.configInsideBlock, baseNode)
+      }
+
+      const expression = baseNode.expression
+      if (
+        expression.type !== 'AssignmentExpression' ||
+        expression.operator !== '=' ||
+        expression.left.type !== 'Identifier'
+      ) {
+        this.baseNodeError(errors.invalidConfigDefinition, baseNode)
+      }
+
+      if (expression.right.type !== 'Literal') {
+        this.baseNodeError(errors.invalidConfigValue, baseNode)
+      }
+
+      const configName = (expression.left as Identifier).name
+      const configValue = (expression.right as Literal).value
+
+      if (configName in this.currentConfig) {
+        this.baseNodeError(errors.configAlreadyDefined(configName), baseNode)
+      }
+
+      this.currentConfig[configName] = configValue
+
+      return {
+        ...emptyMetadata(),
+        config: {
+          [configName]: configValue,
+        },
+      }
+    }
+
+    if (baseNode.type === 'IfBlock' || baseNode.type === 'EachBlock') {
+      const expression = baseNode.expression
+      const conditionMetadata = await getLogicNodeMetadata({
+        node: expression,
+        supportedMethods: this.context.supportedMethods,
+      })
+
+      const elseMetadata = await this.getBaseNodeMetadata({
+        baseNode: baseNode.else,
+        depth: depth + 1,
+      })
+
+      const childrenMetadata = await Promise.all(
+        (baseNode.children || []).map((child) =>
+          this.getBaseNodeMetadata({
+            baseNode: child,
+            depth: depth + 1,
+          }),
+        ),
+      )
+
+      return mergeMetadata(conditionMetadata, elseMetadata, ...childrenMetadata)
+    }
+
+    if (baseNode.type === 'ElseBlock') {
+      const childrenMetadata = await Promise.all(
+        (baseNode.children || []).map((child) =>
+          this.getBaseNodeMetadata({
+            baseNode: child,
+            depth: depth + 1,
+          }),
+        ),
+      )
+      return mergeMetadata(...childrenMetadata)
+    }
+
+    throw this.baseNodeError(
+      errors.unsupportedBaseNodeType(baseNode.type),
+      baseNode,
+    )
   }
 
   private baseNodeError(

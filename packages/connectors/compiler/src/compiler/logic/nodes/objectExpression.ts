@@ -1,6 +1,7 @@
-import { resolveLogicNode } from '..'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
 import errors from '../../../error/errors'
-import { type ResolveNodeProps } from '../types'
+import { mergeMetadata } from '../../utils'
+import { ReadNodeMetadataProps, type ResolveNodeProps } from '../types'
 import { type Identifier, type ObjectExpression } from 'estree'
 
 /**
@@ -28,4 +29,28 @@ export async function resolve({
     resolvedObject[key.name] = value
   }
   return resolvedObject
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<ObjectExpression>) {
+  const propertiesMetadata = await Promise.all(
+    node.properties
+      .filter((prop) => prop.type === 'Property')
+      .map((prop) =>
+        Promise.all([
+          getLogicNodeMetadata({
+            node: prop.key,
+            ...props,
+          }),
+          getLogicNodeMetadata({
+            node: prop.value,
+            ...props,
+          }),
+        ]),
+      ),
+  )
+
+  return mergeMetadata(...propertiesMetadata.flat())
 }

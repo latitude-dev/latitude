@@ -1,6 +1,7 @@
-import { resolveLogicNode } from '..'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
+import { emptyMetadata, mergeMetadata } from '../../utils'
 import { MEMBER_EXPRESSION_METHOD } from '../operators'
-import type { ResolveNodeProps } from '../types'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { MemberExpression, Identifier } from 'estree'
 
 /**
@@ -27,4 +28,19 @@ export async function resolve({
     : (node.property as Identifier).name
 
   return MEMBER_EXPRESSION_METHOD(object, property)
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<MemberExpression>) {
+  return mergeMetadata(
+    await getLogicNodeMetadata({
+      node: node.object,
+      ...props,
+    }),
+    node.computed
+      ? await getLogicNodeMetadata({ node: node.property, ...props })
+      : emptyMetadata(),
+  )
 }

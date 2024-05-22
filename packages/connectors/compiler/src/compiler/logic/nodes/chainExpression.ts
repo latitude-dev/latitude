@@ -1,5 +1,5 @@
-import { resolveLogicNode } from '..'
-import type { ResolveNodeProps } from '../types'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { ChainExpression } from 'estree'
 
 /**
@@ -11,6 +11,16 @@ export async function resolve({
   ...props
 }: ResolveNodeProps<ChainExpression>) {
   return resolveLogicNode({
+    node: node.expression,
+    ...props,
+  })
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<ChainExpression>) {
+  return await getLogicNodeMetadata({
     node: node.expression,
     ...props,
   })

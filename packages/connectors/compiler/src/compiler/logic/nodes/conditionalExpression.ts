@@ -1,5 +1,6 @@
-import { resolveLogicNode } from '..'
-import type { ResolveNodeProps } from '../types'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
+import { mergeMetadata } from '../../utils'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { ConditionalExpression } from 'estree'
 
 /**
@@ -17,4 +18,24 @@ export async function resolve({
     node: condition ? node.consequent : node.alternate,
     ...props,
   })
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<ConditionalExpression>) {
+  return mergeMetadata(
+    await getLogicNodeMetadata({
+      node: node.test,
+      ...props,
+    }),
+    await getLogicNodeMetadata({
+      node: node.consequent,
+      ...props,
+    }),
+    await getLogicNodeMetadata({
+      node: node.alternate,
+      ...props,
+    }),
+  )
 }

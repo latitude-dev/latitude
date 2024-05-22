@@ -1,14 +1,17 @@
 import path from 'path'
-import compile, { type CompileError } from '@latitude-data/sql-compiler'
+import {
+  compile,
+  QueryMetadata,
+  readMetadata,
+  type CompileError,
+} from '@latitude-data/sql-compiler'
 import type QueryResult from '@latitude-data/query_result'
 import { type QueryResultArray } from '@latitude-data/query_result'
 
 import { Source } from '@/source'
-import {
-  type ResolvedParam,
-  type CompiledQuery,
-  ConnectorError,
-  QueryConfig,
+import type {
+  ResolvedParam,
+  CompiledQuery,
   CompilationContext,
   BuildSupportedMethodsArgs,
   SupportedMethodsResponse,
@@ -66,23 +69,10 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
    * and information about the compilation process.
    */
   async compileQuery(context: CompilationContext): Promise<CompiledQuery> {
-    const {
-      request,
-      resolvedParams,
-      accessedParams,
-      queryConfig,
-      queriesBeingCompiled,
-    } = context
+    const { request, resolvedParams, accessedParams, queriesBeingCompiled } =
+      context
     queriesBeingCompiled.push(request.queryPath)
 
-    const configFn = (key: string, value: unknown) => {
-      if (key in queryConfig) {
-        throw new ConnectorError('Option already configured')
-      }
-
-      queryConfig[key as keyof QueryConfig] =
-        value as QueryConfig[keyof QueryConfig]
-    }
     const resolveFn = async (value: unknown): Promise<string> => {
       const resolved = this.resolve(value, resolvedParams.length)
       resolvedParams.push(resolved)
@@ -98,7 +88,6 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
       supportedMethods,
       query: request.sql,
       resolveFn,
-      configFn,
     })
 
     // NOTE: To avoid compiling subqueries that have already
@@ -109,15 +98,44 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
       sql: compiledSql,
       resolvedParams,
       accessedParams,
-      config: queryConfig,
     }
+  }
+
+  /**
+   * Parses the query and returns the configuration defined and methods used.
+   * This definition is static, and only depends on the contents of the query
+   * itself.
+   */
+  readMetadata(sql: string): Promise<QueryMetadata> {
+    // The supported methods object is only needed for their keys, but the actual
+    // function implementations are not used, since they won't be called in this
+    // process. Since some functions require context-specific information just to
+    // be defined, they are mocked in this case.
+    const supportedMethods = this.buildSupportedMethods({
+      context: {
+        request: {
+          sql,
+          queryPath: '', // will not be used
+          params: {}, // will not be used
+        },
+        accessedParams: {},
+        resolvedParams: [],
+        ranQueries: {},
+        queriesBeingCompiled: [],
+      },
+      resolveFn: async () => '',
+    })
+    return readMetadata({
+      query: sql,
+      supportedMethods,
+    })
   }
 
   runCompiled(request: CompiledQuery): Promise<QueryResult> {
     return this.runQuery(request)
   }
 
-  buildSupportedMethods({
+  private buildSupportedMethods({
     context,
     resolveFn,
   }: BuildSupportedMethodsArgs): SupportedMethodsResponse {
@@ -244,7 +262,6 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
           {
             accessedParams,
             resolvedParams,
-            queryConfig: {}, // Subquery config does not affect the root query
             ranQueries,
             queriesBeingCompiled,
           },
@@ -290,7 +307,6 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
           {
             accessedParams,
             resolvedParams: [], // Subquery should not have access to parent queries' resolved parameters
-            queryConfig: {}, // Subquery config does not affect the root query
             ranQueries,
             queriesBeingCompiled,
           },

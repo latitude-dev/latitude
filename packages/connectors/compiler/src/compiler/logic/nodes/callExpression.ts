@@ -1,7 +1,8 @@
-import { resolveLogicNode } from '..'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
 import CompileError from '../../../error/error'
 import errors from '../../../error/errors'
-import type { ResolveNodeProps } from '../types'
+import { mergeMetadata } from '../../utils'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import { NodeType } from '../types'
 import type { Identifier, SimpleCallExpression } from 'estree'
 
@@ -108,4 +109,35 @@ async function runMethod({
   }
   if (willInterpolate && !result) return ''
   return result
+}
+
+export async function readMetadata({
+  node,
+  supportedMethods,
+  ...props
+}: ReadNodeMetadataProps<SimpleCallExpression>) {
+  const argumentsMetadata = await Promise.all(
+    node.arguments.map((arg) =>
+      getLogicNodeMetadata({
+        node: arg,
+        supportedMethods,
+        ...props,
+      }),
+    ),
+  )
+
+  const calleeMetadata = await getLogicNodeMetadata({
+    node: node.callee,
+    supportedMethods,
+    ...props,
+  })
+
+  if (node.callee.type === NodeType.Identifier) {
+    const methodName = node.callee.name
+    if (methodName in supportedMethods) {
+      calleeMetadata.methods.add(methodName)
+    }
+  }
+
+  return mergeMetadata(calleeMetadata, ...argumentsMetadata)
 }

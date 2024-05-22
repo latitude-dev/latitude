@@ -1,7 +1,8 @@
-import { resolveLogicNode } from '..'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
 import errors from '../../../error/errors'
+import { mergeMetadata } from '../../utils'
 import { ASSIGNMENT_OPERATOR_METHODS } from '../operators'
-import type { ResolveNodeProps } from '../types'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type {
   AssignmentExpression,
   AssignmentOperator,
@@ -128,4 +129,14 @@ async function assignToProperty({
   const updatedValue = assignmentMethod(originalValue, assignmentValue)
   object[property] = updatedValue
   return updatedValue
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<AssignmentExpression>) {
+  return mergeMetadata(
+    await getLogicNodeMetadata({ node: node.right, ...props }),
+    await getLogicNodeMetadata({ node: node.left, ...props }),
+  )
 }

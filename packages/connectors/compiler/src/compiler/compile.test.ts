@@ -1,13 +1,11 @@
-import compile from '..'
+import { compile } from '..'
 import CompileError from '../error/error'
 import { describe, it, expect } from 'vitest'
 
-const configFn = async () => ({})
 const compileQuery = (query: string) => {
   return compile({
     query,
     resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-    configFn,
     supportedMethods: {},
   })
 }
@@ -70,7 +68,6 @@ describe('parameterisation of interpolated values', async () => {
     const result = await compile({
       query: sql,
       resolveFn,
-      configFn,
       supportedMethods: {},
     })
 
@@ -473,7 +470,6 @@ describe('custom methods', async () => {
     const sql = '{fooFn()}'
     const result = await compile({
       query: sql,
-      configFn,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
       supportedMethods: {
         fooFn: async () => 'bar',
@@ -489,7 +485,6 @@ describe('custom methods', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-        configFn,
         supportedMethods: {
           fooFn: async <T extends boolean>(
             _: T,
@@ -508,7 +503,6 @@ describe('custom methods', async () => {
     const result = await compile({
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      configFn,
       supportedMethods: {
         fooFn: async <T extends boolean>(
           _: T,
@@ -528,7 +522,6 @@ describe('custom methods', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-        configFn,
         supportedMethods: {
           fooFn: async () => {
             throw new Error('bar')
@@ -565,7 +558,6 @@ describe('variable member access', async () => {
       return compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-        configFn,
         supportedMethods: {
           undefined: async <T extends boolean>(): Promise<
             T extends true ? string : unknown
@@ -594,7 +586,6 @@ describe('variable member access', async () => {
     const result = await compile({
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      configFn,
       supportedMethods: {
         now: async <T extends boolean>(): Promise<
           T extends true ? string : unknown
@@ -644,7 +635,6 @@ describe('variable member access', async () => {
       return compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-        configFn,
         supportedMethods: {
           undefined: async <T extends boolean>(): Promise<
             T extends true ? string : unknown
@@ -673,7 +663,6 @@ describe('variable member access', async () => {
     const result = await compile({
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      configFn,
       supportedMethods: {
         now: async <T extends boolean>(): Promise<
           T extends true ? string : unknown
@@ -708,7 +697,6 @@ describe('variable member access', async () => {
       compile({
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-        configFn,
         supportedMethods: {
           getFoo: async <T extends boolean>() =>
             ({
