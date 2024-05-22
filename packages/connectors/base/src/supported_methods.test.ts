@@ -384,7 +384,7 @@ describe('runQuery function', async () => {
     expect(ranQueries[1]!.sql).toBe('($[[1]])($[[1]])($[[1]])')
   })
 
-  it('does not have access to parent global parameters', async () => {
+  it('has access to parent global parameters', async () => {
     const connector = new MockConnector()
 
     const refQuerySql = "{param('foo')}"
@@ -393,8 +393,7 @@ describe('runQuery function', async () => {
     const mainQuerySql = `{results = runQuery('${refQueryPath}')}`
     const queryPath = addFakeQuery(mainQuerySql)
 
-    const action = () => connector.run({ queryPath })
-    const error = await getExpectedError(action, CompileError)
-    expect(error.code).toBe('function-call-error')
+    const action = () => connector.run({ queryPath, params: { foo: 'bar' } })
+    expect(action).not.toThrow()
   })
 })
