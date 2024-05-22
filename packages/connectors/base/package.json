@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/base-connector",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "license": "LGPL",
   "description": "Base connector for Latitude",
   "scripts": {

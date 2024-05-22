@@ -1,5 +1,11 @@
 # @latitude-data/base-connector
 
+## 1.1.2
+
+### Patch Changes
+
+- 155f9e0: Now queries ran through runQuery have access to the request's global parameters
+
 ## 1.1.1
 
 ### Patch Changes

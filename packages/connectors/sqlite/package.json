@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/sqlite-connector",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "license": "LGPL",
   "description": "SQlite connector for Latitude",
   "type": "module",
