@@ -32,7 +32,7 @@ Then you can access a specific row with:
 SELECT *
 FROM table
 WHERE payment_method IS NOT null
-{#each row in results}
+{#each results as row}
   OR payment_method = {payment_type = row['payment_method']}
 {/each}
 
@@ -72,7 +72,7 @@ Using the results of the first query, `runQuery` is called to dynamically genera
 {results = runQuery('payment_methods')}   -- Here we put in a variable the results from the payment_methods query
 SELECT
   order_id,
-  {#each row in results}    -- We create a loop to add the specfied SQL code for each row after run payment_methods
+  {#each results as row}    -- We create a loop to add the specfied SQL code for each row after run payment_methods
     {payment_type = row['payment_method']}    -- We create a variable that contain the value from payment_method column
     SUM(
         CASE WHEN payment_method = {payment_type}    -- We compare the current value of the loop with the
