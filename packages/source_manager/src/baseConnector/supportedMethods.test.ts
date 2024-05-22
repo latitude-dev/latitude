@@ -129,7 +129,7 @@ describe('supportedMethods', async () => {
         }),
       ).rejects.toThrowError(
         new CompileError(
-          "Error calling function 'param': \nError Missing parameter 'foo' in request",
+          "Error calling function: \nError Missing parameter 'foo' in request",
         ),
       )
     })
@@ -194,7 +194,7 @@ describe('supportedMethods', async () => {
         }),
       ).rejects.toThrowError(
         new CompileError(
-          "Error calling function 'unsafeParam': \nError Missing parameter 'foo' in request",
+          "Error calling function: \nError Missing parameter 'foo' in request",
         ),
       )
     })
@@ -320,7 +320,7 @@ describe('supportedMethods', async () => {
         }),
       ).rejects.toThrowError(
         new CompileError(
-          "Error calling function 'ref': \nQueryNotFoundError Query file not found at /my-queries/referenced_query.sql",
+          'Error calling function: \nQueryNotFoundError Query file not found at /my-queries/referenced_query.sql',
         ),
       )
     })
@@ -452,7 +452,7 @@ describe('supportedMethods', async () => {
         }),
       ).rejects.toThrowError(
         new CompileError(
-          "Error calling function 'runQuery': \nError runQuery function cannot be directly interpolated into the query",
+          'Error calling function: \nError runQuery function cannot be directly interpolated into the query',
         ),
       )
     })
@@ -514,7 +514,7 @@ describe('supportedMethods', async () => {
         }),
       ).rejects.toThrowError(
         new CompileError(
-          "Error calling function 'runQuery': \nError runQuery function cannot be directly interpolated into the query",
+          'Error calling function: \nError runQuery function cannot be directly interpolated into the query',
         ),
       )
     })

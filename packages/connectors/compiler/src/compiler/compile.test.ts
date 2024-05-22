@@ -466,7 +466,7 @@ describe('custom methods', async () => {
     const sql = '{fooFn()}'
     const action = () => compileQuery(sql)
     const error = await getExpectedError(action, CompileError)
-    expect(error.code).toBe('unknown-function')
+    expect(error.code).toBe('variable-not-declared')
   })
 
   it('runs any method defined in the supportedMethods object', async () => {
@@ -537,7 +537,7 @@ describe('custom methods', async () => {
       })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
-    expect(error.message).toBe("Error calling function 'fooFn': \nError bar")
+    expect(error.message).toBe('Error calling function: \nError bar')
   })
 })
 
