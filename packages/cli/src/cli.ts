@@ -44,8 +44,8 @@ CLI.command('start')
   .option('--template', 'Template to use for the Latitude app')
   .option('--port', 'Port to run the Latitude app on')
   .option(
-    '--next',
-    'Whether to display next releases of Latitude as available versions',
+    '--canary',
+    'Whether to display canary releases of Latitude as available versions',
   )
   .action(startCommand)
 
@@ -53,8 +53,8 @@ CLI.command('update')
   .describe('Update latitude app. You can define the version with --version')
   .option('--fix', 'Installs the version defined in latitude.json')
   .option(
-    '--next',
-    'Whether to display next releases of Latitude as available versions',
+    '--canary',
+    'Whether to display canary releases of Latitude as available versions',
   )
   .action(updateCommand)
 

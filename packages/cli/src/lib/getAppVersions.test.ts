@@ -48,7 +48,7 @@ describe('getAppVersions with next flag', () => {
         const versions = [
           '1.0.0',
           '1.1.0',
-          '2.0.0-next.1',
+          '2.0.0-canary.1',
           '2.0.0-next.2',
           '2.0.0',
         ]
@@ -66,11 +66,11 @@ describe('getAppVersions with next flag', () => {
     vi.mocked(exec).mockRestore()
   })
 
-  it('should return next releases when the next flag is set to true', async () => {
-    const options = { next: true }
+  it('should return canary releases when the next flag is set to true', async () => {
+    const options = { canary: true }
     const results = await getLatitudeVersions(options)
 
-    const includesNextVersions = results.some((v) => v.includes('next'))
+    const includesNextVersions = results.some((v) => v.includes('canary'))
 
     expect(results).toBeInstanceOf(Array)
     expect(results.length).toBeGreaterThan(0)
@@ -78,7 +78,7 @@ describe('getAppVersions with next flag', () => {
   })
 
   it('should filter out next releases when the next flag is set to false', async () => {
-    const options = { next: false }
+    const options = { canary: false }
     const results = await getLatitudeVersions(options)
 
     const includesNextVersions = results.some((v) => v.includes('next'))
