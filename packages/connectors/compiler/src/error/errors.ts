@@ -107,16 +107,41 @@ export default {
     code: 'constant-reassignment',
     message: 'Cannot reassign a constant',
   },
+  invalidAssignment: {
+    code: 'invalid-assignment',
+    message: 'Invalid assignment',
+  },
+  invalidUpdate: (operation: string, type: string) => ({
+    code: 'invalid-update',
+    message: `Cannot use ${operation} operation on ${type}`,
+  }),
+
+  propertyNotExists: (property: string) => ({
+    code: 'property-not-exists',
+    message: `Property '${property}' does not exist on object`,
+  }),
   unknownFunction: (name: string) => ({
     code: 'unknown-function',
     message: `Unknown function: ${name}`,
   }),
-  functionCallError: (name: string, err: unknown) => {
+  notAFunction: (objectType: string) => ({
+    code: 'not-a-function',
+    message: `Object '${objectType}' is callable`,
+  }),
+  namedFunctionCallError: (name: string, err: unknown) => {
     const error = err as Error
     const errorKlassName = getKlassName(error)
     return {
       code: 'function-call-error',
       message: `Error calling function '${name}': \n${errorKlassName} ${error.message}`,
+    }
+  },
+  unnamedFunctionCallError: (err: unknown) => {
+    const error = err as Error
+    const errorKlassName = getKlassName(error)
+    return {
+      code: 'function-call-error',
+      message: `Error calling function: \n${errorKlassName} ${error.message}`,
     }
   },
   invalidFunctionResultInterpolation: {
