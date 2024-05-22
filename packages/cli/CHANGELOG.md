@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.6
+
+### Patch Changes
+
+- a275f1a: Change --next by --canary in CLI update and start commands
+
 ## 1.6.5
 
 ### Patch Changes
