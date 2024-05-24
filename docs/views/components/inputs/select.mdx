@@ -10,6 +10,8 @@ description: 'Create a dropdown with options for a parameter.'
 The `Select` component is used to create a dropdown with predefined options for a parameter. This can be useful when you want to provide a list of options for a parameter that the user can choose from, either to limit the possible values or to make it easier for the user to select a value.
 This component can be used both with predefined options and with dynamic options that are loaded from a query result.
 
+<Note>If the user has not selected any option, the parameter will NOT be sent in any query request. This means that you will want to add a fallback to your query to handle this case. For more information, check out [Query Parameters](/queries/logic/parameters)</Note>
+
 ## Options
 
 ### Predefined options

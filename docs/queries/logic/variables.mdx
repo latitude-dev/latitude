@@ -11,15 +11,16 @@ Variables and constants store values you can later use anywhere in your query.
 Variables are placeholders that can be assigned and reassigned values throughout the SQL code.
 
 To assign a value to a variable, use the equal sign `=` followed by the value.
-```
+```jsx
 {name = 'foo'}
 {age = 30}
 {sum = 2 + 4} 
 ```
 
-Example in use:
-```sql
----- Defining the variable and SQL code ----
+For example, take a look at the following Latitude Query, and what will actually be compiled and executed in the database:
+<CodeGroup>
+```jsx Your Query
+/* Defining the variable and SQL code */
 
 {sum = 2 + 4} 
 
@@ -28,33 +29,40 @@ FROM table
 WHERE id = {sum}
 
 ```
-It's transformed into:
-```
 
+```sql Compiled SQL
 SELECT *
-FROM database
+FROM table
 WHERE id = 6
 ```
+</CodeGroup>
+
 ### Incrementing
 Variables can be modified using operations such as addition.
-```sql
-{counter = 10} -- Define the variable
+
+<CodeGroup>
+```jsx Your Query
+{counter = 10} /* Define the variable */
 
 SELECT *
 FROM table
 WHERE id != null
 AND (
-    {#each [1, 2, 3] as products, i}
-        id = {counter}                       -- Print the value of the variable
-        {counter = counter + 10}             -- Increment the value of the variable
-        {#if i+1 < products.length} OR {/if} -- Add an OR to every element except the last one
+    {#each [1, 2, 3] as products, index}
+        /* Print the value of the variable */
+        id = {counter}
+
+        /* Add an 'OR' at the end to every element except the last one */
+        {#if index + 1 < products.length}
+            OR
+        {/if}
+
+        /* Increment the value of the variable */             
+        {counter = counter + 10}
     {/each}
 )
-
 ```
-It is transformed into:
-```sql
-
+```sql Compiled SQL
 SELECT *
 FROM table
 WHERE id != null 
@@ -64,45 +72,60 @@ AND (
   id = 30
 )
 ```
+</CodeGroup>
 
 ## Constants
 Constants are similar to variables but, once defined, their value cannot be changed. Also the main syntax difference is constants are defined using the `@const` keyword.
 
-```
+```jsx
 {@const name = 'value'}
 ```
 
-```sql
----- Defining the constant and SQL code ----
-
-{@const birthday = '2000/02/28'} 
+```jsx Your Query
+{@const birthday = '2000/02/28'} /* Defined a constant */
 
 SELECT *
 FROM table
 {#if birthday = '2000/02/28'}
-    {birthday = '2024/12/31'} 
+    {birthday = '2024/12/31'} /* Reassigning the constant */
 {/if}
-
-
 ```
-It is transformed into:
-```
-
+```sql Output
 '!Error: Cannot reassign a constant'
 ```
 
 ## Scope
 ### Global
 Variables defined outside of any logic blocks are considered global and can be modified and accessed throughout the entire code.
-```
+```jsx
 {var1 = 'latitude'}
 ```
+
+Variables can be accessed and modified anywhere in the code.
+<CodeGroup>
+```jsx Your Query
+{name = 'latitude'} /* Define the variable */
+
+SELECT *
+FROM table
+WHERE name = {name}
+{name = 'longitude'} /* Reassign the variable */
+OR name = {name}
+```
+```sql Compiled SQL
+SELECT *
+FROM table
+WHERE name = 'latitude'
+OR name = 'longitude'
+```
+</CodeGroup>
+
 
 ### Local Variables
 Variables defined within logic blocks are local to that block. They cannot be accessed outside the block in which they are defined.
 
-``` 
+``` jsx
 {#if condition}
-    {var2 = 'localValue'} -- Accessible only within this block
+    {var2 = 'localValue'} /* Accessible only within this block */
 {/if}
 ```

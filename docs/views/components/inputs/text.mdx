@@ -12,6 +12,8 @@ import InputProperties from '/snippets/components/input/properties.mdx'
 
 Inputs provide a straightforward way to set the values of the [Global Parameters](/views/basics/parameters) of your views. Basically they let you provide a user interface to your queries.
 
+<Note>When an input is empty, the parameter will NOT be sent in any query request. This means that you will want to add a fallback to your query to handle this case. For more information, check out [Query Parameters](/queries/logic/parameters)</Note>
+
 ## Basic usage
 
 The most basic usage of an input is to provide a text input for a parameter. You can do this by using the `param` prop to specify the name of the parameter you want to control. `param` is mandatory so if you don't include it the app will return an error.

@@ -13,7 +13,7 @@ The parameters are values that are passed to the SQL query when it is executed, 
 
 In the query, the parameters can be used with the `param()` function. This function retrieves the value specified by the user and inserts it safely into the query.
 
-```sql
+```jsx
 SELECT *
 FROM companies
 WHERE id = {param('company_id')}
@@ -21,20 +21,25 @@ WHERE id = {param('company_id')}
 
 ### Fallback
 
-If there is the parameter is not found, the query will fail. To avoid this, you can set a fallback value in the `param()` function.
+If the required parameter is not found in the request, the query will fail. To avoid this, you can set a fallback value in the `param()` function.
 
-```sql
+```jsx
 SELECT *
 FROM companies
-WHERE id = {param('company_id', 'Latitude')} -- If no company_id is found, it will use 'Latitude' as the value
+WHERE id = {param('company_id', 'Latitude')}
+/* If no company_id is found, it will use 'Latitude' as the value */
 ```
 
-You could for example use the fallback value to check if the parameter is set or not before applying the filter.
+### Check if a parameter is present
+
+Requesting for a parameter that is not present will result in an error. To avoid this, you can check if the parameter is present using a [conditional statement](/queries/logic/if-else) and `false` as the fallback value.
+
+```jsx
+SELECT * 
+FROM users
+{#if param('user_id', false)}
+  /* The parameter is present in the request */
+  WHERE id = {param('user_id')}
+{/if}
 
 ```sql
-SELECT *
-FROM companies
-{#if param('company_id', false)} -- If the parameter is not set, it will not apply the filter
-  WHERE id = {param('company_id')}
-{/if}
-````

@@ -10,124 +10,104 @@ Loops allow you to add a SQL code for each item in a collection.
 
 ## Syntax
 
-The general syntax for defining a loop is as follows:
-
+The syntax for a loop is defined by three main components:
+```jsx
+{#each collection as item, index}
+  /* code */
+{/each}
 ```
-{#each collection as alias}
-    Your SQL code template here
+  - **Collection**: An iterable object that contains the items to be looped over. This can be a manual array, an expression or an existing variable.
+  - **Item**: The current element in the collection for this iteration. This will define a new variable only available within the loop.
+  - **Index** (optional): The current index of the item in the collection, starting by 0. As with the item, this will define a new variable only available within the loop.
+
+Let's see an example of how it works:
+<CodeGroup>
+```jsx Your Query
+SELECT
+{#each ["a", "b", "c", "d", "e"] as column_name, i}
+  {i} AS {column_name},
+{/each}
+```
+```sql Compiled SQL
+SELECT
+  0 AS "a",
+  1 AS "b",
+  2 AS "c",
+  3 AS "d",
+  4 AS "e",
+```
+</CodeGroup>
+
+You can also add an `{:else}` block after the loop, which would be executed if the collection is empty:
+
+```jsx
+{#each collection as item, index}
+  /* code for each item */
+{:else}
+  /* code if there are no items */
 {/each}
 ```
 
-Consider the scenario where you need to aggregate amounts by categories such as fashion, technology, and food. Instead of writing repetitive code by hand, you can use a loop to automate the process:
+## Use cases
 
-```
+### Avoiding repetitive code
+
+Now, consider the scenario where you need to aggregate amounts by categories such as fashion, technology, food and sport. The SQL code would look like this:
+
+```sql
 SELECT
     sum(case when category = 'fashion' then amount end) as fashion_amount,
     sum(case when category = 'technology' then amount end) as technology_amount,
     sum(case when category = 'food' then amount end) as food_amount
+    sum(case when category = 'sport' then amount end) as sport_amount
 FROM table
 ```
 
-To automate this, a loop can be constructed as shown below:
+Instead of writing repetitive code, you can use a loop to iterate over the categories and generate the SQL code dynamically:
 
-```
+<CodeGroup>
+```jsx Your Query
+{categories = ["fashion", "technology", "food", "sport"]}
+
 SELECT
-    {#each ["fashion", "technology", "food"] as category}
-        sum(case when category = '{category}' then amount end) as {category}_amount,
+    {#each categories as category_name, i}
+        sum(case when category = {category_name} then amount end) as {category_name}_amount
+
+        /* Add a comma at the end of each item except the last one */
+        {#if i + 1 < categories.length} , {/if}
     {/each}
 FROM table
 ```
-
-The three key concepts are **1 Collection**, **2 Alias** and **3 SQL Code Template**.
-
-## 1 Collection
-
-A collection refers to the list of items that the loop iterates over. There are two main types of collections that are supported:
-
-### runQuery
-
-Executes a given query and uses the result set as the collection.
-
-```
-{#each runQuery('query_name') as alias}
-```
-
-To include values from another query, the one your are running, in the code is as follows. You can see [SQL Code](#sql-code) section to know more.
-
-```
-{#each runQuery('users_filtered') as users}
-    name != users.first_name
-{/each}
-```
-
-<Note>Take into account that running other queries with runQuery may make the query slower</Note>
-
-### Manual Array
-
-You can define a list of items as a collection. These items can be strings, dates, numbers, or variables.
-
-```
-SELECT 
-    {#each ["fashion", "technology", "food"] as category}
-        sum(case when category = '{category}' then amount end) as {category}_amount,
-    {/each}
-FROM table
-```
-
-Variables can be included within a manual list to introduce dynamic elements:
-
-```
+```sql Compiled SQL
 SELECT
-    {#each [variable_manager, variable_ceo, variable_cto] as role_name}
-        name != role_name
+    sum(case when category = 'fashion' then amount end) as fashion_amount,
+    sum(case when category = 'technology' then amount end) as technology_amount,
+    sum(case when category = 'food' then amount end) as food_amount,
+    sum(case when category = 'sport' then amount end) as sport_amount
+FROM table
+```
+</CodeGroup>
+
+### Iterating over other query results
+
+You can also use loops to iterate over the results of another query. For example, if you have a list of users and you want to get the total amount spent by each user, you can use a loop to iterate over the user IDs:
+
+<CodeGroup>
+```jsx Your Query
+{results = runQuery('users')}
+
+SELECT *
+FROM table
+WHERE user_id IN (
+    {#each results as row, i}
+        {#if i > 0} , {/if} /* Add a comma before each item except the first one */
+        {row.id}
     {/each}
+)
+```
+```sql Compiled SQL
+SELECT *
 FROM table
+WHERE user_id IN (1, 2, 3, 4, 5) -- Assuming the user IDs are 1, 2, 3, 4, 5
 ```
-
-## 2 Alias
-
-The alias serves as a reference in the SQL code to each item within the collection. It is defined in the loop's opening tag: `{#each collection as alias}`.
-
-## 3 SQL Code
-
-This is the template for the SQL code that will be executed for each item in the collection. It is enclosed between the `{#each}` and `{/each}` tags.
-
-### Loop Values
-
-Values from each loop iteration can be included in the SQL code. For instance, to reference a column value from a query, use the syntax `alias.column_name`, e.g., `users.first_name`.
-
-Refer to [runQuery](#runquery) for examples.
-
-### Loop Conditions
-
-Conditions can be applied to modify the SQL code based on the iteration count, such as omitting a comma on the last item to prevent SQL errors.
-
-```
-SELECT
-    {#each collection as list}
-        {list}
-        {#if list < 4},{/if}  -- This avoids including a comma on the last item, preventing SQL errors.
-    {/each}
-FROM table
-
-```
-
-It is transformed into:
-
-```
-SELECT
-    id,
-    name,
-    workspace_name -- It doesn't include a comma beacuse we added a condition to avoid it if item is < 4
-FROM table
-```
-
-Conditional logic such as `{:else}` and `{:if else}` can also be utilized for more complex scenarios. For instace if the collection has no values we will have a fallback with `{:else}`
-
-```
-{#each members as user}
-    WHERE user.signup > '20-08-2024'
-{:else}
-    WHERE user.signup < '20-08-2024'
-{/each}
-```
+</CodeGroup>
