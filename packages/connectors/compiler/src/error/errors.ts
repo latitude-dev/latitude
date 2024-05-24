@@ -128,15 +128,7 @@ export default {
     code: 'not-a-function',
     message: `Object '${objectType}' is callable`,
   }),
-  namedFunctionCallError: (name: string, err: unknown) => {
-    const error = err as Error
-    const errorKlassName = getKlassName(error)
-    return {
-      code: 'function-call-error',
-      message: `Error calling function '${name}': \n${errorKlassName} ${error.message}`,
-    }
-  },
-  unnamedFunctionCallError: (err: unknown) => {
+  functionCallError: (err: unknown) => {
     const error = err as Error
     const errorKlassName = getKlassName(error)
     return {

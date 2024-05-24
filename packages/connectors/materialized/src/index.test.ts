@@ -84,7 +84,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nMaterializedFileNotFoundError materialize query not found for: materializedRef('../query.sql')",
+        "Error calling function: \nMaterializedFileNotFoundError materialize query not found for: materializedRef('../query.sql')",
       ),
     )
   })
@@ -117,9 +117,7 @@ describe('materializedRef function', async () => {
         },
       }),
     ).rejects.toThrowError(
-      new CompileError(
-        "Error calling function 'materializedRef': \nError Invalid query name",
-      ),
+      new CompileError('Error calling function: \nError Invalid query name'),
     )
   })
 
@@ -156,7 +154,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nError '../query.sql' query can not have parameters to filter the SQL query.",
+        "Error calling function: \nError '../query.sql' query can not have parameters to filter the SQL query.",
       ),
     )
   })
@@ -191,7 +189,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nError Query 'query.sql' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file.",
+        "Error calling function: \nError Query 'query.sql' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file.",
       ),
     )
   })
@@ -226,7 +224,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nError Query 'query.sql' is not a materialized query. \nYou can have configured {@config materialized_query = false} in the query file. Set it to 'true'",
+        "Error calling function: \nError Query 'query.sql' is not a materialized query. \nYou can have configured {@config materialized_query = false} in the query file. Set it to 'true'",
       ),
     )
   })
@@ -261,7 +259,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nError materializedRef function cannot be used inside a logic block",
+        'Error calling function: \nError materializedRef function cannot be used inside a logic block',
       ),
     )
   })
@@ -294,7 +292,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function 'materializedRef': \nError Query reference to a parent, resulting in cyclic references.",
+        'Error calling function: \nError Query reference to a parent, resulting in cyclic references.',
       ),
     )
   })
