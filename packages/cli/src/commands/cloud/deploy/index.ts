@@ -45,19 +45,15 @@ async function deploy({ app, digest }: { app: string; digest: string }) {
 
     if (payload.done) {
       output = payload.message
-    } else if (payload?.deploy?.status === 'in_progress') {
-      const message = payload.message
-
+    } else {
       clock.tick((diff) => {
         const mm = String(diff.getUTCMinutes()).padStart(2, '0')
         const ss = String(diff.getUTCSeconds()).padStart(2, '0')
 
-        spinner.text = message + ' ' + `${mm}:${ss}`
+        spinner.text = payload.message + ' ' + `${mm}:${ss}`
       })
 
       clock.start()
-    } else {
-      spinner.text = payload.message
     }
   })
 
