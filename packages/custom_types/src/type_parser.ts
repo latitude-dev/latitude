@@ -34,6 +34,23 @@ export function format(value: unknown): string {
   return encodeURIComponent(String(value))
 }
 
+export function formatAll(values: Record<string, unknown>): string {
+  return Object.entries(values)
+    .map(([key, value]) => {
+      if (value instanceof RichDate) {
+        return `${key}=${value.toString()}:${value.format}`
+      }
+
+      if (Array.isArray(value)) {
+        return value.map((v) => `${key}[]=${v}`).join('&')
+      }
+
+      return `${key}=${value}`
+    })
+    .filter(Boolean)
+    .join('&')
+}
+
 export function parse(value: string): unknown {
   if (!value.startsWith('$')) return decodeURIComponent(value)
 
@@ -55,4 +72,27 @@ export function parse(value: string): unknown {
   }
 
   return decodeURIComponent(value) // Unhandled type
+}
+
+export function parseFromUrl(url: string): Record<string, unknown> {
+  const searchParams = new URLSearchParams(url)
+  const params: Record<string, unknown> = {}
+
+  for (const [key, rawValue] of searchParams) {
+    const value = parse(rawValue)
+
+    if (key.endsWith('[]')) {
+      const arrKey = key.slice(0, -2)
+      const arrVal = (
+        Array.isArray(params[arrKey]) ? params[arrKey] : []
+      ) as unknown[]
+      arrVal.push(value)
+      params[arrKey] = arrVal
+      continue
+    }
+
+    params[key] = value
+  }
+
+  return params
 }

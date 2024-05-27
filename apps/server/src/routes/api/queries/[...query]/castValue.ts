@@ -1,18 +1,18 @@
-import { RichDate, parse } from '@latitude-data/custom_types'
+import { RichDate } from '@latitude-data/custom_types'
 
-export type IValue = string | number | boolean | Date | null
+export type IValue = string | number | boolean | Date | null | Array<IValue>
 
-export default function castValue(value: string): IValue {
+export default function castValue(value: unknown): IValue {
   // TODO: Make this function an actual service with proper testing
-  const parsedValue = parse(value)
-  if (typeof parsedValue !== 'string') {
-    if (parsedValue instanceof RichDate) return parsedValue.resolve()
-    return parsedValue as IValue
+  if (value === 'true') return true
+  if (value === 'false') return false
+
+  if (value instanceof RichDate) return value.resolve()
+  if (!isNaN(Number(value))) return Number(value)
+
+  if (Array.isArray(value)) {
+    return value.map(castValue)
   }
 
-  if (parsedValue === 'true') return true
-  if (parsedValue === 'false') return false
-  if (!isNaN(Number(parsedValue))) return Number(parsedValue)
-
-  return parsedValue
+  return value as IValue
 }

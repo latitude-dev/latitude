@@ -122,3 +122,40 @@ You can customize the text that is displayed in the dropdown with the following 
 	placeholder="Select a city..."
 />
 ```
+
+## Multiple selection
+
+You can also allow multiple selections by adding the `multiple` prop. This will display a checkbox next to each option that the user can select.
+
+```jsx
+<Select
+	query="cities"
+	param="city_ids"
+	multiple
+/>
+```
+
+When multiple selections are enabled, the parameter value will be an array of selected values. You can iterate over this array using the `{#each}` block in your queries.
+
+<CodeGroup>
+```jsx Your query
+SELECT *
+FROM cities
+WHERE
+{#each param('city_ids') as city, index}
+	{#if index > 0} OR {/if}
+	id = {city}
+{/each}
+```
+
+```sql Compiled SQL
+SELECT *
+FROM cities
+WHERE
+	id = 'NYC'
+	OR id = 'LA'
+	OR id = 'SF'
+```
+</CodeGroup>
+
+Check out [Queries Loops](/queries/logic/loops) for more information on how to iterate over arrays in queries.

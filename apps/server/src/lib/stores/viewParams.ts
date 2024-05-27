@@ -1,7 +1,7 @@
 import { writable, get, Writable, Readable, derived } from 'svelte/store'
 import { browser } from '$app/environment'
 import { replaceState } from '$app/navigation'
-import { parse } from '@latitude-data/custom_types'
+import { parseFromUrl } from '@latitude-data/custom_types'
 import { LatitudeApi } from '@latitude-data/client'
 
 export type ViewParams = {
@@ -11,12 +11,8 @@ export type ViewParams = {
 const getParamsFromUrl = () => {
   if (!browser) return {}
 
-  const urlParams = new URLSearchParams(globalThis?.location?.search)
-  const newParams: ViewParams = {}
-  urlParams.forEach((value, key) => {
-    newParams[key] = parse(value)
-  })
-  return newParams
+  const url = new URL(globalThis?.location?.href)
+  return parseFromUrl(url.search)
 }
 
 export function setUrlParam(newParams: ViewParams) {
