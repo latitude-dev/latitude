@@ -14,6 +14,8 @@ export default {
     }),
   ],
   external: [
+    'path',
+    '@latitude-data/sql-compiler',
     '@latitude-data/base-connector',
     '@latitude-data/query_result',
     '@latitude-data/duckdb-connector'

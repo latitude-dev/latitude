@@ -41,6 +41,11 @@ function mapDataTypeToParquet(dataType: DataType): ParquetType {
 }
 
 const ROW_GROUP_SIZE = 4096 // PARQUET BATCH WRITE
+type Result = { filePath: string; queryRows: number }
+export type WriteParquetParams = QueryRequest & {
+  batchSize?: number
+  onDebug?: (_p: { memoryUsageInMb: string }) => void
+}
 
 /**
  * In order to hash a SQL query, we need to know the source path
@@ -61,23 +66,21 @@ export abstract class StorageDriver {
     params,
     batchSize,
     onDebug,
-  }: QueryRequest & {
-    batchSize?: number
-    onDebug?: (_p: { memoryUsageInMb: string }) => void
-  }): Promise<string> {
+  }: WriteParquetParams) {
+    let writer: ParquetWriter
     const source = await this.manager.loadFromQuery(queryPath)
-    const compiled = await source.compileQuery({ queryPath, params })
     const { config, sqlHash } = await source.getMetadataFromQuery(queryPath)
 
     if (!config.materialize_query) {
       throw new Error('Query is not configured as materialized')
     }
 
-    let writer: ParquetWriter
+    const compiled = await source.compileQuery({ queryPath, params })
 
     let currentHeap = 0
-    return new Promise<string>((resolve) => {
-      let url: string
+    return new Promise<Result>((resolve) => {
+      let filePath: string
+      let queryRows = 0
 
       const size = batchSize ?? 1000
       source.batchQuery(compiled, {
@@ -85,14 +88,14 @@ export abstract class StorageDriver {
         onBatch: async (batch) => {
           if (!writer) {
             const schema = this.buildParquetSchema(batch.fields)
-            url = await this.getUrl({
+            filePath = await this.getUrl({
               sqlHash: sqlHash!,
               queryName: queryPath,
               sourcePath: source.path,
               ignoreMissingFile: true,
             })
 
-            writer = await ParquetWriter.openFile(schema, url, {
+            writer = await ParquetWriter.openFile(schema, filePath, {
               rowGroupSize: size > ROW_GROUP_SIZE ? size : ROW_GROUP_SIZE,
             })
           }
@@ -119,10 +122,11 @@ export abstract class StorageDriver {
               // to break the process.
             }
           }
+          queryRows += batch.rows.length
 
           if (batch.lastBatch) {
             await writer.close()
-            resolve(url)
+            resolve({ filePath, queryRows })
           }
         },
       })

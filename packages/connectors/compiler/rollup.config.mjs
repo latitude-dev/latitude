@@ -34,5 +34,5 @@ export default {
       exclude: ['**/__tests__', '**/*.test.ts'],
     }),
   ],
-  external: ['acorn', 'locate-character', 'code-red'],
+  external: ['acorn', 'locate-character', 'code-red', 'node:crypto'],
 }
