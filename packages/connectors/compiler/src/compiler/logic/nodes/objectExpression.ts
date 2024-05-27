@@ -2,7 +2,12 @@ import { getLogicNodeMetadata, resolveLogicNode } from '..'
 import errors from '../../../error/errors'
 import { mergeMetadata } from '../../utils'
 import { ReadNodeMetadataProps, type ResolveNodeProps } from '../types'
-import { type Identifier, type ObjectExpression } from 'estree'
+import {
+  Property,
+  SpreadElement,
+  type Identifier,
+  type ObjectExpression,
+} from 'estree'
 
 /**
  * ### ObjectExpression
@@ -31,25 +36,27 @@ export async function resolve({
   return resolvedObject
 }
 
+function isProperty(prop: Property | SpreadElement): prop is Property {
+  return prop.type === 'Property'
+}
+
 export async function readMetadata({
   node,
   ...props
 }: ReadNodeMetadataProps<ObjectExpression>) {
   const propertiesMetadata = await Promise.all(
-    node.properties
-      .filter((prop) => prop.type === 'Property')
-      .map((prop) =>
-        Promise.all([
-          getLogicNodeMetadata({
-            node: prop.key,
-            ...props,
-          }),
-          getLogicNodeMetadata({
-            node: prop.value,
-            ...props,
-          }),
-        ]),
-      ),
+    node.properties.filter(isProperty).map((prop) =>
+      Promise.all([
+        getLogicNodeMetadata({
+          node: prop.key,
+          ...props,
+        }),
+        getLogicNodeMetadata({
+          node: prop.value,
+          ...props,
+        }),
+      ]),
+    ),
   )
 
   return mergeMetadata(...propertiesMetadata.flat())

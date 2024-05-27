@@ -56,7 +56,9 @@ export default class MaterializedConnector extends DuckdbConnector {
           },
         )
 
-        const materialize = compiledSubQuery.config.materialize_query
+        const { config } =
+          await refSource.getMetadataFromQuery(fullSubQueryPath)
+        const materialize = config.materialize_query
         const isFalse = materialize === false
 
         if (isFalse) {
@@ -76,11 +78,11 @@ export default class MaterializedConnector extends DuckdbConnector {
         const storage = await this.source.manager.materializeStorage
         const materializeUrl = await storage.getUrl({
           sql: compiledSubQuery.sql,
-          queryPath: refSource.path,
+          sourcePath: refSource.path,
           queryName: `materializedRef('${referencedQuery}')`,
         })
 
-        return `(read_parquet('${materializeUrl}'))`
+        return `read_parquet('${materializeUrl}')`
       },
     }
   }

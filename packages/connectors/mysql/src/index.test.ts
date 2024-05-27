@@ -89,7 +89,6 @@ describe('runQuery', () => {
         sql: 'sql',
         resolvedParams: [],
         accessedParams: {},
-        config: {},
       }),
     ).rejects.toThrow('connection error')
   })
@@ -122,7 +121,6 @@ describe('runQuery', () => {
       sql: 'sql',
       resolvedParams: [],
       accessedParams: {},
-      config: {},
     })
 
     expect(connectionMock.release).toHaveBeenCalled()

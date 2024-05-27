@@ -3,6 +3,21 @@ import chokidar from 'chokidar'
 import sourceManager from '../../src/lib/server/sourceManager'
 import { QUERIES_DIR } from '../../src/lib/constants'
 
+/**
+ * FIXME: Transpile this file to JS
+ *
+ * I wanted to build into JS as we do with other scripts this one
+ * but we have a CommonJS module dependency that fails when building it.
+ *
+ * The error is:
+ *  RollupError: .blessed@0.1.81/node_modules/blessed/lib/tput.js (369:24):
+ *  Legacy octal escape is not permitted in strict mode
+ *
+ * There is already a PR fixing it in the package (from 2016):
+ * https://github.com/chjj/blessed/pull/214
+ *
+ * You read right, 2016 lol
+ */
 type CommandArgs = {
   queryPath: string
   parameters: { [key: string]: string }

@@ -7,6 +7,7 @@ import { Source } from '@/source'
 import readSourceConfig from '@/source/readConfig'
 import { StorageDriver } from '@/materialize/drivers/StorageDriver'
 import DummyDriver from '@/materialize/drivers/dummy/DummyDriver'
+import { DriverConfig, StorageKlass, StorageType } from '@/materialize'
 
 export default class SourceManager {
   private instances: Record<string, Source> = {}
@@ -15,10 +16,20 @@ export default class SourceManager {
 
   constructor(
     queriesDir: string,
-    options: { materializeStorage?: StorageDriver } = {},
+    options: {
+      materialize?: {
+        Klass: StorageKlass
+        config: DriverConfig<StorageType>
+      }
+    } = {},
   ) {
     this.queriesDir = queriesDir
-    this.materializeStorage = options.materializeStorage ?? new DummyDriver()
+    const materializeKlass = options.materialize?.Klass ?? DummyDriver
+    const commonConfig = { manager: this }
+    const config = options.materialize?.config
+    this.materializeStorage = config
+      ? new materializeKlass({ ...config, ...commonConfig })
+      : new DummyDriver(commonConfig)
   }
 
   /**

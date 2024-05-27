@@ -1,11 +1,6 @@
 import mockFs from 'mock-fs'
 import { vi, describe, it, expect } from 'vitest'
-import {
-  SourceManager,
-  STORAGE_TYPES,
-  type StorageType,
-  buildStorageDriver,
-} from '@latitude-data/source-manager'
+import { SourceManager, DiskDriver } from '@latitude-data/source-manager'
 import { BASE_STATIC_PATH, MATERIALIZE_DIR, QUERIES_DIR } from '$lib/constants'
 import { buildSourceManager } from '$lib/server/sourceManager'
 
@@ -34,10 +29,10 @@ describe('buildSourceManager', () => {
 
     buildSourceManager()
     expect(SourceManager).toHaveBeenCalledWith(QUERIES_DIR, {
-      materializeStorage: buildStorageDriver({
-        type: STORAGE_TYPES.disk as StorageType,
+      materialize: {
+        Klass: DiskDriver,
         config: { path: MATERIALIZE_DIR },
-      }),
+      },
     })
   })
 
@@ -57,10 +52,10 @@ describe('buildSourceManager', () => {
 
     buildSourceManager()
     expect(SourceManager).toHaveBeenCalledWith(QUERIES_DIR, {
-      materializeStorage: buildStorageDriver({
-        type: STORAGE_TYPES.disk as StorageType,
+      materialize: {
+        Klass: DiskDriver,
         config: { path: MATERIALIZE_DIR },
-      }),
+      },
     })
   })
 
@@ -72,10 +67,10 @@ describe('buildSourceManager', () => {
     })
     buildSourceManager()
     expect(SourceManager).toHaveBeenCalledWith(QUERIES_DIR, {
-      materializeStorage: buildStorageDriver({
-        type: STORAGE_TYPES.disk as StorageType,
+      materialize: {
+        Klass: DiskDriver,
         config: { path: MATERIALIZE_DIR },
-      }),
+      },
     })
   })
 })

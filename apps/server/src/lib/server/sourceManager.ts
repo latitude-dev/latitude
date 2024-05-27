@@ -1,19 +1,19 @@
 import fs from 'fs'
-import { APP_CONFIG_PATH, MATERIALIZE_DIR, QUERIES_DIR } from '$lib/constants'
+import { APP_CONFIG_PATH, MATERIALIZE_DIR, QUERIES_DIR } from '../constants'
 import {
   SourceManager,
-  StorageConfig,
   STORAGE_TYPES,
-  buildStorageDriver,
-  type StorageType,
+  StorageType,
+  getDriverKlass,
+  StorageConfig,
 } from '@latitude-data/source-manager'
 
 const DEFAULT_STORAGE_CONFIG = {
   type: STORAGE_TYPES.disk as StorageType,
   config: { path: MATERIALIZE_DIR },
-}
+} as StorageConfig<StorageType>
 
-function loadStorageConfig(): StorageConfig<StorageType> {
+function loadStorage(): StorageConfig<StorageType> {
   if (!fs.existsSync(APP_CONFIG_PATH)) {
     return DEFAULT_STORAGE_CONFIG
   }
@@ -21,10 +21,13 @@ function loadStorageConfig(): StorageConfig<StorageType> {
   const file = fs.readFileSync(APP_CONFIG_PATH, 'utf8')
   try {
     const config = JSON.parse(file)
-    // We set the `path` to the default materialize directory
-    if (config.type == STORAGE_TYPES.disk) return DEFAULT_STORAGE_CONFIG
+    const materialize = config?.materializeStorage ?? {}
 
-    return config
+    if (!materialize.type) return DEFAULT_STORAGE_CONFIG
+    const isDisk = config?.materializeStorage?.type == STORAGE_TYPES.disk
+    if (isDisk && !materialize.config) return DEFAULT_STORAGE_CONFIG
+
+    return materialize as StorageConfig<StorageType>
   } catch (e) {
     return DEFAULT_STORAGE_CONFIG
   }
@@ -36,10 +39,11 @@ function loadStorageConfig(): StorageConfig<StorageType> {
  * We configure materialize storage driver based on the config.
  */
 export function buildSourceManager() {
-  const config = loadStorageConfig()
-  const storageDriver = buildStorageDriver(config)
-  const driver = storageDriver || buildStorageDriver(DEFAULT_STORAGE_CONFIG)
-  return new SourceManager(QUERIES_DIR, { materializeStorage: driver })
+  const storage = loadStorage()
+  const driverKlass = getDriverKlass({ type: storage.type })
+  return new SourceManager(QUERIES_DIR, {
+    materialize: { Klass: driverKlass, config: storage.config },
+  })
 }
 
 const sourceManager = buildSourceManager()

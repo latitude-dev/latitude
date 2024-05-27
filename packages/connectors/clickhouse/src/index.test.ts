@@ -77,7 +77,6 @@ describe('runQuery', () => {
       sql: 'SELECT * FROM table',
       resolvedParams: [],
       accessedParams: {},
-      config: {},
     })
 
     expect(result.rowCount).toBe(2)
@@ -107,7 +106,6 @@ describe('runQuery', () => {
         sql: 'SELECT * FROM table',
         resolvedParams: [],
         accessedParams: {},
-        config: {},
       }),
     ).rejects.toThrow('query error')
   })
