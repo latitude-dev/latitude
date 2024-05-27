@@ -16,6 +16,7 @@ export default async function findOrCompute({
   compiledQuery: CompiledQuery
 }> {
   const source = await sourceManager.loadFromQuery(query)
+  const { config } = await source.getMetadataFromQuery(query)
   const compiledQuery = await source.compileQuery({
     queryPath: query,
     params: queryParams,
@@ -36,8 +37,7 @@ export default async function findOrCompute({
   if (force) {
     queryResult = await compute()
   } else {
-    queryResult =
-      cache.find(request, compiledQuery.config.ttl) || (await compute())
+    queryResult = cache.find(request, config.ttl) || (await compute())
   }
 
   return {

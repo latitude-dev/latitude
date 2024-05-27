@@ -29,3 +29,8 @@ export type ResolveNodeProps<N extends Node> = {
   supportedMethods: Record<string, SupportedMethod>
   willInterpolate: boolean
 }
+
+export type ReadNodeMetadataProps<N extends Node> = {
+  node: N
+  supportedMethods: Record<string, SupportedMethod>
+}

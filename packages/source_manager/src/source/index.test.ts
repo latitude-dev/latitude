@@ -2,37 +2,33 @@ import { it, describe, expect } from 'vitest'
 import { getSource } from '@/tests/helper'
 import { ConnectorError } from '@/types'
 
-describe('compileQuery', () => {
-  it('returns the source config when compiling a query', async () => {
-    const source = await getSource('valid-source/query')
-    const compiledQuery = await source.compileQuery({
-      queryPath: 'valid-source/query',
-      params: {},
-    })
+describe('readMetadata', () => {
+  it('returns the source config', async () => {
+    const queryPath = 'valid-source/query'
+    const source = await getSource(queryPath)
+    const { config } = await source.getMetadataFromQuery(queryPath)
 
-    expect(compiledQuery.config.ttl).toBe(2000)
+    expect(config.ttl).toBe(2000)
   })
 
   it('merge source config with query config', async () => {
-    const source = await getSource('valid-source/nested/query_with_ttl')
-    const compiledQuery = await source.compileQuery({
-      queryPath: 'valid-source/nested/query_with_ttl',
-      params: {},
-    })
+    const queryPath = 'valid-source/nested/query_with_ttl'
+    const source = await getSource(queryPath)
+    const { config } = await source.getMetadataFromQuery(queryPath)
 
-    expect(compiledQuery.config.ttl).toBe(42069)
+    expect(config.ttl).toBe(42069)
   })
 
   it('resolve when query path comes with slash', async () => {
-    const source = await getSource('valid-source/nested/query_with_ttl')
-    const compiledQuery = await source.compileQuery({
-      queryPath: '/valid-source/nested/query_with_ttl',
-      params: {},
-    })
+    const querypath = '/valid-source/nested/query_with_ttl'
+    const source = await getSource(querypath)
+    const { config } = await source.getMetadataFromQuery(querypath)
 
-    expect(compiledQuery.config.ttl).toBe(42069)
+    expect(config.ttl).toBe(42069)
   })
+})
 
+describe('compileQuery', () => {
   it('it fails when trying to get a query from another source', async () => {
     const source = await getSource('valid-source/nested/query_with_ttl')
     await expect(

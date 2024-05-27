@@ -47,8 +47,6 @@ export type CompilationContext = {
   accessedParams: QueryParams
   // Parameters resolved by the connector, in order of appearance
   resolvedParams: ResolvedParam[]
-  // Configuration set by the user in the query
-  queryConfig: QueryConfig
   // Cache of already ran queries
   ranQueries: RanQueries
   // Used to detect cyclic references
@@ -65,7 +63,6 @@ export type CompiledQuery = {
   sql: string
   resolvedParams: ResolvedParam[]
   accessedParams: QueryParams
-  config: QueryConfig
 }
 
 export class ConnectorError extends Error {}

@@ -1,6 +1,6 @@
-import { resolveLogicNode } from '..'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
 import errors from '../../../error/errors'
-import type { ResolveNodeProps } from '../types'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { AssignmentExpression, UpdateExpression } from 'estree'
 
 /**
@@ -60,4 +60,14 @@ export async function resolve({
   })
 
   return node.prefix ? updatedValue : originalValue
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<UpdateExpression>) {
+  return await getLogicNodeMetadata({
+    node: node.argument,
+    ...props,
+  })
 }

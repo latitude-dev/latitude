@@ -1,26 +1,41 @@
 import { Compiler } from './compiler'
-import type { ResolveFn, ConfigFn, SupportedMethod } from './compiler/types'
+import type {
+  QueryMetadata,
+  ResolveFn,
+  SupportedMethod,
+} from './compiler/types'
 
 export type CompileParams = {
   query: string
   resolveFn: ResolveFn
-  configFn: ConfigFn
   supportedMethods?: Record<string, SupportedMethod>
 }
 
-export default function compile({
+export function compile({
   query,
   supportedMethods,
   resolveFn,
-  configFn,
 }: CompileParams): Promise<string> {
   return new Compiler({
-    query,
+    sql: query,
     supportedMethods: supportedMethods || {},
     resolveFn,
-    configFn,
   }).compileSQL()
 }
 
+export function readMetadata({
+  query,
+  supportedMethods,
+}: {
+  query: string
+  supportedMethods?: Record<string, SupportedMethod>
+}): Promise<QueryMetadata> {
+  return new Compiler({
+    sql: query,
+    supportedMethods: supportedMethods || {},
+    resolveFn: () => Promise.resolve(''),
+  }).readMetadata()
+}
+
 export { default as CompileError } from './error/error'
-export type { SupportedMethod } from './compiler/types'
+export { type SupportedMethod, type QueryMetadata } from './compiler/types'

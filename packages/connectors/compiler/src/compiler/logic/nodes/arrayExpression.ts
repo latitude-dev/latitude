@@ -1,5 +1,6 @@
-import { resolveLogicNode } from '..'
-import type { ResolveNodeProps } from '../types'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
+import { emptyMetadata, mergeMetadata } from '../../utils'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { ArrayExpression } from 'estree'
 
 /**
@@ -21,4 +22,18 @@ export async function resolve({
         : null,
     ),
   )
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<ArrayExpression>) {
+  const childrenMetadata = await Promise.all(
+    node.elements.map(async (element) => {
+      if (element)
+        return await getLogicNodeMetadata({ node: element, ...props })
+      return emptyMetadata()
+    }),
+  )
+  return mergeMetadata(...childrenMetadata)
 }

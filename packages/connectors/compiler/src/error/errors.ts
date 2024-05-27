@@ -83,9 +83,22 @@ export default {
     code: 'invalid-config-definition',
     message: 'Config definitions must assign a value to an option',
   },
+  invalidConfigValue: {
+    code: 'invalid-config-value',
+    message:
+      'Config values must be literals. Cannot use variables or expressions',
+  },
+  configInsideBlock: {
+    code: 'config-inside-block',
+    message: 'Cannot must be defined at root level. Cannot be inside a block',
+  },
   configDefinitionFailed: (name: string, message: string) => ({
     code: 'config-definition-failed',
     message: `Config definition for '${name}' failed: ${message}`,
+  }),
+  configAlreadyDefined: (name: string) => ({
+    code: 'config-already-defined',
+    message: `Config definition for '${name}' failed: Option already configured`,
   }),
   variableAlreadyDeclared: (name: string) => ({
     code: 'variable-already-declared',

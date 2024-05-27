@@ -1,7 +1,7 @@
-import { resolveLogicNode } from '..'
+import { getLogicNodeMetadata, resolveLogicNode } from '..'
 import errors from '../../../error/errors'
 import { UNARY_OPERATOR_METHODS } from '../operators'
-import type { ResolveNodeProps } from '../types'
+import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { UnaryExpression } from 'estree'
 
 /**
@@ -27,4 +27,14 @@ export async function resolve({
   })
   const unaryPrefix = node.prefix
   return UNARY_OPERATOR_METHODS[unaryOperator]?.(unaryArgument, unaryPrefix)
+}
+
+export async function readMetadata({
+  node,
+  ...props
+}: ReadNodeMetadataProps<UnaryExpression>) {
+  return await getLogicNodeMetadata({
+    node: node.argument,
+    ...props,
+  })
 }
