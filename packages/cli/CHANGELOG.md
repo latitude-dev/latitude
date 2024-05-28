@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.6.7
+
+### Patch Changes
+
+- a54592d: Slightly improve cli deploy message
+
 ## 1.6.6
 
 ### Patch Changes
