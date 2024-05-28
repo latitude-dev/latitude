@@ -37,15 +37,11 @@ export function format(value: unknown): string {
 export function formatAll(values: Record<string, unknown>): string {
   return Object.entries(values)
     .map(([key, value]) => {
-      if (value instanceof RichDate) {
-        return `${key}=${value.toString()}:${value.format}`
-      }
-
       if (Array.isArray(value)) {
         return value.map((v) => `${key}[]=${v}`).join('&')
       }
 
-      return `${key}=${value}`
+      return `${key}=${format(value)}`
     })
     .filter(Boolean)
     .join('&')
