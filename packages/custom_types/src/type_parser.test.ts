@@ -109,7 +109,7 @@ describe('formatAll', () => {
       relativeDate: new RichDate(RelativeDate.Today),
     }
     expect(formatAll(params)).toBe(
-      'foo=bar&baz[]=1&baz[]=2&baz[]=3&qux[]=foo&qux[]=bar&qux[]=baz&date=2023-01-01:yyyy-MM-dd&relativeDate=_TODAY_:yyyy-MM-dd',
+      'foo=$text:bar&baz[]=$num:1&baz[]=$num:2&baz[]=$num:3&qux[]=$text:foo&qux[]=$text:bar&qux[]=$text:baz&date=$date:2023-01-01&relativeDate=$date:_TODAY_',
     )
   })
 })
@@ -117,7 +117,7 @@ describe('formatAll', () => {
 describe('parseFromUrl', () => {
   it('parses all values correctly', () => {
     const params =
-      'foo=bar&baz[]=$num:1&baz[]=$num:2&baz[]=$num:3&qux[]=$text:foo&qux[]=$text:bar&qux[]=$text:baz&date=$date:2023-01-01:yyyy-MM-dd&relativeDate=$date:_TODAY_:yyyy-MM-dd'
+      'foo=bar&baz[]=$num:1&baz[]=$num:2&baz[]=$num:3&qux[]=$text:foo&qux[]=$text:bar&qux[]=$text:baz&date=$date:2023-01-01&relativeDate=$date:_TODAY_'
     expect(parseFromUrl(params)).toEqual({
       foo: 'bar',
       baz: [1, 2, 3],

@@ -38,7 +38,7 @@ export function formatAll(values: Record<string, unknown>): string {
   return Object.entries(values)
     .map(([key, value]) => {
       if (Array.isArray(value)) {
-        return value.map((v) => `${key}[]=${v}`).join('&')
+        return value.map((v) => `${key}[]=${format(v)}`).join('&')
       }
 
       return `${key}=${format(value)}`
