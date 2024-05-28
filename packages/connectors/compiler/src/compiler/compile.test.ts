@@ -1,14 +1,8 @@
-import { compile } from '..'
+import { compile, emptyMetadata } from '..'
 import CompileError from '../error/error'
 import { describe, it, expect } from 'vitest'
 
-const compileQuery = (query: string) => {
-  return compile({
-    query,
-    resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-    supportedMethods: {},
-  })
-}
+const resolveFn = async (value: unknown): Promise<string> => `$[[${value}]]`
 
 const getExpectedError = async <T>(
   action: () => Promise<unknown>,
@@ -26,14 +20,22 @@ const getExpectedError = async <T>(
 describe('compilation of comments', async () => {
   it('keeps line comments in the output', async () => {
     const sql = 'foo\n-- comment\nbar'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe(sql)
   })
 
   it('keeps block comments in the output', async () => {
     const sql = 'foo\n/* comment1\ncomment2\ncomment3 */\nbar'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe(sql)
   })
@@ -42,14 +44,22 @@ describe('compilation of comments', async () => {
 describe('parameterisation of interpolated values', async () => {
   it('resolves simple values', async () => {
     const sql = '{5} {"foo"}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[5]] $[[foo]]')
   })
 
   it('resolves results of expressions', async () => {
     const sql = '{5 + 5} {"foo" + "var"}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[10]] $[[foovar]]')
   })
@@ -80,49 +90,80 @@ describe('parameterisation of interpolated values', async () => {
 describe('variable assignment', async () => {
   it('can define variables', async () => {
     const sql = '{foo = 5} {foo}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[5]]')
   })
 
   it('can define constants', async () => {
     const sql = '{@const foo = 5} {foo}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[5]]')
   })
 
   it('can update variables', async () => {
     const sql = '{foo = 5} {foo += 2} {foo}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[7]]')
   })
 
   it('cannot update constants', async () => {
     const sql = '{@const foo = 5} {foo += 2}'
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('constant-reassignment')
   })
 
   it('cannot update variables that are not defined', async () => {
     const sql = '{foo += 2}'
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('variable-not-declared')
   })
 
   it('variables defined in an inner scope are not available in the outer scope', async () => {
     const sql = '{#if true} {foo = 5} {/if} {foo}'
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('variable-not-declared')
   })
 
   it('variables can be modified from an inner scope', async () => {
     const sql = '{foo = 5} {#if true} {foo += 2} {/if} {foo}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[7]]')
   })
@@ -134,7 +175,11 @@ describe('variable assignment', async () => {
       {foo.b += 3}
       {foo.a} {foo.b}
     `
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[3]] $[[5]]')
   })
@@ -145,7 +190,12 @@ describe('variable assignment', async () => {
       {foo.c += 2}
       {foo.c}
     `
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('property-not-exists')
   })
@@ -155,7 +205,12 @@ describe('variable assignment', async () => {
       {foo = { a: 1, b: 2 }}
       {foo?.a = 2}
     `
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('parse-error') // Requirement is already implemented in the parser
   })
@@ -168,7 +223,11 @@ describe('variable assignment', async () => {
       {foo}
     `
 
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
     expect(result).toBe('$[[1,2,3,bar,5,6]]')
   })
 
@@ -176,8 +235,16 @@ describe('variable assignment', async () => {
     const sql1 = '{foo = 0} {foo++} {foo}'
     const sql2 = '{foo = 0} {++foo} {foo}'
 
-    const result1 = await compileQuery(sql1)
-    const result2 = await compileQuery(sql2)
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result1).toBe('$[[0]] $[[1]]')
     expect(result2).toBe('$[[1]] $[[1]]')
@@ -185,7 +252,12 @@ describe('variable assignment', async () => {
 
   it('fails when trying to update a variable that is not a number', async () => {
     const sql = '{foo = "bar"} {++foo}'
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('invalid-update')
   })
@@ -195,8 +267,16 @@ describe('conditional expressions', async () => {
   it('prints if content only when true', async () => {
     const sql1 = '{#if true} var {/if}'
     const sql2 = '{#if false} var {/if}'
-    const result1 = await compileQuery(sql1)
-    const result2 = await compileQuery(sql2)
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result1).toBe('var')
     expect(result2).toBe('')
@@ -205,8 +285,16 @@ describe('conditional expressions', async () => {
   it('prints else content when false', async () => {
     const sql1 = '{#if true} lorem {:else} impsum {/if}'
     const sql2 = '{#if false} lorem {:else} impsum {/if}'
-    const result1 = await compileQuery(sql1)
-    const result2 = await compileQuery(sql2)
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result1).toBe('lorem')
     expect(result2).toBe('impsum')
@@ -216,9 +304,21 @@ describe('conditional expressions', async () => {
     const sql1 = '{#if true} 1 {:else if false} 2 {:else} 3 {/if}'
     const sql2 = '{#if false} 1 {:else if true} 2 {:else} 3 {/if}'
     const sql3 = '{#if false} 1 {:else if false} 2 {:else} 3 {/if}'
-    const result1 = await compileQuery(sql1)
-    const result2 = await compileQuery(sql2)
-    const result3 = await compileQuery(sql3)
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result3 = await compile({
+      query: sql3,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result1).toBe('1')
     expect(result2).toBe('2')
@@ -230,8 +330,16 @@ describe('conditional expressions', async () => {
       '{foo = 5} {#if true} {foo += 2} {:else} {foo += 3} {/if} {foo}'
     const sql2 =
       '{foo = 5} {#if false} {foo += 2} {:else} {foo += 3} {/if} {foo}'
-    const result1 = await compileQuery(sql1)
-    const result2 = await compileQuery(sql2)
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result1).toBe('$[[7]]')
     expect(result2).toBe('$[[8]]')
@@ -241,10 +349,23 @@ describe('conditional expressions', async () => {
     const sql1 = '{#if true} {foo = 5} {/if} {foo}'
     const sql2 = '{foo = 5} {#if true} {foo += 1} {/if} {foo}'
     const sql3 = '{foo = 5} {#if true} {foo = 7} {/if} {foo}'
-    const action1 = () => compileQuery(sql1)
+    const action1 = () =>
+      compile({
+        query: sql1,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error1 = await getExpectedError(action1, CompileError)
-    const result2 = await compileQuery(sql2)
-    const result3 = await compileQuery(sql3)
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result3 = await compile({
+      query: sql3,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(error1.code).toBe('variable-not-declared')
     expect(result2).toBe('$[[6]]')
@@ -255,35 +376,55 @@ describe('conditional expressions', async () => {
 describe('each loops', async () => {
   it('prints each content for each element in the array', async () => {
     const sql = "{#each ['a', 'b', 'c'] as element} {element} {/each}"
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[a]]$[[b]]$[[c]]')
   })
 
   it('gives access to the index of the element', async () => {
     const sql = "{#each ['a', 'b', 'c'] as element, index} {index} {/each}"
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[0]]$[[1]]$[[2]]')
   })
 
   it('replaces a variable with the value of the element', async () => {
     const sql = "{#each ['a', 'b', 'c'] as element} {element} {/each}"
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[a]]$[[b]]$[[c]]')
   })
 
   it('prints else content when the array is empty', async () => {
     const sql = '{#each [] as element} {element} {:else} var {/each}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('var')
   })
 
   it('prints else content when the element is not an array', async () => {
     const sql = '{#each 5 as element} {element} {:else} var {/each}'
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('var')
   })
@@ -291,7 +432,11 @@ describe('each loops', async () => {
   it('does not update any variables in an unused branch', async () => {
     const sql =
       "{foo = 5} {#each ['a', 'b', 'c'] as element} {:else} {foo += 2} {/each} {foo}"
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[5]]')
   })
@@ -302,10 +447,23 @@ describe('each loops', async () => {
       "{foo = 5} {#each ['a', 'b', 'c'] as element} {foo = 7} {/each} {foo}"
     const sql3 =
       '{foo = 5} {#each [1, 2, 3] as element} {foo += element} {/each} {foo}'
-    const action1 = () => compileQuery(sql1)
+    const action1 = () =>
+      compile({
+        query: sql1,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error1 = await getExpectedError(action1, CompileError)
-    const result2 = await compileQuery(sql2)
-    const result3 = await compileQuery(sql3)
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result3 = await compile({
+      query: sql3,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(error1.code).toBe('variable-not-declared')
     expect(result2).toBe('$[[7]]')
@@ -355,7 +513,11 @@ describe('operators', async () => {
     for (const [expression, expected] of expressions) {
       const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')')
       const sql = `${cleanExpression} = {${expression}}`
-      const result = await compileQuery(sql)
+      const result = await compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
 
       expect(result).toBe(`${cleanExpression} = $[[${expected}]]`)
     }
@@ -376,7 +538,11 @@ describe('operators', async () => {
     ]
     for (const [expression, expected] of expressions) {
       const sql = `${expression} = {${expression}}`
-      const result = await compileQuery(sql)
+      const result = await compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
 
       expect(result).toBe(`${expression} = $[[${expected}]]`)
     }
@@ -393,7 +559,11 @@ describe('operators', async () => {
     ]
     for (const [expression, expected] of expressions) {
       const sql = `${expression} = {${expression}}`
-      const result = await compileQuery(sql)
+      const result = await compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
 
       expect(result).toBe(`${expression} = $[[${expected}]]`)
     }
@@ -401,7 +571,11 @@ describe('operators', async () => {
 
   it('correctly evaluates member expressions', async () => {
     const sql = "{foo = { bar: 'var' }}{foo.bar}"
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
 
     expect(result).toBe('$[[var]]')
   })
@@ -423,7 +597,11 @@ describe('operators', async () => {
     for (const [expression, initial, expected] of expressions) {
       const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')')
       const sql = `{foo = ${initial}} {${expression}} ${cleanExpression} -> {foo}`
-      const result = await compileQuery(sql)
+      const result = await compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
 
       expect(result).toBe(`${cleanExpression} -> $[[${expected}]]`)
     }
@@ -451,7 +629,11 @@ describe('operators', async () => {
     for (const [expression, expected] of expressions) {
       const cleanExpression = expression.replace(/{/g, '(').replace(/}/g, ')')
       const sql = `${cleanExpression} = {${expression}}`
-      const result = await compileQuery(sql)
+      const result = await compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
 
       expect(result).toBe(`${cleanExpression} = $[[${expected}]]`)
     }
@@ -461,59 +643,14 @@ describe('operators', async () => {
 describe('custom methods', async () => {
   it('fails when calling an undefined method', async () => {
     const sql = '{fooFn()}'
-    const action = () => compileQuery(sql)
-    const error = await getExpectedError(action, CompileError)
-    expect(error.code).toBe('variable-not-declared')
-  })
-
-  it('runs any method defined in the supportedMethods object', async () => {
-    const sql = '{fooFn()}'
-    const result = await compile({
-      query: sql,
-      resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      supportedMethods: {
-        fooFn: async () => 'bar',
-      },
-    })
-
-    expect(result).toBe('bar')
-  })
-
-  it('fails if a method is trying to interpolate a non-string value', async () => {
-    const sql = '{fooFn()}'
     const action = () =>
       compile({
         query: sql,
-        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-        supportedMethods: {
-          fooFn: async <T extends boolean>(
-            _: T,
-          ): Promise<T extends true ? string : unknown> => {
-            const returnedValue = 5
-            return returnedValue as T extends true ? string : unknown
-          },
-        },
+        resolveFn,
+        supportedMethods: {},
       })
     const error = await getExpectedError(action, CompileError)
-    expect(error.code).toBe('invalid-function-result-interpolation')
-  })
-
-  it('does not fail if the method returns a non-string value when it is not interpolated', async () => {
-    const sql = '{foo = fooFn()}{foo}'
-    const result = await compile({
-      query: sql,
-      resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
-      supportedMethods: {
-        fooFn: async <T extends boolean>(
-          _: T,
-        ): Promise<T extends true ? string : unknown> => {
-          const returnedValue = 5
-          return returnedValue as T extends true ? string : unknown
-        },
-      },
-    })
-
-    expect(result).toBe('$[[5]]')
+    expect(error.code).toBe('variable-not-declared')
   })
 
   it('shows the correct error message when a named method fails', async () => {
@@ -523,14 +660,263 @@ describe('custom methods', async () => {
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
         supportedMethods: {
-          fooFn: async () => {
-            throw new Error('bar')
+          fooFn: {
+            resolve: async () => {
+              throw new Error('bar')
+            },
+            readMetadata: async () => emptyMetadata(),
           },
         },
       })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('function-call-error')
     expect(error.message).toBe('Error calling function: \nError bar')
+  })
+
+  describe('interpolation policy', async () => {
+    it('fails when trying to interpolate a disallowed method', async () => {
+      const sql = '{fooFn()}'
+      const action = () =>
+        compile({
+          query: sql,
+          resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+          supportedMethods: {
+            fooFn: {
+              requirements: { interpolationPolicy: 'disallow' },
+              resolve: async () => 'bar',
+              readMetadata: async () => emptyMetadata(),
+            },
+          },
+        })
+      const error = await getExpectedError(action, CompileError)
+      expect(error.code).toBe('function-disallows-interpolation')
+    })
+
+    it('fails when not interpolating a required method', async () => {
+      const sql = '{foo = fooFn()}'
+      const action = () =>
+        compile({
+          query: sql,
+          resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+          supportedMethods: {
+            fooFn: {
+              requirements: { interpolationPolicy: 'require' },
+              resolve: async () => 'bar',
+              readMetadata: async () => emptyMetadata(),
+            },
+          },
+        })
+      const error = await getExpectedError(action, CompileError)
+      expect(error.code).toBe('function-requires-interpolation')
+    })
+
+    it('does not fail when interpolating an allowed method', async () => {
+      const sql = '{fooFn()}'
+      const result1 = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            requirements: { interpolationPolicy: 'allow' },
+            resolve: async () => 'bar',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+      const result2 = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            requirements: { interpolationPolicy: 'require' },
+            resolve: async () => 'bar',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+
+      expect(result1).toBe('$[[bar]]')
+      expect(result2).toBe('$[[bar]]')
+    })
+
+    it('does not fail when not interpolating a disallowed method', async () => {
+      const sql = '{foo = fooFn()}'
+      const action1 = () =>
+        compile({
+          query: sql,
+          resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+          supportedMethods: {
+            fooFn: {
+              requirements: { interpolationPolicy: 'disallow' },
+              resolve: async () => 'bar',
+              readMetadata: async () => emptyMetadata(),
+            },
+          },
+        })
+      const action2 = () =>
+        compile({
+          query: sql,
+          resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+          supportedMethods: {
+            fooFn: {
+              requirements: { interpolationPolicy: 'allow' },
+              resolve: async () => 'bar',
+              readMetadata: async () => emptyMetadata(),
+            },
+          },
+        })
+      expect(action1).not.toThrow()
+      expect(action2).not.toThrow()
+    })
+
+    it('allows interpolation by default', async () => {
+      const sql = '{fooFn()}'
+      const result = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            resolve: async () => 'bar',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+
+      expect(result).toBe('$[[bar]]')
+    })
+  })
+
+  describe('interpolation method', async () => {
+    it('parameterizes the returned value when it is set to "parameterize"', async () => {
+      const sql = '{fooFn()}'
+      const result = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            requirements: { interpolationMethod: 'parameterize' },
+            resolve: async () => 'bar',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+
+      expect(result).toBe('$[[bar]]')
+    })
+
+    it('does not parameterize the returned value when it is set to "raw"', async () => {
+      const sql = '{fooFn()}'
+      const result = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            requirements: { interpolationMethod: 'raw' },
+            resolve: async () => 'bar',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+
+      expect(result).toBe('bar')
+    })
+
+    it('uses parameterization by default', async () => {
+      const sql = '{fooFn()}'
+      const result = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            resolve: async () => 'bar',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+
+      expect(result).toBe('$[[bar]]')
+    })
+  })
+
+  describe('require static arguments', async () => {
+    it('allows any kind of arguments when static arguments are not required', async () => {
+      const sql = `
+        {variables = 'variables'}
+        {fooFn('literal values', variables, functions(), 2 + 2)}
+      `
+      const result = await compile({
+        query: sql,
+        resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+        supportedMethods: {
+          fooFn: {
+            resolve: async (...args: unknown[]) => args.join(', '),
+            readMetadata: async () => emptyMetadata(),
+          },
+          functions: {
+            resolve: async () => 'functions',
+            readMetadata: async () => emptyMetadata(),
+          },
+        },
+      })
+
+      expect(result).toBe('$[[literal values, variables, functions, 4]]')
+    })
+
+    it('fails when not using literal values as arguments when required', async () => {
+      const sql = `
+        {bar = 'bar'}
+        {fooFn(bar)}
+      `
+      const action = () =>
+        compile({
+          query: sql,
+          resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+          supportedMethods: {
+            fooFn: {
+              requirements: { requireStaticArguments: true },
+              resolve: async () => 'bar',
+              readMetadata: async () => emptyMetadata(),
+            },
+          },
+        })
+      const error = await getExpectedError(action, CompileError)
+      expect(error.code).toBe('function-requires-static-arguments')
+    })
+
+    it('does not require static arguments by default', async () => {
+      const sql = `
+        {bar = 'bar'}
+        {fooFn(bar)}
+      `
+      const action = () =>
+        compile({
+          query: sql,
+          resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+          supportedMethods: {
+            fooFn: {
+              resolve: async () => 'bar',
+              readMetadata: async () => emptyMetadata(),
+            },
+          },
+        })
+      expect(action).not.toThrow()
+    })
+  })
+
+  it('runs any method defined in the supportedMethods object', async () => {
+    const sql = '{fooFn()}'
+    const result = await compile({
+      query: sql,
+      resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
+      supportedMethods: {
+        fooFn: {
+          resolve: async () => 'bar',
+          readMetadata: async () => emptyMetadata(),
+        },
+      },
+    })
+
+    expect(result).toBe('$[[bar]]')
   })
 })
 
@@ -540,7 +926,11 @@ describe('variable member access', async () => {
       {foo = { bar: 'val' } }
       {foo.bar}
     `
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
     expect(result).toBe('$[[val]]')
   })
 
@@ -559,10 +949,9 @@ describe('variable member access', async () => {
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
         supportedMethods: {
-          undefined: async <T extends boolean>(): Promise<
-            T extends true ? string : unknown
-          > => {
-            return undefined as T extends true ? string : unknown
+          undefined: {
+            resolve: async () => undefined,
+            readMetadata: async () => emptyMetadata(),
           },
         },
       })
@@ -587,10 +976,9 @@ describe('variable member access', async () => {
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
       supportedMethods: {
-        now: async <T extends boolean>(): Promise<
-          T extends true ? string : unknown
-        > => {
-          return nowDate as T extends true ? string : unknown
+        now: {
+          resolve: async () => nowDate,
+          readMetadata: async () => emptyMetadata(),
         },
       },
     })
@@ -605,7 +993,12 @@ describe('variable member access', async () => {
       {foo.bar()}
     `
 
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('not-a-function')
   })
@@ -617,7 +1010,11 @@ describe('variable member access', async () => {
       {foo = { bar: 'val' } }
       {foo.bar}
     `
-    const result = await compileQuery(sql)
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
     expect(result).toBe('$[[val]]')
   })
 
@@ -636,10 +1033,9 @@ describe('variable member access', async () => {
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
         supportedMethods: {
-          undefined: async <T extends boolean>(): Promise<
-            T extends true ? string : unknown
-          > => {
-            return undefined as T extends true ? string : unknown
+          undefined: {
+            resolve: async () => undefined,
+            readMetadata: async () => emptyMetadata(),
           },
         },
       })
@@ -664,10 +1060,9 @@ describe('variable member access', async () => {
       query: sql,
       resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
       supportedMethods: {
-        now: async <T extends boolean>(): Promise<
-          T extends true ? string : unknown
-        > => {
-          return nowDate as T extends true ? string : unknown
+        now: {
+          resolve: async () => nowDate,
+          readMetadata: async () => emptyMetadata(),
         },
       },
     })
@@ -682,7 +1077,12 @@ describe('variable member access', async () => {
       {foo.bar()}
     `
 
-    const action = () => compileQuery(sql)
+    const action = () =>
+      compile({
+        query: sql,
+        resolveFn,
+        supportedMethods: {},
+      })
     const error = await getExpectedError(action, CompileError)
     expect(error.code).toBe('not-a-function')
   })
@@ -698,12 +1098,12 @@ describe('variable member access', async () => {
         query: sql,
         resolveFn: async (value: unknown): Promise<string> => `$[[${value}]]`,
         supportedMethods: {
-          getFoo: async <T extends boolean>() =>
-            ({
-              bar: () => {
-                throw new Error('baz')
-              },
-            }) as T extends true ? string : unknown,
+          getFoo: {
+            resolve: async () => {
+              throw new Error('baz')
+            },
+            readMetadata: async () => emptyMetadata(),
+          },
         },
       })
 

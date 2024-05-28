@@ -1,7 +1,6 @@
-import { readMetadata } from '..'
+import { emptyMetadata, readMetadata } from '..'
 import CompileError from '../error/error'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { SupportedMethod } from './types'
 
 describe('config tags', async () => {
   it('extracts defined configurations correctly', async () => {
@@ -73,7 +72,11 @@ describe('config tags', async () => {
 
 describe('supported methods', async () => {
   function mockSupportedMethod() {
-    return vi.fn(() => Promise.resolve()) as SupportedMethod
+    return {
+      requirements: {},
+      resolve: vi.fn(() => Promise.resolve()),
+      readMetadata: vi.fn(() => Promise.resolve(emptyMetadata())),
+    }
   }
 
   beforeEach(() => {
@@ -138,6 +141,6 @@ describe('supported methods', async () => {
 
     const { methods } = await readMetadata({ query, supportedMethods })
     expect(methods).toContain('foo')
-    expect(supportedMethods.foo).not.toHaveBeenCalled()
+    expect(supportedMethods.foo.resolve).not.toHaveBeenCalled()
   })
 })

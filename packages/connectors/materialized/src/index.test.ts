@@ -11,6 +11,7 @@ import {
   buildDefaultContext,
 } from '@latitude-data/source-manager'
 import MaterializedConnector from '$/index'
+import { createHash } from 'crypto'
 
 const MATERIALIZED_SQL = `
 {@config materialize_query = true}
@@ -19,7 +20,7 @@ SELECT * FROM users
 describe('materializedRef function', async () => {
   it('find queries in a folder out of current source', async () => {
     const sql = "SELECT * FROM {materializedRef('../query.sql')}"
-    mockFs({
+    const queriesFs = {
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
         'query.sql': MATERIALIZED_SQL,
@@ -28,11 +29,24 @@ describe('materializedRef function', async () => {
           'query.sql': sql,
         },
       },
+    }
+    mockFs(queriesFs)
+
+    const sourceManager = new SourceManager(QUERIES_DIR)
+    const refSource = await sourceManager.loadFromQuery('query')
+    const { sqlHash: refHash } = await refSource.getMetadataFromQuery('query')
+    const expectedHash = createHash('sha256')
+      .update(refSource.path)
+      .update(refHash)
+      .digest('hex')
+
+    mockFs({
+      ...queriesFs,
       [MATERIALIZE_QUERIES_DIR]: {
-        'c669ba7574cadcfd9527e449feeb6a3fe8c23e23d0fef0893d3011c85ac88624.parquet':
-          'PARQUET_QUERY_CONTENT', // Not important in this tests
+        [`${expectedHash}.parquet`]: 'PARQUET_QUERY_CONTENT', // Not important in this tests
       },
     })
+
     const { connector } = await buildMaterializedConnector({
       sourceParams: {
         path: 'materialize-queries',
@@ -48,7 +62,7 @@ describe('materializedRef function', async () => {
       },
     })
     expect(compiled.sql).toBe(
-      `SELECT * FROM read_parquet('${MATERIALIZE_QUERIES_DIR}/c669ba7574cadcfd9527e449feeb6a3fe8c23e23d0fef0893d3011c85ac88624.parquet')`,
+      `SELECT * FROM read_parquet('${MATERIALIZE_QUERIES_DIR}/${expectedHash}.parquet')`,
     )
   })
 
@@ -84,7 +98,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function: \nMaterializedFileNotFoundError materialize query not found for: materializedRef('../query.sql')",
+        "Error calling function: \nMaterializedFileNotFoundError materialize query not found for: '../query.sql'",
       ),
     )
   })
@@ -154,7 +168,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function: \nError '../query.sql' query can not have parameters to filter the SQL query.",
+        'Error calling function: \nError Referenced query must be static. It can not contain any of the following methods: param',
       ),
     )
   })
@@ -189,7 +203,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function: \nError Query 'query.sql' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file.",
+        'Error calling function: \nError Referenced query is not a materialized. \nYou can materialize it by adding {@config materialized_query = true} in the query content.',
       ),
     )
   })
@@ -224,7 +238,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function: \nError Query 'query.sql' is not a materialized query. \nYou can have configured {@config materialized_query = false} in the query file. Set it to 'true'",
+        'Error calling function: \nError Referenced query is not a materialized. \nYou can materialize it by adding {@config materialized_query = true} in the query content.',
       ),
     )
   })
@@ -259,7 +273,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        'Error calling function: \nError materializedRef function cannot be used inside a logic block',
+        "Function 'materializedRef' cannot be used inside a logic block. It must be directly interpolated into the query",
       ),
     )
   })

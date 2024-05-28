@@ -1,9 +1,14 @@
 import {
-  BuildSupportedMethodsArgs,
+  type BuildSupportedMethodsArgs,
   ConnectorOptions,
-  SupportedMethodsResponse,
+  Source,
 } from '@latitude-data/source-manager'
 import DuckdbConnector from '@latitude-data/duckdb-connector'
+import {
+  emptyMetadata,
+  type SupportedMethod,
+} from '@latitude-data/sql-compiler'
+import path from 'path'
 
 export type ConnectionParams = {}
 export default class MaterializedConnector extends DuckdbConnector {
@@ -11,78 +16,74 @@ export default class MaterializedConnector extends DuckdbConnector {
     super({ ...options, connectionParams: {} })
   }
 
-  buildSupportedMethods(
-    args: BuildSupportedMethodsArgs,
-  ): SupportedMethodsResponse {
-    const context = args.context
-    const { request, queriesBeingCompiled, ranQueries } = context
-    const supportedMethods = super.buildSupportedMethods(args)
+  protected buildSupportedMethods(
+    buildArgs: BuildSupportedMethodsArgs,
+  ): Record<string, SupportedMethod> {
+    const supportedMethods = super.buildSupportedMethods(buildArgs)
+    const { source, context } = buildArgs
+
     return {
       ...supportedMethods,
-      materializedRef: async <T extends boolean>(
-        interpolation: T,
-        referencedQuery: unknown,
-      ): Promise<T extends true ? string : unknown> => {
-        if (!interpolation) {
-          throw new Error(
-            'materializedRef function cannot be used inside a logic block',
+      materializedRef: {
+        requirements: {
+          interpolationPolicy: 'require',
+          interpolationMethod: 'raw',
+          requireStaticArguments: true,
+        },
+        resolve: async (referencedQuery: string) => {
+          if (typeof referencedQuery !== 'string') {
+            throw new Error('Invalid query name')
+          }
+          const fullSubQueryPath = referencedQuery.startsWith('/')
+            ? referencedQuery
+            : path.join(
+                path.dirname(context.request.queryPath),
+                referencedQuery,
+              )
+
+          if (
+            context.queriesBeingCompiled.includes(
+              fullSubQueryPath.replace(/.sql$/, ''),
+            )
+          ) {
+            throw new Error(
+              'Query reference to a parent, resulting in cyclic references.',
+            )
+          }
+
+          const refSource = (await source.manager.loadFromQuery(
+            fullSubQueryPath,
+          )) as Source
+          const { config, methods, sqlHash } =
+            await refSource.getMetadataFromQuery(fullSubQueryPath)
+          if (!config.materialize_query) {
+            throw new Error(
+              `Referenced query is not a materialized. \nYou can materialize it by adding {@config materialized_query = true} in the query content.`,
+            )
+          }
+
+          const unsupportedMethods = ['param', 'runQuery']
+          const unsupportedMethodsInQuery = Array.from(methods).filter(
+            (method) => unsupportedMethods.includes(method),
           )
-        }
+          if (unsupportedMethodsInQuery.length > 0) {
+            const unsupportedMethodsStr = unsupportedMethodsInQuery.join(', ')
+            throw new Error(
+              `Referenced query must be static. It can not contain any of the following methods: ${unsupportedMethodsStr}`,
+            )
+          }
 
-        if (typeof referencedQuery !== 'string') {
-          throw new Error('Invalid query name')
-        }
-
-        const fullSubQueryPath = this.getFullQueryPath({
-          referencedQueryPath: referencedQuery,
-          currentQueryPath: request.queryPath,
-        })
-
-        this.ensureQueryNotCompiled(fullSubQueryPath, queriesBeingCompiled)
-
-        const refSource =
-          await this.source.manager.loadFromQuery(fullSubQueryPath)
-        const compiledSubQuery = await refSource.compileQuery(
-          {
-            queryPath: fullSubQueryPath,
-            params: context.request.params,
-          },
-          {
-            accessedParams: {},
-            resolvedParams: [],
-            queryConfig: {}, // Subquery config does not affect the root query
-            ranQueries,
-            queriesBeingCompiled,
-          },
-        )
-
-        const { config } =
-          await refSource.getMetadataFromQuery(fullSubQueryPath)
-        const materialize = config.materialize_query
-        const isFalse = materialize === false
-
-        if (isFalse) {
-          throw new Error(
-            `Query '${fullSubQueryPath}' is not a materialized query. \nYou can have configured {@config materialized_query = false} in the query file. Set it to 'true'`,
-          )
-        } else if (!materialize) {
-          throw new Error(
-            `Query '${fullSubQueryPath}' is not a materialized query. \nYou can configure it by setting {@config materialized_query = true} in the query file.`,
-          )
-        } else if (Object.keys(compiledSubQuery.accessedParams).length > 0) {
-          throw new Error(
-            `'${referencedQuery}' query can not have parameters to filter the SQL query.`,
-          )
-        }
-
-        const storage = await this.source.manager.materializeStorage
-        const materializeUrl = await storage.getUrl({
-          sql: compiledSubQuery.sql,
-          sourcePath: refSource.path,
-          queryName: `materializedRef('${referencedQuery}')`,
-        })
-
-        return `read_parquet('${materializeUrl}')`
+          const storage = await this.source.manager.materializeStorage
+          const materializeUrl = await storage.getUrl({
+            sqlHash,
+            sourcePath: refSource.path,
+            queryName: referencedQuery,
+          })
+          return `read_parquet('${materializeUrl}')`
+        },
+        readMetadata: async () => {
+          return emptyMetadata()
+        },
       },
     }
   }

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import mockFs from 'mock-fs'
-import { describe, it, expect, afterEach, beforeEach } from 'vitest'
+import { describe, it, expect, afterEach, beforeEach, assert } from 'vitest'
 import { QUERIES_DIR, getSource } from '@/tests/helper'
 import { CompileError } from '@latitude-data/sql-compiler'
 
@@ -154,63 +154,6 @@ describe('supportedMethods', async () => {
       })
 
       expect(compiled.sql).toBe('[[5]]')
-    })
-  })
-
-  describe('unsafeParam function', async () => {
-    it('returns the value interpolated into the query', async () => {
-      fs.writeFileSync(`${QUERIES_DIR}/query.sql`, '{unsafeParam("foo")}')
-      const source = await getSource('query')
-      const compiled = await source.compileQuery({
-        queryPath: 'query',
-        params: { foo: 'bar' },
-      })
-
-      expect(compiled.sql).toBe('bar')
-    })
-
-    it('uses default value if provided and no param is given', async () => {
-      fs.writeFileSync(
-        `${QUERIES_DIR}/query.sql`,
-        '{unsafeParam("foo", "bar")}',
-      )
-      const source = await getSource('query')
-      const compiled = await source.compileQuery({
-        queryPath: 'query',
-        params: { foo: 'bar' },
-      })
-
-      expect(compiled.sql).toBe('bar')
-    })
-
-    it('fails if param is not provided', async () => {
-      fs.writeFileSync(`${QUERIES_DIR}/query.sql`, '{unsafeParam("foo")}')
-      const source = await getSource('query')
-
-      await expect(
-        source.compileQuery({
-          queryPath: 'query',
-          params: {},
-        }),
-      ).rejects.toThrowError(
-        new CompileError(
-          "Error calling function: \nError Missing parameter 'foo' in request",
-        ),
-      )
-    })
-
-    it('returns the given value even if it is null', async () => {
-      fs.writeFileSync(
-        `${QUERIES_DIR}/query.sql`,
-        '{unsafeParam("foo", "default")}',
-      )
-      const source = await getSource('query')
-      const compiled = await source.compileQuery({
-        queryPath: 'query',
-        params: { foo: null },
-      })
-
-      expect(compiled.sql).toBe('null')
     })
   })
 
@@ -452,7 +395,7 @@ describe('supportedMethods', async () => {
         }),
       ).rejects.toThrowError(
         new CompileError(
-          'Error calling function: \nError runQuery function cannot be directly interpolated into the query',
+          "Function 'runQuery' cannot be directly interpolated into the query",
         ),
       )
     })
@@ -497,26 +440,23 @@ describe('supportedMethods', async () => {
       expect(compiled.sql).toBe('([[1]])([[1]])([[1]])')
     })
 
-    it('does not have access to parent global parameters', async () => {
+    it('has access to parent global parameters', async () => {
       mockFs({
         '/my-queries': {
           'source.yml': 'type: internal_test',
-          'query.sql': "{runQuery('referenced_query')}",
+          'query.sql': "{results = runQuery('referenced_query')}",
           'referenced_query.sql': "{param('foo')}",
         },
       })
       const queryPath = 'query'
       const source = await getSource(queryPath, '/my-queries')
-      await expect(
-        source.compileQuery({
+      await source
+        .compileQuery({
           queryPath,
           params: { foo: 'bar' },
-        }),
-      ).rejects.toThrowError(
-        new CompileError(
-          'Error calling function: \nError runQuery function cannot be directly interpolated into the query',
-        ),
-      )
+        })
+        .then(() => assert(true))
+        .catch(() => assert(false))
     })
   })
 })

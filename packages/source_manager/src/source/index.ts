@@ -75,7 +75,9 @@ export class Source {
   async getMetadataFromQuery(queryPath: string): Promise<QueryMetadata> {
     const sql = await this.getSql(queryPath)
     const connector = await this.connector()
-    const { config: queryConfig, ...rest } = await connector.readMetadata(sql)
+    const request = { queryPath, sql, params: {} }
+    const { config: queryConfig, ...rest } =
+      await connector.readMetadata(request)
     return {
       config: {
         ...this.config,
