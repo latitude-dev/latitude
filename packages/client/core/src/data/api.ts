@@ -1,4 +1,4 @@
-import { format } from '@latitude-data/custom_types'
+import { formatAll } from '@latitude-data/custom_types'
 import { QueryParams } from '../stores/queries'
 import {
   DOWNLOAD_PARAM,
@@ -34,12 +34,20 @@ export class LatitudeApi {
   private cors: RequestMode = 'cors'
 
   static buildParams(params: AnyObject): string {
-    return Object.entries(params)
-      .map(([key, value]) => {
-        if (PRIVATE_PARAMS.has(key)) return `${key}=${value}`
+    const privateParams = Object.fromEntries(
+      Object.entries(params).filter(([key]) => PRIVATE_PARAMS.has(key)),
+    )
+    const regularParams = Object.fromEntries(
+      Object.entries(params).filter(([key]) => !PRIVATE_PARAMS.has(key)),
+    )
 
-        return `${key}=${format(value)}`
-      })
+    const formattedRegularParams = formatAll(regularParams)
+    const formattedPrivateParams = Object.entries(privateParams)
+      .map(([key, value]) => `${key}=${value}`)
+      .join('&')
+
+    return [formattedRegularParams, formattedPrivateParams]
+      .filter(Boolean)
       .join('&')
   }
 

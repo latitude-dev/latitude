@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { format, parse } from '.' // Update the import path as necessary
+import { format, formatAll, parse, parseFromUrl } from '.' // Update the import path as necessary
 import { RichDate, RelativeDate } from '.' // Ensure the RichDate class is correctly imported
 
 describe('format', () => {
@@ -96,5 +96,34 @@ describe('parse', () => {
   it('decode URI components for unhandled types', () => {
     const encodedString = encodeURIComponent('Some encoded string')
     expect(parse(encodedString)).toBe('Some encoded string')
+  })
+})
+
+describe('formatAll', () => {
+  it('formats all values correctly', () => {
+    const params = {
+      foo: 'bar',
+      baz: [1, 2, 3],
+      qux: ['foo', 'bar', 'baz'],
+      date: new RichDate(new Date('2023-01-01')),
+      relativeDate: new RichDate(RelativeDate.Today),
+    }
+    expect(formatAll(params)).toBe(
+      'foo=bar&baz[]=1&baz[]=2&baz[]=3&qux[]=foo&qux[]=bar&qux[]=baz&date=2023-01-01:yyyy-MM-dd&relativeDate=_TODAY_:yyyy-MM-dd',
+    )
+  })
+})
+
+describe('parseFromUrl', () => {
+  it('parses all values correctly', () => {
+    const params =
+      'foo=bar&baz[]=$num:1&baz[]=$num:2&baz[]=$num:3&qux[]=$text:foo&qux[]=$text:bar&qux[]=$text:baz&date=$date:2023-01-01:yyyy-MM-dd&relativeDate=$date:_TODAY_:yyyy-MM-dd'
+    expect(parseFromUrl(params)).toEqual({
+      foo: 'bar',
+      baz: [1, 2, 3],
+      qux: ['foo', 'bar', 'baz'],
+      date: new RichDate(new Date('2023-01-01')),
+      relativeDate: new RichDate(RelativeDate.Today),
+    })
   })
 })

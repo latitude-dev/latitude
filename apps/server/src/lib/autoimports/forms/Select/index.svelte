@@ -16,6 +16,7 @@
   type $$Props = {
     param: string
     value?: unknown // Default selected value for the input
+    multiple?: boolean // Allow multiple selections
     placeholder?: string
     label?: string
     description?: string
@@ -32,6 +33,7 @@
 
   export let param: $$Props['param']
   export let value: $$Props['value'] = undefined
+  export let multiple: $$Props['multiple'] = false
   export let placeholder: $$Props['placeholder'] = undefined
   export let label: $$Props['label'] = undefined
   export let description: $$Props['description'] = undefined
@@ -116,6 +118,7 @@
   <Combobox
     items={allItems}
     value={$inputStore}
+    {multiple}
     {onSelect}
     searchBox={Boolean(searchable)}
     {label}
