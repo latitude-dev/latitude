@@ -1,5 +1,5 @@
 import { QueryMetadata } from './types'
-import { createHash } from 'crypto'
+import { createHash } from 'node:crypto'
 
 export function mergeMetadata(...metadata: QueryMetadata[]): QueryMetadata {
   const config = metadata.reduce((acc, m) => ({ ...acc, ...m.config }), {})

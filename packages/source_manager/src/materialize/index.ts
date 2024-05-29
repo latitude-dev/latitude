@@ -1,25 +1,21 @@
 import SourceManager from '@/manager'
 import DiskDriver from '@/materialize/drivers/disk/DiskDriver'
 
-export const STORAGE_TYPES = {
-  disk: 'disk',
-}
-
+export { default as findAndMaterializeQueries } from './findAndMaterializeQueries'
+export const STORAGE_TYPES = { disk: 'disk' }
 export type StorageType = keyof typeof STORAGE_TYPES
-
 export type FullDriverConfig<T extends StorageType> = DriverConfig<T> & {
   manager: SourceManager
 }
 export type DriverConfig<T extends StorageType> = T extends 'disk'
   ? { path: string }
   : never
-
 export type StorageConfig<T extends StorageType> = {
   type: T
   config: DriverConfig<T>
 }
-
 export type StorageKlass = typeof DiskDriver
+
 export function getDriverKlass({
   type,
 }: {

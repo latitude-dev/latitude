@@ -76,15 +76,16 @@ describe('writeParquet', () => {
 
   it('should write a parquet file', async () => {
     const driver = getDriver(QUERIES_DIR, MATERIALIZED_DIR)
-    const url = await driver.writeParquet({
+    const result = await driver.writeParquet({
       queryPath: 'materialize/query.sql',
       params: {},
       batchSize: 5,
     })
 
-    expect(fs.existsSync(url)).toBe(true)
+    const filePath = result.filePath
+    expect(fs.existsSync(filePath)).toBe(true)
 
-    const file = fs.readFileSync(url)
+    const file = fs.readFileSync(filePath)
     const reader = await ParquetReader.openBuffer(file)
     const cursor = reader.getCursor()
     let record = null

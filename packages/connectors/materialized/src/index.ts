@@ -20,7 +20,7 @@ export default class MaterializedConnector extends DuckdbConnector {
     buildArgs: BuildSupportedMethodsArgs,
   ): Record<string, SupportedMethod> {
     const supportedMethods = super.buildSupportedMethods(buildArgs)
-    const { source, context } = buildArgs
+    const { context } = buildArgs
 
     return {
       ...supportedMethods,
@@ -51,7 +51,7 @@ export default class MaterializedConnector extends DuckdbConnector {
             )
           }
 
-          const refSource = (await source.manager.loadFromQuery(
+          const refSource = (await this.source.manager.loadFromQuery(
             fullSubQueryPath,
           )) as Source
           const { config, methods, sqlHash } =

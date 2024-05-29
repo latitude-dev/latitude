@@ -8,7 +8,7 @@ import { NodeType } from './logic/types'
 import type { CompileContext, QueryMetadata } from './types'
 import { getLogicNodeMetadata, resolveLogicNode } from './logic'
 import { emptyMetadata, mergeMetadata } from './utils'
-import { createHash } from 'crypto'
+import { createHash } from 'node:crypto'
 
 export class Compiler {
   private context: CompileContext
