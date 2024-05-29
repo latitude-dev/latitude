@@ -23,14 +23,20 @@ export function getInstalledVersion(appDir: string) {
   return version
 }
 
+// Backwards Compatibility. before we called canary versions "next"
+const CANARY_VERSION = ['canary', 'next']
+
+function isCanary(version: string) {
+  return CANARY_VERSION.some((v) => version.includes(v))
+}
 export default async function getLatitudeVersions(
   {
     onFetch,
-    next = false,
+    canary = false,
   }: {
     onFetch?: () => void
-    next?: boolean
-  } = { next: false },
+    canary?: boolean
+  } = { canary: false },
 ) {
   const command = `npm view ${PACKAGE_NAME} versions --json`
 
@@ -46,9 +52,9 @@ export default async function getLatitudeVersions(
       let versions: string[] | undefined = undefined
       try {
         versions = JSON.parse(stdout)
-        versions = next
+        versions = canary
           ? versions
-          : versions?.filter((v: string) => !v.includes('next'))
+          : versions?.filter((v: string) => !isCanary(v))
       } catch (e) {
         reject(e)
       }
