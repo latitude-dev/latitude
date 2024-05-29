@@ -1,5 +1,39 @@
 # @latitude-data/server
 
+## 2.0.0-next.0
+
+### Major Changes
+
+- a8d4658: BREAKING CHANGE: Now `ref` function inside queries requires relative paths instead of the path from the source folder
+
+### Minor Changes
+
+- 62689a9: New 'multiple' option on Select component to allow selecting multiple items
+- bd39d29: Add materialize command to latitude CLI
+- f8406cf: latitude.json now accepts "theme" and "themeMode" attributes to customize the look and feel of the project views
+
+### Patch Changes
+
+- ed27520: Fixed automatic Dark Mode detection on Svelte package and Latitude Apps
+- 9e2dd26: Obtaining a query's ttl now does not require to compile and execute internal `runQuery` functions in it.
+- Updated dependencies [62689a9]
+- Updated dependencies [f8406cf]
+- Updated dependencies [9e2dd26]
+- Updated dependencies [bd39d29]
+- Updated dependencies [aab4a4e]
+- Updated dependencies [afc45be]
+- Updated dependencies [f8406cf]
+- Updated dependencies [b95b26d]
+- Updated dependencies [26aa69d]
+- Updated dependencies [5388504]
+- Updated dependencies [a8d4658]
+- Updated dependencies [62689a9]
+- Updated dependencies [ed27520]
+  - @latitude-data/svelte@0.8.0-next.0
+  - @latitude-data/client@0.11.0-next.0
+  - @latitude-data/source-manager@1.0.0-next.0
+  - @latitude-data/custom_types@0.3.0-next.0
+
 ## 1.2.0
 
 ### Minor Changes

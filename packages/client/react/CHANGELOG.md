@@ -1,5 +1,19 @@
 # @latitude-data/react
 
+## 0.8.0-next.0
+
+### Minor Changes
+
+- f8406cf: The LatitudeProvider now accepts a "mode" prop to define the color mode of the theme (light / dark / system)
+
+### Patch Changes
+
+- Updated dependencies [f8406cf]
+- Updated dependencies [afc45be]
+- Updated dependencies [62689a9]
+- Updated dependencies [ed27520]
+  - @latitude-data/client@0.11.0-next.0
+
 ## 0.7.0
 
 ### Minor Changes

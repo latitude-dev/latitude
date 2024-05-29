@@ -1,5 +1,22 @@
 # @latitude-data/svelte
 
+## 0.8.0-next.0
+
+### Minor Changes
+
+- 62689a9: New 'multiple' option on Select component to allow selecting multiple items
+- f8406cf: Svelte package now allows for custom themes and color modes into the ThemeProvider
+- ed27520: Fixed automatic Dark Mode detection on Svelte package and Latitude Apps
+
+### Patch Changes
+
+- Updated dependencies [f8406cf]
+- Updated dependencies [afc45be]
+- Updated dependencies [62689a9]
+- Updated dependencies [ed27520]
+  - @latitude-data/client@0.11.0-next.0
+  - @latitude-data/custom_types@0.3.0-next.0
+
 ## 0.7.0
 
 ### Minor Changes

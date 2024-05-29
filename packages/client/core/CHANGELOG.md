@@ -1,5 +1,19 @@
 # @latitude-data/client
 
+## 0.11.0-next.0
+
+### Minor Changes
+
+- afc45be: Creating themes is now easier. Some attributes for the theme will be automatically added. For example, adding `foreground` will also update the `card-foreground`, `popover-foreground` and echart attributes to match it. These can still be modified inpedendently, but now they will be automatically added by default.
+- 62689a9: added support for arrays
+
+### Patch Changes
+
+- f8406cf: Changed the generated css class from 'dark' to 'lat-dark' to avoid conflicts with other user-defined classes
+- ed27520: Fixed automatic Dark Mode detection on Svelte package and Latitude Apps
+- Updated dependencies [62689a9]
+  - @latitude-data/custom_types@0.3.0-next.0
+
 ## 0.10.0
 
 ### Minor Changes
