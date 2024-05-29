@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/mssql-connector",
-  "version": "2.1.1",
+  "version": "3.0.0-next.0",
   "license": "LGPL",
   "description": "Microsoft SQL Server connector for Latitude",
   "type": "module",

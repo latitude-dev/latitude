@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/materialized-connector",
-  "version": "0.0.0",
+  "version": "0.0.1-next.0",
   "license": "LGPL",
   "description": "Materialized Queries Connector for Latitude Data.",
   "type": "module",

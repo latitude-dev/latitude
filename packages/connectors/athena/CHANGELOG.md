@@ -1,5 +1,24 @@
 # @latitude-data/athena-connector
 
+## 3.0.0-next.0
+
+### Major Changes
+
+- 5388504: Pass Source to connectors to get access to source details and also to source manager
+  This is a breaking change. Before connectors were receiving `rootPath` of their
+  queries and now this info is obta1ined from the source.
+
+### Patch Changes
+
+- Updated dependencies [9e2dd26]
+- Updated dependencies [bd39d29]
+- Updated dependencies [aab4a4e]
+- Updated dependencies [b95b26d]
+- Updated dependencies [26aa69d]
+- Updated dependencies [5388504]
+- Updated dependencies [a8d4658]
+  - @latitude-data/source-manager@1.0.0-next.0
+
 ## 2.1.1
 
 ### Patch Changes
