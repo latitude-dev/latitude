@@ -132,38 +132,38 @@ Changesets ensure that package versions are updated correctly before releasing o
 
 We publish Latitude packages on npmjs.com and GitHub, using [semantic versioning](https://semver.org/) to manage our package versions.
 
-There are two types of publications: `latest`, representing stable versions, and `next`, for pre-release versions.
+There are two types of publications: `latest`, representing stable versions, and `canary`, for pre-release versions.
 
 #### How to Do Pre-releases
 
-Our [pre-release.yml](./.github/workflow/pre-release.yml) CI workflow automatically publishes to the `next` distribution tag on npmjs.com when changes are merged into the `next` branch.
+Our [pre-release.yml](./.github/workflow/pre-release.yml) CI workflow automatically publishes to the `canary` distribution tag on npmjs.com when changes are merged into the `canary` branch.
 To make a pre-release, follow these steps:
 
-1. Switch to the `next` branch and run `git rebase main` to ensure it's up to date with the latest package versions.
-2. Branch off `next` for your changes.
-3. Enter the pre release mode by running `pnpm changeset pre enter next`.
+1. Switch to the `canary` branch and run `git rebase main` to ensure it's up to date with the latest package versions.
+2. Branch off `canary` for your changes.
+3. Enter the pre release mode by running `pnpm changeset pre enter canary`.
 3. Create a changeset for your modifications using `pnpm changeset`.
-4. Open a pull request on GitHub targeting the `next` branch.
+4. Open a pull request on GitHub targeting the `canary` branch.
 
-Once the pull request is merged, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `next`, triggering the publication of a pre-release.
+Once the pull request is merged, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `canary`, triggering the publication of a pre-release.
 
 #### Merging prereleases to main branch
 
 Once we are ready to release the pre-release to the main branch, we can merge
-the `next` branch into the `main` branch. This will trigger the release
+the `canary` branch into the `main` branch. This will trigger the release
 workflow to publish the pre-release to the `latest` distribution tag on
-npmjs.com. 
+npmjs.com.
 
 Here's how this workflow should be performed:
 
-1. Lock `next` branch to prevent new changes from being added.
-2. Open a PR from `next` to `main`.
-3. Rebase the PR to ensure it's up to date with the latest changes in main branch.
+1. "Do not merge more PRs into", remember we control PR merges.
+2. Open a PR from `canary` to `main`.
+3. Rebase the PR to ensure it's up to date with the latest changes in `main` branch.
 4. Run `pnpm changeset pre exit` to exit pre-release mode.
 5. This PR has to:
   - Keep all changes in `.changeset` folder
-  - Ensure no mentions to `next` packages are made in CHANGELOGs
-  - Ensure no changes to `package.json` version numbers are made. We want to keep the main branch version numbers as they.
+  - Ensure no mentions to `canary` packages are made in CHANGELOGs
+  - Ensure no changes to `package.json` version numbers are made. We want to keep the main branch version numbers as they are.
 6. Merge the PR into `main` branch.
 
 Once the PR is merged into the main branch, the CI will generate a PR with the changesets. Eventually, someone with permissions will merge this PR into `main`, triggering the publication of a release.
