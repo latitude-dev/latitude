@@ -42,9 +42,23 @@
   let className: $$Props['class'] = null
   export { className as class }
 
-  $: selectedLabel = multiple ?
-    items.filter((i) => ((value ?? []) as unknown[]).includes(i.value)).map((i) => i.label).join(', ') :
-    items.find((i) => i.value === value)?.label ?? placeholder
+  function buildLabel(
+    options: ComboboxItem[],
+    isMultiple: boolean | undefined,
+  ) {
+    if (!isMultiple) {
+      return options.find((i) => i.value === value)?.label ?? placeholder
+    }
+
+    const vals = options.filter((i) =>
+      ((value ?? []) as unknown[]).includes(i.value),
+    )
+    if (vals.length <= 0) return placeholder
+
+    return vals.map((i) => i.label).join(', ')
+  }
+
+  $: selectedLabel = buildLabel(items, multiple)
 
   let open = false
 
@@ -59,7 +73,9 @@
   }
 
   function isSelected(item: ComboboxItem['value']) {
-    return multiple ? ((value ?? []) as unknown[]).includes(item) : value === item
+    return multiple
+      ? ((value ?? []) as unknown[]).includes(item)
+      : value === item
   }
 
   const dispatch = createEventDispatcher()
@@ -69,12 +85,12 @@
       if (isSelected(selectedValue)) {
         value = ((value ?? []) as unknown[]).filter((v) => v !== selectedValue) // Unselect
       } else {
-        value = [...((value ?? []) as unknown[]), selectedValue]  // Select
+        value = [...((value ?? []) as unknown[]), selectedValue] // Select
       }
     } else {
       value = selectedValue
     }
-      
+
     onSelect(value)
     dispatch('change', value)
   }
