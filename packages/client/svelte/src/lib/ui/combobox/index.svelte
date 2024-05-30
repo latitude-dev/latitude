@@ -42,23 +42,21 @@
   let className: $$Props['class'] = null
   export { className as class }
 
-  function buildLabel(
-    options: ComboboxItem[],
-    isMultiple: boolean | undefined,
-  ) {
-    if (!isMultiple) {
-      return options.find((i) => i.value === value)?.label ?? placeholder
+  let selectedLabel = placeholder
+  $: {
+    if (!multiple) {
+      selectedLabel =
+        items.find((i) => i.value === value)?.label ?? placeholder ?? ''
+    } else {
+      const selectedItems = (value instanceof Array ? value : []).flat()
+      const vals = items.filter((i) => selectedItems.includes(i.value))
+
+      selectedLabel =
+        vals.length > 0
+          ? vals.map((i) => i.label).join(', ')
+          : placeholder ?? ''
     }
-
-    const vals = options.filter((i) =>
-      ((value ?? []) as unknown[]).includes(i.value),
-    )
-    if (vals.length <= 0) return placeholder
-
-    return vals.map((i) => i.label).join(', ')
   }
-
-  $: selectedLabel = buildLabel(items, multiple)
 
   let open = false
 
