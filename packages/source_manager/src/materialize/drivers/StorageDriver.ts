@@ -27,6 +27,11 @@ function mapDataTypeToParquet(dataType: DataType): ParquetType {
       return ParquetLogicalType.TIMESTAMP_MICROS
 
     case DataType.Integer:
+      // TODO: review this decision. I faced an issue with an int8 column
+      // in postgresql which is a BigInt. This library does not support it.
+      // it breaks saying:
+      //   Cannot convert a BigInt value to a number 💥
+      // If we put here INT64 it works but not sure is the best approach.
       return ParquetLogicalType.INT32
 
     case DataType.Float:

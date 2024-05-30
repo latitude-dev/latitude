@@ -15,6 +15,12 @@ COPY latitude.json .
 RUN latitude telemetry --disable
 RUN latitude setup
 
+ARG MATERIALIZE_QUERIES='false'
+RUN if [ "$MATERIALIZE_QUERIES" = "true" ]; then \
+      echo "Materializing queries..."; \
+      latitude materialize; \
+    fi
+
 FROM builder AS runner
 
 WORKDIR /usr/src/app

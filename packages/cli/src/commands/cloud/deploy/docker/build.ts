@@ -3,20 +3,25 @@ import betterSpawn from '$src/lib/spawn'
 export default function buildDockerImage({
   tags,
   noCache,
+  materializeQueries,
 }: {
   tags: [string]
   noCache: boolean
+  materializeQueries: boolean
 }) {
   return new Promise<void>((resolve, reject) => {
     const args = [
       'buildx',
       'build',
+      materializeQueries ? '--build-arg' : null,
+      materializeQueries ? 'MATERIALIZE_QUERIES=true' : null,
       '--platform',
       'linux/amd64',
       '-t',
       tags[0],
       '.',
-    ]
+    ].filter((a) => a !== null) as string[]
+
     if (noCache) args.push('--no-cache')
 
     betterSpawn(

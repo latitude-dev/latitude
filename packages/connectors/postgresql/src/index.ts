@@ -224,12 +224,20 @@ export default class PostgresConnector extends BaseConnector<ConnectionParams> {
     return this.compact(payload)
   }
 
-  private readSecureFile(filePath: string) {
+  private readSecureFile(filePathOrContent: string) {
+    // Users can set in the .env file the content of the certificate
+    // This way is easier to read from Docker secrets or any other secret manager
+    if (filePathOrContent.startsWith('-----BEGIN CERTIFICATE-----')) {
+      return filePathOrContent
+    }
+
     try {
-      return readFileSync(filePath).toString()
+      return readFileSync(filePathOrContent).toString()
     } catch (error) {
       throw new Error(
-        `Failed to read file at ${filePath}: ${(error as Error).message}`,
+        `Failed to read file at ${filePathOrContent}: ${
+          (error as Error).message
+        }`,
       )
     }
   }
