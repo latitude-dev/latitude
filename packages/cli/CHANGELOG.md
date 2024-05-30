@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 1.7.0-next.1
+
+### Minor Changes
+
+- 6bd91eb: - Add --materialize flag to latitude deploy
+  - Allow posgresql source read CA certificate from an .env file
+
 ## 1.7.0-next.0
 
 ### Minor Changes
