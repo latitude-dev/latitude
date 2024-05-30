@@ -34,11 +34,17 @@ export class LatitudeApi {
   private cors: RequestMode = 'cors'
 
   static buildParams(params: AnyObject): string {
+    const cleanParams = Object.fromEntries(
+      Object.entries(params).filter(
+        ([_, value]) => value != null && value !== '',
+      ),
+    )
+
     const privateParams = Object.fromEntries(
-      Object.entries(params).filter(([key]) => PRIVATE_PARAMS.has(key)),
+      Object.entries(cleanParams).filter(([key]) => PRIVATE_PARAMS.has(key)),
     )
     const regularParams = Object.fromEntries(
-      Object.entries(params).filter(([key]) => !PRIVATE_PARAMS.has(key)),
+      Object.entries(cleanParams).filter(([key]) => !PRIVATE_PARAMS.has(key)),
     )
 
     const formattedRegularParams = formatAll(regularParams)
