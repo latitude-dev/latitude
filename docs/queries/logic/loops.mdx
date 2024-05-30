@@ -111,3 +111,30 @@ FROM table
 WHERE user_id IN (1, 2, 3, 4, 5) -- Assuming the user IDs are 1, 2, 3, 4, 5
 ```
 </CodeGroup>
+
+### Iterating params for an IN clause
+Imagine you have a multi select in your application that allows selecting multiple values. You can pass the selected values as an array to the query param and iterate over it to filter the results.
+
+In this case we pass `hiring_period` that can be some of these `['Mid', 'New', 'Old']`
+<CodeGroup>
+
+```jsx Your Query
+SELECT * FROM employees
+{hiringPeriod = param('hiring_period', [])}
+
+{#if hiringPeriod.length > 0}
+  WHERE hiring_period IN (
+    {#each hiringPeriod as period, index}
+      {#if index > 0},{/if}
+      {period}
+    {/each}
+  );
+{/if}
+```
+```sql Compiled SQL
+SELECT * FROM employees
+-- ['Mid', 'New']
+-- Parameters are safetly binded avoid SQL injection
+WHERE hiring_period IN (?, ?);
+```
+</CodeGroup>

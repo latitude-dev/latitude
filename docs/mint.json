@@ -140,7 +140,8 @@
         "queries/advanced/run-query",
         "queries/advanced/cast-methods",
         "queries/advanced/interpolation",
-        "queries/advanced/config"
+        "queries/advanced/config",
+        "queries/advanced/materialized-queries"
       ]
     },
     {

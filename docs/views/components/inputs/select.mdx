@@ -10,8 +10,6 @@ description: 'Create a dropdown with options for a parameter.'
 The `Select` component is used to create a dropdown with predefined options for a parameter. This can be useful when you want to provide a list of options for a parameter that the user can choose from, either to limit the possible values or to make it easier for the user to select a value.
 This component can be used both with predefined options and with dynamic options that are loaded from a query result.
 
-<Note>If the user has not selected any option, the parameter will NOT be sent in any query request. This means that you will want to add a fallback to your query to handle this case. For more information, check out [Query Parameters](/queries/logic/parameters)</Note>
-
 ## Options
 
 ### Predefined options
@@ -124,3 +122,40 @@ You can customize the text that is displayed in the dropdown with the following 
 	placeholder="Select a city..."
 />
 ```
+
+## Multiple selection
+
+You can also allow multiple selections by adding the `multiple` prop. This will display a checkbox next to each option that the user can select.
+
+```jsx
+<Select
+	query="cities"
+	param="city_ids"
+	multiple
+/>
+```
+
+When multiple selections are enabled, the parameter value will be an array of selected values. You can iterate over this array using the `{#each}` block in your queries.
+
+<CodeGroup>
+```jsx Your query
+SELECT *
+FROM cities
+WHERE
+{#each param('city_ids') as city, index}
+	{#if index > 0} OR {/if}
+	id = {city}
+{/each}
+```
+
+```sql Compiled SQL
+SELECT *
+FROM cities
+WHERE
+	id = 'NYC'
+	OR id = 'LA'
+	OR id = 'SF'
+```
+</CodeGroup>
+
+Check out [Queries Loops](/queries/logic/loops) for more information on how to iterate over arrays in queries.
