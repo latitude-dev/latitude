@@ -1,2 +1,2 @@
-{@config materialize_query = true}
+{@config materialize = true}
 SELECT * FROM users;

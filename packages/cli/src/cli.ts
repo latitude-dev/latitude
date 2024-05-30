@@ -93,7 +93,7 @@ CLI.command('run <query_name>')
 
 CLI.command('materialize')
   .describe(
-    'Materialize all queries that are configured with \n    {@config materialize_query: true}',
+    'Materialize all queries that are configured with \n    {@config materialize: true}',
   )
   .option('--debug', 'Show time taken to materialize the queries')
   .option('--queries', 'Run only the specified queries')

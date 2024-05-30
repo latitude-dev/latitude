@@ -96,7 +96,7 @@ async function isMaterializableQuery({
 }) {
   const source = await sourceManager.loadFromQuery(query)
   const { config } = await source.getMetadataFromQuery(query)
-  return config.materialize_query === true
+  return config.materialize === true
 }
 
 async function findQueries({

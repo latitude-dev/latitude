@@ -11,7 +11,7 @@ import { WriteParquetParams } from '@/materialize/drivers/StorageDriver'
 const QUERIES_DIR = '/queries'
 const MATERIALIZED_DIR = '/materialized'
 const MATERIALIZABLE_SQL = `
-{@config materialize_query = true}
+{@config materialize = true}
 SELECT * FROM users
 `
 

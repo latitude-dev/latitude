@@ -24,7 +24,7 @@ export enum ConnectorType {
 
 export type QueryConfig = {
   ttl?: number
-  materialize_query?: boolean
+  materialize?: boolean
 }
 
 export type QueryParams = {

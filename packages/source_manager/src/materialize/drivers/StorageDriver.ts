@@ -76,7 +76,7 @@ export abstract class StorageDriver {
     const source = await this.manager.loadFromQuery(queryPath)
     const { config, sqlHash } = await source.getMetadataFromQuery(queryPath)
 
-    if (!config.materialize_query) {
+    if (!config.materialize) {
       throw new Error('Query is not configured as materialized')
     }
 

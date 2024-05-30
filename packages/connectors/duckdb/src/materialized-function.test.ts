@@ -14,12 +14,12 @@ import MaterializedConnector from '$/index'
 import { createHash } from 'crypto'
 
 const MATERIALIZED_SQL = `
-{@config materialize_query = true}
+{@config materialize = true}
 SELECT * FROM users
 `
-describe('materializedRef function', async () => {
+describe('materialized function', async () => {
   it('find queries in a folder out of current source', async () => {
-    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    const sql = "SELECT * FROM {materialized('../query.sql')}"
     const queriesFs = {
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
@@ -67,12 +67,12 @@ describe('materializedRef function', async () => {
   })
 
   it('fails when materialized sql is not found', async () => {
-    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    const sql = "SELECT * FROM {materialized('../query.sql')}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
         'query.sql': `
-          {@config materialize_query = true}
+          {@config materialize = true}
           SELECT * FROM projects
         `,
         'materialized-queries': {
@@ -104,7 +104,7 @@ describe('materializedRef function', async () => {
   })
 
   it('fails when ref query is not a string', async () => {
-    const sql = 'SELECT * FROM {materializedRef(33)}'
+    const sql = 'SELECT * FROM {materialized(33)}'
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
@@ -136,12 +136,12 @@ describe('materializedRef function', async () => {
   })
 
   it('fails when the query use parameters', async () => {
-    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    const sql = "SELECT * FROM {materialized('../query.sql')}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
         'query.sql': `
-          { @config materialize_query = true }
+          { @config materialize = true }
           SELECT * FROM users WHERE id = { param('id') } AND name = { param('name') }
         `,
         'materialized-queries': {
@@ -174,7 +174,7 @@ describe('materializedRef function', async () => {
   })
 
   it('fails when used materialized config is not defined', async () => {
-    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    const sql = "SELECT * FROM {materialized('../query.sql')}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
@@ -209,11 +209,11 @@ describe('materializedRef function', async () => {
   })
 
   it('fails when used materialized config is set to false', async () => {
-    const sql = "SELECT * FROM {materializedRef('../query.sql')}"
+    const sql = "SELECT * FROM {materialized('../query.sql')}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
-        'query.sql': '{@config materialize_query = false}\nSELECT * FROM users',
+        'query.sql': '{@config materialize = false}\nSELECT * FROM users',
         'materialized-queries': {
           'source.yml': 'type: materialized',
           'query.sql': sql,
@@ -244,7 +244,7 @@ describe('materializedRef function', async () => {
   })
 
   it('fails when used in a logic block', async () => {
-    const sql = "{result = materializedRef('../query')} {result}"
+    const sql = "{result = materialized('../query')} {result}"
     mockFs({
       [QUERIES_DIR]: {
         'source.yml': 'type: internal_test',
@@ -273,7 +273,7 @@ describe('materializedRef function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Function 'materializedRef' cannot be used inside a logic block. It must be directly interpolated into the query",
+        "Function 'materialized' cannot be used inside a logic block. It must be directly interpolated into the query",
       ),
     )
   })
@@ -286,7 +286,7 @@ describe('materializedRef function', async () => {
         'query.sql': sql,
         'materialized-queries': {
           'source.yml': 'type: materialized',
-          'query.sql': "SELECT * FROM {materializedRef('../query.sql')}",
+          'query.sql': "SELECT * FROM {materialized('../query.sql')}",
         },
       },
     })
