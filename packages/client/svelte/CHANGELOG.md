@@ -1,5 +1,11 @@
 # @latitude-data/svelte
 
+## 0.8.0-next.2
+
+### Minor Changes
+
+- 0f4a48a: Fix combobox label not being reactive
+
 ## 0.8.0-next.1
 
 ### Minor Changes
