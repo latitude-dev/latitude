@@ -1,5 +1,12 @@
 # @latitude-data/react
 
+## 0.8.0-next.1
+
+### Patch Changes
+
+- Updated dependencies [9c02462]
+  - @latitude-data/client@0.11.0-next.1
+
 ## 0.8.0-next.0
 
 ### Minor Changes

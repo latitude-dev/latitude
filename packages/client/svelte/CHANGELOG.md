@@ -1,5 +1,18 @@
 # @latitude-data/svelte
 
+## 0.8.0-next.1
+
+### Minor Changes
+
+- 9c02462: - Remove query result from external
+  - Remove undefined from params send to api from clients
+  - Set placeholder on multi select when non is selected
+
+### Patch Changes
+
+- Updated dependencies [9c02462]
+  - @latitude-data/client@0.11.0-next.1
+
 ## 0.8.0-next.0
 
 ### Minor Changes
