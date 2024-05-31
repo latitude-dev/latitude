@@ -13,7 +13,12 @@ import {
   type SupportedMethod,
 } from '@latitude-data/sql-compiler'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
-import { Database, OPEN_READONLY, OPEN_READWRITE } from 'duckdb-async'
+import {
+  Database,
+  OPEN_READONLY,
+  OPEN_READWRITE,
+  TableData,
+} from 'duckdb-async'
 
 export type ConnectionParams = {
   url?: string
@@ -121,35 +126,107 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
 
   async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {
     try {
-      if (!this.client) await this.createClient()
-      const conn = await this.client!.connect()
+      const describeQuery = `DESCRIBE (${compiledQuery.sql})`
+      const describeResults = await this.performQuery({
+        ...compiledQuery,
+        sql: describeQuery,
+      })
+      const fields = describeResults.map(
+        (row) =>
+          ({
+            name: row['column_name'],
+            type: this.convertDataType(row['column_type']),
+          }) as Field,
+      )
 
-      let results = []
-      if (compiledQuery.resolvedParams.length > 0) {
-        const stmt = await conn.prepare(compiledQuery.sql)
-        results = await stmt.all(
-          ...this.buildQueryParams(compiledQuery.resolvedParams),
-        )
-        stmt.finalize()
-      } else {
-        results = await conn.all(compiledQuery.sql)
-      }
+      const results = await this.performQuery(compiledQuery)
       const rows = results.map((row) => Object.values(row))
       const rowCount = results.length
-      const firstRow = results[0]
-      const fields = firstRow
-        ? Object.keys(firstRow).map(
-            (key) =>
-              ({
-                name: key,
-                type: DataType.String,
-              }) as Field,
-          )
-        : []
 
       return new QueryResult({ fields, rows, rowCount })
     } catch (error) {
       throw new ConnectorError((error as Error).message)
+    }
+  }
+
+  private async performQuery(compiledQuery: CompiledQuery): Promise<TableData> {
+    if (!this.client) await this.createClient()
+    const conn = await this.client!.connect()
+
+    if (compiledQuery.resolvedParams.length === 0) {
+      return await conn.all(compiledQuery.sql)
+    }
+
+    const stmt = await conn.prepare(compiledQuery.sql)
+    const results = await stmt.all(
+      ...this.buildQueryParams(compiledQuery.resolvedParams),
+    )
+    stmt.finalize()
+    return results
+  }
+
+  private convertDataType(
+    dataType: string,
+    fallback = DataType.Unknown,
+  ): DataType {
+    switch (dataType.toUpperCase()) {
+      case 'BOOLEAN':
+      case 'BOOL':
+      case 'LOGICAL':
+        return DataType.Boolean
+
+      case 'DATE':
+      case 'TIME':
+      case 'TIMESTAMP':
+      case 'DATETIME':
+      case 'TIMESTAMPTZ':
+        return DataType.Datetime
+
+      case 'DOUBLE':
+      case 'FLOAT8':
+      case 'REAL':
+      case 'FLOAT4':
+      case 'FLOAT':
+      case 'DECIMAL':
+      case 'NUMERIC':
+        return DataType.Float
+
+      case 'BIGINT':
+      case 'INT8':
+      case 'LONG':
+      case 'HUGEINT':
+      case 'INTEGER':
+      case 'INT4':
+      case 'INT':
+      case 'SIGNED':
+      case 'SMALLINT':
+      case 'INT2':
+      case 'SHORT':
+      case 'TINYINT':
+      case 'INT1':
+      case 'UBIGINT':
+      case 'UHUGEINT':
+      case 'UINTEGER':
+      case 'USMALLINT':
+      case 'UTINYINT':
+        return DataType.Integer
+
+      case 'VARCHAR':
+      case 'CHAR':
+      case 'BPCHAR':
+      case 'TEXT':
+      case 'STRING':
+      case 'UUID':
+      case 'BIT':
+      case 'BITSTRING':
+      case 'BLOB':
+      case 'BYTEA':
+      case 'BINARY':
+      case 'VARBINARY':
+        return DataType.String
+
+      default:
+        return fallback
     }
   }
 
