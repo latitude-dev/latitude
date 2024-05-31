@@ -12,7 +12,7 @@ This keyword will not be included in the query that gets sent to your source, bu
 A `config` tag is defined as a key-value object in the query. Here's an example:
 ```sql
 {@config ttl = 3600} -- 1 hour of lifetime
-{@config materialize_query = true} -- materialize the query
+{@config materialize = true} -- materialize the query
 SELECT *
 FROM my_table
 ```
