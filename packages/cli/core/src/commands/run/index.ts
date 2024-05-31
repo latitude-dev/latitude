@@ -15,16 +15,19 @@ async function run(
 ) {
   const watch = opts?.watch || false
   const debug = opts?.debug || false
+  const params =
+    typeof opts?.param === 'string' ? [opts.param] : opts?.param ?? []
 
-  await syncQueries({ watch })
+  await syncQueries({ watch: true })
 
   const args = [
     'run',
     'query',
     queryName,
-    JSON.stringify(buildParams(opts?.param || [])),
-    watch ? 'true' : 'false',
-    debug ? 'true' : 'false',
+    '--',
+    watch ? '--watch' : '',
+    debug ? '--debug' : '',
+    ...params.map((param) => `--param=${param}`),
   ].filter(Boolean)
 
   return spawn(
@@ -45,36 +48,6 @@ async function run(
       },
     },
   )
-}
-
-const buildParams = (stdioParams?: string | string[]) => {
-  let paramStrings: string[] = Array.isArray(stdioParams) ? stdioParams : []
-  if (typeof stdioParams === 'string') paramStrings = [stdioParams]
-  else if (!Array.isArray(stdioParams)) paramStrings = []
-
-  const params: { [key: string]: unknown } = {}
-  paramStrings.forEach((param) => {
-    if (typeof param !== 'string') return
-    const [key, value] = param.split('=')
-    if (!key || !value) {
-      console.error('Invalid parameter:', param)
-      process.exit(1)
-    }
-
-    if (!isNaN(Number(value))) {
-      params[key] = Number(value)
-      return
-    }
-
-    if (value === 'true' || value === 'false') {
-      params[key] = value === 'true'
-      return
-    }
-
-    params[key] = value
-  })
-
-  return params
 }
 
 export default tracked('runCommand', setRootDir(setup(run)))

@@ -61,11 +61,11 @@ jobs:
           pnpm install
 
       - name: Use Turbo to build affected packages
-        run: pnpm turbo run build --cache-dir=.turbo --filter='./packages/cli'
+        run: pnpm turbo run build --cache-dir=.turbo --filter='./packages/cli/core'
 
       - name: ls dist folder
-        run: ls /home/runner/work/latitude/latitude/packages/cli/dist
+        run: ls /home/runner/work/latitude/latitude/packages/cli/core/dist
 
       - name: Run E2E tests
-        run: node ../packages/cli/tests/e2e/start.cjs
+        run: node ../packages/cli/core/tests/e2e/start.cjs
         working-directory: ${{ github.workspace }}/sites

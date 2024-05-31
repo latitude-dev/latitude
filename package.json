@@ -13,7 +13,10 @@
     "prettier:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "release": "pnpm run build && changeset publish",
     "publish-packages": "turbo run build lint tc test && pnpm run changeset version && pnpm run changeset publish",
-    "latitude-dev": "./node_modules/.bin/latitude"
+    "latitude-dev": "./node_modules/.bin/latitude",
+    "cache:clear:pnpm-store": "pnpm store prune",
+    "cache:clear:node_modules": "find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +",
+    "cache:clear": "pnpm run cache:clear:pnpm-store && pnpm run cache:clear:node_modules"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
@@ -28,5 +31,11 @@
   },
   "dependencies": {
     "@latitude-data/duckdb-connector": "workspace:*"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "ink@4.4.1": "patches/ink@4.4.1.patch",
+      "ink-spinner@5.0.0": "patches/ink-spinner@5.0.0.patch"
+    }
   }
 }

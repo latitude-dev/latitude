@@ -1,89 +1,85 @@
-import QueryDisplay from './result_display'
-import chokidar from 'chokidar'
 import sourceManager from '../../src/lib/server/sourceManager'
 import { QUERIES_DIR } from '../../src/lib/constants'
+import render from '@latitude-data/display_table'
+import path from 'path'
+import { parseArgs, type ParseArgsConfig } from 'node:util'
+import { parseFromUrl } from '@latitude-data/custom_types'
 
-/**
- * FIXME: Transpile this file to JS
- *
- * I wanted to build into JS as we do with other scripts this one
- * but we have a CommonJS module dependency that fails when building it.
- *
- * The error is:
- *  RollupError: .blessed@0.1.81/node_modules/blessed/lib/tput.js (369:24):
- *  Legacy octal escape is not permitted in strict mode
- *
- * There is already a PR fixing it in the package (from 2016):
- * https://github.com/chjj/blessed/pull/214
- *
- * You read right, 2016 lol
- */
 type CommandArgs = {
   queryPath: string
-  parameters: { [key: string]: string }
+  parameters: Record<string, unknown>
   watch: boolean
   debug: boolean
 }
 
+type CommandOptions = {
+  debug?: boolean
+  watch?: boolean
+  param?: string[]
+}
+
+const OPTIONS = {
+  debug: {
+    type: 'boolean',
+    short: 'd',
+    default: false,
+  },
+  watch: {
+    type: 'boolean',
+    short: 'w',
+    default: false,
+  },
+  param: {
+    type: 'string',
+    short: 'p',
+    multiple: true,
+  },
+}
+
 function getArgs(): CommandArgs {
   const args = process.argv.slice(2)
-  if (args.length < 1) {
+  const { values, positionals } = parseArgs({
+    args,
+    allowPositionals: true,
+    options: OPTIONS as ParseArgsConfig['options'],
+  })
+
+  // TODO: Temporal warning to avoid breaking errors. This will only show up when updating the server but not the CLI
+  if (positionals.length > 1) {
     console.error(
-      'Usage: run <query> [parameters] <watch:true|false> <debug:true|false>',
+      'CLI version not compatible. To update the CLI, run `npm i -g @latitude-data/cli`',
     )
     process.exit(1)
   }
-  const queryPath = args[0]!
 
-  let parameters: CommandArgs['parameters']
-  try {
-    parameters = args.length < 3 ? {} : JSON.parse(args[1]!)
-  } catch (e) {
-    console.error('Parameters must be a valid JSON string')
+  if (positionals.length !== 1) {
+    console.error('Usage: run <query> ...options')
     process.exit(1)
   }
 
-  const watch = args[2] === 'true'
-  const debug = args[3] === 'true'
+  const queryPath = positionals[0]!
+  const { debug, watch, param } = values as CommandOptions
 
-  return { queryPath, parameters, watch, debug }
-}
+  const paramsUrl = param
+    ?.reduce((acc: string[], param: string) => {
+      const [key, ...rest] = param.split('=')
+      const value = rest.join('=')
+      return [...acc, `${key}=${value}`]
+    }, [])
+    .join('&')
 
-async function runQuery(
-  query: string,
-  params: { [key: string]: string },
-  debug = false,
-) {
-  try {
-    const source = await sourceManager.loadFromQuery(query)
-    const compiledQuery = await source.compileQuery({
-      queryPath: query,
-      params,
-    })
+  const parameters = paramsUrl ? parseFromUrl(paramsUrl) : {}
 
-    if (debug) {
-      QueryDisplay.displayCompiledQuery(compiledQuery)
-      return
-    }
-
-    const startTime = Date.now()
-    const result = await source.runCompiledQuery(compiledQuery)
-    const totalTime = Date.now() - startTime
-
-    QueryDisplay.displayResults(result, totalTime)
-  } catch (e) {
-    QueryDisplay.displayError(e as Error)
-  }
+  return { queryPath, parameters, watch: watch ?? false, debug: debug ?? false }
 }
 
 const args = getArgs()
 
-if (args.watch) {
-  const watcher = chokidar.watch(QUERIES_DIR)
-  watcher.on('change', () => {
-    runQuery(args.queryPath, args.parameters, args.debug)
-  })
-}
-
-QueryDisplay.render()
-runQuery(args.queryPath, args.parameters, args.debug)
+render({
+  sourceManager,
+  queriesDir: path.resolve(QUERIES_DIR),
+  query: args.queryPath,
+  params: args.parameters,
+  debug: args.debug,
+  watch: args.watch,
+})
