@@ -18,6 +18,7 @@ details:
 
 config:
   ttl: 3600 # 1 hour of lifetime
+  materialize: false # Do not materialize the query (default)
 ```
 
 ## Specific query configuration
@@ -27,3 +28,5 @@ You can also set a specific configuration for each query by adding a custom tag 
 ## Available options
 
 <QueryConfigDocs />
+
+<Warning>Be careful setting `materialize: true` in all the source. It will materialize all the queries. Is better to set this setting at query level as explained in [queries documentation](/queries/advanced/config)</Warning>

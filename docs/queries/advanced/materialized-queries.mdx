@@ -1,0 +1,92 @@
+---
+title: 'Materialized Queries'
+description: 'Learn how to materialize queries'
+---
+
+## Introduction
+
+Materializing a query stores the results from any of your queries to your Latitude server. Then, you can create a new query that uses the materialized data instead of the original database.
+
+Materializing queries can be useful in a variety of scenarios:
+- **Optimize queries**. Store frequently used queries in your Latitude server, and use them as a source for other queries.
+- **Scale your queries**. Store queries that are too large or expensive to run on your database, and use them as a source for other queries.
+- **Share data between sources**. Store tables from different sources, and use them together in a single query, even if they are in different databases!
+
+<Warning>At the moment materializing only work with [Potsgresql connector](/sources/postgresql).</Warning>
+
+## Materializing a query
+
+Almost any query can be materialized.
+
+<Note>
+  **Requirements**
+
+  Query materialization is done on demand, so it is not possible to materialize a query that depends on user input or other dynamic content. This means that materialized queries **cannot contain** any `param` or `runQuery` function calls.
+</Note>
+
+To materialize a query, simply add a `materialize` config tag to the query. This tag tells the Latitude server to store the query's results in a file.
+
+```sql queries/mysql/users.sql
+{@config materialize = true}
+SELECT * FROM users
+```
+
+Now, simply run `latitude materialize` to initiate the materialization process. Every query marked for materialization will be run, and the results will be stored in your Latitude server.
+
+## Using materialized queries
+
+Running queries with the `materialize` config will still run the query as usual. In order to use the materialized results, you must use the `materialized` function, which is a special function that allows you to reference materialized data, only available in `DuckDB` sources.
+
+### Creating a duckdb source
+
+If you do not already have any DuckDB source in your project, you first need to install the `@latitude-data/duckdb-connector` package in order to create a new one.
+
+```bash
+npm install @latitude/duckdb-connector
+```
+
+Then, create a new DuckDB source in your project's `queries` folder. To do so, create a new folder for this source and add a `source.yml` with the following configuration:
+
+```yaml queries/materialized/source.yaml
+type: duckdb
+```
+
+No more configuration is needed in this file to use your materialized data. However, you can still add a `details` section to your `source.yml` file to provide additional information about your source. Read more about [DuckDB sources](/sources/duckdb) for more information.
+
+### Querying materialized data
+
+Once you have created a DuckDB source, you can now create queries and reference any materialized data. To select a materialized query, you can use the special `{materialized(...)}` function,
+which takes the path to the materialized query as an argument, and lets you use the stored results as a regular SQL table.
+
+```jsx queries/materialized/users.sql
+SELECT * FROM {materialized('../mysql/users')}
+```
+
+Now, these queries can use dynamic parameters to further customize the results.
+
+```jsx queries/materialized/users.sql
+SELECT * FROM {materialized('../mysql/users')}
+WHERE id = {param('user_id')}
+```
+
+<Warning>
+  Trying to reference a materialized query without having performed the materialization process will result in an error, as the data has not been stored in your server yet.
+</Warning>
+
+## Deploying materialized queries
+
+When deploying your Latitude project, you will need to perform the materialization process in your server, otherwise the queries will not be able to access the materialized data.
+
+The most simple approach is to add a command to the end of your `Dockerfile` that will run the materialization process when the container is built.
+```Dockerfile
+RUN latitude materialize
+```
+This will materialize all the needed queries on build time, and your materialized data will be updated on every new deployment.
+This approach will make your build time longer, and your docker image size grow significantly as it will include the materialization process in the image.
+However, it is the most simple and recommended approach for most use cases.
+
+For an even more advanced approach, you can configure a scheduled job in your server to run the materialization process on a regular basis.
+
+<Note>
+  When available, Latitude Cloud will materialize and update your queries automatically on a regular basis.
+</Note>
