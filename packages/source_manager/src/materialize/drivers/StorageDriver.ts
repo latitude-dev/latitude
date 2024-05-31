@@ -32,7 +32,7 @@ function mapDataTypeToParquet(dataType: DataType): ParquetType {
       // it breaks saying:
       //   Cannot convert a BigInt value to a number 💥
       // If we put here INT64 it works but not sure is the best approach.
-      return ParquetLogicalType.INT32
+      return ParquetLogicalType.INT64
 
     case DataType.Float:
       return ParquetLogicalType.FLOAT

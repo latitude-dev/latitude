@@ -7,6 +7,7 @@ import {
   Source,
   ResolvedParam,
   type BuildSupportedMethodsArgs,
+  BatchedQueryOptions,
 } from '@latitude-data/source-manager'
 import {
   emptyMetadata,
@@ -91,7 +92,7 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
             )
           }
 
-          const unsupportedMethods = ['param', 'runQuery']
+          const unsupportedMethods = ['param', 'runQuery', 'materialized']
           const unsupportedMethodsInQuery = Array.from(methods).filter(
             (method) => unsupportedMethods.includes(method),
           )
@@ -144,6 +145,41 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
       const rowCount = results.length
 
       return new QueryResult({ fields, rows, rowCount })
+    } catch (error) {
+      throw new ConnectorError((error as Error).message)
+    }
+  }
+  
+  async batchQuery(
+    compiledQuery: CompiledQuery,
+    { batchSize, onBatch }: BatchedQueryOptions,
+  ): Promise<void> {
+    try {
+      let offset = 0
+      let hasMoreRows = true
+      let fields: Field[] | undefined
+
+      while (hasMoreRows) {
+        const paginatedQuery = `SELECT * FROM (${compiledQuery.sql}) LIMIT ${batchSize} OFFSET ${offset}`
+        const results = await this.runQuery({
+          ...compiledQuery,
+          sql: paginatedQuery,
+        })
+
+        hasMoreRows = results.rowCount === batchSize
+
+        if (fields === undefined) {
+          fields = results.fields
+        }
+
+        await onBatch({
+          rows: results.toArray(),
+          fields: fields,
+          lastBatch: !hasMoreRows,
+        })
+
+        offset += batchSize
+      }
     } catch (error) {
       throw new ConnectorError((error as Error).message)
     }
