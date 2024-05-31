@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/snowflake-connector",
-  "version": "2.1.2",
+  "version": "3.0.0",
   "license": "LGPL",
   "description": "Snowflake connector for Latitude",
   "type": "module",

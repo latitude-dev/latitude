@@ -1,5 +1,28 @@
 # @latitude-data/cli
 
+## 1.7.0
+
+### Minor Changes
+
+- e141dc4: latitude.json is now copied and updated into the .latitude/app folder of the project
+- e141dc4: - Add --materialize flag to latitude deploy
+  - Allow posgresql source read CA certificate from an .env file
+- e141dc4: Add materialize command to latitude CLI
+- e141dc4: Pass Source to connectors to get access to source details and also to source manager
+  This is a breaking change. Before connectors were receiving `rootPath` of their
+  queries and now this info is obta1ined from the source.
+
+### Patch Changes
+
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/source-manager@1.0.0
+
 ## 1.6.7
 
 ### Patch Changes

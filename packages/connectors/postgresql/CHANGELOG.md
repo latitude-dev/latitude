@@ -1,5 +1,31 @@
 # @latitude-data/postgresql-connector
 
+## 3.0.0
+
+### Major Changes
+
+- e141dc4: Pass Source to connectors to get access to source details and also to source manager
+  This is a breaking change. Before connectors were receiving `rootPath` of their
+  queries and now this info is obta1ined from the source.
+
+### Minor Changes
+
+- e141dc4: - Add --materialize flag to latitude deploy
+  - Allow posgresql source read CA certificate from an .env file
+- e141dc4: - Add the ability of running batched queries to PostgreSQL connector.
+  - Allow source manager to write the result of a query into a parquet file
+
+### Patch Changes
+
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/source-manager@1.0.0
+
 ## 2.1.2
 
 ### Patch Changes

@@ -1,5 +1,44 @@
 # @latitude-data/server
 
+## 2.0.0
+
+### Major Changes
+
+- e141dc4: BREAKING CHANGE: Now `ref` function inside queries requires relative paths instead of the path from the source folder
+
+### Minor Changes
+
+- e141dc4: New 'multiple' option on Select component to allow selecting multiple items
+- e141dc4: - Remove query result from external
+  - Remove undefined from params send to api from clients
+  - Set placeholder on multi select when non is selected
+- e141dc4: Add materialize command to latitude CLI
+- e141dc4: latitude.json now accepts "theme" and "themeMode" attributes to customize the look and feel of the project views
+
+### Patch Changes
+
+- e141dc4: Fixed automatic Dark Mode detection on Svelte package and Latitude Apps
+- e141dc4: Obtaining a query's ttl now does not require to compile and execute internal `runQuery` functions in it.
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/svelte@0.8.0
+  - @latitude-data/client@0.11.0
+  - @latitude-data/source-manager@1.0.0
+  - @latitude-data/custom_types@0.3.0
+
 ## 1.2.3
 
 ### Patch Changes
