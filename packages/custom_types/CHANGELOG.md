@@ -1,5 +1,11 @@
 # @latitude-data/type_parser
 
+## 0.3.0
+
+### Minor Changes
+
+- e141dc4: added support for arrays
+
 ## 0.3.0-next.0
 
 ### Minor Changes

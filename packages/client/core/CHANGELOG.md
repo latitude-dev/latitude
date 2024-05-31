@@ -1,5 +1,22 @@
 # @latitude-data/client
 
+## 0.11.0
+
+### Minor Changes
+
+- e141dc4: - Remove query result from external
+  - Remove undefined from params send to api from clients
+  - Set placeholder on multi select when non is selected
+- e141dc4: Creating themes is now easier. Some attributes for the theme will be automatically added. For example, adding `foreground` will also update the `card-foreground`, `popover-foreground` and echart attributes to match it. These can still be modified inpedendently, but now they will be automatically added by default.
+- e141dc4: added support for arrays
+
+### Patch Changes
+
+- e141dc4: Changed the generated css class from 'dark' to 'lat-dark' to avoid conflicts with other user-defined classes
+- e141dc4: Fixed automatic Dark Mode detection on Svelte package and Latitude Apps
+- Updated dependencies [e141dc4]
+  - @latitude-data/custom_types@0.3.0
+
 ## 0.10.2
 
 ### Patch Changes

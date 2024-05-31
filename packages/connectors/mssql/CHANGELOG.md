@@ -1,5 +1,24 @@
 # @latitude-data/mssql-connector
 
+## 3.0.0
+
+### Major Changes
+
+- e141dc4: Pass Source to connectors to get access to source details and also to source manager
+  This is a breaking change. Before connectors were receiving `rootPath` of their
+  queries and now this info is obta1ined from the source.
+
+### Patch Changes
+
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/source-manager@1.0.0
+
 ## 2.1.2
 
 ### Patch Changes

@@ -1,5 +1,31 @@
 # @latitude-data/source-manager
 
+## 1.0.0
+
+### Major Changes
+
+- e141dc4: Pass Source to connectors to get access to source details and also to source manager
+  This is a breaking change. Before connectors were receiving `rootPath` of their
+  queries and now this info is obta1ined from the source.
+- e141dc4: BREAKING CHANGE: Now `ref` function inside queries requires relative paths instead of the path from the source folder
+
+### Minor Changes
+
+- e141dc4: New `readMetadataFromQuery` method available on any Source to read query's metadata, like its config tags, without having to compile and execute functions from the query.
+- e141dc4: Add materialize command to latitude CLI
+- e141dc4: Work in progress introduce materialize storage
+- e141dc4: - Add the ability of running batched queries to PostgreSQL connector.
+  - Allow source manager to write the result of a query into a parquet file
+- e141dc4: Supported methods now must define its requirements, a resolve function to calculate the returned value, and a readMetadata function to returns its metadata. Now the compiler checks and handles these requirements.
+
+### Patch Changes
+
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/sql-compiler@1.0.0
+
 ## 1.0.0-next.0
 
 ### Major Changes

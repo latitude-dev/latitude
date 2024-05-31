@@ -1,5 +1,20 @@
 # @latitude-data/react
 
+## 0.8.0
+
+### Minor Changes
+
+- e141dc4: The LatitudeProvider now accepts a "mode" prop to define the color mode of the theme (light / dark / system)
+
+### Patch Changes
+
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/client@0.11.0
+
 ## 0.7.2
 
 ### Patch Changes

@@ -1,5 +1,27 @@
 # @latitude-data/svelte
 
+## 0.8.0
+
+### Minor Changes
+
+- e141dc4: New 'multiple' option on Select component to allow selecting multiple items
+- e141dc4: - Remove query result from external
+  - Remove undefined from params send to api from clients
+  - Set placeholder on multi select when non is selected
+- e141dc4: Svelte package now allows for custom themes and color modes into the ThemeProvider
+- e141dc4: Fix combobox label not being reactive
+- e141dc4: Fixed automatic Dark Mode detection on Svelte package and Latitude Apps
+
+### Patch Changes
+
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+- Updated dependencies [e141dc4]
+  - @latitude-data/client@0.11.0
+  - @latitude-data/custom_types@0.3.0
+
 ## 0.7.2
 
 ### Patch Changes
