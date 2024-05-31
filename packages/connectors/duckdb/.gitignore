@@ -1,1 +1,3 @@
 dist
+src/tests/dummyApp/table.csv
+src/tests/dummyApp/query.sql
