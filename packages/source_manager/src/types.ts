@@ -19,7 +19,6 @@ export enum ConnectorType {
   Databricks = 'databricks',
   Test = 'test', // Used for testing purposes
   TestInternal = 'internal_test', // Used for testing inside this package purposes
-  Materialized = 'materialized',
 }
 
 export type QueryConfig = {

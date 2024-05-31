@@ -33,7 +33,7 @@ export async function buildMaterializedConnector({
   })
   const source = new Source({
     path: sourceParams.path,
-    schema: { type: ConnectorType.Materialized, ...sourceSchema },
+    schema: { type: ConnectorType.Duckdb, ...sourceSchema },
     sourceManager,
   })
   const connector = new MaterializedConnector({
