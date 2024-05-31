@@ -3,6 +3,10 @@ title: 'DuckDB'
 description: 'How to configure your DuckDB database'
 ---
 
+[DuckDB](https://duckdb.org/) is a free and open-source SQL database that supports a wide range of data types and operations. It is designed to be fast, efficient, and easy to use, making it a popular choice for data analysis and manipulation.
+
+In Latitude, DuckDB sources also has additional features like materialization, which allows you to store the results of your queries in a file so they can be used in other queries.
+
 ## Install
 
 Run the following command to install the connector from the root of your project:
@@ -16,8 +20,7 @@ npm install --save @latitude-data/duckdb-connector
 The sources files must be inside the `queries/` folder.
 
 <Note>
-  To know how the source hierarchy works, please, visit [How to configure
-  sources](../sources/how-to-configure-sources).
+  To know how the source hierarchy works, please, visit [How to configure sources](../sources/how-to-configure-sources).
 </Note>
 
 ## Configuration
@@ -25,27 +28,38 @@ The sources files must be inside the `queries/` folder.
 To configure the connection with your DuckDB database follow these steps:
 
 <Steps>
-  <Step title="Create the source `.yaml` file within the `queries` folder if you haven't already">
-    ``` /queries/source.yml ```
+  <Step title="Create the source configuration file">
+    Create a new `.yaml` file in the `queries` folder. There can only be one source configuration file per directory, so if you already have another source file in your root `queries` folder, you will need to create a new subfolder for this source.
+    
   </Step>
-  <Step title='Add the following code for your DuckDB connection'>
-    ``` yaml
+  <Step title='Add the duckdb type in the source configuration file'>
+    ```yaml queries/duckdb/source.yaml 
     type: duckdb
-    details:
-      url: string
     ```
   </Step>
-  <Step title='Replace the details section with your info and save'></Step>
-  <Step title='Done, now you can test your connection'></Step>
+  <Step title='(optional) Add more details to connect to a remote duckdb database'>
+    ```yaml queries/duckdb/source.yaml
+    type: duckdb
+    details:
+      url: <your-duckdb-url>
+    ```
+  </Step>
+  <Step title='Done!'></Step>
 </Steps>
 
 ## Attributes
 
 - **URL** → (Optional) This refers to the location of the DuckDB database file. DuckDB is an embedded database, so instead of connecting over a network, you specify the path to the database file on your local system or a shared filesystem. This path tells your application exactly where to find the DuckDB database you want to work with. In its absence, duckDB starts a new database in memory that will not get persisted once the connection is closed.
 
-## Test connection
+## Testing the connection
 
 To test the connection you can:
 
 1. Create a query `.sql` in the `queries` directory that points to a table of your new connection in the `FROM` clause. See the section [SQL Syntax Basics](../queries/basics/sql-syntax-basics) to learn more.
 2. Use the command line to run `latitude run query_file_name` where `query_file_name` is the name of your `.sql` file. This will display the results in your terminal. See the section [Running queries](../guides/development/latitude-cli#running-queries) to learn more about how to query your data.
+
+## Additional features
+
+### Materialization
+
+Materialization allows you to store the results from any query to your Latitude server. Then, your DuckDB queries can access the materialized data instead of the original database. Read more about [Materialized queries](/queries/advanced/materialized-queries) for more information.
