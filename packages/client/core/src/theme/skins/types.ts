@@ -31,7 +31,7 @@ export type Theme = ThemeAttributes & {
   dark: ThemeAttributes
 }
 
-type PartialThemeAttributes = Partial<TailwindAttributes> & {
+export type PartialThemeAttributes = Partial<TailwindAttributes> & {
   echarts?: Partial<EchartTheme>
 }
 

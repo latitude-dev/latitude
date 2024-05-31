@@ -25,7 +25,7 @@ const sourceManagerMock = vi.hoisted(() =>
 )
 vi.mock('@latitude-data/source-manager', () => {
   return {
-    default: sourceManagerMock,
+    SourceManager: sourceManagerMock,
   }
 })
 vi.mock('$src/lib/isSourceFile', () => ({ default: vi.fn() }))

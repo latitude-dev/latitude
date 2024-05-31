@@ -5,11 +5,11 @@ import getQueryParams from './getQueryParams'
 type Props = { params: { query?: string }; url: URL }
 
 export async function GET({ params: args, url }: Props) {
-  const { query } = args
   try {
     const { params, force, download } = await getQueryParams(url)
+    const query = args.query ?? ''
     const { queryResult } = await findOrCompute({
-      query: query ?? '',
+      query,
       queryParams: params,
       force,
     })

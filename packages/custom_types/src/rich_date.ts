@@ -97,7 +97,11 @@ export class RichDate {
     }
 
     const date = parseDate(formattedValue, format, new Date())
-    return new RichDate(date, format)
+    const timezoneAgnosticDate = new Date(
+      Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+    )
+
+    return new RichDate(timezoneAgnosticDate, format)
   }
 
   isRelative(): boolean {

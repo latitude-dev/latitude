@@ -14,6 +14,7 @@
     value?: unknown
     name?: string
     class?: string | null
+    multiple?: boolean
 
     searchBox: boolean
     onSelect: (value: unknown) => void
@@ -30,6 +31,7 @@
   export let align: $$Props['align'] = 'start'
   export let value: $$Props['value'] = undefined
   export let name: $$Props['name'] = ''
+  export let multiple: $$Props['multiple'] = false
   export let onSelect: $$Props['onSelect'] = () => {}
   export let searchBox: $$Props['searchBox'] = true
   export let label: $$Props['label'] = undefined
@@ -40,7 +42,21 @@
   let className: $$Props['class'] = null
   export { className as class }
 
-  $: selectedValue = items.find((i) => i.value === value)?.label ?? placeholder
+  let selectedLabel = placeholder
+  $: {
+    if (!multiple) {
+      selectedLabel =
+        items.find((i) => i.value === value)?.label ?? placeholder ?? ''
+    } else {
+      const selectedItems = (value instanceof Array ? value : []).flat()
+      const vals = items.filter((i) => selectedItems.includes(i.value))
+
+      selectedLabel =
+        vals.length > 0
+          ? vals.map((i) => i.label).join(', ')
+          : placeholder ?? ''
+    }
+  }
 
   let open = false
 
@@ -54,10 +70,25 @@
     })
   }
 
+  function isSelected(item: ComboboxItem['value']) {
+    return multiple
+      ? ((value ?? []) as unknown[]).includes(item)
+      : value === item
+  }
+
   const dispatch = createEventDispatcher()
 
   function onSelectValue(selectedValue: unknown) {
-    value = selectedValue
+    if (multiple) {
+      if (isSelected(selectedValue)) {
+        value = ((value ?? []) as unknown[]).filter((v) => v !== selectedValue) // Unselect
+      } else {
+        value = [...((value ?? []) as unknown[]), selectedValue] // Select
+      }
+    } else {
+      value = selectedValue
+    }
+
     onSelect(value)
     dispatch('change', value)
   }
@@ -78,7 +109,7 @@
         aria-expanded={open}
         class={theme.ui.combobox.cssClass({ className })}
       >
-        {selectedValue}
+        {selectedLabel}
 
         <slot slot="icon">
           <CaretSort class={theme.ui.combobox.BUTTON_ICON_CSS_CLASS} />
@@ -102,12 +133,12 @@
                 disabled={item.disabled ?? false}
                 onSelect={() => {
                   onSelectValue(item.value)
-                  closeAndFocusTrigger(ids.trigger)
+                  !multiple && closeAndFocusTrigger(ids.trigger)
                 }}
               >
                 <Check
                   class={theme.ui.combobox.checkIconCssClass({
-                    isSelected: value === item.value,
+                    isSelected: isSelected(item.value),
                   })}
                 />
                 {item.label}

@@ -1,66 +1,48 @@
-import TestConnector from '@latitude-data/test-connector'
-import findOrCompute from './find_or_compute'
-import fs from 'fs'
 import mockFs from 'mock-fs'
-import { QUERIES_DIR } from '$lib/server/sourceManager'
-import { it, describe, beforeEach, afterEach, expect } from 'vitest'
-import { vi } from 'vitest'
+import { vi, it, describe, beforeEach, afterEach, expect } from 'vitest'
+import sourceManager from '$lib/server/sourceManager'
 
-import type { CompiledQuery, QueryRequest } from '@latitude-data/base-connector'
+import findOrCompute from './find_or_compute'
+import { QUERIES_DIR } from '$lib/constants'
 
-const runQuerySpy = vi.fn()
-const connector = new TestConnector(QUERIES_DIR, {
-  onRunQuery: runQuerySpy,
-})
+async function buildConnector(queryPath: string) {
+  const source = await sourceManager.loadFromQuery(queryPath)
 
-vi.mock('$lib/server/sourceManager', async (importOriginal) => {
-  return {
-    ...((await importOriginal()) as Record<string, unknown>),
-    default: {
-      loadFromQuery: async () => {
-        return {
-          source: {
-            compileQuery: (request: QueryRequest) =>
-              connector.compileQuery(request),
-            runCompiledQuery: (compiledQuery: CompiledQuery) =>
-              connector.runCompiled(compiledQuery),
-          },
-          sourceFilePath: QUERIES_DIR,
-        }
-      },
-    },
+  if (!source['_connector']) {
+    // `_connector` is a private property, so we need to call `compileQuery` to set it
+    // This is a hack to avoid having to mock the connector
+    await source.compileQuery({ queryPath, params: {} })
   }
-})
+
+  return source['_connector']
+}
 
 describe('Query cache', () => {
   beforeEach(() => {
-    mockFs({
-      [QUERIES_DIR]: {
-        'source.yml': `
-          type: test
-          details:
-            host: localhost
-            port: 1234
-        `,
-      },
-      '/tmp/.latitude': {},
-    })
     vi.resetAllMocks()
+    vi.restoreAllMocks()
   })
 
   afterEach(() => {
     mockFs.restore()
-    runQuerySpy.mockClear()
   })
 
   it('Computes the same query only once', async () => {
-    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, 'SELECT * FROM table')
-
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query.sql': 'SELECT * FROM table',
+      },
+      '/tmp/.latitude': {},
+    })
+    const connector = await buildConnector('query')
     const queryPath = 'query'
     const queryParams = {}
+    const runQuerySpy = vi.spyOn(connector, 'runQuery')
 
     // First call
     await findOrCompute({ query: queryPath, queryParams, force: false })
+
     expect(runQuerySpy).toHaveBeenCalledTimes(1)
 
     // Second call
@@ -69,10 +51,17 @@ describe('Query cache', () => {
   })
 
   it('Recomputes the query if force is true', async () => {
-    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, 'SELECT * FROM table')
-
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query.sql': 'SELECT * FROM table',
+      },
+      '/tmp/.latitude': {},
+    })
+    const connector = await buildConnector('query')
     const queryPath = 'query'
     const queryParams = {}
+    const runQuerySpy = vi.spyOn(connector, 'runQuery')
 
     // First call
     await findOrCompute({ query: queryPath, queryParams, force: false })
@@ -84,33 +73,64 @@ describe('Query cache', () => {
   })
 
   it('Computes different queries independently', async () => {
-    fs.writeFileSync(`${QUERIES_DIR}/query1.sql`, 'SELECT * FROM table1')
-    fs.writeFileSync(`${QUERIES_DIR}/query2.sql`, 'SELECT * FROM table2')
-
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query1.sql': 'SELECT * FROM table1',
+        'query2.sql': 'SELECT * FROM table2',
+      },
+      '/tmp/.latitude': {},
+    })
+    const connector = await buildConnector('query1')
     const queryPath1 = 'query1'
     const queryPath2 = 'query2'
     const queryParams = {}
+    const runQuerySpy = vi.spyOn(connector, 'runQuery')
 
     // First call of query 1
-    await findOrCompute({ query: queryPath1, queryParams, force: false })
+    await findOrCompute({
+      query: queryPath1,
+      queryParams,
+      force: false,
+    })
     expect(runQuerySpy).toHaveBeenCalledTimes(1)
 
     // First call of query 2
-    await findOrCompute({ query: queryPath2, queryParams, force: false })
+    await findOrCompute({
+      query: queryPath2,
+      queryParams,
+      force: false,
+    })
     expect(runQuerySpy).toHaveBeenCalledTimes(2) // Called again for query 2
 
     // Second calls
-    await findOrCompute({ query: queryPath1, queryParams, force: false })
-    await findOrCompute({ query: queryPath2, queryParams, force: false })
+    await findOrCompute({
+      query: queryPath1,
+      queryParams,
+      force: false,
+    })
+    await findOrCompute({
+      query: queryPath2,
+      queryParams,
+      force: false,
+    })
     expect(runQuerySpy).toHaveBeenCalledTimes(2) // No additional calls
   })
 
   it('Computes the same query with different parameters independently', async () => {
-    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, `SELECT * FROM {param('foo')}`)
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query.sql': "SELECT * FROM {param('foo')}",
+      },
+      '/tmp/.latitude': {},
+    })
 
+    const connector = await buildConnector('query')
     const queryPath = 'query'
     const queryParams1 = { foo: 'bar1' }
     const queryParams2 = { foo: 'bar2' }
+    const runQuerySpy = vi.spyOn(connector, 'runQuery')
 
     // First call with params 1
     await findOrCompute({
@@ -143,13 +163,17 @@ describe('Query cache', () => {
   })
 
   it('Only caches the accessed parameters', async () => {
-    fs.writeFileSync(
-      `${QUERIES_DIR}/query.sql`,
-      `SELECT * FROM {param('usedParam')}`,
-    )
-
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query.sql': "SELECT * FROM {param('usedParam')}",
+      },
+      '/tmp/.latitude': {},
+    })
+    const connector = await buildConnector('query')
     const queryPath = 'query'
     const queryParams = { usedParam: 'bar', unusedParam: 'qux' }
+    const runQuerySpy = vi.spyOn(connector, 'runQuery')
 
     // First call
     await findOrCompute({ query: queryPath, queryParams, force: false })

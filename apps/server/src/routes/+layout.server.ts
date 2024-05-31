@@ -1,6 +1,11 @@
-import loadToken, { type TokenResponse } from '$lib/loadToken'
-import { type Load } from '@sveltejs/kit'
+import loadToken from '$lib/loadToken'
+import type { LayoutServerLoad } from './$types'
+import { get } from 'svelte/store'
+import { config, fliterClientConfig } from '$lib/stores/config'
 
-export const load: Load<object, TokenResponse> = async ({ url }) => {
-  return loadToken({ url })
+export const load: LayoutServerLoad = async ({ url }) => {
+  return {
+    ...(await loadToken({ url })),
+    config: fliterClientConfig(get(config)),
+  }
 }

@@ -11,16 +11,6 @@ The Reference Queries feature allows you to include SQL code from another file i
 
 To reference SQL code from another file, use the syntax `{ref ('other_query')}`, where `other_query` is the name of another `.sql` file located in the `/queries` folder. This syntax imports the raw SQL code from the specified file to the location where it is added.
 
-### Code Example
-
-Assuming that you have a file named `other_query.sql` in the `/queries` folder, you can include its SQL code in your current query as follows:
-
-```sql
-SELECT *
-FROM {ref ('other_query')}
-```
-This will dynamically insert the SQL code from `other_query.sql` into your current query, allowing you to build complex queries by reusing existing blocks of code.
-
 ### Referencing queries as a source
 
 An important use case for referencing queries is adding them as source. You can do this as follows:
@@ -40,11 +30,51 @@ FROM users
 ```
 SELECT *
 FROM (
-    SELECT 
+    SELECT
         id,
         first_name,
         last_name,
         email
 )
 ```
+
+### About queries path resolution
+
+When you reference a query, the path is resolved relative to the current query. This means that you can reference queries in the same folder, in a parent folder, or in a sibling folder.
+
+Assuming you are editing `queries/users/query.sql` and you want to reference `/queries/users/orders` query:
+
+```
+queries/
+  users/
+    query.sql
+    orders/
+      query.sql
+```
+
+```sql
+-- queries/users/query.sql
+SELECT *
+FROM {ref ('orders/query')}
+```
+
+This is equivalent to use a relative path:
+
+```sql
+-- queries/users/query.sql
+SELECT *
+FROM {ref ('./orders/query')}
+```
+
+## Absolute paths.
+You can also reference queries with a `/` prefix. This means the path of the query is resolved from the root of queries folder.
+Following the previous example, you can reference `/queries/users/orders` query as follows:
+
+```sql
+-- queries/users/query.sql
+SELECT *
+FROM {ref ('/users/orders/query.sql')}
+```
+
+<Note>`queries` folder doesn't need to be included in the path. Also `.sql` is optional. You can add if you want</Note>
 

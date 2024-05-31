@@ -1,49 +1,12 @@
-import QueryResult, { DataType } from '@latitude-data/query_result'
-import TestConnector from '@latitude-data/test-connector'
-import cache from '$lib/query_service/query_cache'
-import fs from 'fs'
 import mockFs from 'mock-fs'
-import path from 'path'
-import { GET } from './+server'
-import { MISSING_KEY } from '$lib/loadToken'
-import { QUERIES_DIR } from '$lib/server/sourceManager'
-import { QueryNotFoundError } from '@latitude-data/source-manager'
+import fs from 'fs'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-import type { CompiledQuery, QueryRequest } from '@latitude-data/base-connector'
-
-const runQuerySpy = vi.fn()
-const connector = new TestConnector(QUERIES_DIR, {
-  onRunQuery: runQuerySpy,
-})
-
-vi.mock('$lib/server/sourceManager', async () => {
-  const QUERIES_DIR = 'static/.latitude/queries'
-  return {
-    default: {
-      loadFromQuery: async (query: string) => {
-        const filePath = path.join(
-          QUERIES_DIR,
-          query.endsWith('.sql') ? query : `${query}.sql`,
-        )
-        if (!fs.existsSync(filePath)) {
-          throw new QueryNotFoundError(`Query file not found at ${filePath}`)
-        }
-
-        return {
-          source: {
-            compileQuery: (request: QueryRequest) =>
-              connector.compileQuery(request),
-            runCompiledQuery: (compiledQuery: CompiledQuery) =>
-              connector.runCompiled(compiledQuery),
-          },
-          sourceFilePath: filePath,
-        }
-      },
-    },
-    QUERIES_DIR,
-  }
-})
+import QueryResult, { DataType } from '@latitude-data/query_result'
+import cache from '$lib/query_service/query_cache'
+import { MISSING_KEY } from '$lib/loadToken'
+import { QUERIES_DIR } from '$lib/constants'
+import { GET } from './+server'
 
 const PAYLOAD = {
   fields: [{ name: 'value', type: DataType.String }],
@@ -51,16 +14,15 @@ const PAYLOAD = {
   rowCount: 1,
 }
 
-mockFs({
-  [QUERIES_DIR]: {
-    'source.yml': 'type: duckdb',
-    'query.sql': 'test',
-  },
-  '/tmp/.latitude': {},
-})
-
 describe('GET endpoint', async () => {
   beforeEach(() => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'source.yml': 'type: test',
+        'query.sql': 'test',
+      },
+      '/tmp/.latitude': {},
+    })
     vi.spyOn(cache, 'find').mockReturnValue(null)
     vi.resetAllMocks()
     import.meta.env.PROD = false
@@ -101,7 +63,7 @@ describe('GET endpoint', async () => {
   it('should return 500 status on query execution error', async () => {
     vi.spyOn(cache, 'find').mockReturnValueOnce(null) // No cached query
     const customErrorMessage = 'Custom error message'
-    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, `FAIL ${customErrorMessage}`) // (TestConnector feature)
+    fs.writeFileSync(`${QUERIES_DIR}/query.sql`, `FAIL ${customErrorMessage}`)
 
     const response = await GET({
       params: { query: 'query' },

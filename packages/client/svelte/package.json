@@ -37,17 +37,18 @@
   "typesVersions": {
     ">4.0": {
       "*": [
-        "./dist/index.d.ts"
+        "./dist/lib/index.d.ts"
       ],
       "internal": [
-        "./dist/internal/index.d.ts"
+        "./dist/lib/internal/index.d.ts"
       ]
     }
   },
   "files": [
     "tailwind.config.js",
     "dist",
-    "dist/internal",
+    "dist/lib",
+    "dist/lib/internal",
     "!dist/**/*.test.*",
     "!dist/**/*.stories.svelte"
   ],

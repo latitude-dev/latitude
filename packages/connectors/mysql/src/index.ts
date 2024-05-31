@@ -4,7 +4,8 @@ import {
   CompiledQuery,
   ResolvedParam,
   QueryError,
-} from '@latitude-data/base-connector'
+  ConnectorOptions,
+} from '@latitude-data/source-manager'
 import { readFileSync } from 'fs'
 import { Pool, PoolConfig, Types, createPool } from 'mysql'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
@@ -26,14 +27,14 @@ export type ConnectionParams = {
   ssl?: SSLOptions
 }
 
-export default class MysqlConnector extends BaseConnector {
+export default class MysqlConnector extends BaseConnector<ConnectionParams> {
   private pool: Pool
 
-  constructor(rootPath: string, connectionParams: ConnectionParams) {
-    super(rootPath)
+  constructor(options: ConnectorOptions<ConnectionParams>) {
+    super(options)
     this.pool = createPool({
       connectionLimit: 10,
-      ...this.buildConnectionParams(connectionParams),
+      ...this.buildConnectionParams(options.connectionParams),
     })
   }
 

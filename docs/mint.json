@@ -206,7 +206,7 @@
     },
     {
       "group": "Customization",
-      "pages": ["views/customization/component-styles"]
+      "pages": ["views/customization/theming", "views/customization/component-styles"]
     },
     {
       "group": "Advanced",

@@ -1,6 +1,6 @@
 ---
 title: 'Theming'
-description: 'Customize the look and feel of Latitude components'
+description: 'Customize the look and feel of specific Latitude components in your views'
 ---
 
 All Latitude components are designed to be easily customized to match your brand. This guide will walk you through the process of customizing the look and feel of Latitude components.
@@ -33,10 +33,9 @@ function App() {
 ## Creating a custom theme
 
 Themes consist of attribute definitions. You can create your own theme by assembling a new object with your chosen values.
-Each theme includes a set of attributes specifying CSS colors or values for different elements. You can also define a `dark` variant for each attribute to apply when your application is in dark mode.
+Each theme includes a set of attributes specifying CSS colors or values for different elements.
 
-This is the definition for the default `latitude` theme:
-
+Take a look at the default values for the `latitude` theme:
 ```json
 {
   "background": "hsl(0 0% 100%)",
@@ -55,25 +54,6 @@ This is the definition for the default `latitude` theme:
   "input": "hsl(214.3 31.8% 91.4%)",
   "ring": "hsl(221.2 83.2% 53.3%)",
   "radius": "0.5rem",
-
-  "echarts": { /* Chart styles, explained below */ } ,
-
-  "dark": {
-    "background": "hsl(222.2 84% 4.9%)",
-    "foreground": "hsl(210 40% 98%)",
-    "primary": "hsl(217.2 91.2% 59.8%)",
-    "primary-foreground": "hsl(222.2 47.4% 11.2%)",
-    "secondary": "hsl(217.2 32.6% 17.5%)",
-    "secondary-foreground": "hsl(210 40% 98%)",
-    "muted": "hsl(217.2 32.6% 17.5%)",
-    "muted-foreground": "hsl(215 20.2% 65.1%)",
-    "accent": "hsl(217.2 32.6% 17.5%)",
-    "accent-foreground": "hsl(210 40% 98%)",
-    "destructive-foreground": "hsl(210 40% 98%)",
-    "border": "hsl(217.2 32.6% 17.5%)",
-    "input": "hsl(217.2 32.6% 17.5%)",
-    "ring": "hsl(224.3 76.3% 48%)",
-  }
 }
 ```
 
@@ -96,9 +76,42 @@ function App() {
 }
 ```
 
+### Dark mode
+
+You can add a `dark` version of your theme by adding a `dark` object to your theme. This object should have the same properties as the main theme, but with the colors inverted.
+With a dark version defined, you can configure the behaviour of your theme with the `mode` property. By default, the mode is set to `light`, but you can change it to `dark` to force dark mode, or `system` to use the system's preference.
+
+```jsx
+import { LatitudeProvider } from '@latitude/react';
+
+const myTheme = {
+  primary: '#254E70',
+  secondary: '#F2F2F2',
+  background: '#fff',
+  foreground: '#000',
+
+  dark: {
+    background: '#000',
+    foreground: '#fff',
+  }
+}
+
+function App() {
+  return (
+    <LatitudeProvider theme={myTheme} mode="system">
+      <AppContent />
+    </LatitudeProvider>
+  );
+}
+```
+
+Then, you can enable dark mode in you app by setting the `mode` prop of the `LatitudeProvider` component to `dark`.
+
 ### Chart styles
 
-Each chart component within Latitude is built on top of [echarts](https://echarts.apache.org/en/index.html), which already has its own theming system. To customize the styles of your charts, include a `echarts` object in your theme and define the colors you want to use.
+Each chart component within Latitude is built on top of [echarts](https://echarts.apache.org/en/index.html), which already has its own theming system.
+By default, we create a basic theme for echarts that matches the attributes from your Latitude theme. However, you can customize the echarts theme to match your brand.
+To customize the styles of your charts, include a `echarts` object in your theme and define any echarts properties you want to use.
 
 To learn more about each property, please refer to the official echarts documentation.
 
@@ -285,7 +298,8 @@ You can find the complete echart properties used in Latitude's default theme bel
 ```
 </Expandable>
 
-You can even use [echart's online theme builder](https://echarts.apache.org/en/theme-builder.html) to easily create your own styles. To do this, simply select the colors you want to use, click on "Download" and copy the "JSON version" object into the `echarts` property in your theme.
+If you want to personalize the styles for your charts, we recommend using [echart's online theme builder](https://echarts.apache.org/en/theme-builder.html) to easily create your own styles.
+To do this, simply select the colors you want to use, click on the "Download" at the top-left corner and copy the "JSON version" object into the `echarts` property in your theme.
 
 ```jsx
 import { LatitudeProvider } from '@latitude/react';

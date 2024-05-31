@@ -1,179 +1,214 @@
 import { BaseNode, type TemplateNode } from '../parser/interfaces'
-import { type Node, type Identifier, type SimpleCallExpression } from 'estree'
+import type { Node, Identifier, Literal } from 'estree'
 import parse from '../parser/index'
-import {
-  ASSIGNMENT_OPERATOR_METHODS,
-  BINARY_OPERATOR_METHODS,
-  MEMBER_EXPRESSION_METHOD,
-  UNARY_OPERATOR_METHODS,
-} from './operators'
-import CompileError, { error } from '../error/error'
+import { error } from '../error/error'
 import errors from '../error/errors'
 import Scope from './scope'
-
-type CompilerAttrs = {
-  query: string
-  resolveFn: ResolveFn
-  configFn: ConfigFn
-  supportedMethods?: Record<string, SupportedMethod>
-}
-export type SupportedMethod = <T extends boolean>(
-  interpolation: T,
-  ...args: unknown[]
-) => Promise<T extends true ? string : unknown>
-export type ResolveFn = (value: unknown) => Promise<string>
-export type ConfigFn = (key: string, value: unknown) => void
+import { NodeType } from './logic/types'
+import type { CompileContext, QueryMetadata } from './types'
+import { getLogicNodeMetadata, resolveLogicNode } from './logic'
+import { emptyMetadata, mergeMetadata } from './utils'
+import { createHash } from 'node:crypto'
 
 export class Compiler {
-  private sql: string
-  private supportedMethods: Record<string, SupportedMethod>
-  private resolveFn: ResolveFn
-  private configFn: ConfigFn
+  private context: CompileContext
+  private currentConfig: Record<string, unknown> = {}
 
-  private varStash: unknown[]
-
-  private readFromStash(index: number): unknown {
-    return this.varStash[index]
+  constructor({ sql, supportedMethods = {}, resolveFn }: CompileContext) {
+    this.context = { sql, supportedMethods, resolveFn }
   }
 
-  private addToStash(value: unknown): number {
-    this.varStash.push(value)
-    return this.varStash.length - 1
-  }
-
-  private modifyStash(index: number, value: unknown): void {
-    this.varStash[index] = value
-  }
-
-  constructor({
-    query,
-    resolveFn,
-    configFn,
-    supportedMethods = {},
-  }: CompilerAttrs) {
-    this.sql = query
-    this.resolveFn = resolveFn
-    this.configFn = configFn
-    this.supportedMethods = supportedMethods
-
-    this.varStash = []
-  }
-
-  async compile(): Promise<string> {
-    const fragment = parse(this.sql)
-    const localScope = new Scope(
-      this.readFromStash.bind(this),
-      this.addToStash.bind(this),
-      this.modifyStash.bind(this),
-    )
-    const compiledSql = (await this.parseBaseNode(fragment, localScope))
+  /**
+   * Resolves every block, expression, and function inside the SQL and returns the final query.
+   *
+   * Note: Compiling a query may take time in some cases, as some queries may contain expensive
+   * functions that need to be resolved at runtime.
+   */
+  async compileSQL(): Promise<string> {
+    const fragment = parse(this.context.sql)
+    const localScope = new Scope()
+    const compiledSql = (await this.resolveBaseNode(fragment, localScope, 0))
       .replace(/ +/g, ' ') // Remove extra spaces
       .trim() // Remove leading and trailing spaces
 
     return compiledSql
   }
 
-  private parseBaseNode = async (
-    node: BaseNode,
+  /**
+   * Without compiling the SQL or resolving any expression, quickly reads the config and calls
+   * to the supported methods present in the SQL.
+   */
+  async readMetadata(): Promise<QueryMetadata> {
+    const fragment = parse(this.context.sql)
+    const rawSql = this.context.sql
+    const sqlHash = createHash('sha256').update(rawSql).digest('hex')
+    const baseMetadata = await this.getBaseNodeMetadata({
+      baseNode: fragment,
+      depth: 0,
+    })
+    return mergeMetadata(baseMetadata, { ...emptyMetadata(), sqlHash, rawSql })
+  }
+
+  /**
+   * Given a base node, returns the string that will replace it in the final SQL
+   */
+  private resolveBaseNode = async (
+    baseNode: BaseNode,
     localScope: Scope,
+    depth: number,
   ): Promise<string> => {
-    if (!node) return ''
+    if (!baseNode) return ''
 
-    if (node.type === 'Fragment') {
-      return this.parseBaseNodeChildren(node.children, localScope)
+    if (baseNode.type === 'Fragment') {
+      // Parent node, only one of its kind
+      return this.resolveBaseNodeChildren(baseNode.children, localScope, depth)
     }
 
-    if (node.type === 'Comment') {
-      return node.raw
+    if (baseNode.type === 'Comment') {
+      return baseNode.raw
     }
 
-    if (node.type === 'Text') {
-      return node.raw
+    if (baseNode.type === 'Text') {
+      return baseNode.raw
     }
 
-    if (node.type === 'MustacheTag') {
-      return await this.parseLogicNode(node.expression, localScope)
+    if (baseNode.type === 'MustacheTag') {
+      const expression = baseNode.expression
+
+      // Some node expressions do not inject any value into the SQL
+      const silentExpressions = [NodeType.AssignmentExpression]
+
+      if (silentExpressions.includes(expression.type as NodeType)) {
+        await resolveLogicNode({
+          node: expression,
+          scope: localScope,
+          raiseError: this.expressionError.bind(this),
+          supportedMethods: this.context.supportedMethods,
+          willInterpolate: false,
+          resolveFn: this.context.resolveFn,
+        })
+        return ''
+      }
+
+      if (
+        // If the expression is a call to a supported method, the result WILL BE INTERPOLATED
+        expression.type === NodeType.CallExpression &&
+        expression.callee.type === NodeType.Identifier &&
+        expression.callee.name in this.context.supportedMethods
+      ) {
+        return (await resolveLogicNode({
+          node: expression,
+          scope: localScope,
+          raiseError: this.expressionError.bind(this),
+          supportedMethods: this.context.supportedMethods,
+          willInterpolate: true,
+          resolveFn: this.context.resolveFn,
+        })) as string
+      }
+
+      const value = await resolveLogicNode({
+        node: expression,
+        scope: localScope,
+        raiseError: this.expressionError.bind(this),
+        supportedMethods: this.context.supportedMethods,
+        willInterpolate: false,
+        resolveFn: this.context.resolveFn,
+      })
+      const resolvedValue = await this.context.resolveFn(value)
+
+      return resolvedValue
     }
 
-    if (node.type === 'ConstTag') {
+    if (baseNode.type === 'ConstTag') {
       // Only allow equal expressions to define constants
-      const expression = node.expression
+      const expression = baseNode.expression
       if (
         expression.type !== 'AssignmentExpression' ||
         expression.operator !== '=' ||
         expression.left.type !== 'Identifier'
       ) {
-        this.baseNodeError(errors.invalidConstantDefinition, node)
+        this.baseNodeError(errors.invalidConstantDefinition, baseNode)
       }
 
       const constName = (expression.left as Identifier).name
-      const constValue = await this.resolveLogicNodeExpression(
-        expression.right,
-        localScope,
-      )
+      const constValue = await resolveLogicNode({
+        node: expression.right,
+        scope: localScope,
+        raiseError: this.expressionError.bind(this),
+        supportedMethods: this.context.supportedMethods,
+        willInterpolate: false,
+        resolveFn: this.context.resolveFn,
+      })
       if (localScope.exists(constName)) {
-        this.baseNodeError(errors.variableAlreadyDeclared(constName), node)
+        this.baseNodeError(errors.variableAlreadyDeclared(constName), baseNode)
       }
       localScope.defineConst(constName, constValue)
       return ''
     }
 
-    if (node.type === 'ConfigTag') {
-      const expression = node.expression
+    if (baseNode.type === 'ConfigTag') {
+      if (depth > 0) {
+        this.baseNodeError(errors.configInsideBlock, baseNode)
+      }
+
+      const expression = baseNode.expression
       if (
         expression.type !== 'AssignmentExpression' ||
         expression.operator !== '=' ||
         expression.left.type !== 'Identifier'
       ) {
-        this.baseNodeError(errors.invalidConfigDefinition, node)
+        this.baseNodeError(errors.invalidConfigDefinition, baseNode)
       }
 
-      const optionKey = (expression.left as Identifier).name
-      const optionValue = await this.resolveLogicNodeExpression(
-        expression.right,
-        localScope,
-      )
-      try {
-        this.configFn(optionKey, optionValue)
-      } catch (error: unknown) {
-        const errorMessage = (error as Error).message
-        this.baseNodeError(
-          errors.configDefinitionFailed(optionKey, errorMessage),
-          node,
-        )
+      if (expression.right.type !== 'Literal') {
+        this.baseNodeError(errors.invalidConfigValue, baseNode)
       }
+
       return ''
     }
 
-    if (node.type === 'IfBlock') {
-      return (await this.resolveLogicNodeExpression(
-        node.expression,
-        localScope,
-      ))
-        ? this.parseBaseNodeChildren(node.children, localScope)
-        : await this.parseBaseNode(node.else, localScope)
+    if (baseNode.type === 'IfBlock') {
+      const condition = await resolveLogicNode({
+        node: baseNode.expression,
+        scope: localScope,
+        raiseError: this.expressionError.bind(this),
+        supportedMethods: this.context.supportedMethods,
+        willInterpolate: false,
+        resolveFn: this.context.resolveFn,
+      })
+      return condition
+        ? this.resolveBaseNodeChildren(baseNode.children, localScope, depth + 1)
+        : await this.resolveBaseNode(baseNode.else, localScope, depth + 1)
     }
 
-    if (node.type === 'ElseBlock') {
-      return this.parseBaseNodeChildren(node.children, localScope)
-    }
-
-    if (node.type === 'EachBlock') {
-      const iterableElement = await this.resolveLogicNodeExpression(
-        node.expression,
+    if (baseNode.type === 'ElseBlock') {
+      return this.resolveBaseNodeChildren(
+        baseNode.children,
         localScope,
+        depth + 1,
       )
+    }
+
+    if (baseNode.type === 'EachBlock') {
+      const iterableElement = await resolveLogicNode({
+        node: baseNode.expression,
+        scope: localScope,
+        raiseError: this.expressionError.bind(this),
+        supportedMethods: this.context.supportedMethods,
+        willInterpolate: false,
+        resolveFn: this.context.resolveFn,
+      })
       if (!Array.isArray(iterableElement) || !iterableElement.length) {
-        return await this.parseBaseNode(node.else, localScope)
+        return await this.resolveBaseNode(baseNode.else, localScope, depth + 1)
       }
 
-      const contextVar = node.context.name
-      const indexVar = node.index
+      const contextVar = baseNode.context.name
+      const indexVar = baseNode.index
       if (localScope.exists(contextVar)) {
-        this.baseNodeError(errors.variableAlreadyDeclared(contextVar), node)
+        this.baseNodeError(errors.variableAlreadyDeclared(contextVar), baseNode)
       }
       if (indexVar && localScope.exists(indexVar)) {
-        this.baseNodeError(errors.variableAlreadyDeclared(indexVar), node)
+        this.baseNodeError(errors.variableAlreadyDeclared(indexVar), baseNode)
       }
 
       const parsedChildren: string[] = []
@@ -182,226 +217,163 @@ export class Compiler {
         if (indexVar) localScope.set(indexVar, i)
         localScope.set(contextVar, element)
         parsedChildren.push(
-          await this.parseBaseNodeChildren(node.children, localScope),
+          await this.resolveBaseNodeChildren(
+            baseNode.children,
+            localScope,
+            depth + 1,
+          ),
         )
       }
       return parsedChildren.join('') || ''
     }
 
-    throw this.baseNodeError(errors.unsupportedBaseNodeType(node.type), node)
-  }
-
-  private parseLogicNode = async (
-    node: Node,
-    localScope: Scope,
-  ): Promise<string> => {
-    if (node.type === 'AssignmentExpression') {
-      await this.resolveLogicNodeExpression(node, localScope)
-      return ''
-    }
-
-    if (node.type === 'CallExpression') {
-      return await this.handleFunction(
-        node as SimpleCallExpression,
-        true,
-        localScope,
-      )
-    }
-
-    const value = await this.resolveLogicNodeExpression(node, localScope)
-    const resolvedValue = await this.resolveFn(value)
-
-    return resolvedValue
-  }
-
-  private resolveLogicNodeExpression = async (
-    node: Node,
-    localScope: Scope,
-  ): Promise<unknown> => {
-    if (node.type === 'Literal') {
-      return node.value
-    }
-
-    if (node.type === 'Identifier') {
-      if (!localScope.exists(node.name)) {
-        this.expressionError(errors.variableNotDeclared(node.name), node)
-      }
-      return localScope.get(node.name)
-    }
-
-    if (node.type === 'ObjectExpression') {
-      const resolvedObject: { [key: string]: any } = {}
-      for (const prop of node.properties) {
-        if (prop.type !== 'Property') {
-          throw this.expressionError(errors.invalidObjectKey, node)
-        }
-        const key = prop.key as Identifier
-        const value = await this.resolveLogicNodeExpression(
-          prop.value,
-          localScope,
-        )
-        resolvedObject[key.name] = value
-      }
-      return resolvedObject
-    }
-
-    if (node.type === 'ArrayExpression') {
-      return await Promise.all(
-        node.elements.map((element) =>
-          element ? this.resolveLogicNodeExpression(element, localScope) : null,
-        ),
-      )
-    }
-
-    if (node.type === 'SequenceExpression') {
-      return await Promise.all(
-        node.expressions.map((expression) =>
-          this.resolveLogicNodeExpression(expression, localScope),
-        ),
-      )
-    }
-
-    if (node.type === 'LogicalExpression' || node.type === 'BinaryExpression') {
-      const binaryOperator = node.operator
-      if (!(binaryOperator in BINARY_OPERATOR_METHODS)) {
-        this.expressionError(errors.unsupportedOperator(binaryOperator), node)
-      }
-      const leftOperand = await this.resolveLogicNodeExpression(
-        node.left,
-        localScope,
-      )
-      const rightOperand = await this.resolveLogicNodeExpression(
-        node.right,
-        localScope,
-      )
-      return BINARY_OPERATOR_METHODS[binaryOperator]?.(
-        leftOperand,
-        rightOperand,
-      )
-    }
-
-    if (node.type === 'UnaryExpression') {
-      const unaryOperator = node.operator
-      if (!(unaryOperator in UNARY_OPERATOR_METHODS)) {
-        this.expressionError(errors.unsupportedOperator(unaryOperator), node)
-      }
-
-      const unaryArgument = await this.resolveLogicNodeExpression(
-        node.argument,
-        localScope,
-      )
-      const unaryPrefix = node.prefix
-      return UNARY_OPERATOR_METHODS[unaryOperator]?.(unaryArgument, unaryPrefix)
-    }
-
-    if (node.type === 'AssignmentExpression') {
-      const assignedVariableName = (node.left as Identifier).name
-      let assignedValue = await this.resolveLogicNodeExpression(
-        node.right,
-        localScope,
-      )
-      const assignmentOperator = node.operator
-
-      if (assignmentOperator != '=') {
-        if (!(assignmentOperator in ASSIGNMENT_OPERATOR_METHODS)) {
-          this.expressionError(
-            errors.unsupportedOperator(assignmentOperator),
-            node,
-          )
-        }
-        if (!localScope.exists(assignedVariableName)) {
-          this.expressionError(
-            errors.variableNotDeclared(assignedVariableName),
-            node,
-          )
-        }
-        assignedValue = ASSIGNMENT_OPERATOR_METHODS[assignmentOperator]?.(
-          localScope.get(assignedVariableName),
-          assignedValue,
-        )
-      }
-      if (localScope.isConst(assignedVariableName)) {
-        this.expressionError(errors.constantReassignment, node)
-      }
-      localScope.set(assignedVariableName, assignedValue)
-      return assignedValue
-    }
-
-    if (node.type === 'UpdateExpression') {
-      const updateOperator = node.operator
-      if (!['++', '--'].includes(updateOperator)) {
-        this.expressionError(errors.unsupportedOperator(updateOperator), node)
-      }
-      const updatedVariableName = (node.argument as Identifier).name
-      if (!localScope.exists(updatedVariableName)) {
-        this.expressionError(
-          errors.variableNotDeclared(updatedVariableName),
-          node,
-        )
-      }
-      if (localScope.isConst(updatedVariableName)) {
-        this.expressionError(errors.constantReassignment, node)
-      }
-      const originalValue = localScope.get(updatedVariableName)
-      const updatedValue =
-        updateOperator === '++'
-          ? (originalValue as number) + 1
-          : (originalValue as number) - 1
-      localScope.set(updatedVariableName, updatedValue)
-      return node.prefix ? updatedValue : originalValue
-    }
-
-    if (node.type === 'MemberExpression') {
-      const object = (await this.resolveLogicNodeExpression(
-        node.object,
-        localScope,
-      )) as {
-        [key: string]: any
-      }
-      const property = node.computed
-        ? await this.resolveLogicNodeExpression(node.property, localScope)
-        : (node.property as Identifier).name
-      return MEMBER_EXPRESSION_METHOD(object, property)
-    }
-
-    if (node.type === 'ConditionalExpression') {
-      const test = await this.resolveLogicNodeExpression(node.test, localScope)
-      const consequent = await this.resolveLogicNodeExpression(
-        node.consequent,
-        localScope,
-      )
-      const alternate = await this.resolveLogicNodeExpression(
-        node.alternate,
-        localScope,
-      )
-      return test ? consequent : alternate
-    }
-
-    if (node.type === 'CallExpression') {
-      return await this.handleFunction(node, false, localScope)
-    }
-
-    if (node.type === 'NewExpression') {
-      throw this.expressionError(errors.unsupportedOperator('new'), node)
-    }
-
-    throw this.expressionError(
-      errors.unsupportedExpressionType(node.type),
-      node,
+    throw this.baseNodeError(
+      errors.unsupportedBaseNodeType(baseNode.type),
+      baseNode,
     )
   }
 
-  private parseBaseNodeChildren = async (
+  private resolveBaseNodeChildren = async (
     children: TemplateNode[] | undefined,
     localScope: Scope,
+    depth: number,
   ): Promise<string> => {
     const parsedChildren: string[] = []
-    const childrenScope = localScope.copy()
+    const childrenScope = localScope.copy() // All children share the same scope
     for (const child of children || []) {
-      const parsedChild = await this.parseBaseNode(child, childrenScope)
+      const parsedChild = await this.resolveBaseNode(
+        child,
+        childrenScope,
+        depth,
+      )
       parsedChildren.push(parsedChild)
     }
     return parsedChildren.join('') || ''
+  }
+
+  /**
+   * Given a base node, returns the list of defined configs and present methods from the supportedMethods.
+   */
+  private getBaseNodeMetadata = async ({
+    baseNode,
+    depth,
+  }: {
+    baseNode: BaseNode
+    depth: number
+  }): Promise<QueryMetadata> => {
+    if (!baseNode) return emptyMetadata()
+
+    if (baseNode.type === 'Fragment') {
+      const childrenMetadata = await Promise.all(
+        (baseNode.children || []).map((child) =>
+          this.getBaseNodeMetadata({
+            baseNode: child,
+            depth,
+          }),
+        ),
+      )
+      return mergeMetadata(...childrenMetadata)
+    }
+
+    // Not computed nodes. Do not contain any configs or methods
+    if (['Comment', 'Text'].includes(baseNode.type)) {
+      return emptyMetadata()
+    }
+
+    if (baseNode.type === 'MustacheTag') {
+      const expression = baseNode.expression
+
+      return await getLogicNodeMetadata({
+        node: expression,
+        supportedMethods: this.context.supportedMethods,
+      })
+    }
+
+    if (baseNode.type === 'ConstTag') {
+      // Only allow equal expressions to define constants
+      const expression = baseNode.expression
+
+      return await getLogicNodeMetadata({
+        node: expression,
+        supportedMethods: this.context.supportedMethods,
+      })
+    }
+
+    if (baseNode.type === 'ConfigTag') {
+      if (depth > 0) {
+        this.baseNodeError(errors.configInsideBlock, baseNode)
+      }
+
+      const expression = baseNode.expression
+      if (
+        expression.type !== 'AssignmentExpression' ||
+        expression.operator !== '=' ||
+        expression.left.type !== 'Identifier'
+      ) {
+        this.baseNodeError(errors.invalidConfigDefinition, baseNode)
+      }
+
+      if (expression.right.type !== 'Literal') {
+        this.baseNodeError(errors.invalidConfigValue, baseNode)
+      }
+
+      const configName = (expression.left as Identifier).name
+      const configValue = (expression.right as Literal).value
+
+      if (configName in this.currentConfig) {
+        this.baseNodeError(errors.configAlreadyDefined(configName), baseNode)
+      }
+
+      this.currentConfig[configName] = configValue
+
+      return {
+        ...emptyMetadata(),
+        config: {
+          [configName]: configValue,
+        },
+      }
+    }
+
+    if (baseNode.type === 'IfBlock' || baseNode.type === 'EachBlock') {
+      const expression = baseNode.expression
+      const conditionMetadata = await getLogicNodeMetadata({
+        node: expression,
+        supportedMethods: this.context.supportedMethods,
+      })
+
+      const elseMetadata = await this.getBaseNodeMetadata({
+        baseNode: baseNode.else,
+        depth: depth + 1,
+      })
+
+      const childrenMetadata = await Promise.all(
+        (baseNode.children || []).map((child) =>
+          this.getBaseNodeMetadata({
+            baseNode: child,
+            depth: depth + 1,
+          }),
+        ),
+      )
+
+      return mergeMetadata(conditionMetadata, elseMetadata, ...childrenMetadata)
+    }
+
+    if (baseNode.type === 'ElseBlock') {
+      const childrenMetadata = await Promise.all(
+        (baseNode.children || []).map((child) =>
+          this.getBaseNodeMetadata({
+            baseNode: child,
+            depth: depth + 1,
+          }),
+        ),
+      )
+      return mergeMetadata(...childrenMetadata)
+    }
+
+    throw this.baseNodeError(
+      errors.unsupportedBaseNodeType(baseNode.type),
+      baseNode,
+    )
   }
 
   private baseNodeError(
@@ -411,7 +383,7 @@ export class Compiler {
     error(message, {
       name: 'CompileError',
       code,
-      source: this.sql || '',
+      source: this.context.sql || '',
       start: node.start || 0,
       end: node.end || undefined,
     })
@@ -421,7 +393,7 @@ export class Compiler {
     { code, message }: { code: string; message: string },
     node: Node,
   ): never {
-    const source = (node.loc?.source ?? this.sql)!.split('\n')
+    const source = (node.loc?.source ?? this.context.sql)!.split('\n')
     const start =
       source
         .slice(0, node.loc?.start.line! - 1)
@@ -435,41 +407,9 @@ export class Compiler {
     error(message, {
       name: 'CompileError',
       code,
-      source: this.sql || '',
+      source: this.context.sql || '',
       start,
       end,
     })
-  }
-
-  private handleFunction = async <T extends boolean>(
-    node: SimpleCallExpression,
-    interpolation: T,
-    localScope: Scope,
-  ): Promise<T extends true ? string : unknown> => {
-    const methodName = (node.callee as Identifier).name
-    if (!(methodName in this.supportedMethods)) {
-      this.expressionError(errors.unknownFunction(methodName), node)
-    }
-    const method = this.supportedMethods[methodName]! as SupportedMethod
-    const args: unknown[] = []
-    for (const arg of node.arguments) {
-      args.push(await this.resolveLogicNodeExpression(arg, localScope))
-    }
-    try {
-      const returnedValue = (await method(
-        interpolation,
-        ...args,
-      )) as T extends true ? string : unknown
-      if (interpolation && typeof returnedValue !== 'string') {
-        this.expressionError(errors.invalidFunctionResultInterpolation, node)
-      }
-      return returnedValue
-    } catch (error: unknown) {
-      if (error instanceof CompileError) throw error
-      this.expressionError(
-        errors.functionCallError(methodName, (error as Error).message),
-        node,
-      )
-    }
   }
 }

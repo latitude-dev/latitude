@@ -6,6 +6,7 @@ export type TelemetryEventType =
   | 'buildCommand'
   | 'prepareCommand'
   | 'runCommand'
+  | 'materializeCommand'
   | 'updateCommand'
   | 'telemetryCommand'
   | 'deployCommand'

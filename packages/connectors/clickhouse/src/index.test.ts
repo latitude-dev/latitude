@@ -20,15 +20,18 @@ describe('ClickHouseConnector TLS Configurations', () => {
   })
 
   it('builds TLS config from provided options', () => {
-    new ClickHouseConnector('rootPath', {
-      username: 'user',
-      password: 'password',
-      database: 'database',
-      url: 'http://localhost',
-      tls: {
-        ca_cert: 'path/to/ca_cert',
-        key: 'path/to/key',
-        cert: 'path/to/cert',
+    new ClickHouseConnector({
+      source: vi.fn(),
+      connectionParams: {
+        username: 'user',
+        password: 'password',
+        database: 'database',
+        url: 'http://localhost',
+        tls: {
+          ca_cert: 'path/to/ca_cert',
+          key: 'path/to/key',
+          cert: 'path/to/cert',
+        },
       },
     })
 
@@ -60,18 +63,20 @@ describe('runQuery', () => {
     // @ts-expect-error - mock
     vi.mocked(createClient).mockReturnValue(clientMock)
 
-    const connector = new ClickHouseConnector('rootPath', {
-      username: 'user',
-      password: 'password',
-      database: 'database',
-      url: 'http://localhost',
+    const connector = new ClickHouseConnector({
+      source: vi.fn(),
+      connectionParams: {
+        username: 'user',
+        password: 'password',
+        database: 'database',
+        url: 'http://localhost',
+      },
     })
 
     const result = await connector.runQuery({
       sql: 'SELECT * FROM table',
       resolvedParams: [],
       accessedParams: {},
-      config: {},
     })
 
     expect(result.rowCount).toBe(2)
@@ -86,11 +91,14 @@ describe('runQuery', () => {
     // @ts-expect-error - mock
     vi.mocked(createClient).mockReturnValue(clientMock)
 
-    const connector = new ClickHouseConnector('rootPath', {
-      username: 'user',
-      password: 'password',
-      database: 'database',
-      url: 'http://localhost',
+    const connector = new ClickHouseConnector({
+      source: vi.fn(),
+      connectionParams: {
+        username: 'user',
+        password: 'password',
+        database: 'database',
+        url: 'http://localhost',
+      },
     })
 
     await expect(
@@ -98,7 +106,6 @@ describe('runQuery', () => {
         sql: 'SELECT * FROM table',
         resolvedParams: [],
         accessedParams: {},
-        config: {},
       }),
     ).rejects.toThrow('query error')
   })

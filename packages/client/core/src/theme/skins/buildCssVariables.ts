@@ -18,7 +18,7 @@ export function buildCssVariables(theme: Theme): string {
   return `:root {
 ${mapThemeToCssVariables(light)}
 }
-.dark {
+.lat-dark {
 ${mapThemeToCssVariables(dark)}
 }`
 }

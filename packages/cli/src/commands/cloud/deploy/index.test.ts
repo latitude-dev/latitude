@@ -52,7 +52,7 @@ describe('deployCommand', () => {
     expect(consoleErrorMock).toHaveBeenCalledWith(
       chalk.yellow(`
 You are not logged in. Please run the following command to sign up:
-  
+
     ${chalk.cyan('latitude signup')}
 
 If you have already signed up, please run the following command to log in:

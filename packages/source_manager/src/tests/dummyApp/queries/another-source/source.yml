@@ -1,0 +1,5 @@
+type: internal_test
+details:
+  fail: false
+config:
+  ttl: 2000

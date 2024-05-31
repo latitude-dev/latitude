@@ -1,7 +1,4 @@
 <script>
-  import { theme } from '@latitude-data/client'
-  const defaultTheme = theme.skins.defaultTheme
-  
   import { Alert, ThemeProvider } from '@latitude-data/svelte'
 
   import '../assets/app.css'
@@ -11,6 +8,8 @@
   import { init as initQueries } from '$lib/stores/queries'
   import { setUrlParam, useViewParams } from '$lib/stores/viewParams'
   import { initIframeCommunication } from '$lib/iframeEmbedding'
+  import { browser } from '$app/environment'
+  import { config } from '$lib/stores/config'
 
   /**
    * FIXME: https://github.com/latitude-dev/latitude/issues/158
@@ -19,6 +18,7 @@
   export let data
   const validToken = data.valid
   const tokenError = data.errorMessage
+  if (browser) config.set(data.config)
 
   onMount(async () => {
     await initQueries()
@@ -32,14 +32,14 @@
   })
 </script>
 
-<ThemeProvider theme={defaultTheme} />
-
-<div>
-  {#if validToken}
-    <slot />
-  {:else}
-    <div class="mt-20 container flex justify-center">
-      <Alert type="error" secondary>{tokenError}</Alert>
-    </div>
-  {/if}
-</div>
+<ThemeProvider theme={$config?.theme ?? {}} mode={$config?.themeMode}>
+  <div>
+    {#if validToken}
+      <slot />
+    {:else}
+      <div class="mt-20 container flex justify-center">
+        <Alert type="error" secondary>{tokenError}</Alert>
+      </div>
+    {/if}
+  </div>
+</ThemeProvider>
