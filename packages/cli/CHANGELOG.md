@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.8.0
+
+### Minor Changes
+
+- 2fef46d: Fix CLI breking when telemetry api is down
+
 ## 1.7.0
 
 ### Minor Changes
