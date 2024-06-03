@@ -20,6 +20,11 @@
         control: { type: 'boolean' },
       },
     },
+    args: {
+      variant: 'default',
+      size: 'default',
+      ellipsis: true,
+    },
     parameters: {
       layout: 'centered',
       docs: {
@@ -32,11 +37,14 @@
 </script>
 
 <Template let:args>
-  <div class="flex w-36 justify-start">
-    <Button {...args} class="w-full">
-      This is a long long text to show ellipsis
+  <div class="lat-flex lat-justify-start">
+    <Button {...args}>
+      {#if args.size !== 'icon'}
+        This is a long long text to show ellipsis
+      {/if}
+
       <slot slot="icon">
-        <CaretSort class={theme.ui.combobox.BUTTON_ICON_CSS_CLASS} />
+        <CaretSort />
       </slot>
     </Button>
   </div>

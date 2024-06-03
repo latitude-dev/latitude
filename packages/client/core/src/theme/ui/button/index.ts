@@ -40,7 +40,7 @@ export const buttonVariants = tv({
     size: {
       default: 'lat-h-9 lat-px-4 lat-py-2',
       sm: 'lat-h-8 lat-rounded-md lat-px-3 lat-text-xs',
-      lg: 'lat-h-10 lat-rounded-md lat-px-8',
+      lg: 'lat-h-10 lat-rounded-md lat-px-6',
       icon: 'lat-h-9 lat-w-9',
     },
   },
@@ -55,9 +55,19 @@ type ClassProps = {
   size: Size
   className?: string | null | undefined
 }
+const ICON_MARGIN: Record<Size, string> = {
+  default: 'lat-ml-2',
+  sm: 'lat-ml-2',
+  lg: 'lat-ml-4',
+  icon: '',
+}
 export function cssClass({ variant, size, className }: ClassProps) {
   return cn(buttonVariants({ variant, size, className }))
 }
 export function textClass({ ellipsis = false }: { ellipsis?: boolean }) {
   return cn({ 'lat-truncate': ellipsis })
+}
+
+export function iconClass({ size }: { size: Size }) {
+  return cn(ICON_MARGIN[size])
 }

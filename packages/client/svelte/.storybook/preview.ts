@@ -6,7 +6,7 @@ import '@latitude-data/client/latitude.css'
 /** @type { import('@storybook/svelte').Preview } */
 const preview: Preview = {
   parameters: {
-    actions: { argTypesRegex: '^on[A-Z].*' },
+    actions: {},
     deepControls: { enabled: true },
     controls: {
       matchers: {

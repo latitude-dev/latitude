@@ -28,7 +28,11 @@
   on:click
   on:keydown
 >
-  <div class={theme.ui.button.textClass({ ellipsis })}><slot /></div>
-  <!-- TODO: review margin. And move what we have in Combobox.trigger to here -->
-  <slot name="icon" />
+  <div class={theme.ui.button.textClass({ ellipsis })}>
+    <slot />
+  </div>
+
+  <div class={theme.ui.button.iconClass({ size })}>
+    <slot name="icon" class="lat-ml-3" />
+  </div>
 </ButtonPrimitive.Root>
