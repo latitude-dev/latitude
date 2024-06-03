@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.10.1
+
+### Patch Changes
+
+- 6519852: New interface for `latitude run` command.
+
 ## 1.10.0
 
 ### Minor Changes
