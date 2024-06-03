@@ -6,7 +6,7 @@ import fsExtra from 'fs-extra'
 import tar from 'tar'
 import { PACKAGE_NAME } from '$src/commands/constants'
 import { exec } from 'child_process'
-import { getInstalledVersion } from '../getAppVersions'
+import { getInstalledVersion } from '../versionManagement/appVersion'
 import { onError } from '$src/utils'
 
 import { type Props } from './index'
