@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 1.10.0
+
+### Minor Changes
+
+- b0c316d: Add also to latitude version installed version of the app
+- 4905409: Link temporarily to another template repo
+
 ## 1.9.0
 
 ### Minor Changes
