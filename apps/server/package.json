@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --output human-verbose",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "query": "vite-node scripts/run_query/index.ts",
+    "query": "node scripts/dist/run_query.js",
     "materialize_queries": "node scripts/dist/materialize_queries.js"
   },
   "devDependencies": {
@@ -35,13 +35,12 @@
     "@sveltejs/kit": "^2.4.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "@testing-library/svelte": "^4.1.0",
-    "@types/blessed": "^0.1.25",
     "@types/estree": "^1.0.1",
     "@types/lodash-es": "^4.17.12",
     "@types/mock-fs": "^4.13.4",
+    "@types/node": "^20.12.12",
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.17",
-    "blessed": "^0.1.81",
     "chokidar": "^3.5.3",
     "jsdom": "^24.0.0",
     "mock-fs": "^5.2.0",
@@ -62,6 +61,7 @@
   "dependencies": {
     "@latitude-data/client": "workspace:*",
     "@latitude-data/custom_types": "workspace:^",
+    "@latitude-data/display_table": "workspace:^",
     "@latitude-data/embedding": "workspace:*",
     "@latitude-data/jwt": "workspace:*",
     "@latitude-data/source-manager": "workspace:^",
