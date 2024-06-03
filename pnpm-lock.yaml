@@ -11,6 +11,9 @@ importers:
       '@latitude-data/duckdb-connector':
         specifier: workspace:*
         version: link:packages/connectors/duckdb
+      '@latitude-data/postgresql-connector':
+        specifier: workspace:*
+        version: link:packages/connectors/postgresql
     devDependencies:
       '@changesets/cli':
         specifier: ^2.27.1

@@ -1,5 +1,6 @@
 import RudderAnalytics from '@rudderstack/rudder-sdk-node'
 import config from '$src/config'
+import * as Sentry from '@sentry/node'
 import configStore from '$src/lib/configStore'
 import crypto from 'crypto'
 import os from 'os'
@@ -78,11 +79,15 @@ export class Telemetry {
   }
 
   private async _track<T extends TelemetryEventType>(event: TelemetryEvent<T>) {
-    this.client?.track({
-      anonymousId: this.anonymousId,
-      event: event.event,
-      properties: event.properties,
-    })
+    try {
+      this.client?.track({
+        anonymousId: this.anonymousId,
+        event: event.event,
+        properties: event.properties,
+      })
+    } catch (e) {
+      Sentry.captureException(e)
+    }
   }
 
   private identifyAnonymous() {
