@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.9.0
+
+### Minor Changes
+
+- f71ff00: In CLI show app version and CLI version
+
 ## 1.8.0
 
 ### Minor Changes
