@@ -4,6 +4,7 @@ import buildCommand from './commands/build'
 import cancelCommand from './commands/cloud/cancel'
 import config from './config'
 import credentialsCommand from './commands/credentials'
+import versionCommand from './commands/version'
 import deployCommand from './commands/cloud/deploy'
 import destroyCommand from './commands/cloud/destroy'
 import devCommand from './commands/dev'
@@ -27,8 +28,15 @@ initSentry()
 
 const CLI = sade('latitude')
 
-CLI.version(process.env.PACKAGE_VERSION ?? 'development')
-  .option('--verbose', 'Enables verbose console logs')
+// TODO: find a better way
+//
+// I opened an issue in Sade's repo:
+// https://github.com/lukeed/sade/issues/58
+//
+// @ts-expect-error
+CLI['_version'] = versionCommand
+
+CLI.option('--verbose', 'Enables verbose console logs')
   .option('--simulate-pro', 'Enable pro mode in development')
   .option('--tty', 'Enables or disables TTY mode.')
 
@@ -165,7 +173,7 @@ async function init() {
     process.exit(1)
   }
 
-  argv?.handler.apply(null, argv?.args)
+  argv?.handler?.apply?.(null, argv?.args)
 }
 
 init()
