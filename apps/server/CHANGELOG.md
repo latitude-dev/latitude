@@ -1,5 +1,13 @@
 # @latitude-data/server
 
+## 2.0.1
+
+### Patch Changes
+
+- 6aceea4: New interface for `latitude run` command.
+- Updated dependencies [6aceea4]
+  - @latitude-data/display_table@0.0.1
+
 ## 2.0.0
 
 ### Major Changes
