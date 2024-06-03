@@ -1,0 +1,12 @@
+diff --git a/package.json b/package.json
+index 77597bd72f1d5e8ecf46d379cfd726ba040519e1..c7b01ee984a61245c6f2516beeda46018cee7d2e 100644
+--- a/package.json
++++ b/package.json
+@@ -10,6 +10,7 @@
+ 		"url": "https://github.com/vadimdemedes"
+ 	},
+ 	"type": "module",
++	"types": "./build/index.d.ts",
+ 	"exports": {
+ 		"types": "./build/index.d.ts",
+ 		"default": "./build/index.js"

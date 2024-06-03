@@ -1,0 +1,44 @@
+{
+  "name": "@latitude-data/display_table",
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prettier": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "tc": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0 --ext .ts src"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@latitude-data/query_result": "workspace:^",
+    "@latitude-data/source-manager": "workspace:^",
+    "chokidar": "^3.5.3",
+    "ink": "^4.1.0",
+    "ink-spinner": "^5.0.0",
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:^",
+    "@latitude-data/sql-compiler": "workspace:^",
+    "@latitude-data/typescript": "workspace:^",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.12.12",
+    "@types/react": "^18.2.74",
+    "chalk": "^5.2.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^2.8.7",
+    "rollup": "^4.10.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.3"
+  }
+}
