@@ -1,5 +1,12 @@
 # @latitude-data/clickhouse-connector
 
+## 2.0.1
+
+### Patch Changes
+
+- Updated dependencies [b2367e9]
+  - @latitude-data/source-manager@1.0.1
+
 ## 2.0.0
 
 ### Major Changes

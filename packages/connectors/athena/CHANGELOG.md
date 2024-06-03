@@ -1,5 +1,12 @@
 # @latitude-data/athena-connector
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [b2367e9]
+  - @latitude-data/source-manager@1.0.1
+
 ## 3.0.0
 
 ### Major Changes
