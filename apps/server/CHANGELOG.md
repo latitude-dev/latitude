@@ -1,5 +1,13 @@
 # @latitude-data/server
 
+## 2.0.1-canary.0
+
+### Patch Changes
+
+- bb7872e: New interface for `latitude run` command.
+- Updated dependencies [96ca029]
+  - @latitude-data/display_table@0.0.1-canary.0
+
 ## 2.0.0
 
 ### Major Changes

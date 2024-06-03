@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.7.1-canary.0
+
+### Patch Changes
+
+- bb7872e: New interface for `latitude run` command.
+
 ## 1.7.0
 
 ### Minor Changes

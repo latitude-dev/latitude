@@ -28,7 +28,11 @@
     "@latitude-data/source-manager": "1.0.0",
     "@latitude-data/eslint-config": "0.1.0",
     "latitude-vscode": "0.0.4",
-    "@latitude-data/typescript": "0.1.0"
+    "@latitude-data/typescript": "0.1.0",
+    "@latitude-data/display_table": "0.0.0"
   },
-  "changesets": []
+  "changesets": [
+    "smart-moose-shave",
+    "thick-grapes-relate"
+  ]
 }
