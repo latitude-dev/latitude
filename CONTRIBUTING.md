@@ -68,7 +68,7 @@ When developing a new feature or fixing an issue, it is recommended to use the L
 The first step in your development process should be to build the Latitude CLI in development mode. This can be achieved by running the appropriate command:
 
 ```bash
-cd ./packages/cli
+cd ./packages/cli/core
 pnpm run dev
 ```
 
