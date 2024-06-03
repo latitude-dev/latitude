@@ -1,5 +1,11 @@
 # @latitude-data/react
 
+## 0.9.0
+
+### Minor Changes
+
+- 2fef46d: Fix CLI breking when telemetry api is down
+
 ## 0.8.0
 
 ### Minor Changes
