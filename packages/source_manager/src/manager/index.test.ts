@@ -8,13 +8,16 @@ describe('SourceManager', () => {
   it('does not load the same connector twice', async () => {
     const readFileSpy = vi.spyOn(fs, 'readFileSync')
     const factorySpy = vi.spyOn(factory, 'default')
+    const configPath = 'valid-source/source.yml'
     const query1Path = 'valid-source/query'
     const query2Path = 'valid-source/nested/query'
     const sourceManager = new SourceManager(QUERIES_DIR)
+    const source0 = await sourceManager.loadFromConfigFile(configPath)
     const source1 = await sourceManager.loadFromQuery(query1Path)
     const source2 = await sourceManager.loadFromQuery(query2Path)
 
     expect(readFileSpy).toHaveBeenCalledOnce()
+    expect(source0).toBe(source1)
     expect(source1).toBe(source2)
 
     await source1.compileQuery({ queryPath: 'valid-source/query' })
