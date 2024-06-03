@@ -27,6 +27,7 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@latitude-data/duckdb-connector": "workspace:*"
+    "@latitude-data/duckdb-connector": "workspace:*",
+    "@latitude-data/postgresql-connector": "workspace:*"
   }
 }

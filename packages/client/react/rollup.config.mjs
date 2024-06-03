@@ -14,6 +14,7 @@ const EXTERNAL_DEPENDENCIES = [
   '@radix-ui/react-slot',
   '@radix-ui/react-label',
   'react-table',
+  'use-prefers-color-scheme',
   'lodash-es',
   'echarts/core',
   'echarts/renderers',
