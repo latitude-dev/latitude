@@ -6,6 +6,7 @@ export default {
   content: [
     './src/**/*.{html,js,svelte,ts}',
     './node_modules/@latitude-data/client/src/theme/ui/**/*.ts',
+    './node_modules/@latitude-data/dist/responsiveClasses.txt',
   ],
 }
 

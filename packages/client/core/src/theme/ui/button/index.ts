@@ -20,7 +20,7 @@ export const BUTTON_VARIANTS = Object.values(ButtonVariant)
 export const BUTTON_SIZES = Object.values(BUTTON_SIZE)
 
 export type Variant = VariantProps<typeof buttonVariants>['variant']
-export type Size = VariantProps<typeof buttonVariants>['size']
+export type Size = Exclude<VariantProps<typeof buttonVariants>['size'], undefined>
 
 export const buttonVariants = tv({
   base: 'lat-inline-flex lat-items-center lat-justify-center lat-rounded-md lat-text-sm lat-font-medium lat-whitespace-nowrap lat-transition-colors focus-visible:lat-outline-none focus-visible:lat-ring-1 focus-visible:lat-ring-ring disabled:lat-pointer-events-none disabled:lat-opacity-50',

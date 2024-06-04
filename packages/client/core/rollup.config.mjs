@@ -1,3 +1,4 @@
+import fs from 'fs'
 import { dts } from 'rollup-plugin-dts'
 import typescript from '@rollup/plugin-typescript'
 import copy from 'rollup-plugin-copy'
@@ -14,7 +15,7 @@ const EXTERNAL_DEPENDENCIES = [
   'zustand/vanilla',
 ]
 
-/** @type {import('rollup').RollupOptions}*/
+/** @type {import('rollup').RollupOptions} */
 export default [
   {
     input: 'src/index.ts',
@@ -30,6 +31,25 @@ export default [
           },
         ],
       }),
+    ],
+  },
+  {
+    input: 'src/responsive/properties/index.ts',
+    output: [{ file: 'dist/responsiveClasses.js' }],
+    plugins: [typescript()],
+  },
+  {
+    input: 'dist/responsiveClasses.js',
+    output: [{ file: 'dist/responsiveClasses.txt' }],
+    plugins: [
+      {
+        name: 'latitude-responsive-classes',
+        async writeBundle({ file: output }, bundle) {
+          const input = Object.values(bundle)[0].facadeModuleId
+          const result = await import(`${input}?update=${Date.now()}`)
+          fs.writeFileSync(output, result.default(), { flag: 'w' })
+        },
+      },
     ],
   },
   {

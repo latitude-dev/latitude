@@ -5,8 +5,8 @@
   "license": "LGPL",
   "scripts": {
     "build:rollup": "rollup -c",
-    "dev": "pnpm run build:rollup -w",
-    "build": "npm run build:rollup",
+    "dev": "pnpm run build:rollup --watch",
+    "build": "pnpm run build:rollup",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint . --max-warnings 0 --ext .ts src",
     "tc": "tsc --noEmit",
@@ -22,7 +22,8 @@
       "import": "./dist/index.js"
     },
     "./theme/preset": "./tailwind.config.js",
-    "./latitude.css": "./dist/latitude.css"
+    "./latitude.css": "./dist/latitude.css",
+    "./responsiveClasses.txt": "./dist/responsiveClasses.txt"
   },
   "files": [
     "dist",
