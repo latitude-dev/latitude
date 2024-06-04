@@ -1,12 +1,5 @@
 # @latitude-data/source-manager
 
-## 1.0.1-canary.0
-
-### Patch Changes
-
-- b2367e9: Fix: Loading the same source from the config file and from a query resulted in two different source instances.
-- 5915d92: Expose connectors package nammes
-
 ## 1.0.0
 
 ### Major Changes

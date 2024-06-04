@@ -1,13 +1,5 @@
 # @latitude-data/sqlite-connector
 
-## 1.0.1-canary.0
-
-### Patch Changes
-
-- Updated dependencies [b2367e9]
-- Updated dependencies [5915d92]
-  - @latitude-data/source-manager@1.0.1-canary.0
-
 ## 1.0.0
 
 ### Major Changes
