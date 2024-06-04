@@ -109,6 +109,13 @@ export default class AthenaConnector extends BaseConnector<ConnectionParams> {
     }
   }
 
+  protected paginateQuery(sql: string, limit: number, offset: number): string {
+    // Older Athena versions do not support LIMIT and OFFSET
+    return `SELECT * FROM (SELECT ROW_NUMBER() OVER() as _rn, * FROM (${sql})) WHERE _rn > BETWEEN ${offset} AND ${
+      offset + limit
+    }`
+  }
+
   private async checkQueryExequtionStateAndGetData(
     QueryExecutionId: string,
   ): Promise<QueryResult> {

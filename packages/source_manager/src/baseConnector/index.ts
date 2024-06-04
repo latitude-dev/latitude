@@ -8,16 +8,18 @@ import {
 import type QueryResult from '@latitude-data/query_result'
 
 import { Source } from '@/source'
-import type {
-  ResolvedParam,
-  CompiledQuery,
-  CompilationContext,
-  BuildSupportedMethodsArgs,
-  CompileQueryRequest,
-  BatchedQueryOptions,
-  QueryConfig,
+import {
+  type ResolvedParam,
+  type CompiledQuery,
+  type CompilationContext,
+  type BuildSupportedMethodsArgs,
+  type CompileQueryRequest,
+  type BatchedQueryOptions,
+  type QueryConfig,
+  ConnectorError,
 } from '@/types'
 import buildSupportedMethods from './supportedMethods'
+import type { Field } from '@latitude-data/query_result'
 
 export type ConnectorAttributes = {
   [key: string]: unknown
@@ -48,11 +50,54 @@ export abstract class BaseConnector<P extends ConnectorAttributes = {}> {
   protected abstract runQuery(request: CompiledQuery): Promise<QueryResult>
 
   /**
+   * Paginate a query by wrapping it in a subquery and using LIMIT and OFFSET
+   */
+  protected paginateQuery(sql: string, limit: number, offset: number): string {
+    // `sql` must be wrapped as a subquery, because it could already contain LIMIT and OFFSET set by the user
+    return `SELECT * FROM (${sql}) LIMIT ${limit} OFFSET ${offset}`
+  }
+
+  /**
    * The connector is able to perform streaming (batching) of the results
    * of a query. If the connector does not define this method it will throw
    */
-  async batchQuery(_c: CompiledQuery, _o: BatchedQueryOptions): Promise<void> {
-    throw new Error('Batching not supported')
+  async batchQuery(
+    compiledQuery: CompiledQuery,
+    { batchSize, onBatch }: BatchedQueryOptions,
+  ): Promise<void> {
+    try {
+      let offset = 0
+      let hasMoreRows = true
+      let fields: Field[] | undefined
+
+      while (hasMoreRows) {
+        const paginatedQuery = this.paginateQuery(
+          compiledQuery.sql,
+          batchSize,
+          offset,
+        )
+        const results = await this.runQuery({
+          ...compiledQuery,
+          sql: paginatedQuery,
+        })
+
+        hasMoreRows = results.rowCount === batchSize
+
+        if (fields === undefined) {
+          fields = results.fields // Only set the fields on the first batch
+        }
+
+        await onBatch({
+          rows: results.toArray(),
+          fields: fields,
+          lastBatch: !hasMoreRows,
+        })
+
+        offset += batchSize
+      }
+    } catch (error) {
+      throw new ConnectorError((error as Error).message)
+    }
   }
 
   /**
