@@ -2,7 +2,7 @@ import colors from 'picocolors'
 import setRootDir from '$src/lib/decorators/setRootDir'
 import boxedMessage from '$src/lib/boxedMessage'
 import findOrCreateConfigFile from '$src/lib/latitudeConfig/findOrCreate'
-import { getInstalledVersion } from '$src/lib/getAppVersions'
+import { getInstalledVersion } from '$src/lib/versionManagement/appVersion'
 import config from '$src/config'
 
 function versionLine({ name, version }: { name: string; version: string }) {

@@ -1,6 +1,6 @@
 import colors from 'picocolors'
 import boxedMessage from '../boxedMessage'
-import { getInstalledVersion } from '../getAppVersions'
+import { getInstalledVersion } from '../versionManagement/appVersion'
 
 export default class InstalledVersionChecker {
   public installed: string | null = null

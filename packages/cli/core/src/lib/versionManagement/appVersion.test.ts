@@ -1,5 +1,5 @@
 import { exec } from 'child_process'
-import getLatitudeVersions from './getAppVersions'
+import { getAvailableVersions as getLatitudeVersions } from './appVersion'
 import { vi, describe, it, expect, beforeAll, afterAll } from 'vitest'
 
 vi.mock('child_process', async (importOriginal) => {
