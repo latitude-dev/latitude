@@ -122,6 +122,8 @@ async function updateCommand(args: { fix?: boolean; canary?: boolean }) {
   return updateApp({
     version: newAppVersion,
     updateCli,
+    toLatest: isLatestAppVersion,
+    canary,
   })
 }
 

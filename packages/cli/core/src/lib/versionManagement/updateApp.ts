@@ -8,6 +8,7 @@ import { addDockerfiles } from '../addDockerfiles/fromUpdate'
 import addPackageJson from '../addPackageJson'
 import updateLatitudeCli from './updateLatitudeCli'
 import ora from 'ora'
+import updateConnectors from './updateConnectors'
 
 async function performTask<T extends any>({
   task,
@@ -29,11 +30,12 @@ async function performTask<T extends any>({
     spinner.succeed(success)
     return result
   } catch (error) {
+    const failMsg = fail + (config.verbose ? `: (${error})` : '')
     if (required) {
-      spinner.fail(fail)
+      spinner.fail(failMsg)
       throw error
     }
-    spinner.warn(fail)
+    spinner.warn(failMsg)
     return undefined
   }
 }
@@ -57,9 +59,13 @@ async function updateConfigFile({ version }: { version: string }) {
 export default async function updateApp({
   version,
   updateCli = false,
+  toLatest = false,
+  canary = false,
 }: {
   version: string
   updateCli: boolean
+  toLatest: boolean
+  canary?: boolean
 }) {
   await performTask({
     task: Promise.all([
@@ -80,9 +86,18 @@ export default async function updateApp({
       fail: 'Failed installing dependencies',
     })
   }
+  if (toLatest) {
+    await performTask({
+      task: updateConnectors({ canary }),
+      loading: 'Updating installed connectors',
+      success: 'Installed connectors updated',
+      fail: 'Failed to update installed connectors',
+      required: false,
+    })
+  }
   if (updateCli) {
     await performTask({
-      task: updateLatitudeCli(),
+      task: updateLatitudeCli({ canary }),
       loading: 'Updating CLI',
       success: 'Updated CLI to the latest version',
       fail: 'Failed updating CLI',
