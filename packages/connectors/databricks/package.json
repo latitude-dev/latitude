@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/databricks-connector",
-  "version": "3.0.0",
+  "version": "3.0.1-canary.0",
   "license": "LGPL",
   "description": "Databricks connector for Latitude",
   "type": "module",
