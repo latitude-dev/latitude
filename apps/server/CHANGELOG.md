@@ -1,5 +1,14 @@
 # @latitude-data/server
 
+## 2.0.2-canary.0
+
+### Patch Changes
+
+- Updated dependencies [b2367e9]
+- Updated dependencies [5915d92]
+  - @latitude-data/source-manager@1.0.1-canary.0
+  - @latitude-data/display_table@0.0.2-canary.0
+
 ## 2.0.1
 
 ### Patch Changes

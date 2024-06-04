@@ -1,5 +1,13 @@
 # @latitude-data/clickhouse-connector
 
+## 2.0.1-canary.0
+
+### Patch Changes
+
+- Updated dependencies [b2367e9]
+- Updated dependencies [5915d92]
+  - @latitude-data/source-manager@1.0.1-canary.0
+
 ## 2.0.0
 
 ### Major Changes
