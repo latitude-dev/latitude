@@ -91,7 +91,7 @@ export default class SourceManager {
       )
     }
 
-    const sourcePath = path.dirname(sourceFile)
+    const sourcePath = path.relative(this.queriesDir, path.dirname(sourceFile))
     if (!this.instances[sourcePath]) {
       this.buildSource({ sourcePath, sourceFile })
     }

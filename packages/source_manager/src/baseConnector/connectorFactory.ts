@@ -6,7 +6,7 @@ import {
 import { ConnectorType } from '@/types'
 import TestConnector from '@/testConnector'
 
-const CONNECTOR_PACKAGES = {
+export const CONNECTOR_PACKAGES = {
   [ConnectorType.Postgres]: 'postgresql-connector',
   [ConnectorType.Redshift]: 'postgresql-connector',
   [ConnectorType.Clickhouse]: 'clickhouse-connector',

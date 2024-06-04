@@ -1,27 +1,6 @@
 import { exec } from 'child_process'
-import { readFileSync } from 'fs'
 import semverSort from 'semver/functions/rsort'
-import {
-  APP_FOLDER,
-  DEFAULT_VERSION_LIST,
-  PACKAGE_NAME,
-} from '../commands/constants'
 import chalk from 'chalk'
-
-export function getInstalledVersion(appDir: string) {
-  let version = null
-  try {
-    const packageJson = readFileSync(
-      `${appDir}/${APP_FOLDER}/package.json`,
-      'utf-8',
-    )
-    version = JSON.parse(packageJson).version
-  } catch (e) {
-    // Do nothing
-  }
-
-  return version
-}
 
 // Backwards Compatibility. before we called canary versions "next"
 const CANARY_VERSION = ['canary', 'next']
@@ -29,16 +8,18 @@ const CANARY_VERSION = ['canary', 'next']
 function isCanary(version: string) {
   return CANARY_VERSION.some((v) => version.includes(v))
 }
-export default async function getLatitudeVersions(
-  {
-    onFetch,
-    canary = false,
-  }: {
-    onFetch?: () => void
-    canary?: boolean
-  } = { canary: false },
-) {
-  const command = `npm view ${PACKAGE_NAME} versions --json`
+export default async function getPackageVersions({
+  packageName,
+  onFetch,
+  canary = false,
+  defaultVersionList = ['latest'],
+}: {
+  packageName: string
+  onFetch?: () => void
+  canary?: boolean
+  defaultVersionList?: string[]
+}) {
+  const command = `npm view ${packageName} versions --json`
 
   return new Promise<string[]>((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
@@ -59,9 +40,12 @@ export default async function getLatitudeVersions(
         reject(e)
       }
 
-      if (!versions) return resolve(DEFAULT_VERSION_LIST)
+      if (!versions) {
+        if (defaultVersionList) return resolve(defaultVersionList)
+        reject('No versions found')
+      }
 
-      const sorted = semverSort(versions).slice(0, 10) // Last 10 versions
+      const sorted = semverSort(versions!).slice(0, 10) // Last 10 versions
       resolve(sorted)
     })
   })
