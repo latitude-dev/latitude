@@ -14,6 +14,7 @@ export type ResponsiveBox = {
   display?: ResponsiveValue<'display'>
   alignX?: ResponsiveValue<'flexAlign'>
   alignY?: ResponsiveValue<'flexYAlign'>
+  overflow?: ResponsiveValue<'overflow'>
   direction?: ResponsiveValue<'flexDirection'>
   gap?: ResponsiveValue<'gap'>
   gapY?: ResponsiveValue<'gapY'>
@@ -39,6 +40,7 @@ export function cssClasses({
   alignX,
   alignY,
   position,
+  overflow,
   gap,
   gapY,
   gapX,
@@ -60,6 +62,7 @@ export function cssClasses({
     resolveResponsiveValue({ property: 'flexYAlign', value: alignY }),
     resolveResponsiveValue({ property: 'flexDirection', value: direction }),
     resolveResponsiveValue({ property: 'position', value: position }),
+    resolveResponsiveValue({ property: 'overflow', value: overflow }),
     resolveResponsiveValue({ property: 'gap', value: gap }),
     resolveResponsiveValue({ property: 'gapY', value: gapY }),
     resolveResponsiveValue({ property: 'gapX', value: gapX }),

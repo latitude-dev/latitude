@@ -11,6 +11,21 @@ const display = {
   flex: 'flex',
 }
 
+const overflow = {
+  auto: 'overflow-auto',
+  hidden: 'overflow-hidden',
+  visible: 'overflow-visible',
+  scroll: 'overflow-scroll',
+  xAuto: 'overflow-x-auto',
+  yAuto: 'overflow-y-auto',
+  xHidden: 'overflow-x-hidden',
+  yHidden: 'overflow-y-hidden',
+  yScroll: 'overflow-y-scroll',
+  xScroll: 'overflow-x-scroll',
+  yVisible: 'overflow-y-visible',
+  xVisible: 'overflow-x-visible',
+}
+
 const position = {
   static: 'static',
   relative: 'relative',
@@ -65,6 +80,7 @@ export const properties = {
   flexShrink,
   flexGrow,
   textAlign,
+  overflow,
   ...gap,
   ...padding,
   ...margin,
