@@ -7,3 +7,5 @@ export const breakpoints = {
 }
 
 export type Breakpoint = keyof typeof breakpoints
+export type BreakpointObject<T> = { [key in Breakpoint]: T }
+export const BP_LIST = Object.keys(breakpoints) as Breakpoint[]

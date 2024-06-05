@@ -20,12 +20,21 @@ const flexAlign = {
   right: 'justify-end',
 }
 
-export type Properties = typeof properties
+const flexYAlign = {
+  top: 'items-start',
+  center: 'items-center',
+  bottom: 'items-end',
+}
 
 export const properties = {
   gap,
   flexAlign,
+  flexYAlign,
 }
+
+export type Properties = typeof properties
+export type Property = keyof Properties
+export type ValueOfProperty<T extends Property> = keyof Properties[T]
 
 export default function compile() {
   return generateClasses({ properties })

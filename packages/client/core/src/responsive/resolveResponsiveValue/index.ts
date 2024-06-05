@@ -1,0 +1,55 @@
+import { compact } from 'lodash-es'
+import { BP_LIST, BreakpointObject, breakpoints } from '../breakpoints'
+import { Property, ValueOfProperty, properties } from '../properties'
+
+type PropertyTypes = {
+  [P in Property]: {
+    [Value in ValueOfProperty<P>]: string
+  }
+}
+type ResponsiveValue<T extends Property> =
+  | ValueOfProperty<T>
+  | Partial<BreakpointObject<T>>
+  | (ValueOfProperty<T> | null | undefined)[]
+
+export default function resolveResponsiveValue<P extends Property>({
+  property,
+  value,
+}: {
+  property: P
+  value: ResponsiveValue<P>
+}): string[] {
+  const prop = properties[property] as PropertyTypes[P]
+
+  if (typeof value === 'string') {
+    return [prop[value]]
+  } else if (typeof value === 'object' && !Array.isArray(value)) {
+    return compact(
+      BP_LIST.map((bp) => {
+        const bpPrefix = breakpoints[bp]
+        const classValue = value[bp]
+        if (!classValue) return null
+
+        return bpPrefix === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
+      }),
+    )
+  } else if (Array.isArray(value)) {
+    return compact(
+      value.map((item, index) => {
+        if (item === null || item === undefined) return null
+
+        const bpKey = BP_LIST[index]
+        if (!bpKey) return null
+
+        const bpPrefix = breakpoints[bpKey]
+        const prop = properties[property] as PropertyTypes[P]
+        const classValue = prop[item]
+
+        return bpPrefix === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
+      }),
+    )
+  } else {
+    // Should never reach here
+    return []
+  }
+}
