@@ -34,7 +34,7 @@ export const properties = {
 
 export type Properties = typeof properties
 export type Property = keyof Properties
-export type ValueOfProperty<T extends Property> = keyof Properties[T]
+export type PropertyValue<T extends Property> = keyof Properties[T]
 
 export default function compile() {
   return generateClasses({ properties })

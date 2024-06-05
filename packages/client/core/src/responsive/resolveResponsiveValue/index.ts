@@ -1,16 +1,19 @@
 import { compact } from 'lodash-es'
-import { BP_LIST, BreakpointObject, breakpoints } from '../breakpoints'
-import { Property, ValueOfProperty, properties } from '../properties'
+import { type Breakpoint, BP_LIST, breakpoints } from '../breakpoints'
+import { type Property, properties, PropertyValue } from '../properties'
 
 type PropertyTypes = {
-  [P in Property]: {
-    [Value in ValueOfProperty<P>]: string
-  }
+  [P in Property]: Record<PropertyValue<P>, string>
 }
-type ResponsiveValue<T extends Property> =
-  | ValueOfProperty<T>
-  | Partial<BreakpointObject<T>>
-  | (ValueOfProperty<T> | null | undefined)[]
+
+type BreakpointObject<P extends Property> = {
+  [K in Breakpoint]?: PropertyValue<P>
+}
+
+type ResponsiveValue<P extends Property> =
+  | PropertyValue<P>
+  | Partial<BreakpointObject<P>>
+  | (PropertyValue<P> | null | undefined)[]
 
 export default function resolveResponsiveValue<P extends Property>({
   property,
@@ -27,10 +30,14 @@ export default function resolveResponsiveValue<P extends Property>({
     return compact(
       BP_LIST.map((bp) => {
         const bpPrefix = breakpoints[bp]
-        const classValue = value[bp]
+        const bpValue = value[bp]
+        if (!bpValue) return null
+
+        const classValue = prop[bpValue]
+
         if (!classValue) return null
 
-        return bpPrefix === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
+        return bp === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
       }),
     )
   } else if (Array.isArray(value)) {
@@ -39,13 +46,13 @@ export default function resolveResponsiveValue<P extends Property>({
         if (item === null || item === undefined) return null
 
         const bpKey = BP_LIST[index]
+
         if (!bpKey) return null
 
         const bpPrefix = breakpoints[bpKey]
-        const prop = properties[property] as PropertyTypes[P]
         const classValue = prop[item]
 
-        return bpPrefix === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
+        return bpKey === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
       }),
     )
   } else {
