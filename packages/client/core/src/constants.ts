@@ -6,3 +6,4 @@ export const PRIVATE_PARAMS = new Set([
   DOWNLOAD_PARAM,
   TOKEN_PARAM,
 ])
+export const CSS_PREFIX = 'lat-'

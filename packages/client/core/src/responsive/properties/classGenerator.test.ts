@@ -8,19 +8,19 @@ describe('classGenerator', () => {
     const properties = { flexAlign: all.flexAlign, gap: all.gap }
     expect(classGenerator({ properties })).toEqual(
       [
-        'justify-start md:justify-start lg:justify-start xl:justify-start 2xl:justify-start',
-        'justify-center md:justify-center lg:justify-center xl:justify-center 2xl:justify-center',
-        'justify-end md:justify-end lg:justify-end xl:justify-end 2xl:justify-end',
-        'gap-0 md:gap-0 lg:gap-0 xl:gap-0 2xl:gap-0',
-        'gap-1 md:gap-1 lg:gap-1 xl:gap-1 2xl:gap-1',
-        'gap-2 md:gap-2 lg:gap-2 xl:gap-2 2xl:gap-2',
-        'gap-3 md:gap-3 lg:gap-3 xl:gap-3 2xl:gap-3',
-        'gap-5 md:gap-5 lg:gap-5 xl:gap-5 2xl:gap-5',
-        'gap-6 md:gap-6 lg:gap-6 xl:gap-6 2xl:gap-6',
-        'gap-8 md:gap-8 lg:gap-8 xl:gap-8 2xl:gap-8',
-        'gap-12 md:gap-12 lg:gap-12 xl:gap-12 2xl:gap-12',
-        'gap-24 md:gap-24 lg:gap-24 xl:gap-24 2xl:gap-24',
-        'gap-32 md:gap-32 lg:gap-32 xl:gap-32 2xl:gap-32',
+        'lat-justify-start md:lat-justify-start lg:lat-justify-start xl:lat-justify-start 2xl:lat-justify-start',
+        'lat-justify-center md:lat-justify-center lg:lat-justify-center xl:lat-justify-center 2xl:lat-justify-center',
+        'lat-justify-end md:lat-justify-end lg:lat-justify-end xl:lat-justify-end 2xl:lat-justify-end',
+        'lat-gap-0 md:lat-gap-0 lg:lat-gap-0 xl:lat-gap-0 2xl:lat-gap-0',
+        'lat-gap-1 md:lat-gap-1 lg:lat-gap-1 xl:lat-gap-1 2xl:lat-gap-1',
+        'lat-gap-2 md:lat-gap-2 lg:lat-gap-2 xl:lat-gap-2 2xl:lat-gap-2',
+        'lat-gap-3 md:lat-gap-3 lg:lat-gap-3 xl:lat-gap-3 2xl:lat-gap-3',
+        'lat-gap-5 md:lat-gap-5 lg:lat-gap-5 xl:lat-gap-5 2xl:lat-gap-5',
+        'lat-gap-6 md:lat-gap-6 lg:lat-gap-6 xl:lat-gap-6 2xl:lat-gap-6',
+        'lat-gap-8 md:lat-gap-8 lg:lat-gap-8 xl:lat-gap-8 2xl:lat-gap-8',
+        'lat-gap-12 md:lat-gap-12 lg:lat-gap-12 xl:lat-gap-12 2xl:lat-gap-12',
+        'lat-gap-24 md:lat-gap-24 lg:lat-gap-24 xl:lat-gap-24 2xl:lat-gap-24',
+        'lat-gap-32 md:lat-gap-32 lg:lat-gap-32 xl:lat-gap-32 2xl:lat-gap-32',
       ].join(' ')
     )
   })

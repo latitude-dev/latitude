@@ -1,6 +1,7 @@
 import { compact } from 'lodash-es'
-import { type Breakpoint, BP_LIST, breakpoints } from '../breakpoints'
+import { type Breakpoint, BP_LIST } from '../breakpoints'
 import { type Property, properties, PropertyValue } from '../properties'
+import { responsiveProp } from '../utils'
 
 type PropertyTypes = {
   [P in Property]: Record<PropertyValue<P>, string>
@@ -25,11 +26,10 @@ export default function resolveResponsiveValue<P extends Property>({
   const prop = properties[property] as PropertyTypes[P]
 
   if (typeof value === 'string') {
-    return [prop[value]]
+    return [responsiveProp({ prop: prop[value], bp: 'mobile' })]
   } else if (typeof value === 'object' && !Array.isArray(value)) {
     return compact(
       BP_LIST.map((bp) => {
-        const bpPrefix = breakpoints[bp]
         const bpValue = value[bp]
         if (!bpValue) return null
 
@@ -37,7 +37,7 @@ export default function resolveResponsiveValue<P extends Property>({
 
         if (!classValue) return null
 
-        return bp === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
+        return responsiveProp({ prop: classValue, bp })
       }),
     )
   } else if (Array.isArray(value)) {
@@ -45,14 +45,10 @@ export default function resolveResponsiveValue<P extends Property>({
       value.map((item, index) => {
         if (item === null || item === undefined) return null
 
-        const bpKey = BP_LIST[index]
+        const bp = BP_LIST[index]
+        if (!bp) return null
 
-        if (!bpKey) return null
-
-        const bpPrefix = breakpoints[bpKey]
-        const classValue = prop[item]
-
-        return bpKey === 'mobile' ? classValue : `${bpPrefix}:${classValue}`
+        return responsiveProp({ prop: prop[item], bp })
       }),
     )
   } else {
