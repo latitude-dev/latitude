@@ -1,19 +1,31 @@
-import { Space } from '../space'
 import generateClasses from './classGenerator'
+import padding from './padding'
+import margin from './margin'
+import gap from './gap'
 
-const gap: Record<Space, string> = {
-  none: 'gap-0',
-  xxsmall: 'gap-1',
-  xsmall: 'gap-2',
-  small: 'gap-3',
-  medium: 'gap-5',
-  gutter: 'gap-6',
-  large: 'gap-8',
-  xlarge: 'gap-12',
-  xxlarge: 'gap-24',
-  xxxlarge: 'gap-32',
+const display = {
+  none: 'hidden',
+  block: 'block',
+  inline: 'inline',
+  inlineBlock: 'inline-block',
+  flex: 'flex',
 }
 
+const position = {
+  static: 'static',
+  relative: 'relative',
+  absolute: 'absolute',
+  fixed: 'fixed',
+  sticky: 'sticky',
+}
+
+const borderRadius = {
+  none: 'rounded-none',
+  full: 'rounded-full',
+  small: 'rounded-sm',
+  medium: 'rounded-md',
+  large: 'rounded-lg',
+}
 const flexAlign = {
   left: 'justify-start',
   center: 'justify-center',
@@ -26,10 +38,36 @@ const flexYAlign = {
   bottom: 'items-end',
 }
 
+const flexDirection = {
+  row: 'flex-row',
+  rowReverse: 'flex-row-reverse',
+  column: 'flex-col',
+  columnReverse: 'flex-col-reverse',
+}
+
+const flexWrap = { wrap: 'flex-wrap', nowrap: 'flex-nowrap' }
+const flexShrink = { 0: 'shrink-0', 1: 'shrink' }
+const flexGrow = { 0: 'grow-0', 1: 'grow' }
+const textAlign = {
+  left: 'text-left',
+  center: 'text-center',
+  right: 'text-right',
+}
+
 export const properties = {
-  gap,
+  display,
+  position,
+  borderRadius,
   flexAlign,
   flexYAlign,
+  flexDirection,
+  flexWrap,
+  flexShrink,
+  flexGrow,
+  textAlign,
+  ...gap,
+  ...padding,
+  ...margin,
 }
 
 export type Properties = typeof properties

@@ -45,9 +45,9 @@ const theme = {
       },
     },
     borderRadius: {
-      lg: 'var(--lat-radius)',
-      md: 'calc(var(--lat-radius) - 2px)',
       sm: 'calc(var(--lat-radius) - 4px)',
+      md: 'calc(var(--lat-radius) - 2px)',
+      lg: 'var(--lat-radius)',
     },
     fontFamily: {
       sans: [...fontFamily.sans],

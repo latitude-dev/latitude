@@ -2,6 +2,12 @@ import { describe, it, expect } from 'vitest'
 import resolveResponsiveValue from '.'
 
 describe('resolveResponsiveValue', () => {
+  it('resolves when property is undefined', () => {
+    expect(
+      resolveResponsiveValue({ property: 'display', value: undefined }),
+    ).toEqual([])
+  })
+
   it('resolves when is a string for gap property', () => {
     expect(
       resolveResponsiveValue({ property: 'gap', value: 'xsmall' }),

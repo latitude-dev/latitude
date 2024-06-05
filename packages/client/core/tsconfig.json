@@ -4,7 +4,12 @@
     "rootDir": ".",
     "declarationDir": "./dist",
     "outDir": "dist",
-    "target": "es5"
+    "target": "es5",
+    "baseUrl": ".",
+    "paths": {
+      "$src": ["src"],
+      "$src/*": ["src/*"]
+    }
   },
   "include": [
     "src/**/*",

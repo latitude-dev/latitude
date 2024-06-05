@@ -37,10 +37,12 @@ export default [
     input: 'src/responsive/properties/index.ts',
     output: [{ file: 'dist/responsiveClasses.js' }],
     plugins: [typescript()],
+    external: ['lodash-es'],
   },
   {
     input: 'dist/responsiveClasses.js',
     output: [{ file: 'dist/responsiveClasses.txt' }],
+    external: ['lodash-es'],
     plugins: [
       {
         name: 'latitude-responsive-classes',
