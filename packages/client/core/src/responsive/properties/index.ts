@@ -1,4 +1,5 @@
 import { Space } from '../space'
+import generateClasses from './classGenerator'
 
 const gap: Record<Space, string> = {
   none: 'gap-0',
@@ -13,9 +14,19 @@ const gap: Record<Space, string> = {
   xxxlarge: 'gap-32',
 }
 
-const properties = {
-  gap,
+const flexAlign = {
+  left: 'justify-start',
+  center: 'justify-center',
+  right: 'justify-end',
 }
+
+export type Properties = typeof properties
+
+export const properties = {
+  gap,
+  flexAlign,
+}
+
 export default function compile() {
-  return JSON.stringify(properties)
+  return generateClasses({ properties })
 }
