@@ -16,6 +16,7 @@ import * as toggle from './toggle'
 import * as toggleGroup from './toggle-group'
 import * as command from './command'
 import * as dialog from './dialog'
+import * as box from './box'
 import * as combobox from './combobox'
 import * as scrollArea from './scroll-area'
 import downloadTooltip from './downloadTooltip'
@@ -44,4 +45,5 @@ export {
   combobox,
   scrollArea,
   downloadTooltip,
+  box
 }

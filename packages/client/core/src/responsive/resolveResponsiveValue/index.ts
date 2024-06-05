@@ -4,7 +4,6 @@ import {
   type Property,
   properties,
   PropertyValue,
-  Properties,
 } from '../properties'
 import { responsiveProp } from '../utils'
 

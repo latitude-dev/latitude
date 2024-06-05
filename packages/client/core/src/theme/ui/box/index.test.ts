@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import box from './index'
+import { cssClasses as box } from './index'
 
 const BASE = 'lat-flex lat-flex-row'
 

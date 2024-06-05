@@ -1,30 +1,10 @@
 import resolveResponsiveValue, {
   ResponsiveValue,
-} from '$src/responsive/resolveResponsiveValue'
+} from '../../../responsive/resolveResponsiveValue'
 import { responsiveProp } from '$src/responsive/utils'
 import { cn } from '$src/theme/utils'
 
-export default function responsiveBoxClasses({
-  backgroundColor: bg = 'transparent',
-  display = 'flex',
-  direction = 'row',
-  alignX,
-  alignY,
-  position,
-  gap,
-  gapY,
-  gapX,
-  margin,
-  marginLeft,
-  marginRight,
-  marginTop,
-  marginBottom,
-  padding,
-  paddingLeft,
-  paddingRight,
-  paddingTop,
-  paddingBottom,
-}: {
+export type ResponsiveBox = {
   backgroundColor?:
   | 'transparent'
   | 'default'
@@ -48,8 +28,32 @@ export default function responsiveBoxClasses({
   paddingLeft?: ResponsiveValue<'paddingLeft'>
   paddingRight?: ResponsiveValue<'paddingRight'>
   paddingTop?: ResponsiveValue<'paddingTop'>
-  paddingBottom?: ResponsiveValue<'paddingBottom'>
-} = {}) {
+  paddingBottom?: ResponsiveValue<'paddingBottom'>,
+  className?: string,
+}
+
+export function cssClasses({
+  backgroundColor: bg = 'transparent',
+  display = 'flex',
+  direction = 'row',
+  alignX,
+  alignY,
+  position,
+  gap,
+  gapY,
+  gapX,
+  margin,
+  marginLeft,
+  marginRight,
+  marginTop,
+  marginBottom,
+  padding,
+  paddingLeft,
+  paddingRight,
+  paddingTop,
+  paddingBottom,
+  className,
+}: ResponsiveBox = {}) {
   return cn(
     resolveResponsiveValue({ property: 'display', value: display }),
     resolveResponsiveValue({ property: 'flexAlign', value: alignX }),
@@ -69,12 +73,13 @@ export default function responsiveBoxClasses({
     resolveResponsiveValue({ property: 'paddingRight', value: paddingRight }),
     resolveResponsiveValue({ property: 'paddingTop', value: paddingTop }),
     resolveResponsiveValue({ property: 'paddingBottom', value: paddingBottom }),
+    className,
     {
-      [responsiveProp({ prop: 'bg-transparent'})]: bg === 'transparent',
-      [responsiveProp({ prop: 'bg-background'})]: bg === 'default',
-      [responsiveProp({ prop: 'bg-primary'})]: bg === 'primary',
-      [responsiveProp({ prop: 'bg-secondary'})]: bg === 'secondary',
-      [responsiveProp({ prop: 'bg-muted'})]: bg === 'muted',
+      [responsiveProp({ prop: 'bg-transparent' })]: bg === 'transparent',
+      [responsiveProp({ prop: 'bg-background' })]: bg === 'default',
+      [responsiveProp({ prop: 'bg-primary' })]: bg === 'primary',
+      [responsiveProp({ prop: 'bg-secondary' })]: bg === 'secondary',
+      [responsiveProp({ prop: 'bg-muted' })]: bg === 'muted',
     },
   )
 }

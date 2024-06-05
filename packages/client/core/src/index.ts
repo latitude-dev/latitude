@@ -10,6 +10,7 @@ export type { Props as CartesianChartProps } from './theme/ui/chart/config/carte
 export type { FunnelChartProps } from './theme/ui/chart/config/funnel'
 export type { ScatterChartProps } from './theme/ui/chart/config/scatter'
 export type { Dataset } from './theme/ui/chart/types'
+export type { ResponsiveBox } from './theme/ui/box'
 export type { ClassValue } from 'clsx'
 export type {
   FontSize,

@@ -15,7 +15,7 @@
     "src/**/*",
     "rollup.config.mjs",
     "tailwind.config.js",
-    "vitest.config.ts"
+    "vitest.config.js"
   ],
   "exclude": ["./node_modules", "dist", "*.test.ts"]
 }
