@@ -7,7 +7,7 @@ import Scope from './scope'
 import { NodeType } from './logic/types'
 import type { CompileContext, QueryMetadata } from './types'
 import { getLogicNodeMetadata, resolveLogicNode } from './logic'
-import { emptyMetadata, mergeMetadata } from './utils'
+import { emptyMetadata, hasContent, isIterable, mergeMetadata } from './utils'
 import { createHash } from 'node:crypto'
 
 export class Compiler {
@@ -190,15 +190,19 @@ export class Compiler {
     }
 
     if (baseNode.type === 'EachBlock') {
-      const iterableElement = await resolveLogicNode({
+      const iterableElement = (await resolveLogicNode({
         node: baseNode.expression,
         scope: localScope,
         raiseError: this.expressionError.bind(this),
         supportedMethods: this.context.supportedMethods,
         willInterpolate: false,
         resolveFn: this.context.resolveFn,
-      })
-      if (!Array.isArray(iterableElement) || !iterableElement.length) {
+      })) as Iterable<unknown>
+
+      if (
+        !isIterable(iterableElement) ||
+        !(await hasContent(iterableElement))
+      ) {
         return await this.resolveBaseNode(baseNode.else, localScope, depth + 1)
       }
 
@@ -212,8 +216,8 @@ export class Compiler {
       }
 
       const parsedChildren: string[] = []
-      for (let i = 0; i < iterableElement.length; i++) {
-        const element = iterableElement[i]
+      let i = 0
+      for await (const element of iterableElement) {
         if (indexVar) localScope.set(indexVar, i)
         localScope.set(contextVar, element)
         parsedChildren.push(
@@ -223,6 +227,7 @@ export class Compiler {
             depth + 1,
           ),
         )
+        i++
       }
       return parsedChildren.join('') || ''
     }
