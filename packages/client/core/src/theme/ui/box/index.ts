@@ -11,11 +11,13 @@ export type ResponsiveBox = {
   | 'primary'
   | 'secondary'
   | 'muted'
+  | 'inherit'
   display?: ResponsiveValue<'display'>
   alignX?: ResponsiveValue<'flexAlign'>
   alignY?: ResponsiveValue<'flexYAlign'>
   overflow?: ResponsiveValue<'overflow'>
   direction?: ResponsiveValue<'flexDirection'>
+  borderRadius?: ResponsiveValue<'borderRadius'>
   gap?: ResponsiveValue<'gap'>
   gapY?: ResponsiveValue<'gapY'>
   gapX?: ResponsiveValue<'gapX'>
@@ -29,8 +31,8 @@ export type ResponsiveBox = {
   paddingLeft?: ResponsiveValue<'paddingLeft'>
   paddingRight?: ResponsiveValue<'paddingRight'>
   paddingTop?: ResponsiveValue<'paddingTop'>
-  paddingBottom?: ResponsiveValue<'paddingBottom'>,
-  className?: string,
+  paddingBottom?: ResponsiveValue<'paddingBottom'>
+  className?: string
 }
 
 export function cssClasses({
@@ -41,6 +43,7 @@ export function cssClasses({
   alignY,
   position,
   overflow,
+  borderRadius,
   gap,
   gapY,
   gapX,
@@ -61,6 +64,7 @@ export function cssClasses({
     resolveResponsiveValue({ property: 'flexAlign', value: alignX }),
     resolveResponsiveValue({ property: 'flexYAlign', value: alignY }),
     resolveResponsiveValue({ property: 'flexDirection', value: direction }),
+    resolveResponsiveValue({ property: 'borderRadius', value: borderRadius }),
     resolveResponsiveValue({ property: 'position', value: position }),
     resolveResponsiveValue({ property: 'overflow', value: overflow }),
     resolveResponsiveValue({ property: 'gap', value: gap }),
@@ -83,6 +87,7 @@ export function cssClasses({
       [responsiveProp({ prop: 'bg-primary' })]: bg === 'primary',
       [responsiveProp({ prop: 'bg-secondary' })]: bg === 'secondary',
       [responsiveProp({ prop: 'bg-muted' })]: bg === 'muted',
+      [responsiveProp({ prop: 'bg-inherit' })]: bg === 'inherit',
     },
   )
 }

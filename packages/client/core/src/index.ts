@@ -3,6 +3,7 @@ export * from './constants'
 export * from './data/api'
 export * from './stores/queries'
 export * from './theme/ui/tokens'
+export { spaces } from './responsive/space'
 
 export type { ExtendsUnion } from './lib/commonTypes'
 export type { PieChartProps } from './theme/ui/chart/config/pie'
@@ -11,6 +12,7 @@ export type { FunnelChartProps } from './theme/ui/chart/config/funnel'
 export type { ScatterChartProps } from './theme/ui/chart/config/scatter'
 export type { Dataset } from './theme/ui/chart/types'
 export type { ResponsiveBox } from './theme/ui/box'
+export type { ResponsiveValue } from './responsive/resolveResponsiveValue'
 export type { ClassValue } from 'clsx'
 export type {
   FontSize,

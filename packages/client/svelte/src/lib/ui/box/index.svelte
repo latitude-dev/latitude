@@ -2,6 +2,7 @@
   import { type ResponsiveBox } from '@latitude-data/client'
   export type Props = Omit<ResponsiveBox, 'className'> & {
     class?: string
+    style?: string
   }
 </script>
 
@@ -30,6 +31,7 @@
   export let paddingTop: $$Props['paddingTop'] = undefined
   export let paddingBottom: $$Props['paddingBottom'] = undefined
   export let className: $$Props['class'] = undefined
+  export let style: $$Props['style'] = undefined
   export { className as class }
 
   $: classes = theme.ui.box.cssClasses({
@@ -56,6 +58,6 @@
   })
 </script>
 
-<div class={classes}>
+<div class={classes} {style}>
   <slot />
 </div>
