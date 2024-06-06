@@ -1,5 +1,6 @@
 <script context="module" lang="ts">
-  export type Props = {
+  import { type ColumnProps } from '@latitude-data/client'
+  export type Props = Omit<ColumnProps, 'className'> & {
     class?: string
   }
 </script>
@@ -9,10 +10,11 @@
 
   type $$Props = Props
 
+  export let width: $$Props['width'] = undefined
   let className: $$Props['class'] = undefined
   export { className as class }
 
-  $: classes = theme.ui.column.cssClass({ className })
+  $: classes = theme.ui.column.cssClass({ className, width })
 </script>
 
 <div class={classes}>

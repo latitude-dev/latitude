@@ -30,7 +30,7 @@
   position="relative"
   backgroundColor="muted"
   borderRadius={shape === 'round' ? 'full' : undefined}
-  class={`lat-border lat-border-gray-100 lat-bg-gray-50 lat-text-gray-500 ${className}`}
+  class={`lat-border lat-border-gray-100 lat-bg-gray-50 lat-text-gray-400 ${className}`}
   style={`width: ${width}; height: ${height}`}
 >
   <svg
@@ -53,12 +53,14 @@
       y2="100"
     ></line>
   </svg>
-  <Box
-    padding="small"
-    borderRadius="full"
-    backgroundColor="muted"
-    position="relative"
-  >
-    <Text.H5 color="inherit">{label}</Text.H5>
-  </Box>
+  {#if label}
+    <Box
+      padding="small"
+      borderRadius="full"
+      position="relative"
+      class="bg-red-500"
+    >
+      <Text.H5M color="inherit">{label}</Text.H5M>
+    </Box>
+  {/if}
 </Box>

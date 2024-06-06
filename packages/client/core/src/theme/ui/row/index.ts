@@ -1,6 +1,7 @@
 import { cn } from '../../utils'
-import { LayoutProps } from '../column'
+import { ColumnProps } from '../column'
 
-export function cssClass({ className }: LayoutProps) {
+// DEPRECATED: Use <Columns> component instead
+export function cssClass({ className }: ColumnProps) {
   return cn('lat-flex lat-flex-row', className)
 }

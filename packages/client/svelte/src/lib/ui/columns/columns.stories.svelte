@@ -14,10 +14,9 @@
       },
     },
     args: {
-      space: 'none',
+      space: 'gutter',
     },
     parameters: {
-      layout: 'centered',
       docs: {
         description: {
           component: 'Columns component',
@@ -30,7 +29,10 @@
 <Template let:args>
   <Columns {...args}>
     <Column>
-      <Placeholder label="1" />
+      <Placeholder label="Column 1" />
+    </Column>
+    <Column>
+      <Placeholder label="Column 2" />
     </Column>
   </Columns>
 </Template>

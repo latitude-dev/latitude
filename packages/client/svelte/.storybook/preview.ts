@@ -15,10 +15,12 @@ const preview: Preview = {
       },
     },
   },
-  decorators: [
-    () => ({
-      Component: ThemeWrapper,
-    }),
+    decorators: [
+    (_, args) => {
+      const { parameters } = args
+      const layout = parameters.layout || 'fullscreen'
+      return { Component: ThemeWrapper, props: { layout } }
+    }
   ],
 }
 

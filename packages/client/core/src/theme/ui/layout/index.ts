@@ -1,3 +1,4 @@
+// DEPRECATED: Use <Columns> component instead
 export const gaps = {
   4: 'lat-gap-4',
   8: 'lat-gap-8',

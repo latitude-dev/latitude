@@ -7,20 +7,16 @@
 </script>
 
 <script lang="ts">
-  // TODO: Implement colapse bellow
-  // Use <box> component
-  import { theme } from '@latitude-data/client'
   import Box from '../box'
 
   type $$Props = Props
 
+  // TODO: Implement collpaseBelow prop
   export let space: $$Props['space'] = 'none'
   let className: $$Props['class'] = undefined
   export { className as class }
-
-  $: classes = theme.ui.column.cssClass({ className })
 </script>
 
-<Box class={classes} gap={space}>
+<Box class={className} gap={space} direction="row">
   <slot />
 </Box>

@@ -13,6 +13,7 @@ export type { ScatterChartProps } from './theme/ui/chart/config/scatter'
 export type { Dataset } from './theme/ui/chart/types'
 export type { ResponsiveBox } from './theme/ui/box'
 export type { ResponsiveValue } from './responsive/resolveResponsiveValue'
+export type { ColumnProps } from './theme/ui/column'
 export type { ClassValue } from 'clsx'
 export type {
   FontSize,
