@@ -40,3 +40,14 @@ export function emptyMetadata(): QueryMetadata {
     sqlHash: undefined,
   }
 }
+
+export function isIterable(obj: unknown): obj is Iterable<unknown> {
+  return (obj as Iterable<unknown>)?.[Symbol.iterator] !== undefined
+}
+
+export async function hasContent(iterable: Iterable<unknown>) {
+  for await (const _ of iterable) {
+    return true
+  }
+  return false
+}

@@ -374,15 +374,65 @@ describe('conditional expressions', async () => {
 })
 
 describe('each loops', async () => {
-  it('prints each content for each element in the array', async () => {
-    const sql = "{#each ['a', 'b', 'c'] as element} {element} {/each}"
+  it('iterates over any iterable object', async () => {
+    const sql1 = '{#each [1, 2, 3] as element} {element} {/each}'
+    const sql2 = '{#each "foo" as element} {element} {/each}'
+
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
+
+    expect(result1).toBe('$[[1]]$[[2]]$[[3]]')
+    expect(result2).toBe('$[[f]]$[[o]]$[[o]]')
+  })
+
+  it('computes the else block when the element is not iterable', async () => {
+    const sql1 = '{#each 5 as element} {element} {:else} FOO {/each}'
+    const sql2 =
+      '{#each { a: 1, b: 2, c: 3 } as element} {element} {:else} FOO {/each}'
+
+    const result1 = await compile({
+      query: sql1,
+      resolveFn,
+      supportedMethods: {},
+    })
+    const result2 = await compile({
+      query: sql2,
+      resolveFn,
+      supportedMethods: {},
+    })
+
+    expect(result1).toBe('FOO')
+    expect(result2).toBe('FOO')
+  })
+
+  it('computes the else block when the iterable object is empty', async () => {
+    const sql = '{#each [] as element} {element} {:else} var {/each}'
     const result = await compile({
       query: sql,
       resolveFn,
       supportedMethods: {},
     })
 
-    expect(result).toBe('$[[a]]$[[b]]$[[c]]')
+    expect(result).toBe('var')
+  })
+
+  it('does not do anything when the iterable object is not iterable and there is no else block', async () => {
+    const sql = '{#each 5 as element} {element} {/each}'
+    const result = await compile({
+      query: sql,
+      resolveFn,
+      supportedMethods: {},
+    })
+
+    expect(result).toBe('')
   })
 
   it('gives access to the index of the element', async () => {
@@ -405,28 +455,6 @@ describe('each loops', async () => {
     })
 
     expect(result).toBe('$[[a]]$[[b]]$[[c]]')
-  })
-
-  it('prints else content when the array is empty', async () => {
-    const sql = '{#each [] as element} {element} {:else} var {/each}'
-    const result = await compile({
-      query: sql,
-      resolveFn,
-      supportedMethods: {},
-    })
-
-    expect(result).toBe('var')
-  })
-
-  it('prints else content when the element is not an array', async () => {
-    const sql = '{#each 5 as element} {element} {:else} var {/each}'
-    const result = await compile({
-      query: sql,
-      resolveFn,
-      supportedMethods: {},
-    })
-
-    expect(result).toBe('var')
   })
 
   it('does not update any variables in an unused branch', async () => {
