@@ -29,7 +29,7 @@ export function useQuery({
     () => [createQueryKey(queryPath, params)],
     [queryPath, params],
   )
-  const query = useReactQuery({
+  const query = useReactQuery<QueryResultPayload>({
     ...tanstaskQueryOptions,
     queryKey: queryKeyProp,
     queryFn: async () => api.getQuery({ queryPath, params }),
@@ -68,6 +68,7 @@ export function useQuery({
 
   return {
     ...query,
+    error: query.error as Error,
     compute,
     download,
     isDownloading,
