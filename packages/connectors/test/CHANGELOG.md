@@ -1,5 +1,13 @@
 # @latitude-data/sqlite-connector
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [6aa4599]
+- Updated dependencies [6aa4599]
+  - @latitude-data/source-manager@1.0.1
+
 ## 1.0.0
 
 ### Major Changes

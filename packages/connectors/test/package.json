@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/test-connector",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "LGPL",
   "description": "A mock connector for testing purposes",
   "type": "module",
