@@ -1,5 +1,15 @@
 # @latitude-data/cli
 
+## 1.10.2
+
+### Patch Changes
+
+- 6aa4599: Automatically update installed connectors when updating latitude project to its latest version
+- 6aa4599: Now CLI will ask you if you want to update it too when you update a latitude project to the latest version available.
+- Updated dependencies [6aa4599]
+- Updated dependencies [6aa4599]
+  - @latitude-data/source-manager@1.0.1
+
 ## 1.10.1
 
 ### Patch Changes
