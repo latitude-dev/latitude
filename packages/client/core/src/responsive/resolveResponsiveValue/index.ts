@@ -1,11 +1,6 @@
 import { compact } from 'lodash-es'
-import { flattenDeep } from 'lodash-es'
 import { type Breakpoint, BP_LIST } from '../breakpoints'
-import {
-  type Property,
-  properties,
-  PropertyValue,
-} from '../properties'
+import { type Property, properties, PropertyValue } from '../properties'
 import { responsiveProp } from '../utils'
 
 type PropertyTypes = {
@@ -29,45 +24,45 @@ export type ResponsiveValue<P extends Property> =
   | null
   | undefined
 
-function compactAndFlatten<T>(array: T[][]): T[] {
-  return compact(flattenDeep(array))
-}
-
 export default function resolveResponsiveValue<P extends Property>({
   property,
   value,
+  generateNegative = false,
 }: {
   property: P
   value: ResponsiveValue<P>
+  generateNegative?: boolean
 }): string[] {
   if (!value) return []
 
   const prop = properties[property] as PropertyTypes[P]
 
   if (typeof value === 'string') {
-    return responsiveProp({ prop: prop[value], bp: 'mobile' })
+    return [
+      responsiveProp({ prop: prop[value], bp: 'mobile', generateNegative }),
+    ]
   } else if (typeof value === 'object' && !Array.isArray(value)) {
-    return compactAndFlatten(
+    return compact(
       BP_LIST.map((bp) => {
         const bpValue = (value as Partial<BreakpointObject<P>>)[bp]
-        if (!bpValue) return []
+        if (!bpValue) return null
 
         const classValue = prop[bpValue]
 
-        if (!classValue) return []
+        if (!classValue) return null
 
-        return responsiveProp({ prop: classValue, bp })
+        return responsiveProp({ prop: classValue, bp, generateNegative })
       }),
     )
   } else if (Array.isArray(value)) {
-    return compactAndFlatten(
+    return compact(
       (value as ResponsiveArray<P>).map((item, index) => {
-        if (item === null || item === undefined) return []
+        if (item === null || item === undefined) return null
 
         const bp = BP_LIST[index]
-        if (!bp) return []
+        if (!bp) return null
 
-        return responsiveProp({ prop: prop[item], bp })
+        return responsiveProp({ prop: prop[item], bp, generateNegative })
       }),
     )
   } else {

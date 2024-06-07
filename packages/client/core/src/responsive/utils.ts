@@ -14,11 +14,6 @@ export function responsiveProp({
   bp?: Breakpoint
   generateNegative?: boolean
 }) {
-  const classNames = generateNegative
-    ? [latCssPrefix(prop, '-'), latCssPrefix(prop)]
-    : [latCssPrefix(prop)]
-
-  return classNames.map((cn) =>
-    bp === 'mobile' ? cn : `${breakpoints[bp]}:${cn}`,
-  )
+  const cn = generateNegative ? latCssPrefix(prop, '-') : latCssPrefix(prop)
+  return bp === 'mobile' ? cn : `${breakpoints[bp]}:${cn}`
 }

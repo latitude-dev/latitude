@@ -42,4 +42,16 @@ describe('resolveResponsiveValue', () => {
     ).toEqual(['lat-ml-2', 'lg:lat-ml-8'])
 
   })
+
+  it('resolves when is an array negative', () => {
+    expect(
+      resolveResponsiveValue({
+        property: 'marginLeft',
+        value: ['xsmall', undefined, 'large'],
+        generateNegative: true
+      })
+
+    ).toEqual(['-lat-ml-2', 'lg:-lat-ml-8'])
+
+  })
 })

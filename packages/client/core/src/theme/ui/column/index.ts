@@ -31,6 +31,17 @@ export type ColumnProps = {
 }
 
 export function cssClass({ width: inputWidth, className }: ColumnProps) {
+
+  // Padding left. How not to apply when is on a breakpoint
+  // that should be on a second row?
+
+
+
+
+
+
+
+
   const columnWidth =
     inputWidth && inputWidth !== 'content'
       ? widthVariants({ width: inputWidth })

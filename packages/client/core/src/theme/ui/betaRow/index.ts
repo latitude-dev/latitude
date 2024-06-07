@@ -1,13 +1,39 @@
-import { ResponsiveSpace } from "$src/responsive/responsiveSpace"
+import {
+  Belowbreakpoint,
+  resolveResponsiveRangeProps,
+} from '$src/responsive/resolveResponsiveRangeProps'
+import resolveResponsiveValue from '$src/responsive/resolveResponsiveValue'
+import { ResponsiveSpace } from '$src/responsive/responsiveSpace'
 
 export type BetaRow = {
-  space?: ResponsiveSpace
+  space: ResponsiveSpace
+  collapseBelow?: Belowbreakpoint
 }
-export function betaRow({ space }: BetaRow = { space: 'none'}) {
-  // responsive negative margin left
-  // responsive child paddingLeft right
-  // responsive gapY
 
-  // return { childProps: { paddingLeft: ResponsiveSpace<'paddingLeft'> }, className: string }
-  return ''
+/**
+ * TODO:: Padding Top > 0 for collapsed items
+ */
+export function betaRow({ space, collapseBelow }: BetaRow = { space: 'none' }) {
+  const [collapseMobile, collapseTablet, collapseDesktop] =
+    resolveResponsiveRangeProps({
+      below: collapseBelow,
+    })
+
+  console.log("collapseMobile", collapseMobile)
+  console.log("collapseTablet", collapseTablet)
+  console.log("collapseDesktop", collapseDesktop)
+
+  const marginLeft = resolveResponsiveValue({
+    property: 'marginLeft',
+    value: space,
+    generateNegative: true,
+  })
+  const childSpaceClasses = resolveResponsiveValue({
+    property: 'paddingLeft',
+    value: space,
+  })
+  return {
+    marginLeftClasses: marginLeft,
+    childSpaceClasses: childSpaceClasses,
+  }
 }
