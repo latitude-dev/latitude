@@ -3,7 +3,6 @@ export const breakpoints = {
   tablet: 'md',
   desktop: 'lg',
   wide: 'xl',
-  extraWide: '2xl',
 }
 
 export type Breakpoint = keyof typeof breakpoints

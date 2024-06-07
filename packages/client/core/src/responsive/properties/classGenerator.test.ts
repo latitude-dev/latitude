@@ -4,24 +4,26 @@ import { properties as all } from './index'
 import classGenerator from './classGenerator'
 
 describe('classGenerator', () => {
-  it('generates tailwind responsive classes', () => {
-    const properties = { flexAlign: all.flexAlign, gap: all.gap }
-    expect(classGenerator({ properties })).toEqual(
+  it.only('generates tailwind responsive classes', () => {
+    const properties = { flexAlign: all.flexAlign, marginLeft: all.marginLeft }
+    expect(
+      classGenerator({ properties, propsWithNegatives: ['marginLeft'] }),
+    ).toEqual(
       [
         'lat-justify-start md:lat-justify-start lg:lat-justify-start xl:lat-justify-start 2xl:lat-justify-start',
         'lat-justify-center md:lat-justify-center lg:lat-justify-center xl:lat-justify-center 2xl:lat-justify-center',
         'lat-justify-end md:lat-justify-end lg:lat-justify-end xl:lat-justify-end 2xl:lat-justify-end',
-        'lat-gap-0 md:lat-gap-0 lg:lat-gap-0 xl:lat-gap-0 2xl:lat-gap-0',
-        'lat-gap-1 md:lat-gap-1 lg:lat-gap-1 xl:lat-gap-1 2xl:lat-gap-1',
-        'lat-gap-2 md:lat-gap-2 lg:lat-gap-2 xl:lat-gap-2 2xl:lat-gap-2',
-        'lat-gap-3 md:lat-gap-3 lg:lat-gap-3 xl:lat-gap-3 2xl:lat-gap-3',
-        'lat-gap-5 md:lat-gap-5 lg:lat-gap-5 xl:lat-gap-5 2xl:lat-gap-5',
-        'lat-gap-6 md:lat-gap-6 lg:lat-gap-6 xl:lat-gap-6 2xl:lat-gap-6',
-        'lat-gap-8 md:lat-gap-8 lg:lat-gap-8 xl:lat-gap-8 2xl:lat-gap-8',
-        'lat-gap-12 md:lat-gap-12 lg:lat-gap-12 xl:lat-gap-12 2xl:lat-gap-12',
-        'lat-gap-24 md:lat-gap-24 lg:lat-gap-24 xl:lat-gap-24 2xl:lat-gap-24',
-        'lat-gap-32 md:lat-gap-32 lg:lat-gap-32 xl:lat-gap-32 2xl:lat-gap-32',
-      ].join(' ')
+        '-lat-ml-0 lat-ml-0 md:-lat-ml-0 md:lat-ml-0 lg:-lat-ml-0 lg:lat-ml-0 xl:-lat-ml-0 xl:lat-ml-0 2xl:-lat-ml-0 2xl:lat-ml-0',
+        '-lat-ml-1 lat-ml-1 md:-lat-ml-1 md:lat-ml-1 lg:-lat-ml-1 lg:lat-ml-1 xl:-lat-ml-1 xl:lat-ml-1 2xl:-lat-ml-1 2xl:lat-ml-1',
+        '-lat-ml-2 lat-ml-2 md:-lat-ml-2 md:lat-ml-2 lg:-lat-ml-2 lg:lat-ml-2 xl:-lat-ml-2 xl:lat-ml-2 2xl:-lat-ml-2 2xl:lat-ml-2',
+        '-lat-ml-3 lat-ml-3 md:-lat-ml-3 md:lat-ml-3 lg:-lat-ml-3 lg:lat-ml-3 xl:-lat-ml-3 xl:lat-ml-3 2xl:-lat-ml-3 2xl:lat-ml-3',
+        '-lat-ml-5 lat-ml-5 md:-lat-ml-5 md:lat-ml-5 lg:-lat-ml-5 lg:lat-ml-5 xl:-lat-ml-5 xl:lat-ml-5 2xl:-lat-ml-5 2xl:lat-ml-5',
+        '-lat-ml-6 lat-ml-6 md:-lat-ml-6 md:lat-ml-6 lg:-lat-ml-6 lg:lat-ml-6 xl:-lat-ml-6 xl:lat-ml-6 2xl:-lat-ml-6 2xl:lat-ml-6',
+        '-lat-ml-8 lat-ml-8 md:-lat-ml-8 md:lat-ml-8 lg:-lat-ml-8 lg:lat-ml-8 xl:-lat-ml-8 xl:lat-ml-8 2xl:-lat-ml-8 2xl:lat-ml-8',
+        '-lat-ml-12 lat-ml-12 md:-lat-ml-12 md:lat-ml-12 lg:-lat-ml-12 lg:lat-ml-12 xl:-lat-ml-12 xl:lat-ml-12 2xl:-lat-ml-12 2xl:lat-ml-12',
+        '-lat-ml-24 lat-ml-24 md:-lat-ml-24 md:lat-ml-24 lg:-lat-ml-24 lg:lat-ml-24 xl:-lat-ml-24 xl:lat-ml-24 2xl:-lat-ml-24 2xl:lat-ml-24',
+        '-lat-ml-32 lat-ml-32 md:-lat-ml-32 md:lat-ml-32 lg:-lat-ml-32 lg:lat-ml-32 xl:-lat-ml-32 xl:lat-ml-32 2xl:-lat-ml-32 2xl:lat-ml-32',
+      ].join(' '),
     )
   })
 })

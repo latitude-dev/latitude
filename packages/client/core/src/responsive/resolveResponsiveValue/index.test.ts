@@ -8,10 +8,10 @@ describe('resolveResponsiveValue', () => {
     ).toEqual([])
   })
 
-  it('resolves when is a string for gap property', () => {
+  it('resolves when is a string for marginLeft property', () => {
     expect(
-      resolveResponsiveValue({ property: 'gap', value: 'xsmall' }),
-    ).toEqual(['lat-gap-2'])
+      resolveResponsiveValue({ property: 'marginLeft', value: 'xsmall' }),
+    ).toEqual(['lat-ml-2'])
   })
 
   it('resolves when is a string for flexAlign property', () => {
@@ -20,26 +20,26 @@ describe('resolveResponsiveValue', () => {
     ).toEqual(['lat-justify-start'])
   })
 
-  it('resolves when is an object for gap property', () => {
+  it('resolves when is an object', () => {
     expect(
       resolveResponsiveValue({
-        property: 'gap',
+        property: 'marginLeft',
         value: {
           mobile: 'xsmall',
           desktop: 'large',
         },
       }),
-    ).toEqual(['lat-gap-2', 'lg:lat-gap-8'])
+    ).toEqual(['lat-ml-2', 'lg:lat-ml-8'])
   })
 
-  it('resolves when is an array for gap property', () => {
+  it('resolves when is an array', () => {
     expect(
       resolveResponsiveValue({
-        property: 'gap',
+        property: 'marginLeft',
         value: ['xsmall', undefined, 'large']
       })
 
-    ).toEqual(['lat-gap-2', 'lg:lat-gap-8'])
+    ).toEqual(['lat-ml-2', 'lg:lat-ml-8'])
 
   })
 })

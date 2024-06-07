@@ -15,7 +15,7 @@
   type $$Props = Props
 
   export let shape: $$Props['shape'] = 'rectangle'
-  export let width: $$Props['width'] = 'auto'
+  export let width: $$Props['width'] = 'lat-w-full'
   export let height: $$Props['height'] = '120px'
   let className: $$Props['class'] = undefined
   export let label: $$Props['label'] = undefined
@@ -27,11 +27,12 @@
   alignY="center"
   alignX="center"
   padding="gutter"
+  display="flex"
   position="relative"
   backgroundColor="muted"
   borderRadius={shape === 'round' ? 'full' : undefined}
-  class={`lat-border lat-border-gray-100 lat-bg-gray-50 lat-text-gray-400 ${className}`}
-  style={`width: ${width}; height: ${height}`}
+  class={`${width} lat-border lat-border-gray-100 lat-bg-gray-50 lat-text-gray-400 ${className}`}
+  style={`height: ${height}`}
 >
   <svg
     class="lat-absolute lat-inset-0 lat-h-full lat-w-full lat-bg-gray-50"
@@ -54,12 +55,7 @@
     ></line>
   </svg>
   {#if label}
-    <Box
-      padding="small"
-      borderRadius="full"
-      position="relative"
-      class="bg-red-500"
-    >
+    <Box padding="small" position="relative" class="bg-red-500">
       <Text.H5M color="inherit">{label}</Text.H5M>
     </Box>
   {/if}

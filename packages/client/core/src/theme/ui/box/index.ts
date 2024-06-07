@@ -1,7 +1,7 @@
 import resolveResponsiveValue, {
   ResponsiveValue,
 } from '../../../responsive/resolveResponsiveValue'
-import { responsiveProp } from '$src/responsive/utils'
+import { latCssPrefix } from '$src/responsive/utils'
 import { cn } from '$src/theme/utils'
 
 export type ResponsiveBox = {
@@ -12,28 +12,19 @@ export type ResponsiveBox = {
   | 'secondary'
   | 'muted'
   | 'inherit'
+  overflow?: ResponsiveValue<'overflow'>
   display?: ResponsiveValue<'display'>
+  gapY?: ResponsiveValue<'gapY'>
   alignX?: ResponsiveValue<'flexAlign'>
   alignY?: ResponsiveValue<'flexYAlign'>
+  position?: ResponsiveValue<'position'>
   flexShrink?: ResponsiveValue<'flexShrink'>
   flexGrow?: ResponsiveValue<'flexGrow'>
-  overflow?: ResponsiveValue<'overflow'>
   direction?: ResponsiveValue<'flexDirection'>
-  borderRadius?: ResponsiveValue<'borderRadius'>
-  gap?: ResponsiveValue<'gap'>
-  gapY?: ResponsiveValue<'gapY'>
-  gapX?: ResponsiveValue<'gapX'>
-  position?: ResponsiveValue<'position'>
-  margin?: ResponsiveValue<'margin'>
   marginLeft?: ResponsiveValue<'marginLeft'>
-  marginRight?: ResponsiveValue<'marginRight'>
-  marginTop?: ResponsiveValue<'marginTop'>
-  marginBottom?: ResponsiveValue<'marginBottom'>
   padding?: ResponsiveValue<'padding'>
   paddingLeft?: ResponsiveValue<'paddingLeft'>
-  paddingRight?: ResponsiveValue<'paddingRight'>
-  paddingTop?: ResponsiveValue<'paddingTop'>
-  paddingBottom?: ResponsiveValue<'paddingBottom'>
+  borderRadius?: ResponsiveValue<'borderRadius'>
   className?: string | null | undefined
 }
 
@@ -41,59 +32,41 @@ export function cssClasses({
   backgroundColor: bg = 'transparent',
   display = 'flex',
   direction = 'row',
+  overflow,
+  position,
+  gapY,
   alignX,
   alignY,
   flexShrink,
   flexGrow,
-  position,
-  overflow,
-  borderRadius,
-  gap,
-  gapY,
-  gapX,
-  margin,
   marginLeft,
-  marginRight,
-  marginTop,
-  marginBottom,
   padding,
   paddingLeft,
-  paddingRight,
-  paddingTop,
-  paddingBottom,
+  borderRadius,
   className,
 }: ResponsiveBox = {}) {
   return cn(
+    resolveResponsiveValue({ property: 'overflow', value: overflow }),
     resolveResponsiveValue({ property: 'display', value: display }),
     resolveResponsiveValue({ property: 'flexAlign', value: alignX }),
+    resolveResponsiveValue({ property: 'position', value: position }),
     resolveResponsiveValue({ property: 'flexYAlign', value: alignY }),
     resolveResponsiveValue({ property: 'flexDirection', value: direction }),
-    resolveResponsiveValue({ property: 'borderRadius', value: borderRadius }),
-    resolveResponsiveValue({ property: 'position', value: position }),
     resolveResponsiveValue({ property: 'flexShrink', value: flexShrink }),
     resolveResponsiveValue({ property: 'flexGrow', value: flexGrow }),
-    resolveResponsiveValue({ property: 'overflow', value: overflow }),
-    resolveResponsiveValue({ property: 'gap', value: gap }),
     resolveResponsiveValue({ property: 'gapY', value: gapY }),
-    resolveResponsiveValue({ property: 'gapX', value: gapX }),
-    resolveResponsiveValue({ property: 'margin', value: margin }),
     resolveResponsiveValue({ property: 'marginLeft', value: marginLeft }),
-    resolveResponsiveValue({ property: 'marginRight', value: marginRight }),
-    resolveResponsiveValue({ property: 'marginTop', value: marginTop }),
-    resolveResponsiveValue({ property: 'marginBottom', value: marginBottom }),
     resolveResponsiveValue({ property: 'padding', value: padding }),
     resolveResponsiveValue({ property: 'paddingLeft', value: paddingLeft }),
-    resolveResponsiveValue({ property: 'paddingRight', value: paddingRight }),
-    resolveResponsiveValue({ property: 'paddingTop', value: paddingTop }),
-    resolveResponsiveValue({ property: 'paddingBottom', value: paddingBottom }),
+    resolveResponsiveValue({ property: 'borderRadius', value: borderRadius }),
     className,
     {
-      [responsiveProp({ prop: 'bg-transparent' })]: bg === 'transparent',
-      [responsiveProp({ prop: 'bg-background' })]: bg === 'default',
-      [responsiveProp({ prop: 'bg-primary' })]: bg === 'primary',
-      [responsiveProp({ prop: 'bg-secondary' })]: bg === 'secondary',
-      [responsiveProp({ prop: 'bg-muted' })]: bg === 'muted',
-      [responsiveProp({ prop: 'bg-inherit' })]: bg === 'inherit',
+      [latCssPrefix('bg-transparent')]: bg === 'transparent',
+      [latCssPrefix('bg-background')]: bg === 'default',
+      [latCssPrefix('bg-primary')]: bg === 'primary',
+      [latCssPrefix('bg-secondary')]: bg === 'secondary',
+      [latCssPrefix('bg-muted')]: bg === 'muted',
+      [latCssPrefix('bg-inherit')]: bg === 'inherit',
     },
   )
 }

@@ -1,7 +1,8 @@
 <script context="module" lang="ts">
-  import { type ResponsiveValue } from '@latitude-data/client'
+  import type { ResponsiveValue } from '@latitude-data/client'
+
   export type Props = {
-    space: ResponsiveValue<'gap'>
+    space: ResponsiveValue<'paddingLeft'>
     class?: string
   }
 </script>
@@ -11,12 +12,11 @@
 
   type $$Props = Props
 
-  // TODO: Implement collpaseBelow prop
   export let space: $$Props['space'] = 'none'
   let className: $$Props['class'] = undefined
   export { className as class }
 </script>
 
-<Box class={className} gap={space} direction="row">
+<Box class={className} display="flex" paddingLeft={space} direction="row">
   <slot />
 </Box>
