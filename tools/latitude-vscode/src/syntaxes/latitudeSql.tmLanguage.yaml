@@ -4,5 +4,86 @@ scopeName: source.latitudeSql
 fileTypes: [sql, latitudeSql]
 patterns:
   - include: 'source.sql'
+  - include: '#logic-block'
+
+repository:
+  logic-block:
+    name: 'meta.embedded.logic.latitudeSql'
+    patterns:
+      - include: '#open-block' # {# … }
+      - include: '#else-block' # {: … }
+      - include: '#close-block' # {/ … }
+      - include: '#define-block' # {@ … }
+      - include: '#mustache-block' # { … }
+
+  open-block:
+    name: 'meta.embedded.structure.open.latitudeSql'
+    begin: '(?<!\\)({#\b\w+\b)'
+    end: '(})'
+    beginCaptures:
+      '1':
+        name: 'keyword.control.flow'
+    endCaptures:
+      '1':
+        name: 'keyword.control.flow'
+    patterns:
+      - include: '#custom-js-expression'
+
+  else-block:
+    name: 'meta.embedded.structure.else.latitudeSql'
+    begin: '(?<!\\)({:\b\w+\b)'
+    end: '(})'
+    beginCaptures:
+      '1':
+        name: 'keyword.control.flow'
+    endCaptures:
+      '1':
+        name: 'keyword.control.flow'
+    patterns:
+      - include: '#custom-js-expression'
+
+  close-block:
+    name: 'meta.embedded.structure.close.latitudeSql'
+    begin: '(?<!\\)({/\b\w+\b)'
+    end: '(})'
+    beginCaptures:
+      '1':
+        name: 'keyword.control.flow'
+    endCaptures:
+      '1':
+        name: 'keyword.control.flow'
+    patterns:
+      - include: '#custom-js-expression'
+
+  define-block:
+    name: 'meta.embedded.definition.latitudeSql'
+    begin: '(?<!\\)({@\b\w+\b)'
+    end: '(})'
+    beginCaptures:
+      '1':
+        name: 'constant.character.set.regexp strong'
+    endCaptures:
+      '1':
+        name: 'constant.character.set.regexp strong'
+    patterns:
+      - include: '#custom-js-expression'
+
+  mustache-block:
+    name: 'meta.embedded.logic.latitudeSql emphasis'
+    begin: '(?<!\\)({)'
+    end: '(})'
+    beginCaptures:
+      '1':
+        name: 'keyword.control'
+    endCaptures:
+      '1':
+        name: 'keyword.control' 
+    patterns:
+      - include: '#custom-js-expression'
+  
+  custom-js-expression:
+    name: 'meta.embedded.logic.js.latitudeSql'
+    patterns:
+      - include: 'source.js'
 
 ...
