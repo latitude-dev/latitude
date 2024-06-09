@@ -46,6 +46,8 @@ Latitude lets you create API endpoints on top of your database/warehouse using j
 
 It's fast to get started, easy to maintain, and scales with your data.
 
+<img alt="latitude-stack" src="https://github.com/latitude-dev/latitude/assets/5465249/cc650dc8-d974-43ea-b95c-41c48fa53c67">
+
 ## ✨ Features
 
 - ☁️ Connect to any database or data warehouse
