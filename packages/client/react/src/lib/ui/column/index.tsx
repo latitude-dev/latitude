@@ -1,8 +1,8 @@
-import * as React from 'react'
 import { theme } from '@latitude-data/client'
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+import { HTMLAttributes, forwardRef } from 'react'
+interface Props extends HTMLAttributes<HTMLDivElement> {}
 
-const Column = React.forwardRef<HTMLDivElement, Props>(
+const Column = forwardRef<HTMLDivElement, Props>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}

@@ -1,3 +1,4 @@
+import { FC } from 'react'
 import { LatitudeApiProvider, type QueryClientProviderProps } from './data'
 import { LatitudeThemeProvider, type ThemeProviderProps } from './lib'
 
@@ -6,12 +7,12 @@ type LatitudeProviderProps = QueryClientProviderProps &
     theme?: false | ThemeProviderProps['theme']
   }
 
-function LatitudeProvider({
+const LatitudeProvider: FC<LatitudeProviderProps> = ({
   children,
   theme,
   mode,
   ...props
-}: LatitudeProviderProps) {
+}: LatitudeProviderProps) => {
   return (
     <LatitudeApiProvider {...props}>
       {theme !== false ? (

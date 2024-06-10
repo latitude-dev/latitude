@@ -2,4 +2,5 @@ packages:
   - 'apps/*'
   - 'packages/**'
   - 'tools/**'
-  - 'examples/sample-react'
+  # Uncomment to dev
+  # - 'examples/sample-react'

@@ -25,9 +25,9 @@ Allow two content alternatives. If the condition is not true, the content define
    
 ```jsx
 {#if param('user_id') > 100}
-    -- ...
+    /* Your code here */
 {:else}
-    -- ...
+    /* Your code here */
 {/if}
 ```
 
@@ -36,13 +36,13 @@ Allow unlimited content alternatives. It evaluates conditions cascading until on
 
 ```jsx
 {#if param('user_id') > 100}
-    -- ...
-{:else param('user_id') > 50}
-    -- ...
-{:else param('user_id') > 25}
-    -- ...
+    /* Your code here */
+{:else if param('user_id') > 50}
+    /* Your code here */
+{:else if param('user_id') > 25}
+    /* Your code here */
 {:else}
-    -- ...
+    /* Your code here */
 {/if}
 ```
 
@@ -64,7 +64,7 @@ Values can be inside expressions:
     {max_id = 100}
 
     {#if id > max_id} 
-      -- ...
+      /* Your code here */
     {/if}
     ```
 
@@ -80,6 +80,7 @@ Complex operations can be performed within expressions:
 - **String Operations**: String operations can be performed within expressions.
     ```jsx
     {#if param('username').length > 5}
+    {#if param('username').startsWith('vip-')}
     ```
 
 ### Comparisons
