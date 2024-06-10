@@ -1,5 +1,15 @@
 # @latitude-data/server
 
+## 2.0.4
+
+### Patch Changes
+
+- Updated dependencies [b2367e9]
+- Updated dependencies [2086825]
+- Updated dependencies [5915d92]
+  - @latitude-data/source-manager@1.2.0
+  - @latitude-data/display_table@0.0.4
+
 ## 2.0.3
 
 ### Patch Changes

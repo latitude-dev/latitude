@@ -1,5 +1,14 @@
 # @latitude-data/trino-connector
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [b2367e9]
+- Updated dependencies [2086825]
+- Updated dependencies [5915d92]
+  - @latitude-data/source-manager@1.2.0
+
 ## 3.0.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/sql-compiler",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "license": "LGPL",
   "description": "Compiler for Latitude's custom sql sintax based on svelte",
   "type": "module",
