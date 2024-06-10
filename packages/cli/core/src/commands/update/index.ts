@@ -25,7 +25,7 @@ async function selectNewVersion({
 }) {
   const latitudeJson = await findOrCreateConfigFile({ canary })
   const latitudeJsonVersion = latitudeJson.data.version ?? null
-  const installedVersion = getInstalledAppVersion(config.appDir)
+  const installedVersion = getInstalledAppVersion(config.rootDir)
 
   if (fix) {
     return {
