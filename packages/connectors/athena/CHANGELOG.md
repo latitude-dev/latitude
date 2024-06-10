@@ -1,5 +1,15 @@
 # @latitude-data/athena-connector
 
+## 3.0.2
+
+### Patch Changes
+
+- d34d824: Added a specific implementation for query pagination
+- Updated dependencies [d34d824]
+- Updated dependencies [d34d824]
+- Updated dependencies [d34d824]
+  - @latitude-data/source-manager@1.1.0
+
 ## 3.0.1
 
 ### Patch Changes
