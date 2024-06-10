@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.10.4
+
+### Patch Changes
+
+- 71856c4: Fixed CLI not being able to correctly detect installed version from a latitude project
+
 ## 1.10.3
 
 ### Patch Changes
