@@ -1,5 +1,11 @@
 # @latitude-data/sql-compiler
 
+## 1.1.0
+
+### Minor Changes
+
+- d34d824: Added support for spread syntax
+
 ## 1.0.0
 
 ### Major Changes

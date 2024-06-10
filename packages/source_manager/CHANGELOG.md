@@ -1,5 +1,18 @@
 # @latitude-data/source-manager
 
+## 1.1.0
+
+### Minor Changes
+
+- d34d824: Added support for batching queries to all connectors
+
+### Patch Changes
+
+- d34d824: Fix: Loading the same source from the config file and from a query resulted in two different source instances.
+- d34d824: Expose connectors package nammes
+- Updated dependencies [d34d824]
+  - @latitude-data/sql-compiler@1.1.0
+
 ## 1.0.1
 
 ### Patch Changes
