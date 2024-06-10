@@ -1,5 +1,6 @@
 import { getLogicNodeMetadata, resolveLogicNode } from '..'
-import { emptyMetadata, mergeMetadata } from '../../utils'
+import errors from '../../../error/errors'
+import { emptyMetadata, isIterable, mergeMetadata } from '../../utils'
 import type { ReadNodeMetadataProps, ResolveNodeProps } from '../types'
 import type { ArrayExpression } from 'estree'
 
@@ -12,16 +13,34 @@ export async function resolve({
   node,
   ...props
 }: ResolveNodeProps<ArrayExpression>) {
-  return await Promise.all(
-    node.elements.map((element) =>
-      element
-        ? resolveLogicNode({
-            node: element,
-            ...props,
-          })
-        : null,
-    ),
-  )
+  const { raiseError } = props
+  const resolvedArray = []
+  for (const element of node.elements) {
+    if (!element) continue
+    if (element.type !== 'SpreadElement') {
+      const value = await resolveLogicNode({
+        node: element,
+        ...props,
+      })
+      resolvedArray.push(value)
+      continue
+    }
+
+    const spreadObject = await resolveLogicNode({
+      node: element.argument,
+      ...props,
+    })
+
+    if (!isIterable(spreadObject)) {
+      raiseError(errors.invalidSpreadInArray(typeof spreadObject), element)
+    }
+
+    for await (const value of spreadObject as Iterable<unknown>) {
+      resolvedArray.push(value)
+    }
+  }
+
+  return resolvedArray
 }
 
 export async function readMetadata({
@@ -30,9 +49,11 @@ export async function readMetadata({
 }: ReadNodeMetadataProps<ArrayExpression>) {
   const childrenMetadata = await Promise.all(
     node.elements.map(async (element) => {
-      if (element)
-        return await getLogicNodeMetadata({ node: element, ...props })
-      return emptyMetadata()
+      if (!element) return emptyMetadata()
+      if (element.type === 'SpreadElement') {
+        return await getLogicNodeMetadata({ node: element.argument, ...props })
+      }
+      return await getLogicNodeMetadata({ node: element, ...props })
     }),
   )
   return mergeMetadata(...childrenMetadata)

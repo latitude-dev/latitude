@@ -112,6 +112,14 @@ export default {
     code: 'invalid-object-key',
     message: 'Invalid object key',
   },
+  invalidSpreadInObject: (property: string) => ({
+    code: 'invalid-spread-in-object',
+    message: `Property '${property}' is not valid for spreading`,
+  }),
+  invalidSpreadInArray: (element: string) => ({
+    code: 'invalid-spread-in-array',
+    message: `Element '${element}' is not iterable`,
+  }),
   unsupportedOperator: (operator: string) => ({
     code: 'unsupported-operator',
     message: `Unsupported operator: ${operator}`,
@@ -139,7 +147,7 @@ export default {
   }),
   notAFunction: (objectType: string) => ({
     code: 'not-a-function',
-    message: `Object '${objectType}' is callable`,
+    message: `Object '${objectType}' is not callable`,
   }),
   functionCallError: (err: unknown) => {
     const error = err as Error

@@ -131,6 +131,16 @@ export default class MssqlConnector extends BaseConnector<ConnectionParams> {
     }
   }
 
+  protected paginateQuery(sql: string, limit: number, offset: number): string {
+    // 'ORDER BY' is required to use mssql's 'OFFSET' and 'FETCH' clauses, which anyways is only supported on >=2012 versions
+    return `
+      WITH cte AS (
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS _rn, * FROM (${sql})
+      )
+      SELECT TOP ${limit} * FROM cte WHERE _rn > ${offset}
+    `
+  }
+
   private buildQueryParams(params: ResolvedParam[]) {
     return params.reduce((acc, param) => {
       return {
