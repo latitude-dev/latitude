@@ -11,7 +11,11 @@ export type BetaRow = {
 }
 
 /**
- * TODO:: Padding Top > 0 for collapsed items
+ * TODO:: CSS selector to put in children
+ * Padding Top > 0 for collapsed items
+ * .lat-row--collapsed > .lat-col&:first-child {
+ *   padding-top: 0;
+ * }
  */
 export function betaRow({ space, collapseBelow }: BetaRow = { space: 'none' }) {
   const [collapseMobile, collapseTablet, collapseDesktop] =
@@ -34,6 +38,6 @@ export function betaRow({ space, collapseBelow }: BetaRow = { space: 'none' }) {
   })
   return {
     marginLeftClasses: marginLeft,
-    childSpaceClasses: childSpaceClasses,
+    /* childSpaceClasses: childSpaceClasses, */
   }
 }
