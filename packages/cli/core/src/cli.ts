@@ -1,4 +1,13 @@
 #!/usr/bin/env node
+import process from 'process'
+
+/*
+ * Avoid shwing deprecation warnings to users
+ * for internal packages
+ */
+if (process.env.NODE_ENV === 'production') {
+  process.removeAllListeners('warning')
+}
 
 import buildCommand from './commands/build'
 import cancelCommand from './commands/cloud/cancel'
