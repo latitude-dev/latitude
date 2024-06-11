@@ -6,11 +6,7 @@ import { TemplateUrl } from './questions'
 
 const TEMPLATE_URL: Record<TemplateUrl, string> = {
   [TemplateUrl.default]: `${LATITUDE_GITHUB_SLUG}/template`,
-  // TODO: restore duckdb repo
-  //
-  // We don't have write permissions to this repo. Only Gerard has.
-  // [TemplateUrl.duckdb]: `${LATITUDE_GITHUB_SLUG}/sample-duckdb`,
-  [TemplateUrl.duckdb]: `${LATITUDE_GITHUB_SLUG}/sample-netflix`,
+  [TemplateUrl.duckdb]: `${LATITUDE_GITHUB_SLUG}/sample-duckdb`,
 }
 
 export default async function cloneTemplate({
