@@ -1,22 +1,13 @@
 import SourceManager from '@/manager'
-import { ParquetLogicalType, QueryRequest } from '@/types'
+import { ParquetLogicalType, QueryConfig, QueryRequest } from '@/types'
 import { DataType, Field } from '@latitude-data/query_result'
 import { createHash } from 'crypto'
 
 import { ParquetWriter, ParquetSchema } from '@dsnp/parquetjs'
 import { FieldDefinition, ParquetType } from '@dsnp/parquetjs/dist/lib/declare'
+import { Source } from '@/source'
 
-export type GetUrlParams = {
-  sqlHash: string
-  queryName: string
-  sourcePath: string
-  ignoreMissingFile?: boolean
-}
-export type ResolveUrlParams = GetUrlParams & {
-  filename: string
-  ignoreMissingFile?: boolean
-}
-export class MaterializedFileNotFoundError extends Error {}
+const ROW_GROUP_SIZE = 4096 // How many rows are in the ParquetWriter file buffer at a time
 
 function mapDataTypeToParquet(dataType: DataType): ParquetType {
   switch (dataType) {
@@ -45,18 +36,13 @@ function mapDataTypeToParquet(dataType: DataType): ParquetType {
   }
 }
 
-const ROW_GROUP_SIZE = 4096 // PARQUET BATCH WRITE
-type Result = { filePath: string; queryRows: number }
-export type WriteParquetParams = QueryRequest & {
+export type MaterializeProps = Omit<QueryRequest, 'params'> & {
   batchSize?: number
   onDebug?: (_p: { memoryUsageInMb: string }) => void
 }
 
-/**
- * In order to hash a SQL query, we need to know the source path
- * it came from. This way we ensure the path is unique even
- * if two sources share the same query.
- */
+type Result = { fileSize: number; rows: number }
+
 export abstract class StorageDriver {
   private manager: SourceManager
 
@@ -64,97 +50,109 @@ export abstract class StorageDriver {
     this.manager = manager
   }
 
-  abstract get basePath(): string
+  protected abstract resolveUrl(localFilepath: string): Promise<string>
+  protected abstract exists(localFilepath: string): Promise<boolean>
+  protected abstract parquetFileTime(localFilepath: string): Promise<number>
+  protected abstract parquetFileSize(localFilepath: string): Promise<number>
 
-  async writeParquet({
+  async getParquetFilepath(queryPath: string): Promise<string> {
+    const { localFilepath } = await this.read(queryPath)
+    return this.resolveUrl(localFilepath)
+  }
+
+  async isMaterialized(queryPath: string): Promise<boolean> {
+    const { queryConfig, localFilepath } = await this.read(queryPath)
+    if (!(await this.exists(localFilepath))) return false
+
+    const { ttl } = queryConfig
+    const maxLifeTime = ((ttl as number) ?? 0) * 1000 // ttl is in seconds
+    const lifeTime = Date.now() - (await this.parquetFileTime(localFilepath)) // In milliseconds
+    return lifeTime < maxLifeTime
+  }
+
+  async materialize({
     queryPath,
-    params,
     batchSize,
     onDebug,
-  }: WriteParquetParams) {
-    let writer: ParquetWriter
-    const source = await this.manager.loadFromQuery(queryPath)
-    const { config, sqlHash } = await source.getMetadataFromQuery(queryPath)
+  }: MaterializeProps): Promise<Result> {
+    const { source, queryConfig, localFilepath } = await this.read(queryPath)
 
-    if (!config.materialize) {
+    if (!queryConfig.materialize) {
       throw new Error('Query is not configured as materialized')
     }
 
-    const compiled = await source.compileQuery({ queryPath, params })
+    const globalFilepath = await this.getParquetFilepath(queryPath)
+    const compiled = await source.compileQuery({ queryPath, params: {} })
 
+    let writer: ParquetWriter
     let currentHeap = 0
-    return new Promise<Result>((resolve) => {
-      let filePath: string
-      let queryRows = 0
+    return new Promise<Result>((resolve, reject) => {
+      let rows = 0
 
       const size = batchSize ?? 1000
-      source.batchQuery(compiled, {
-        batchSize: size,
-        onBatch: async (batch) => {
-          if (!writer) {
-            const schema = this.buildParquetSchema(batch.fields)
-            filePath = await this.getUrl({
-              sqlHash: sqlHash!,
-              queryName: queryPath,
-              sourcePath: source.path,
-              ignoreMissingFile: true,
-            })
+      source
+        .batchQuery(compiled, {
+          batchSize: size,
+          onBatch: async (batch) => {
+            if (!writer) {
+              const schema = this.buildParquetSchema(batch.fields)
+              writer = await ParquetWriter.openFile(schema, globalFilepath, {
+                rowGroupSize: size > ROW_GROUP_SIZE ? size : ROW_GROUP_SIZE,
+              })
+            }
 
-            writer = await ParquetWriter.openFile(schema, filePath, {
-              rowGroupSize: size > ROW_GROUP_SIZE ? size : ROW_GROUP_SIZE,
-            })
-          }
+            for (const row of batch.rows) {
+              if (onDebug) {
+                let heapUsed = process.memoryUsage().heapUsed
 
-          for (const row of batch.rows) {
-            if (onDebug) {
-              let heapUsed = process.memoryUsage().heapUsed
+                if (heapUsed < currentHeap) {
+                  onDebug({
+                    memoryUsageInMb: `${(currentHeap / 1024 / 1024).toFixed(
+                      2,
+                    )} MB`,
+                  })
+                }
 
-              if (heapUsed < currentHeap) {
-                onDebug({
-                  memoryUsageInMb: `${(currentHeap / 1024 / 1024).toFixed(
-                    2,
-                  )} MB`,
-                })
+                currentHeap = heapUsed
               }
 
-              currentHeap = heapUsed
+              try {
+                await writer.appendRow(row)
+              } catch {
+                // If for some reason a row writing fails we don't want
+                // to break the process.
+              }
             }
+            rows += batch.rows.length
 
-            try {
-              await writer.appendRow(row)
-            } catch {
-              // If for some reason a row writing fails we don't want
-              // to break the process.
+            if (batch.lastBatch) {
+              await writer.close()
+              const fileSize = await this.parquetFileSize(localFilepath)
+              resolve({ fileSize, rows })
             }
-          }
-          queryRows += batch.rows.length
-
-          if (batch.lastBatch) {
-            await writer.close()
-            resolve({ filePath, queryRows })
-          }
-        },
-      })
+          },
+        })
+        .catch((error) => {
+          reject(error)
+        })
     })
   }
 
-  getUrl(args: GetUrlParams): Promise<string> {
-    const name = StorageDriver.hashName(args)
-    const filename = `${name}.parquet`
+  private async read(queryPath: string): Promise<{
+    source: Source
+    queryConfig: QueryConfig
+    localFilepath: string
+  }> {
+    const source = await this.manager.loadFromQuery(queryPath)
+    const { config, sqlHash } = await source.getMetadataFromQuery(queryPath)
 
-    return this.resolveUrl({ ...args, filename })
-  }
+    const uniqueHash = createHash('sha256')
+      .update(sqlHash!)
+      .update(source.path)
+      .digest('hex')
+    const localFilepath = `${uniqueHash}.parquet`
 
-  /**
-   * It's a Promise because other adapters can be async
-   */
-  abstract resolveUrl({ filename }: ResolveUrlParams): Promise<string>
-
-  static hashName({ sqlHash, sourcePath }: GetUrlParams) {
-    const hash = createHash('sha256')
-    hash.update(sqlHash)
-    hash.update(sourcePath)
-    return hash.digest('hex')
+    return { source, queryConfig: config, localFilepath }
   }
 
   private buildParquetSchema(fields: Field[]) {

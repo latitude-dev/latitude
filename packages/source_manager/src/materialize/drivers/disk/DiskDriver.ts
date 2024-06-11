@@ -1,41 +1,35 @@
 import fs from 'fs'
 import path from 'path'
 
-import {
-  MaterializedFileNotFoundError,
-  ResolveUrlParams,
-  StorageDriver,
-} from '@/materialize/drivers/StorageDriver'
+import { StorageDriver } from '@/materialize/drivers/StorageDriver'
 import { FullDriverConfig } from '@/materialize'
 
 export default class DiskDriver extends StorageDriver {
   private materializeDir: string
 
-  constructor({ path, manager }: FullDriverConfig<'disk'>) {
+  constructor({ path: materializeDir, manager }: FullDriverConfig<'disk'>) {
     super({ manager })
+    this.materializeDir = materializeDir
 
-    this.materializeDir = path
+    if (!fs.existsSync(this.materializeDir)) {
+      fs.mkdirSync(this.materializeDir, { recursive: true })
+    }
   }
 
-  get basePath(): string {
-    return this.materializeDir
+  protected async resolveUrl(localFilepath: string): Promise<string> {
+    const filepath = path.join(this.materializeDir, localFilepath)
+    return filepath
   }
 
-  resolveUrl({
-    queryName,
-    filename,
-    ignoreMissingFile = false,
-  }: ResolveUrlParams): Promise<string> {
-    const filepath = path.join(this.materializeDir, filename)
+  protected async exists(localFilepath: string): Promise<boolean> {
+    return fs.existsSync(await this.resolveUrl(localFilepath))
+  }
 
-    if (ignoreMissingFile) return Promise.resolve(filepath)
+  protected async parquetFileTime(localFilepath: string): Promise<number> {
+    return fs.statSync(await this.resolveUrl(localFilepath)).mtimeMs
+  }
 
-    if (fs.existsSync(filepath)) return Promise.resolve(filepath)
-
-    return Promise.reject(
-      new MaterializedFileNotFoundError(
-        `materialize query not found for: '${queryName}'`,
-      ),
-    )
+  protected async parquetFileSize(localFilepath: string): Promise<number> {
+    return fs.statSync(await this.resolveUrl(localFilepath)).size
   }
 }

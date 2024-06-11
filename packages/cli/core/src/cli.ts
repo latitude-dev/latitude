@@ -102,6 +102,10 @@ CLI.command('materialize')
   )
   .option('--debug', 'Show time taken to materialize the queries')
   .option('--queries', 'Run only the specified queries')
+  .option(
+    '--force',
+    `Materialize all queries even if they are already materialized`,
+  )
   .action(materializeCommand)
 
 CLI.command('setup')

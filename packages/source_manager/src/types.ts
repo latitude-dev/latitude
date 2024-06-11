@@ -2,8 +2,6 @@ import { Field, QueryResultArray } from '@latitude-data/query_result'
 import { Source } from './source'
 export { CompileError } from '@latitude-data/sql-compiler'
 
-export type { GetUrlParams } from './materialize/drivers/StorageDriver'
-
 export enum ConnectorType {
   Athena = 'athena',
   Clickhouse = 'clickhouse',

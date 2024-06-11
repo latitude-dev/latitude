@@ -19,8 +19,8 @@ import { ParquetReader } from '@dsnp/parquetjs'
 
 const fakeUsers = createFakeUserDB({ amount: 15 })
 
-const FAKE_QUERIES_DIR = '/queries'
-const FAKE_MATERIALIZED_DIR = '/materialized'
+const FAKE_QUERIES_DIR = 'queries'
+const FAKE_MATERIALIZED_DIR = 'materialized'
 function buildFs(sql: string) {
   mockFs({
     [FAKE_QUERIES_DIR]: {
@@ -69,20 +69,20 @@ vi.mock('@/testConnector', async (importOriginal) => {
   }
 })
 
-describe('writeParquet', () => {
+describe('materialize', () => {
   afterEach(() => {
     mockFs.restore()
   })
 
   it('should write a parquet file', async () => {
     const driver = getDriver(QUERIES_DIR, MATERIALIZED_DIR)
-    const result = await driver.writeParquet({
-      queryPath: 'materialize/query.sql',
-      params: {},
+    const queryPath = 'materialize/query.sql'
+    await driver.materialize({
+      queryPath,
       batchSize: 5,
     })
 
-    const filePath = result.filePath
+    const filePath = await driver.getParquetFilepath(queryPath)
     expect(fs.existsSync(filePath)).toBe(true)
 
     const file = fs.readFileSync(filePath)
@@ -104,9 +104,8 @@ describe('writeParquet', () => {
     const driver = getDriver(FAKE_QUERIES_DIR, FAKE_MATERIALIZED_DIR)
     buildFs('SELECT * FROM users')
     await expect(
-      driver.writeParquet({
+      driver.materialize({
         queryPath: 'query.sql',
-        params: {},
         batchSize: 10,
       }),
     ).rejects.toThrow('Query is not configured as materialized')
