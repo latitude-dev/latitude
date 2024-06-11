@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.10.5
+
+### Patch Changes
+
+- 9891a4f: Fix show Latitude CLI version outside a latitude project
+
 ## 1.10.4
 
 ### Patch Changes
