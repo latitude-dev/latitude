@@ -128,7 +128,7 @@ export default class BigQueryConnector extends BaseConnector<ConnectionParams> {
         if (!field) return value
 
         if (field.type === DataType.Datetime) {
-          return (value as { value: unknown })['value']
+          return (value as { value: unknown })?.['value']
         } else {
           return value
         }
