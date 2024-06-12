@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.10.6
+
+### Patch Changes
+
+- 3660d5b: Only ignore deprecation warnings. Any other warning will still be logged
+
 ## 1.10.5
 
 ### Patch Changes

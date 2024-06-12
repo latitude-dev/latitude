@@ -1,5 +1,11 @@
 # @latitude-data/bigquery-connector
 
+## 3.0.3
+
+### Patch Changes
+
+- b6205cf: Getting Date/DateTime columns with null results no longer throws an error
+
 ## 3.0.2
 
 ### Patch Changes
