@@ -5,9 +5,14 @@ import process from 'process'
  * Avoid shwing deprecation warnings to users
  * for internal packages
  */
-if (process.env.NODE_ENV === 'production') {
-  process.removeAllListeners('warning')
-}
+const onWarnings = process.rawListeners?.('warning')
+process.removeAllListeners('warning')
+process.on('warning', (warning) => {
+  if (warning.name === 'DeprecationWarning') {
+    return
+  }
+  onWarnings?.map((fn) => fn(warning))
+})
 
 import buildCommand from './commands/build'
 import cancelCommand from './commands/cloud/cancel'
