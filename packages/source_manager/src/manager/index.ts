@@ -2,34 +2,40 @@ import 'dotenv/config'
 import * as fs from 'fs'
 import path from 'path'
 import findSourceConfigFromQuery from './findSourceConfig'
-import { QueryNotFoundError, SourceFileNotFoundError } from '@/types'
+import {
+  MaterializationInfo,
+  QueryConfig,
+  QueryNotFoundError,
+  SourceFileNotFoundError,
+} from '@/types'
 import { Source } from '@/source'
 import readSourceConfig from '@/source/readConfig'
-import { StorageDriver } from '@/materialize/drivers/StorageDriver'
-import DummyDriver from '@/materialize/drivers/dummy/DummyDriver'
-import { DriverConfig, StorageKlass, StorageType } from '@/materialize'
+import {
+  FileStat,
+  getStorageDriver,
+  StorageDriver,
+} from '@latitude-data/storage-driver'
+import { createHash } from 'crypto'
+import { ParquetWriter } from '@dsnp/parquetjs'
+import { WriteStreamMinimal } from '@dsnp/parquetjs/dist/lib/util'
+import { buildParquetSchema } from './parquetUtils'
+
+const MATERIALIZED_DIR_IN_STORAGE = 'materialized'
 
 export default class SourceManager {
   private instances: Record<string, Source> = {}
-  readonly materializeStorage: StorageDriver
+  readonly materializedStorage: StorageDriver
   readonly queriesDir: string
 
   constructor(
     queriesDir: string,
     options: {
-      materialize?: {
-        Klass: StorageKlass
-        config: DriverConfig<StorageType>
-      }
+      storage?: StorageDriver
     } = {},
   ) {
     this.queriesDir = queriesDir
-    const materializeKlass = options.materialize?.Klass ?? DummyDriver
-    const commonConfig = { manager: this }
-    const config = options.materialize?.config
-    this.materializeStorage = config
-      ? new materializeKlass({ ...config, ...commonConfig })
-      : new DummyDriver(commonConfig)
+    this.materializedStorage =
+      options.storage ?? getStorageDriver({ type: 'disk' })
   }
 
   /**
@@ -129,5 +135,123 @@ export default class SourceManager {
       schema,
       sourceManager: this,
     })
+  }
+
+  async localMaterializationPath(queryPath: string): Promise<string> {
+    const source = await this.loadFromQuery(queryPath)
+    const { sqlHash } = await source.getMetadataFromQuery(queryPath)
+
+    const uniqueHash = createHash('sha256')
+      .update(sqlHash!)
+      .update(source.path)
+      .digest('hex')
+    return `${MATERIALIZED_DIR_IN_STORAGE}/${uniqueHash}.parquet`
+  }
+
+  async materializationUrl(queryPath: string): Promise<string> {
+    const path = await this.localMaterializationPath(queryPath)
+    return this.materializedStorage.resolveUrl(path)
+  }
+
+  private async isMaterializationValid(
+    config: QueryConfig,
+    parquetFilepath: string,
+  ): Promise<boolean> {
+    const fileExists = await this.materializedStorage.exists(parquetFilepath)
+    if (!fileExists) return false
+    if (config.ttl === undefined) return true // No TTL means always valid
+    const parquetCreationTime = await this.materializedStorage
+      .stat(parquetFilepath)
+      .then((stat: FileStat) => stat.mtimeMs)
+    const currentTime = Date.now()
+    const parquetLifetimeMs = currentTime - parquetCreationTime
+    const ttlMs = config.ttl * 1000
+
+    return parquetLifetimeMs < ttlMs
+  }
+
+  async materializeQuery({
+    queryPath,
+    force,
+    batchSize = 4096,
+  }: {
+    queryPath: string
+    force?: boolean
+    batchSize?: number
+  }): Promise<MaterializationInfo> {
+    try {
+      const source = await this.loadFromQuery(queryPath)
+      const { config } = await source.getMetadataFromQuery(queryPath)
+      const filename = await this.localMaterializationPath(queryPath)
+
+      if (!config.materialize) {
+        throw new Error('Materialization is not enabled for this query')
+      }
+
+      if (!force && (await this.isMaterializationValid(config, filename))) {
+        return {
+          queryPath,
+          cached: true,
+        }
+      }
+
+      const startTime = performance.now()
+      const compiled = await source.compileQuery({ queryPath, params: {} })
+
+      let writer: ParquetWriter
+      const ROW_GROUP_SIZE = 4096 // How many rows are in the ParquetWriter file buffer at a time
+      let rows = 0
+      await new Promise<void>((resolve, reject) => {
+        source
+          .batchQuery(compiled, {
+            batchSize: batchSize,
+            onBatch: async (batch) => {
+              if (!writer) {
+                const schema = buildParquetSchema(batch.fields)
+                writer = await ParquetWriter.openStream(
+                  schema,
+                  (await this.materializedStorage.createWriteStream(
+                    filename,
+                  )) as unknown as WriteStreamMinimal,
+                  { rowGroupSize: Math.max(batchSize, ROW_GROUP_SIZE) },
+                )
+              }
+
+              for (const row of batch.rows) {
+                await writer.appendRow(row)
+              }
+              rows += batch.rows.length
+
+              if (batch.lastBatch) {
+                await writer.close()
+                resolve()
+              }
+            },
+          })
+          .catch(reject)
+      })
+
+      const endTime = performance.now()
+
+      const fileSize = await this.materializedStorage
+        .stat(filename)
+        .then((stat: FileStat) => stat.size)
+
+      return {
+        queryPath,
+        cached: false,
+        success: true,
+        fileSize,
+        rows,
+        time: endTime - startTime,
+      }
+    } catch (error) {
+      return {
+        queryPath,
+        cached: false,
+        success: false,
+        error: error as Error,
+      }
+    }
   }
 }

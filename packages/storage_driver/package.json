@@ -1,8 +1,8 @@
 {
-  "name": "@latitude-data/source-manager",
-  "version": "1.2.0-canary.0",
+  "name": "@latitude-data/storage-driver",
+  "version": "0.0.0",
   "license": "LGPL",
-  "description": "Manage Latitude sources",
+  "description": "Manages the storage of data",
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -15,29 +15,14 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "dependencies": {
-    "@dsnp/parquetjs": "^1.7.0",
-    "@latitude-data/query_result": "workspace:*",
-    "@latitude-data/sql-compiler": "workspace:*",
-    "@latitude-data/storage-driver": "workspace:^",
-    "dotenv": "^16.4.5",
-    "yaml": "^2.3.4"
-  },
   "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
     "@latitude-data/eslint-config": "workspace:*",
-    "@latitude-data/query_result": "workspace:^",
     "@latitude-data/typescript": "workspace:*",
-    "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/mock-fs": "^4.13.4",
     "@types/node": "^20.10.6",
-    "@types/uuid": "^9.0.8",
     "mock-fs": "^5.2.0",
     "rollup": "^4.10.0",
-    "rollup-plugin-dts": "^6.1.0",
-    "uuid": "^9.0.1",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.2.2"
   }

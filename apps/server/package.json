@@ -65,6 +65,7 @@
     "@latitude-data/embedding": "workspace:*",
     "@latitude-data/jwt": "workspace:*",
     "@latitude-data/source-manager": "workspace:^",
+    "@latitude-data/storage-driver": "workspace:^",
     "@latitude-data/svelte": "workspace:*",
     "cheerio": "1.0.0-rc.12",
     "lodash-es": "^4.17.21",

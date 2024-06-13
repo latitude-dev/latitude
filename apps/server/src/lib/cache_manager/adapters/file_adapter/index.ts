@@ -1,32 +1,28 @@
+import storage from '$lib/server/storageDriver'
 import Adapter from './adapter'
-import fs from 'fs'
 import { createHash } from 'crypto'
 
-const CACHE_ROOT = process.env['LATITUDE_PROJECT_ROOT'] || '/tmp'
+const CACHE_DIR_IN_STORAGE = 'cache'
 
 export default class FileAdapter extends Adapter {
-  private root: string
-
-  constructor(root: string = CACHE_ROOT) {
+  constructor() {
     super()
-
-    this.root = `${root}/.latitude`
-
-    if (!fs.existsSync(this.root)) {
-      fs.mkdirSync(this.root)
-    }
   }
 
-  public get(key: string, ttl?: number) {
+  public async get(key: string, ttl?: number) {
     try {
+      const filepath = `${CACHE_DIR_IN_STORAGE}/${this.getHashedKey(key)}`
+      if (!(await storage.exists(filepath))) return null
+
       if (ttl) {
         // Time to live for the cache (in seconds)
-        const stats = fs.statSync(`${this.root}/${this.getHashedKey(key)}`)
+        const stats = await storage.stat(filepath)
         if (Date.now() - stats.mtimeMs > ttl * 1000) {
           return null
         }
       }
-      return fs.readFileSync(`${this.root}/${this.getHashedKey(key)}`, 'utf8')
+
+      return await storage.read(filepath, 'utf8')
     } catch (error) {
       // @ts-expect-error - Error type doesn't have a code property
       if (error.code === 'ENOENT') return null
@@ -36,10 +32,8 @@ export default class FileAdapter extends Adapter {
   }
 
   public set(key: string, value: string | Blob) {
-    return fs.writeFileSync(
-      `${this.root}/${this.getHashedKey(key)}`,
-      value.toString(),
-    )
+    const filepath = `${CACHE_DIR_IN_STORAGE}/${this.getHashedKey(key)}`
+    return storage.write(filepath, value.toString())
   }
 
   private getHashedKey(key: string) {

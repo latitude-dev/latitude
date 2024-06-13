@@ -1,39 +1,39 @@
 import { expect, it, describe, afterEach } from 'vitest'
 import mockFs from 'mock-fs'
 import SourceManager from '@/manager'
-import DiskDriver from '@/materialize/drivers/disk/DiskDriver'
 import { ConnectorType } from '@/types'
 import findAndMaterializeQueries from './findAndMaterializeQueries'
+import { getStorageDriver } from '@latitude-data/storage-driver'
+import { v4 as uuidv4 } from 'uuid'
 
 const QUERIES_DIR = 'queries'
-const MATERIALIZED_DIR = 'materialized'
-const MATERIALIZABLE_SQL = `
-{@config materialize = true}
+const MATERIALIZED_DIR = 'storage'
+const materializableSql = () => `
+{@config materialize = true} -- Random uuid: ${uuidv4()}
 SELECT * FROM users
 `
-const CACHEABLE_MATERIALIZABLE_SQL = `
-{@config materialize = true}
-{@config ttl = 3600}
+const cacheableMaterializableSql = (ttl: number = 3600) => `
+{@config materialize = true} -- Random uuid: ${uuidv4()}
+{@config ttl = ${ttl}}
 SELECT * FROM users
 `
-const MATERIALIZABLE_FAILING_SQL = `
-{@config materialize = true}
+const materializableFailingSql = () => `
+{@config materialize = true} -- Random uuid: ${uuidv4()}
 FAIL mocked error message
 `
 
-function buildManager(queriesDir: string, materializedDir: string) {
-  const manager = new SourceManager(queriesDir, {
-    materialize: {
-      Klass: DiskDriver,
-      config: {
-        path: materializedDir,
-      },
-    },
-  })
+function buildManager(queriesDir: string) {
+  const storage = getStorageDriver({ type: 'disk', path: MATERIALIZED_DIR })
+  const manager = new SourceManager(queriesDir, { storage })
   return manager
 }
 
-const manager = buildManager(QUERIES_DIR, MATERIALIZED_DIR)
+mockFs({
+  [QUERIES_DIR]: {},
+  [MATERIALIZED_DIR]: {},
+})
+
+const manager = buildManager(QUERIES_DIR)
 
 describe('findAndMaterializeQueries', () => {
   afterEach(() => {
@@ -43,10 +43,10 @@ describe('findAndMaterializeQueries', () => {
   it('should run materialize', async () => {
     mockFs({
       [QUERIES_DIR]: {
-        'query.sql': MATERIALIZABLE_SQL,
+        'query.sql': materializableSql(),
         'source.yml': `type: ${ConnectorType.TestInternal}`,
         subdir: {
-          'query2.sql': MATERIALIZABLE_SQL,
+          'query2.sql': materializableSql(),
         },
       },
       [MATERIALIZED_DIR]: {},
@@ -81,7 +81,7 @@ describe('findAndMaterializeQueries', () => {
         'query.sql': 'SELECT * FROM users',
         'source.yml': `type: ${ConnectorType.TestInternal}`,
         subdir: {
-          'query2.sql': MATERIALIZABLE_SQL,
+          'query2.sql': materializableSql(),
         },
       },
       [MATERIALIZED_DIR]: {},
@@ -111,7 +111,7 @@ describe('findAndMaterializeQueries', () => {
         'query.sql': 'SELECT * FROM users',
         'source.yml': `type: ${ConnectorType.TestInternal}`,
         subdir: {
-          'query2.sql': MATERIALIZABLE_SQL,
+          'query2.sql': materializableSql(),
         },
       },
       [MATERIALIZED_DIR]: {},
@@ -129,7 +129,7 @@ describe('findAndMaterializeQueries', () => {
           cached: false,
           success: false,
           error: expect.objectContaining({
-            message: 'Query is not configured as materialized',
+            message: 'Materialization is not enabled for this query',
           }),
         },
         {
@@ -147,7 +147,7 @@ describe('findAndMaterializeQueries', () => {
   it('returns a failed materialization when the query fails', async () => {
     mockFs({
       [QUERIES_DIR]: {
-        'query.sql': MATERIALIZABLE_FAILING_SQL,
+        'query.sql': materializableFailingSql(),
         'source.yml': `type: ${ConnectorType.TestInternal}`,
       },
       [MATERIALIZED_DIR]: {},
@@ -175,7 +175,7 @@ describe('findAndMaterializeQueries', () => {
   it('Does not rematerialize cached queries', async () => {
     mockFs({
       [QUERIES_DIR]: {
-        'query.sql': CACHEABLE_MATERIALIZABLE_SQL,
+        'query.sql': cacheableMaterializableSql(),
         'source.yml': `type: ${ConnectorType.TestInternal}`,
       },
       [MATERIALIZED_DIR]: {},
@@ -184,6 +184,30 @@ describe('findAndMaterializeQueries', () => {
     await findAndMaterializeQueries({ sourceManager: manager })
 
     // Try to rematerialize the query while it's cached
+    const result = await findAndMaterializeQueries({ sourceManager: manager })
+    expect(result).toEqual({
+      totalTime: expect.any(Number),
+      materializations: [
+        {
+          queryPath: 'query.sql',
+          cached: true,
+        },
+      ],
+    })
+  })
+
+  it('Queries without TTL have an infinite TTL', async () => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'query.sql': materializableSql(),
+        'source.yml': `type: ${ConnectorType.TestInternal}`,
+      },
+      [MATERIALIZED_DIR]: {},
+    })
+    // Materialize the query
+    await findAndMaterializeQueries({ sourceManager: manager })
+
+    // Try to rematerialize the query
     const result = await findAndMaterializeQueries({ sourceManager: manager })
     expect(result).toEqual({
       totalTime: expect.any(Number),

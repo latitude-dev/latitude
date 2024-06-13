@@ -1,17 +1,14 @@
 import mockFs from 'mock-fs'
+import fs from 'fs'
 import { describe, it, expect } from 'vitest'
-import {
-  QUERIES_DIR,
-  MATERIALIZE_QUERIES_DIR,
-  buildMaterializedConnector,
-} from '$/tests/helpers'
+import { QUERIES_DIR, buildMaterializedConnector } from '$/tests/helpers'
 import {
   CompileError,
   SourceManager,
   buildDefaultContext,
 } from '@latitude-data/source-manager'
 import MaterializedConnector from '$/index'
-import { createHash } from 'crypto'
+import path from 'path'
 
 const MATERIALIZED_SQL = `
 {@config materialize = true}
@@ -33,19 +30,12 @@ describe('materialized function', async () => {
     mockFs(queriesFs)
 
     const sourceManager = new SourceManager(QUERIES_DIR)
-    const refSource = await sourceManager.loadFromQuery('query')
-    const { sqlHash: refHash } = await refSource.getMetadataFromQuery('query')
-    const expectedHash = createHash('sha256')
-      .update(refSource.path)
-      .update(refHash)
-      .digest('hex')
+    const expectedPath = await sourceManager.materializationUrl('query')
 
-    mockFs({
-      ...queriesFs,
-      [MATERIALIZE_QUERIES_DIR]: {
-        [`${expectedHash}.parquet`]: 'PARQUET_QUERY_CONTENT', // Not important in this tests
-      },
-    })
+    if (!fs.existsSync(expectedPath)) {
+      fs.mkdirSync(path.dirname(expectedPath), { recursive: true })
+    }
+    fs.writeFileSync(expectedPath, 'PARQUET_QUERY_CONTENT') // Not important in this tests
 
     const { connector } = await buildMaterializedConnector({
       sourceParams: {
@@ -61,9 +51,7 @@ describe('materialized function', async () => {
         sql,
       },
     })
-    expect(compiled.sql).toBe(
-      `SELECT * FROM read_parquet('${MATERIALIZE_QUERIES_DIR}/${expectedHash}.parquet')`,
-    )
+    expect(compiled.sql).toBe(`SELECT * FROM read_parquet('${expectedPath}')`)
   })
 
   it('fails when materialized sql is not found', async () => {
@@ -98,7 +86,7 @@ describe('materialized function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        "Error calling function: \nMaterializedFileNotFoundError materialize query not found for: '../query.sql'",
+        "Error calling function: \nMaterializedFileNotFoundError Query 'query.sql' is not materialized. Run 'latitude materialize' to materialize it.",
       ),
     )
   })
@@ -203,7 +191,7 @@ describe('materialized function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        'Error calling function: \nError Referenced query is not a materialized. \nYou can materialize it by adding {@config materialized_query = true} in the query content.',
+        "Error calling function: \nError Query 'query.sql' is not configured to be materialized. You can materialize it by adding {@config materialize = true}.",
       ),
     )
   })
@@ -238,7 +226,7 @@ describe('materialized function', async () => {
       }),
     ).rejects.toThrowError(
       new CompileError(
-        'Error calling function: \nError Referenced query is not a materialized. \nYou can materialize it by adding {@config materialized_query = true} in the query content.',
+        "Error calling function: \nError Query 'query.sql' is not configured to be materialized. You can materialize it by adding {@config materialize = true}.",
       ),
     )
   })

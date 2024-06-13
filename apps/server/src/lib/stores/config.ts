@@ -1,3 +1,4 @@
+import type { StorageDriverConfig } from '@latitude-data/storage-driver'
 import { writable } from 'svelte/store'
 
 export type LatitudeClientConfig = {
@@ -8,6 +9,7 @@ export type LatitudeClientConfig = {
 export type LatitudeServerConfig = {
   name: string
   version: string
+  storage?: StorageDriverConfig
 } & LatitudeClientConfig
 
 export type LatitudeConfig = LatitudeClientConfig | LatitudeServerConfig

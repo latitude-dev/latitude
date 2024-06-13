@@ -9,15 +9,24 @@ class QueryCache {
     this.cache = new CacheManager()
   }
 
-  public find({ queryPath, params }: QueryRequest, ttl?: number) {
-    const json = this.cache.find(this.createKey({ queryPath, params }), ttl)
+  public async find({ queryPath, params }: QueryRequest, ttl?: number) {
+    const json = await this.cache.find(
+      this.createKey({ queryPath, params }),
+      ttl,
+    )
     if (!json) return null
 
     return QueryResult.fromJSON(json)
   }
 
-  public set({ queryPath, params }: QueryRequest, queryResult: QueryResult) {
-    this.cache.set(this.createKey({ queryPath, params }), queryResult.toJSON())
+  public async set(
+    { queryPath, params }: QueryRequest,
+    queryResult: QueryResult,
+  ) {
+    return this.cache.set(
+      this.createKey({ queryPath, params }),
+      queryResult.toJSON(),
+    )
   }
 
   private createKey({ queryPath, params }: QueryRequest) {

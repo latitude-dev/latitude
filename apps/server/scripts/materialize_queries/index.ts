@@ -129,6 +129,14 @@ async function materializeQueries({
   const updateProgress = () => {
     spinner.text = [currentText, debugMessage].filter(Boolean).join(' - ')
   }
+  const measureHeap = () => {
+    if (!debug) return
+    const heap = process.memoryUsage().heapUsed
+    debugMessage = `Memory: ${humanizeFileSize(heap)}`
+    updateProgress()
+  }
+  measureHeap()
+  const heapMeasureInterval = setInterval(measureHeap, 200)
   const result = await findAndMaterializeQueries({
     sourceManager,
     selectedQueries,
@@ -152,12 +160,9 @@ async function materializeQueries({
       }
       spinner = ora().start()
     },
-    onDebug: ({ memoryUsageInMb }: { memoryUsageInMb: string }) => {
-      if (!debug) return
-      debugMessage = `Memory: ${memoryUsageInMb}`
-      updateProgress()
-    },
   })
+
+  clearInterval(heapMeasureInterval)
 
   spinner.stop()
   console.log('\n')

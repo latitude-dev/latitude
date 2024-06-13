@@ -7,11 +7,11 @@ export default class CacheManager {
     this.adapter = adapter
   }
 
-  public find(key: string, ttl?: number) {
+  public async find(key: string, ttl?: number) {
     return this.adapter.get(key, ttl)
   }
 
-  public set(key: string, value: string | Blob) {
+  public async set(key: string, value: string | Blob) {
     this.adapter.set(key, value)
   }
 }

@@ -20,6 +20,24 @@
       "type": "string",
       "enum": ["light", "dark", "system"],
       "description": "Theme mode for the app. 'system' will follow the system theme."
+    },
+    "storage": {
+      "type": "object",
+      "description": "Storage configuration.",
+      "oneOf": [
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["disk"]
+            },
+            "path": {
+              "type": "string",
+              "description": "Path to the storage directory."
+            }
+          }
+        }
+      ]
     }
   },
   "required": ["version"],
