@@ -10,6 +10,7 @@ export const LATITUDE_FOLDER = '.latitude'
 export const LATITUDE_GITHUB_SLUG = 'latitude-dev'
 
 export const APP_FOLDER = `${LATITUDE_FOLDER}/app`
+export const CLOUD_FOLDER = `${LATITUDE_FOLDER}/cloud`
 export const GITHUB_STARTS_BANNER = `
     You can help us by giving a 🌟 on GitHub
     --------------------------------------

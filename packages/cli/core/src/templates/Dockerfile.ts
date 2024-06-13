@@ -1,9 +1,17 @@
-export default function DockerfileTemplate() {
+import config from '$src/config'
+
+function cliVersion() {
+  if (config.dev) return 'latest'
+
+  return process.env.PACKAGE_VERSION
+}
+
+export function dockerinstall() {
   return `
 FROM node:18-slim AS base
 
 RUN apt-get update && apt-get install -y curl
-RUN npm install -g @latitude-data/cli@${process.env.PACKAGE_VERSION}
+RUN npm install -g @latitude-data/cli@${cliVersion()}
 
 FROM base AS builder
 
@@ -13,12 +21,6 @@ COPY package.jso[n] .
 COPY latitude.json .
 
 RUN latitude setup --tty false
-
-ARG MATERIALIZE_QUERIES='false'
-RUN if [ "$MATERIALIZE_QUERIES" = "true" ]; then \
-      echo "Materializing queries..."; \
-      latitude materialize; \
-    fi
 
 FROM builder AS runner
 
@@ -34,7 +36,10 @@ RUN latitude build --tty false
 WORKDIR /usr/src/app/build
 
 EXPOSE 3000
-
-CMD ["node", "build"]
 `
+}
+export const DOCKER_RUN = 'CMD ["node", "build"]'
+
+export default function DockerfileTemplate() {
+  return `${dockerinstall()}\n${DOCKER_RUN}`
 }
