@@ -1,6 +1,10 @@
 import mri from 'mri'
 import path from 'path'
-import { APP_FOLDER, LATITUDE_CONFIG_FILE } from './commands/constants'
+import {
+  APP_FOLDER,
+  CLOUD_FOLDER,
+  LATITUDE_CONFIG_FILE,
+} from './commands/constants'
 
 class CLIConfig {
   public dev: boolean
@@ -47,6 +51,10 @@ class CLIConfig {
 
   public get appDir() {
     return path.join(this.rootDir, APP_FOLDER)
+  }
+
+  public get cloudDir() {
+    return path.join(this.rootDir, CLOUD_FOLDER)
   }
 
   public get latitudeJsonPath() {

@@ -1,22 +1,22 @@
 import betterSpawn from '$src/lib/spawn'
+import createDockerfile from './createDockerfile'
 
 export default function buildDockerImage({
   tags,
   noCache,
-  materializeQueries,
 }: {
   tags: [string]
   noCache: boolean
-  materializeQueries: boolean
 }) {
   return new Promise<void>((resolve, reject) => {
+    const dockerfilePath = createDockerfile()
     const args = [
       'buildx',
       'build',
-      materializeQueries ? '--build-arg' : null,
-      materializeQueries ? 'MATERIALIZE_QUERIES=true' : null,
       '--platform',
       'linux/amd64',
+      '--file',
+      dockerfilePath,
       '-t',
       tags[0],
       '.',

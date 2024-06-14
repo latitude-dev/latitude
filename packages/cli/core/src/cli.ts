@@ -135,10 +135,6 @@ CLI.command('deploy')
   .describe('Deploy your Latitude app to the cloud')
   .option('--force', 'Force the deployment even if the build has not changed')
   .option('--nocache', 'Do not use cache when building the Docker image')
-  .option(
-    '--materialize',
-    'Materialize the queries and store it in Docker image before deploying',
-  )
   .action(deployCommand)
 
 CLI.command('destroy')

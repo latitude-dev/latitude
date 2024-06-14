@@ -73,14 +73,9 @@ async function deploy({ app, digest }: { app: string; digest: string }) {
 }
 
 async function deployCommand(
-  {
-    force = false,
-    nocache = false,
-    materialize = false,
-  }: { force?: boolean; nocache?: boolean; materialize?: boolean } = {
+  { force = false, nocache = false }: { force?: boolean; nocache?: boolean } = {
     force: false,
     nocache: false,
-    materialize: false,
   },
 ) {
   const latitudeJson = findConfigFile()
@@ -126,11 +121,7 @@ If you have already signed up, please run the following command to log in:
     })
 
   try {
-    await buildDockerImage({
-      tags,
-      noCache: nocache,
-      materializeQueries: materialize,
-    })
+    await buildDockerImage({ tags, noCache: nocache })
     const digest = await pushDockerImage({
       username,
       password,

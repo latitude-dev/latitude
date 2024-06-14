@@ -3,7 +3,7 @@ import path from 'path'
 import { existsSync } from 'fs'
 import { writeFile } from './_shared'
 
-function addDockerignore() {
+export function addDockerignore() {
   const dockerignorePath = path.resolve(config.rootDir, '.dockerignore')
   if (existsSync(dockerignorePath)) return
 
