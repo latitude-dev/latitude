@@ -1,5 +1,18 @@
 # @latitude-data/server
 
+## 2.1.0-canary.0
+
+### Minor Changes
+
+- d9d0326: Materialized queries now accepts a TTL config. Running the materialize command will skip any previously materialized query that still has a valid TTL. To force a rematerialization of valid cached queries, run the materialize command with the `--force` option.
+
+### Patch Changes
+
+- Updated dependencies [a692a3a]
+- Updated dependencies [d9d0326]
+  - @latitude-data/source-manager@1.2.0-canary.0
+  - @latitude-data/display_table@0.0.4-canary.0
+
 ## 2.0.3
 
 ### Patch Changes

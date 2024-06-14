@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/trino-connector",
-  "version": "3.0.2",
+  "version": "3.0.3-canary.0",
   "license": "LGPL",
   "description": "Trino connector for Latitude",
   "type": "module",

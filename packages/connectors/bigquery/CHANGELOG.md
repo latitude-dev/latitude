@@ -1,5 +1,13 @@
 # @latitude-data/bigquery-connector
 
+## 3.0.3-canary.0
+
+### Patch Changes
+
+- Updated dependencies [a692a3a]
+- Updated dependencies [d9d0326]
+  - @latitude-data/source-manager@1.2.0-canary.0
+
 ## 3.0.2
 
 ### Patch Changes

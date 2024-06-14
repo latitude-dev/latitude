@@ -1,5 +1,15 @@
 # @latitude-data/source-manager
 
+## 1.2.0-canary.0
+
+### Minor Changes
+
+- d9d0326: Materialized queries now accepts a TTL config. Running the materialize command will skip any previously materialized query that still has a valid TTL. To force a rematerialization of valid cached queries, run the materialize command with the `--force` option.
+
+### Patch Changes
+
+- a692a3a: Fix: Loading the same source from the config file and from a query resulted in two different source instances.
+
 ## 1.1.0
 
 ### Minor Changes
