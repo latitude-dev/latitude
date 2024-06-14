@@ -1,5 +1,14 @@
 # @latitude-data/duckdb-connector
 
+## 3.0.3-canary.0
+
+### Patch Changes
+
+- a692a3a: DuckDB now returns the correct types
+- Updated dependencies [a692a3a]
+- Updated dependencies [d9d0326]
+  - @latitude-data/source-manager@1.2.0-canary.0
+
 ## 3.0.2
 
 ### Patch Changes
