@@ -1,18 +1,24 @@
-import { vi, expect, it, describe, afterEach } from 'vitest'
-import fs from 'fs'
-import path from 'path'
+import { expect, it, describe, afterEach } from 'vitest'
 import mockFs from 'mock-fs'
 import SourceManager from '@/manager'
 import DiskDriver from '@/materialize/drivers/disk/DiskDriver'
 import { ConnectorType } from '@/types'
 import findAndMaterializeQueries from './findAndMaterializeQueries'
-import { WriteParquetParams } from '@/materialize/drivers/StorageDriver'
 
-const QUERIES_DIR = '/queries'
-const MATERIALIZED_DIR = '/materialized'
+const QUERIES_DIR = 'queries'
+const MATERIALIZED_DIR = 'materialized'
 const MATERIALIZABLE_SQL = `
 {@config materialize = true}
 SELECT * FROM users
+`
+const CACHEABLE_MATERIALIZABLE_SQL = `
+{@config materialize = true}
+{@config ttl = 3600}
+SELECT * FROM users
+`
+const MATERIALIZABLE_FAILING_SQL = `
+{@config materialize = true}
+FAIL mocked error message
 `
 
 function buildManager(queriesDir: string, materializedDir: string) {
@@ -29,33 +35,12 @@ function buildManager(queriesDir: string, materializedDir: string) {
 
 const manager = buildManager(QUERIES_DIR, MATERIALIZED_DIR)
 
-vi.mock('@/materialize/drivers/StorageDriver', async (importOriginal) => {
-  const original =
-    (await importOriginal()) as typeof import('@/materialize/drivers/StorageDriver')
-  return {
-    ...original,
-    // @ts-expect-error - Mocking abstract class
-    StorageDriver: class extends original.StorageDriver {
-      async writeParquet({ queryPath, params }: WriteParquetParams) {
-        const source = await manager.loadFromQuery(queryPath)
-        const { sqlHash } = await source.getMetadataFromQuery(queryPath)
-        const compiled = await source.compileQuery({ queryPath, params })
-
-        // Stupid mock parquet that write the compiled query to a file
-        const filePath = path.join(MATERIALIZED_DIR, `${sqlHash}.parquet`)
-        fs.writeFileSync(filePath, JSON.stringify(compiled))
-
-        return Promise.resolve({ filePath, queryRows: 0 })
-      }
-    },
-  }
-})
 describe('findAndMaterializeQueries', () => {
   afterEach(() => {
     mockFs.restore()
   })
 
-  it('should run writeParquet', async () => {
+  it('should run materialize', async () => {
     mockFs({
       [QUERIES_DIR]: {
         'query.sql': MATERIALIZABLE_SQL,
@@ -64,29 +49,27 @@ describe('findAndMaterializeQueries', () => {
           'query2.sql': MATERIALIZABLE_SQL,
         },
       },
+      [MATERIALIZED_DIR]: {},
     })
-    const result = await findAndMaterializeQueries({
-      sourceManager: manager,
-      selectedQueries: [],
-    })
+    const result = await findAndMaterializeQueries({ sourceManager: manager })
     expect(result).toEqual({
-      batchSize: 4096,
-      totalTime: expect.any(String),
-      successful: true,
-      queriesInfo: [
+      totalTime: expect.any(Number),
+      materializations: [
         {
-          file: expect.any(String),
-          fileSize: '69 Bytes',
-          query: 'query.sql',
-          queryRows: '0 rows',
-          time: expect.any(String),
+          queryPath: 'query.sql',
+          cached: false,
+          success: true,
+          fileSize: expect.any(Number),
+          rows: expect.any(Number),
+          time: expect.any(Number),
         },
         {
-          file: expect.any(String),
-          fileSize: '69 Bytes',
-          query: 'subdir/query2.sql',
-          queryRows: '0 rows',
-          time: expect.any(String),
+          queryPath: 'subdir/query2.sql',
+          cached: false,
+          success: true,
+          fileSize: expect.any(Number),
+          rows: expect.any(Number),
+          time: expect.any(Number),
         },
       ],
     })
@@ -101,22 +84,22 @@ describe('findAndMaterializeQueries', () => {
           'query2.sql': MATERIALIZABLE_SQL,
         },
       },
+      [MATERIALIZED_DIR]: {},
     })
     const result = await findAndMaterializeQueries({
       sourceManager: manager,
       selectedQueries: [],
     })
     expect(result).toEqual({
-      successful: true,
-      batchSize: 4096,
-      totalTime: expect.any(String),
-      queriesInfo: [
+      totalTime: expect.any(Number),
+      materializations: [
         {
-          file: expect.any(String),
-          fileSize: '69 Bytes',
-          query: 'subdir/query2.sql',
-          queryRows: '0 rows',
-          time: expect.any(String),
+          queryPath: 'subdir/query2.sql',
+          cached: false,
+          success: true,
+          fileSize: expect.any(Number),
+          rows: expect.any(Number),
+          time: expect.any(Number),
         },
       ],
     })
@@ -131,6 +114,7 @@ describe('findAndMaterializeQueries', () => {
           'query2.sql': MATERIALIZABLE_SQL,
         },
       },
+      [MATERIALIZED_DIR]: {},
     })
     const result = await findAndMaterializeQueries({
       sourceManager: manager,
@@ -138,10 +122,77 @@ describe('findAndMaterializeQueries', () => {
     })
 
     expect(result).toEqual({
-      successful: false,
-      batchSize: 4096,
-      totalTime: expect.any(String),
-      queriesInfo: [],
+      totalTime: expect.any(Number),
+      materializations: [
+        {
+          queryPath: 'query',
+          cached: false,
+          success: false,
+          error: expect.objectContaining({
+            message: 'Query is not configured as materialized',
+          }),
+        },
+        {
+          queryPath: 'subdir/query2',
+          cached: false,
+          success: true,
+          fileSize: expect.any(Number),
+          rows: expect.any(Number),
+          time: expect.any(Number),
+        },
+      ],
+    })
+  })
+
+  it('returns a failed materialization when the query fails', async () => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'query.sql': MATERIALIZABLE_FAILING_SQL,
+        'source.yml': `type: ${ConnectorType.TestInternal}`,
+      },
+      [MATERIALIZED_DIR]: {},
+    })
+    const result = await findAndMaterializeQueries({
+      sourceManager: manager,
+      selectedQueries: ['query'],
+    })
+
+    expect(result).toEqual({
+      totalTime: expect.any(Number),
+      materializations: [
+        {
+          queryPath: 'query',
+          cached: false,
+          success: false,
+          error: expect.objectContaining({
+            message: 'mocked error message',
+          }),
+        },
+      ],
+    })
+  })
+
+  it('Does not rematerialize cached queries', async () => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'query.sql': CACHEABLE_MATERIALIZABLE_SQL,
+        'source.yml': `type: ${ConnectorType.TestInternal}`,
+      },
+      [MATERIALIZED_DIR]: {},
+    })
+    // Materialize the query
+    await findAndMaterializeQueries({ sourceManager: manager })
+
+    // Try to rematerialize the query while it's cached
+    const result = await findAndMaterializeQueries({ sourceManager: manager })
+    expect(result).toEqual({
+      totalTime: expect.any(Number),
+      materializations: [
+        {
+          queryPath: 'query.sql',
+          cached: true,
+        },
+      ],
     })
   })
 })

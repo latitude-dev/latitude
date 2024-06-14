@@ -62,16 +62,14 @@ export default class TestConnector extends BaseConnector<ConnectionParams> {
 
   async batchQuery(
     compiledQuery: CompiledQuery,
-    options: BatchedQueryOptions,
+    { onBatch }: BatchedQueryOptions,
   ): Promise<void> {
-    return Promise.reject(
-      new Error(`
-        batchQuery not implemented for TestConnector
-        Mock it in your tests
-        CompiledQuery: ${JSON.stringify(compiledQuery)}
-        batchOptions: ${JSON.stringify(options)}
-      `),
-    )
+    const result = await this.runQuery(compiledQuery)
+    onBatch({
+      rows: result.toArray(),
+      fields: result.fields,
+      lastBatch: true,
+    })
   }
 
   async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {

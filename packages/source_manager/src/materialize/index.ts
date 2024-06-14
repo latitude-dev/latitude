@@ -1,7 +1,11 @@
 import SourceManager from '@/manager'
 import DiskDriver from '@/materialize/drivers/disk/DiskDriver'
+import DummyDriver from '@/materialize/drivers/dummy/DummyDriver'
 
-export { default as findAndMaterializeQueries } from './findAndMaterializeQueries'
+export {
+  default as findAndMaterializeQueries,
+  type MaterializationInfo,
+} from './findAndMaterializeQueries'
 export const STORAGE_TYPES = { disk: 'disk' }
 export type StorageType = keyof typeof STORAGE_TYPES
 export type FullDriverConfig<T extends StorageType> = DriverConfig<T> & {
@@ -14,7 +18,7 @@ export type StorageConfig<T extends StorageType> = {
   type: T
   config: DriverConfig<T>
 }
-export type StorageKlass = typeof DiskDriver
+export type StorageKlass = typeof DiskDriver | typeof DummyDriver
 
 export function getDriverKlass({
   type,

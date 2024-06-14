@@ -4,15 +4,21 @@ import syncQueries from '$src/lib/sync/syncQueries'
 import betterSpawn from '$src/lib/spawn'
 import tracked from '$src/lib/decorators/tracked'
 
-async function materialize(opts?: { debug: boolean; queries: string }) {
+async function materialize(opts?: {
+  debug: boolean
+  queries: string
+  force: boolean
+}) {
   const debug = opts?.debug || false
   const queries = opts?.queries
+  const force = opts?.force || false
   const args = [
     'run',
     'materialize_queries',
     '--',
     queries ? `--queries=${queries}` : '',
     debug ? '--debug' : '',
+    force ? '--force' : '',
   ].filter(Boolean)
 
   await syncQueries({ watch: false })
