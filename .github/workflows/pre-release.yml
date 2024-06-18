@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - canary
+  pull_request:
+    branches:
+      - canary
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
