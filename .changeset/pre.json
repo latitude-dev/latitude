@@ -29,12 +29,23 @@
     "@latitude-data/source-manager": "1.1.0",
     "@latitude-data/eslint-config": "0.1.0",
     "latitude-vscode": "0.0.5",
-    "@latitude-data/typescript": "0.1.0"
+    "@latitude-data/typescript": "0.1.0",
+    "@latitude-data/storage-driver": "0.0.0"
   },
   "changesets": [
+    "angry-windows-heal",
+    "big-rabbits-smash",
     "bright-teachers-learn",
+    "brown-swans-battle",
     "eighty-yaks-happen",
+    "hip-colts-sell",
+    "hip-pears-clap",
+    "honest-comics-sit",
+    "hungry-adults-jump",
     "lovely-apricots-bake",
-    "orange-pets-act"
+    "orange-pets-act",
+    "ten-masks-tap",
+    "tender-years-rhyme",
+    "wise-lions-breathe"
   ]
 }

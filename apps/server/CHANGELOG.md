@@ -1,5 +1,24 @@
 # @latitude-data/server
 
+## 2.1.0-canary.1
+
+### Minor Changes
+
+- 4f12d38: Materialization is now managed in SourceManager, and temp file storage in StorageDriver
+
+### Patch Changes
+
+- 12994ba: Added more information when materializing queries with the --debug option
+- Updated dependencies [4f12d38]
+- Updated dependencies [889e3e7]
+- Updated dependencies [4f12d38]
+- Updated dependencies [12994ba]
+- Updated dependencies [12994ba]
+- Updated dependencies [12994ba]
+  - @latitude-data/storage-driver@0.1.0-canary.0
+  - @latitude-data/source-manager@1.2.0-canary.1
+  - @latitude-data/display_table@0.0.4-canary.1
+
 ## 2.1.0-canary.0
 
 ### Minor Changes

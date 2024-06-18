@@ -1,5 +1,19 @@
 # @latitude-data/duckdb-connector
 
+## 3.1.0-canary.1
+
+### Minor Changes
+
+- 12994ba: Added new s3 options to the DuckDB source configuration, to be able to access S3 files from DuckDB queries. Also, upgraded DuckDB version from 0.9.2 to 0.10.0 to support this new feature.
+
+### Patch Changes
+
+- 4f12d38: Adapted `materialized` method to new API
+- Updated dependencies [889e3e7]
+- Updated dependencies [4f12d38]
+- Updated dependencies [12994ba]
+  - @latitude-data/source-manager@1.2.0-canary.1
+
 ## 3.0.3-canary.0
 
 ### Patch Changes

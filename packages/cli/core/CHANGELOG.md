@@ -1,5 +1,19 @@
 # @latitude-data/cli
 
+## 1.11.0-canary.1
+
+### Minor Changes
+
+- 4f12d38: Materialization is now managed in SourceManager, and temp file storage in StorageDriver
+- 12994ba: Updated schema to allow new S3 storage configuration.
+
+### Patch Changes
+
+- Updated dependencies [889e3e7]
+- Updated dependencies [4f12d38]
+- Updated dependencies [12994ba]
+  - @latitude-data/source-manager@1.2.0-canary.1
+
 ## 1.11.0-canary.0
 
 ### Minor Changes
