@@ -1,5 +1,19 @@
 # @latitude-data/source-manager
 
+## 1.2.0-canary.1
+
+### Minor Changes
+
+- 889e3e7: Export type definitions of source manager in index.d.ts
+- 4f12d38: Materialization is now managed in SourceManager, and temp file storage in StorageDriver
+
+### Patch Changes
+
+- 12994ba: Added URL to returned MaterializationInfo when materializing queries
+- Updated dependencies [4f12d38]
+- Updated dependencies [12994ba]
+  - @latitude-data/storage-driver@0.1.0-canary.0
+
 ## 1.2.0-canary.0
 
 ### Minor Changes

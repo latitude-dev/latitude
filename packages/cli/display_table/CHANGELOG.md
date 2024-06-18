@@ -1,5 +1,15 @@
 # @latitude-data/display_table
 
+## 0.0.4-canary.1
+
+### Patch Changes
+
+- 12994ba: Added new debug heap measurement on the bottom right corner
+- Updated dependencies [889e3e7]
+- Updated dependencies [4f12d38]
+- Updated dependencies [12994ba]
+  - @latitude-data/source-manager@1.2.0-canary.1
+
 ## 0.0.4-canary.0
 
 ### Patch Changes
