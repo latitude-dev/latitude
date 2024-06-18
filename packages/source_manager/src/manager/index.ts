@@ -40,7 +40,8 @@ export default class SourceManager {
 
   /**
    * Finds the source configuration file in the given path and loads it
-   * @param path - The path to any file in the source directory. This could be the source configuration file itself or any other query in the directory.
+   * @param path - The path to any file in the source directory.
+   * This could be the source configuration file itself or any other query in the directory.
    */
   async loadFromQuery(query: string): Promise<Source> {
     const filePath = path.join(
