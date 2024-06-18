@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import type QueryResult from '@latitude-data/query_result'
 import { Box, Spacer, Text, useInput } from 'ink'
 import type {
@@ -11,6 +11,7 @@ import Table from './components/Table.js'
 import ErrorDisplay from './components/ErrorDisplay.js'
 import CompiledQueryDisplay from './components/CompiledQueryDisplay.js'
 import { formatElapsedTime } from './utils.js'
+import v8 from 'v8'
 
 export type AppProps = {
   queriesDir: string
@@ -19,6 +20,16 @@ export type AppProps = {
   params?: Record<string, unknown>
   watch?: boolean
   debug?: boolean
+}
+
+function humanizeFileSize(bytes: number) {
+  const kb = 1024
+  const mb = kb * 1024
+  const gb = mb * 1024
+  if (bytes < kb) return `${bytes} B`
+  if (bytes < mb) return `${(bytes / kb).toFixed(2)} KB`
+  if (bytes < gb) return `${(bytes / mb).toFixed(2)} MB`
+  return `${(bytes / gb).toFixed(2)} GB`
 }
 
 export default function App({
@@ -34,9 +45,29 @@ export default function App({
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [showCompiledQuery, setShowCompiledQuery] = useState(false)
+  const [heap, setHeap] = useState(0)
+  const [availableMemory, setAvailableMemory] = useState(0)
+  const heapTextColor = useMemo(() => {
+    const usedMemoryPercentage = heap / availableMemory
+    if (usedMemoryPercentage > 0.8) return 'red'
+    if (usedMemoryPercentage > 0.5) return 'yellow'
+    return 'green'
+  }, [heap, availableMemory])
 
   const [startTime, setStartTime] = useState<number>(Date.now())
   const [elapsedTime, setElapsedTime] = useState<number>(0)
+
+  useEffect(() => {
+    const heapLimit = v8.getHeapStatistics().heap_size_limit
+    setAvailableMemory(heapLimit)
+
+    const interval = setInterval(() => {
+      const currentHeap = v8.getHeapStatistics().used_heap_size
+      setHeap(currentHeap)
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   const refresh = useCallback(async () => {
     setIsLoading(true)
@@ -133,6 +164,10 @@ export default function App({
           </Text>
         )}
         <Text inverse>Esc / Ctrl+C / Q to exit </Text>
+        <Spacer />
+        <Text color={heapTextColor}>
+          {humanizeFileSize(heap)} / {humanizeFileSize(availableMemory)}
+        </Text>
       </Box>
     </Box>
   )

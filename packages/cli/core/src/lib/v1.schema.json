@@ -36,6 +36,30 @@
               "description": "Path to the storage directory."
             }
           }
+        },
+        {
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["s3"]
+            },
+            "bucket": {
+              "type": "string",
+              "description": "S3 bucket name."
+            },
+            "region": {
+              "type": "string",
+              "description": "S3 region."
+            },
+            "accessKeyId": {
+              "type": "string",
+              "description": "S3 access key ID."
+            },
+            "secretAccessKey": {
+              "type": "string",
+              "description": "S3 secret access key."
+            }
+          }
         }
       ]
     }

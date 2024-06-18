@@ -57,6 +57,7 @@ describe('findAndMaterializeQueries', () => {
       materializations: [
         {
           queryPath: 'query.sql',
+          url: expect.any(String),
           cached: false,
           success: true,
           fileSize: expect.any(Number),
@@ -65,6 +66,7 @@ describe('findAndMaterializeQueries', () => {
         },
         {
           queryPath: 'subdir/query2.sql',
+          url: expect.any(String),
           cached: false,
           success: true,
           fileSize: expect.any(Number),
@@ -95,6 +97,7 @@ describe('findAndMaterializeQueries', () => {
       materializations: [
         {
           queryPath: 'subdir/query2.sql',
+          url: expect.any(String),
           cached: false,
           success: true,
           fileSize: expect.any(Number),
@@ -134,6 +137,7 @@ describe('findAndMaterializeQueries', () => {
         },
         {
           queryPath: 'subdir/query2',
+          url: expect.any(String),
           cached: false,
           success: true,
           fileSize: expect.any(Number),
@@ -190,6 +194,7 @@ describe('findAndMaterializeQueries', () => {
       materializations: [
         {
           queryPath: 'query.sql',
+          url: expect.any(String),
           cached: true,
         },
       ],
@@ -214,6 +219,7 @@ describe('findAndMaterializeQueries', () => {
       materializations: [
         {
           queryPath: 'query.sql',
+          url: expect.any(String),
           cached: true,
         },
       ],

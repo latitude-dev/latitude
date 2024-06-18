@@ -83,7 +83,10 @@ describe('DiskDriver', () => {
       },
     })
     const stats = await driver.stat('file.txt')
-    expect(stats.isFile()).toBe(true)
+    expect(stats).toEqual({
+      size: expect.any(Number),
+      mtimeMs: expect.any(Number),
+    })
   })
 
   it('should write data to a file', async () => {
@@ -117,24 +120,5 @@ describe('DiskDriver', () => {
 
     const content = fs.readFileSync('/mocked/path/file.txt')
     expect(content.toString()).toBe('hello world')
-  })
-
-  it('should create a read stream', async () => {
-    mockFs({
-      '/mocked/path': {},
-    })
-    const writeStream = await driver.createWriteStream('file.txt')
-    const readStream = await driver.createReadStream('file.txt')
-
-    let readBuffers: Buffer[] = []
-    readStream.on('data', (buffer) => {
-      readBuffers.push(buffer)
-    })
-
-    writeStream.write('hello world')
-    writeStream.end()
-    await new Promise((resolve) => writeStream.on('close', resolve)) // Wait for stream to close
-
-    expect(readBuffers).toEqual([Buffer.from('hello world')])
   })
 })

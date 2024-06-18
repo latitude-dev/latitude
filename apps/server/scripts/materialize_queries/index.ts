@@ -54,16 +54,17 @@ function humanizeFileSize(bytes: number) {
 }
 
 function humanizeTime(time: number) {
-  if (time < 60) return `${time} ms`
+  if (time < 60) return `${time.toFixed(3)} ms`
   const seconds = time / 1000
   const minutes = seconds / 60
   const hours = minutes / 60
   if (time < 60 * 1000) return `${(time / 1000).toFixed(2)} s`
-  if (time < 60 * 60 * 1000)
-    return `${minutes.toFixed(0)}:${(seconds % 60)
-      .toString()
-      .padStart(2, '0')} min`
-  return `${hours.toFixed(0)}:${(minutes % 60).toString().padStart(2, '0')} h`
+  if (time < 60 * 60 * 1000) {
+    const fixedMinutes = minutes.toFixed()
+    const fixedSeconds = (seconds % 60).toFixed().padStart(2, '0')
+    return `${fixedMinutes}:${fixedSeconds} min`
+  }
+  return `${hours.toFixed()}:${(minutes % 60).toFixed().padStart(2, '0')} h`
 }
 
 function removeIndex<Key extends string, T extends Record<Key, unknown>>(
@@ -79,6 +80,7 @@ function removeIndex<Key extends string, T extends Record<Key, unknown>>(
 
 function successMaterializationToTable(
   materializations: MaterializationInfo[],
+  debug: boolean,
 ) {
   const table = materializations
     .filter((info) => info.cached || info.success)
@@ -87,6 +89,7 @@ function successMaterializationToTable(
         return {
           queryPath: info.queryPath,
           cached: true,
+          ...(debug ? { url: info.url } : {}),
           rows: undefined,
           fileSize: undefined,
           time: undefined,
@@ -96,6 +99,7 @@ function successMaterializationToTable(
         return {
           queryPath: info.queryPath,
           cached: false,
+          ...(debug ? { url: info.url } : {}),
           rows: info.rows,
           fileSize: humanizeFileSize(info.fileSize),
           time: humanizeTime(info.time),
@@ -126,12 +130,18 @@ async function materializeQueries({
   let spinner = ora().start('Starting materialization process')
   let currentText = ''
   let debugMessage = ''
+  let maxHeap = 0
+  let totalHeap = 0
+  let heapCount = 0
   const updateProgress = () => {
     spinner.text = [currentText, debugMessage].filter(Boolean).join(' - ')
   }
   const measureHeap = () => {
     if (!debug) return
     const heap = process.memoryUsage().heapUsed
+    if (heap > maxHeap) maxHeap = heap
+    totalHeap += heap
+    heapCount++
     debugMessage = `Memory: ${humanizeFileSize(heap)}`
     updateProgress()
   }
@@ -173,7 +183,7 @@ async function materializeQueries({
 
   if (result.materializations.some((info) => info.cached || info.success)) {
     console.log('Materialized queries:')
-    console.table(successMaterializationToTable(result.materializations))
+    console.table(successMaterializationToTable(result.materializations, debug))
   }
 
   if (result.materializations.some((info) => !info.cached && !info.success)) {
@@ -183,7 +193,13 @@ async function materializeQueries({
 
   console.log('Summary:')
   console.table({
-    'Total time': `⏰ ${humanizeTime(result.totalTime)}`,
+    'Total time': `⏱️  ${humanizeTime(result.totalTime)}`,
+    ...(debug
+      ? {
+          'Max heap': `🔥 ${humanizeFileSize(maxHeap)}`,
+          'Mean heap': `🌡️  ${humanizeFileSize(totalHeap / heapCount)}`,
+        }
+      : {}),
     'Materialized queries': result.materializations.filter(
       (info) => info.cached || info.success,
     ).length,

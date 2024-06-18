@@ -1,5 +1,5 @@
 import { FileStat } from '$/types'
-import { Readable, Writable } from 'stream'
+import { Writable } from 'stream'
 
 export abstract class StorageDriver {
   constructor() {}
@@ -18,5 +18,4 @@ export abstract class StorageDriver {
   ): Promise<T extends undefined ? Buffer : string>
 
   abstract createWriteStream(path: string): Promise<Writable>
-  abstract createReadStream(path: string): Promise<Readable>
 }
