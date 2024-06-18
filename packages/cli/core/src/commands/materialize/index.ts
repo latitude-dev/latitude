@@ -3,6 +3,7 @@ import setRootDir from '$src/lib/decorators/setRootDir'
 import syncQueries from '$src/lib/sync/syncQueries'
 import betterSpawn from '$src/lib/spawn'
 import tracked from '$src/lib/decorators/tracked'
+import syncLatitudeJson from '$src/lib/sync/syncLatitudeJson'
 
 async function materialize(opts?: {
   debug: boolean
@@ -22,6 +23,7 @@ async function materialize(opts?: {
   ].filter(Boolean)
 
   await syncQueries({ watch: false })
+  await syncLatitudeJson({ watch: false })
   return betterSpawn(
     'npm',
     args,

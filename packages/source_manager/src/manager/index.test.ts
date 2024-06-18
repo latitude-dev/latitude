@@ -1,5 +1,6 @@
-import { it, describe, expect, vi } from 'vitest'
+import { it, describe, expect, vi, beforeEach } from 'vitest'
 import fs from 'fs'
+import mockFs from 'mock-fs'
 import SourceManager from '@/manager'
 import * as factory from '@/baseConnector/connectorFactory'
 import { QUERIES_DIR, ROOT_DIR } from '@/tests/helper'
@@ -107,5 +108,74 @@ describe('loadFromConfigFile', () => {
       'valid-source/nestedSource/source.yml',
     )
     expect(source1).not.toBe(source2)
+  })
+})
+
+describe('materializationUrl', () => {
+  beforeEach(() => {
+    mockFs({
+      [QUERIES_DIR]: {
+        source1: {
+          'source.yml': 'type: internal_test',
+          'query.sql': 'SELECT * FROM table',
+          'other.sql': 'SELECT * FROM other_table',
+        },
+        source2: {
+          'source.yml': 'type: internal_test',
+          'query.sql': 'SELECT * FROM table',
+        },
+      },
+      '/tmp/.latitude': {},
+    })
+  })
+
+  it('always returns the same path for the same query', async () => {
+    const sourceManager = new SourceManager(QUERIES_DIR)
+    const path1 = await sourceManager.materializationUrl('source1/query')
+    const path2 = await sourceManager.materializationUrl('source1/query')
+
+    expect(path1).toBe(path2)
+  })
+
+  it('returns a different path for different queries', async () => {
+    const sourceManager = new SourceManager(QUERIES_DIR)
+    const path1 = await sourceManager.materializationUrl('source1/query')
+    const path2 = await sourceManager.materializationUrl('source1/other')
+
+    expect(path1).not.toBe(path2)
+  })
+
+  it('returns a different path for different sources even if the query is equal', async () => {
+    const sourceManager = new SourceManager(QUERIES_DIR)
+    const path1 = await sourceManager.materializationUrl('source1/query')
+    const path2 = await sourceManager.materializationUrl('source2/query')
+
+    expect(path1).not.toBe(path2)
+  })
+
+  it('returns the same path for the same query even if the filenames are different', async () => {
+    const sourceManager = new SourceManager(QUERIES_DIR)
+    const path1 = await sourceManager.materializationUrl('source1/query')
+    fs.renameSync(
+      `${QUERIES_DIR}/source1/query.sql`,
+      `${QUERIES_DIR}/source1/query_changed.sql`,
+    )
+    const path2 = await sourceManager.materializationUrl(
+      'source1/query_changed',
+    )
+
+    expect(path1).toBe(path2)
+  })
+
+  it('returns different paths for the same file if the query changed', async () => {
+    const sourceManager = new SourceManager(QUERIES_DIR)
+    const path1 = await sourceManager.materializationUrl('source1/query')
+    fs.writeFileSync(
+      `${QUERIES_DIR}/source1/query.sql`,
+      'SELECT * FROM table_changed',
+    )
+    const path2 = await sourceManager.materializationUrl('source1/query')
+
+    expect(path1).not.toBe(path2)
   })
 })

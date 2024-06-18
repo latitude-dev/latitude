@@ -24,6 +24,8 @@ export type ConnectionParams = {
   url?: string
 }
 
+export class MaterializedFileNotFoundError extends Error {}
+
 export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
   private client?: Database
   private url: string
@@ -70,6 +72,8 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
                 referencedQuery,
               )
 
+          // Check requirements:
+
           if (
             context.queriesBeingCompiled.includes(
               fullSubQueryPath.replace(/.sql$/, ''),
@@ -83,11 +87,11 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
           const refSource = (await this.source.manager.loadFromQuery(
             fullSubQueryPath,
           )) as Source
-          const { config, methods, sqlHash } =
+          const { config, methods } =
             await refSource.getMetadataFromQuery(fullSubQueryPath)
           if (!config.materialize) {
             throw new Error(
-              `Referenced query is not a materialized. \nYou can materialize it by adding {@config materialized_query = true} in the query content.`,
+              `Query '${fullSubQueryPath}' is not configured to be materialized. You can materialize it by adding {@config materialize = true}.`,
             )
           }
 
@@ -102,13 +106,21 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
             )
           }
 
-          const storage = await this.source.manager.materializeStorage
-          const materializeUrl = await storage.getUrl({
-            sqlHash,
-            sourcePath: refSource.path,
-            queryName: referencedQuery,
-          })
-          return `read_parquet('${materializeUrl}')`
+          const materializedStorage = this.source.manager.materializedStorage
+          const materializedPath =
+            await this.source.manager.localMaterializationPath(fullSubQueryPath)
+          if (!(await materializedStorage.exists(materializedPath))) {
+            throw new MaterializedFileNotFoundError(
+              `Query '${fullSubQueryPath}' is not materialized. Run 'latitude materialize' to materialize it.`,
+            )
+          }
+
+          // Resolve URL of the materialized file
+
+          const sourceManager = this.source.manager
+          const materializedUrl =
+            await sourceManager.materializationUrl(fullSubQueryPath)
+          return `read_parquet('${materializedUrl}')`
         },
         readMetadata: async () => {
           return emptyMetadata()

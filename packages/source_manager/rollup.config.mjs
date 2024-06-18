@@ -26,10 +26,12 @@ export default [
       'fs',
       'path',
       'crypto',
+      'uuid',
       'dotenv/config',
       '@latitude-data/sql-compiler',
       '@latitude-data/query_result',
-      '@dsnp/parquetjs',
+      '@latitude-data/storage-driver',
+    '@dsnp/parquetjs',
     ],
   },
   {

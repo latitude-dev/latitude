@@ -1,7 +1,6 @@
 import MaterializedConnector, { type ConnectionParams } from '$/index'
 import {
   ConnectorType,
-  DiskDriver,
   Source,
   SourceManager,
   type SourceSchema,
@@ -25,12 +24,7 @@ export async function buildMaterializedConnector({
 }) {
   const connParams = connectionParams ?? {}
   const sourceSchema = sourceParams.schema ?? {}
-  const sourceManager = new SourceManager(queriesDir ?? QUERIES_DIR, {
-    materialize: {
-      Klass: DiskDriver,
-      config: { path: MATERIALIZE_QUERIES_DIR },
-    },
-  })
+  const sourceManager = new SourceManager(queriesDir ?? QUERIES_DIR)
   const source = new Source({
     path: sourceParams.path,
     schema: { type: ConnectorType.Duckdb, ...sourceSchema },

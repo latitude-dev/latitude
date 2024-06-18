@@ -29,7 +29,7 @@ export default async function findOrCompute({
 
   const compute = async () => {
     const queryResult = await source.runCompiledQuery(compiledQuery)
-    cache.set(request, queryResult)
+    await cache.set(request, queryResult)
     return queryResult
   }
 
@@ -37,7 +37,7 @@ export default async function findOrCompute({
   if (force) {
     queryResult = await compute()
   } else {
-    queryResult = cache.find(request, config.ttl) || (await compute())
+    queryResult = (await cache.find(request, config.ttl)) || (await compute())
   }
 
   return {
