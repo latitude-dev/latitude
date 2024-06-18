@@ -20,7 +20,9 @@ function recursiveFindQueriesInDir(
   })
 }
 
-async function findMaterializableQueries(sourceManager: SourceManager) {
+export async function findAllMaterializableQueries(
+  sourceManager: SourceManager,
+) {
   const queriesDir = sourceManager.queriesDir
   const allQueries = recursiveFindQueriesInDir(queriesDir)
 
@@ -137,7 +139,7 @@ export default async function findAndMaterializeQueries({
   const storage = sourceManager.materializeStorage
   const queries = selectedQueries.length
     ? selectedQueries
-    : await findMaterializableQueries(sourceManager)
+    : await findAllMaterializableQueries(sourceManager)
 
   const materializations: MaterializationInfo[] = []
   for (let index = 0; index < queries.length; index++) {

@@ -4,6 +4,7 @@ import DummyDriver from '@/materialize/drivers/dummy/DummyDriver'
 
 export {
   default as findAndMaterializeQueries,
+  findAllMaterializableQueries,
   type MaterializationInfo,
 } from './findAndMaterializeQueries'
 export const STORAGE_TYPES = { disk: 'disk' }
