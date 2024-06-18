@@ -4,6 +4,7 @@ import setup from '$src/lib/decorators/setup'
 import spawn from '$src/lib/spawn'
 import syncQueries from '$src/lib/sync/syncQueries'
 import tracked from '$src/lib/decorators/tracked'
+import syncLatitudeJson from '$src/lib/sync/syncLatitudeJson'
 
 async function run(
   queryName: string,
@@ -19,6 +20,7 @@ async function run(
     typeof opts?.param === 'string' ? [opts.param] : opts?.param ?? []
 
   await syncQueries({ watch: true })
+  await syncLatitudeJson({ watch })
 
   const args = [
     'run',

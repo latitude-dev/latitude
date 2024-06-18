@@ -1,7 +1,8 @@
+import { FileStat } from '$/types'
 import { StorageDriver } from '$/drivers/base'
 import fs from 'fs'
 import path from 'path'
-import { Writable, Readable } from 'stream'
+import { Writable } from 'stream'
 
 export type DiskDriverConfig = {
   path: string
@@ -56,8 +57,12 @@ export class DiskDriver extends StorageDriver {
     return fs.existsSync(await this.resolveUrl(filepath))
   }
 
-  async stat(filepath: string): Promise<fs.Stats> {
-    return fs.statSync(await this.resolveUrl(filepath))
+  async stat(filepath: string): Promise<FileStat> {
+    const fileStats = fs.statSync(await this.resolveUrl(filepath))
+    return {
+      size: fileStats.size,
+      mtimeMs: fileStats.mtimeMs,
+    }
   }
 
   async write(filepath: string, data: Buffer | string): Promise<void> {
@@ -78,9 +83,5 @@ export class DiskDriver extends StorageDriver {
   async createWriteStream(filepath: string): Promise<Writable> {
     await this.createDirIfNotExists(filepath)
     return fs.createWriteStream(await this.resolveUrl(filepath))
-  }
-
-  async createReadStream(filepath: string): Promise<Readable> {
-    return fs.createReadStream(await this.resolveUrl(filepath))
   }
 }

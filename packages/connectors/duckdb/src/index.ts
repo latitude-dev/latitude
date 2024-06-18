@@ -20,8 +20,15 @@ import {
   TableData,
 } from 'duckdb-async'
 
+type S3Credentials = {
+  accessKeyId: string
+  secretAccessKey: string
+  region: string
+}
+
 export type ConnectionParams = {
   url?: string
+  s3?: S3Credentials
 }
 
 export class MaterializedFileNotFoundError extends Error {}
@@ -29,10 +36,12 @@ export class MaterializedFileNotFoundError extends Error {}
 export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
   private client?: Database
   private url: string
+  private s3?: S3Credentials
 
   constructor(options: ConnectorOptions<ConnectionParams>) {
     super(options)
     this.url = options.connectionParams.url || ':memory:'
+    this.s3 = options.connectionParams.s3
   }
 
   end(): Promise<void> {
@@ -109,7 +118,9 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
           const materializedStorage = this.source.manager.materializedStorage
           const materializedPath =
             await this.source.manager.localMaterializationPath(fullSubQueryPath)
-          if (!(await materializedStorage.exists(materializedPath))) {
+          const materializedFileExists =
+            await materializedStorage.exists(materializedPath)
+          if (!materializedFileExists) {
             throw new MaterializedFileNotFoundError(
               `Query '${fullSubQueryPath}' is not materialized. Run 'latitude materialize' to materialize it.`,
             )
@@ -134,6 +145,25 @@ export default class DuckdbConnector extends BaseConnector<ConnectionParams> {
       this.url,
       this.url === ':memory:' ? OPEN_READWRITE : OPEN_READONLY,
     )
+    if (this.s3) {
+      await this.connectS3(this.s3)
+    }
+  }
+
+  private async connectS3(credentials: ConnectionParams['s3']): Promise<void> {
+    if (!credentials) return
+    const { accessKeyId, secretAccessKey, region } = credentials
+    const query = `
+INSTALL httpfs;
+LOAD httpfs;
+CREATE SECRET (
+  TYPE S3,
+  KEY_ID ${JSON.stringify(accessKeyId)},
+  SECRET ${JSON.stringify(secretAccessKey)},
+  REGION ${JSON.stringify(region)}
+);`
+
+    await this.client!.exec(query)
   }
 
   async runQuery(compiledQuery: CompiledQuery): Promise<QueryResult> {

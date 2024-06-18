@@ -183,6 +183,7 @@ export default class SourceManager {
       const source = await this.loadFromQuery(queryPath)
       const { config } = await source.getMetadataFromQuery(queryPath)
       const filename = await this.localMaterializationPath(queryPath)
+      const url = await this.materializedStorage.resolveUrl(filename)
 
       if (!config.materialize) {
         throw new Error('Materialization is not enabled for this query')
@@ -192,16 +193,22 @@ export default class SourceManager {
         return {
           queryPath,
           cached: true,
+          url,
         }
       }
 
       const startTime = performance.now()
       const compiled = await source.compileQuery({ queryPath, params: {} })
 
+      const stream = await this.materializedStorage.createWriteStream(filename)
+
       let writer: ParquetWriter
       const ROW_GROUP_SIZE = 4096 // How many rows are in the ParquetWriter file buffer at a time
       let rows = 0
       await new Promise<void>((resolve, reject) => {
+        stream.on('error', (error) => {
+          reject(error)
+        })
         source
           .batchQuery(compiled, {
             batchSize: batchSize,
@@ -210,9 +217,7 @@ export default class SourceManager {
                 const schema = buildParquetSchema(batch.fields)
                 writer = await ParquetWriter.openStream(
                   schema,
-                  (await this.materializedStorage.createWriteStream(
-                    filename,
-                  )) as unknown as WriteStreamMinimal,
+                  stream as unknown as WriteStreamMinimal,
                   { rowGroupSize: Math.max(batchSize, ROW_GROUP_SIZE) },
                 )
               }
@@ -223,7 +228,8 @@ export default class SourceManager {
               rows += batch.rows.length
 
               if (batch.lastBatch) {
-                await writer.close()
+                writer.close()
+                await new Promise((r) => stream.on('close', r))
                 resolve()
               }
             },
@@ -241,6 +247,7 @@ export default class SourceManager {
         queryPath,
         cached: false,
         success: true,
+        url,
         fileSize,
         rows,
         time: endTime - startTime,

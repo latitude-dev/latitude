@@ -95,6 +95,7 @@ interface IMaterializationInfo {
 
 interface CachedMaterializationInfo extends IMaterializationInfo {
   cached: true
+  url: string
 }
 
 interface IMissMaterializationInfo extends IMaterializationInfo {
@@ -105,6 +106,7 @@ interface IMissMaterializationInfo extends IMaterializationInfo {
 interface SuccessMaterializationInfo extends IMissMaterializationInfo {
   cached: false
   success: true
+  url: string
   rows: number
   fileSize: number
   time: number
