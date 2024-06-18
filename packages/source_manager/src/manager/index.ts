@@ -19,6 +19,7 @@ import { createHash } from 'crypto'
 import { ParquetWriter } from '@dsnp/parquetjs'
 import { WriteStreamMinimal } from '@dsnp/parquetjs/dist/lib/util'
 import { buildParquetSchema } from './parquetUtils'
+import { v4 as uuidv4 } from 'uuid'
 import { Writable } from 'stream'
 
 const MATERIALIZED_DIR_IN_STORAGE = 'materialized'
@@ -181,6 +182,8 @@ export default class SourceManager {
     force?: boolean
     batchSize?: number
   }): Promise<MaterializationInfo> {
+    const tmpParquetFilepath = `${MATERIALIZED_DIR_IN_STORAGE}/.tmp/${uuidv4()}.parquet`
+
     try {
       const source = await this.loadFromQuery(queryPath)
       const { config } = await source.getMetadataFromQuery(queryPath)
@@ -201,9 +204,8 @@ export default class SourceManager {
 
       const startTime = performance.now()
       const compiled = await source.compileQuery({ queryPath, params: {} })
-
       const stream = (await this.materializedStorage.createWriteStream(
-        filename,
+        tmpParquetFilepath,
       )) as Writable
 
       let writer: ParquetWriter
@@ -241,11 +243,13 @@ export default class SourceManager {
           .catch(reject)
       })
 
-      const endTime = performance.now()
+      await this.materializedStorage.move(tmpParquetFilepath, filename)
 
       const fileSize = await this.materializedStorage
         .stat(filename)
         .then((stat: FileStat) => stat.size)
+
+      const endTime = performance.now()
 
       return {
         queryPath,
@@ -257,6 +261,8 @@ export default class SourceManager {
         time: endTime - startTime,
       }
     } catch (error) {
+      this.materializedStorage.delete(tmpParquetFilepath)
+
       return {
         queryPath,
         cached: false,

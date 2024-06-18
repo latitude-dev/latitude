@@ -85,4 +85,20 @@ export class DiskDriver extends StorageDriver {
     await this.createDirIfNotExists(filepath)
     return fs.createWriteStream(await this.resolveUrl(filepath))
   }
+
+  async move(from: string, to: string): Promise<void> {
+    const fromPath = await this.resolveUrl(from)
+    if (!fs.existsSync(fromPath)) return
+
+    await this.createDirIfNotExists(to)
+    const toPath = await this.resolveUrl(to)
+
+    fs.renameSync(fromPath, toPath)
+  }
+
+  async delete(filepath: string): Promise<void> {
+    const filePath = await this.resolveUrl(filepath)
+    if (!fs.existsSync(filePath)) return
+    fs.unlinkSync(filePath)
+  }
 }

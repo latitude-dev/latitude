@@ -7,6 +7,8 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   HeadObjectCommand,
+  CopyObjectCommand,
+  DeleteObjectCommand,
 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
 import { PassThrough } from 'stream'
@@ -131,6 +133,23 @@ export class S3Driver extends StorageDriver {
       return buffer.toString(encoding) as T extends undefined ? Buffer : string
     }
     return buffer as T extends undefined ? Buffer : string
+  }
+
+  async move(from: string, to: string): Promise<void> {
+    await this.client.send(
+      new CopyObjectCommand({
+        Bucket: this.bucket,
+        Key: to,
+        CopySource: this.bucket + '/' + from,
+      }),
+    )
+    await this.delete(from)
+  }
+
+  async delete(filepath: string): Promise<void> {
+    await this.client.send(
+      new DeleteObjectCommand({ Bucket: this.bucket, Key: filepath }),
+    )
   }
 
   async createWriteStream(filepath: string): Promise<Writable> {
