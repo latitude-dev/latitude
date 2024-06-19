@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/storage-driver",
-  "version": "0.1.0-canary.0",
+  "version": "0.1.0-canary.1",
   "license": "LGPL",
   "description": "Manages the storage of data",
   "scripts": {

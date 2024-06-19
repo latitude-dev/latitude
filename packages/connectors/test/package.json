@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/test-connector",
-  "version": "1.0.3-canary.1",
+  "version": "1.0.3-canary.2",
   "license": "LGPL",
   "description": "A mock connector for testing purposes",
   "type": "module",
