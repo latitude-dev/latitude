@@ -1,5 +1,13 @@
 # @latitude-data/source-manager
 
+## 1.2.0-canary.2
+
+### Patch Changes
+
+- 4f1d88d: Dry resolve secrets helper function
+- Updated dependencies [4f1d88d]
+  - @latitude-data/storage-driver@0.1.0-canary.1
+
 ## 1.2.0-canary.1
 
 ### Minor Changes

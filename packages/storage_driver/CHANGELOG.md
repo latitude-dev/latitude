@@ -1,5 +1,11 @@
 # @latitude-data/storage-driver
 
+## 0.1.0-canary.1
+
+### Patch Changes
+
+- 4f1d88d: Dry resolve secrets helper function
+
 ## 0.1.0-canary.0
 
 ### Minor Changes
