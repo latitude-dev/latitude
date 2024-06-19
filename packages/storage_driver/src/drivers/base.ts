@@ -1,8 +1,14 @@
-import { FileStat } from '$/types'
+import { FileStat, StorageType } from '$/types'
 import { Writable } from 'stream'
 
 export abstract class StorageDriver {
   constructor() {}
+
+  public abstract type: StorageType
+
+  get isS3Driver(): boolean {
+    return this.type === StorageType.s3
+  }
 
   abstract resolveUrl(path: string): Promise<string>
 

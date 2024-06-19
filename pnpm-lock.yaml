@@ -422,7 +422,7 @@ importers:
         version: link:../../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/lodash-es':
         specifier: ^4.17.12
         version: 4.17.12
@@ -449,7 +449,7 @@ importers:
         version: 3.5.0
       rollup-plugin-dts:
         specifier: ^6.1.0
-        version: 6.1.0(rollup@4.10.0)(typescript@5.4.3)
+        version: 6.1.0(rollup@4.10.0)(typescript@5.4.5)
       rollup-plugin-postcss:
         specifier: ^4.0.2
         version: 4.0.2(postcss@8.4.35)
@@ -531,7 +531,7 @@ importers:
         version: link:../../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(typescript@5.4.3)
       '@testing-library/react':
         specifier: ^14.2.2
         version: 14.2.2(react-dom@18.2.0)(react@18.2.0)
@@ -794,7 +794,7 @@ importers:
         version: 25.0.7(rollup@4.10.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/node':
         specifier: ^20.10.6
         version: 20.10.6
@@ -828,7 +828,7 @@ importers:
         version: 25.0.7(rollup@4.10.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       rollup:
         specifier: ^4.10.0
         version: 4.10.0
@@ -856,7 +856,7 @@ importers:
         version: 25.0.7(rollup@4.14.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.14.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.14.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/node':
         specifier: ^20.10.6
         version: 20.12.4
@@ -865,7 +865,7 @@ importers:
         version: 4.14.0
       vite-tsconfig-paths:
         specifier: ^4.3.1
-        version: 4.3.1(typescript@5.4.3)
+        version: 4.3.1(typescript@5.4.5)
       vitest:
         specifier: ^1.4.0
         version: 1.4.0(@types/node@20.12.4)
@@ -970,7 +970,7 @@ importers:
         version: link:../../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/json2csv':
         specifier: ^5.0.7
         version: 5.0.7
@@ -991,7 +991,7 @@ importers:
         version: 4.10.0
       vite-tsconfig-paths:
         specifier: ^4.3.1
-        version: 4.3.1(typescript@5.4.3)
+        version: 4.3.1(typescript@5.4.5)
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@20.10.6)
@@ -1016,7 +1016,7 @@ importers:
         version: link:../../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/mssql':
         specifier: ^9.1.5
         version: 9.1.5
@@ -1050,7 +1050,7 @@ importers:
         version: 25.0.7(rollup@4.10.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/mysql':
         specifier: ^2.15.25
         version: 2.15.25
@@ -1062,7 +1062,7 @@ importers:
         version: 4.10.0
       vite-tsconfig-paths:
         specifier: ^4.3.1
-        version: 4.3.1(typescript@5.4.3)
+        version: 4.3.1(typescript@5.4.5)
       vitest:
         specifier: ^1.4.0
         version: 1.4.0(@types/node@20.10.6)
@@ -1151,7 +1151,7 @@ importers:
         version: 25.0.7(rollup@4.10.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       rollup:
         specifier: ^4.10.0
         version: 4.10.0
@@ -1176,7 +1176,7 @@ importers:
         version: link:../../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/node':
         specifier: ^20.10.6
         version: 20.10.6
@@ -1201,7 +1201,7 @@ importers:
         version: link:../../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.14.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.14.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/node':
         specifier: ^20.10.6
         version: 20.12.4
@@ -1260,7 +1260,7 @@ importers:
         version: link:../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       prettier:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1309,7 +1309,7 @@ importers:
         version: link:../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(typescript@5.4.3)
       '@types/eslint':
         specifier: ^8.56.1
         version: 8.56.1
@@ -1340,7 +1340,7 @@ importers:
         version: link:../../tools/typescript
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5)
       prettier:
         specifier: ^3.1.1
         version: 3.1.1
@@ -1389,7 +1389,7 @@ importers:
         version: 25.0.7(rollup@4.14.0)
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
-        version: 11.1.6(rollup@4.14.0)(tslib@2.6.2)(typescript@5.4.3)
+        version: 11.1.6(rollup@4.14.0)(tslib@2.6.2)(typescript@5.4.5)
       '@types/mock-fs':
         specifier: ^4.13.4
         version: 4.13.4
@@ -1407,13 +1407,13 @@ importers:
         version: 4.14.0
       rollup-plugin-dts:
         specifier: ^6.1.0
-        version: 6.1.0(rollup@4.14.0)(typescript@5.4.3)
+        version: 6.1.0(rollup@4.14.0)(typescript@5.4.5)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
       vite-tsconfig-paths:
         specifier: ^4.3.1
-        version: 4.3.1(typescript@5.4.3)
+        version: 4.3.1(typescript@5.4.5)
       vitest:
         specifier: ^1.2.2
         version: 1.4.0(@types/node@20.12.4)
@@ -8544,7 +8544,7 @@ packages:
       typescript: 5.3.3
     dev: true
 
-  /@rollup/plugin-typescript@11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.3):
+  /@rollup/plugin-typescript@11.1.6(rollup@4.10.0)(tslib@2.6.2)(typescript@5.4.5):
     resolution: {integrity: sha512-R92yOmIACgYdJ7dJ97p4K69I8gg6IEHt8M7dUBxN3W6nrO8uUxX5ixl0yU/N3aZTi8WhPuICvOHXQvF6FaykAA==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -8561,6 +8561,25 @@ packages:
       resolve: 1.22.8
       rollup: 4.10.0
       tslib: 2.6.2
+      typescript: 5.4.5
+    dev: true
+
+  /@rollup/plugin-typescript@11.1.6(rollup@4.10.0)(typescript@5.4.3):
+    resolution: {integrity: sha512-R92yOmIACgYdJ7dJ97p4K69I8gg6IEHt8M7dUBxN3W6nrO8uUxX5ixl0yU/N3aZTi8WhPuICvOHXQvF6FaykAA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      rollup: ^2.14.0||^3.0.0||^4.0.0
+      tslib: '*'
+      typescript: '>=3.7.0'
+    peerDependenciesMeta:
+      rollup:
+        optional: true
+      tslib:
+        optional: true
+    dependencies:
+      '@rollup/pluginutils': 5.1.0(rollup@4.10.0)
+      resolve: 1.22.8
+      rollup: 4.10.0
       typescript: 5.4.3
     dev: true
 
@@ -22321,7 +22340,7 @@ packages:
       is-plain-object: 3.0.1
     dev: true
 
-  /rollup-plugin-dts@6.1.0(rollup@4.10.0)(typescript@5.4.3):
+  /rollup-plugin-dts@6.1.0(rollup@4.10.0)(typescript@5.4.5):
     resolution: {integrity: sha512-ijSCPICkRMDKDLBK9torss07+8dl9UpY9z1N/zTeA1cIqdzMlpkV3MOOC7zukyvQfDyxa1s3Dl2+DeiP/G6DOw==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -22330,12 +22349,12 @@ packages:
     dependencies:
       magic-string: 0.30.6
       rollup: 4.10.0
-      typescript: 5.4.3
+      typescript: 5.4.5
     optionalDependencies:
       '@babel/code-frame': 7.24.7
     dev: true
 
-  /rollup-plugin-dts@6.1.0(rollup@4.14.0)(typescript@5.4.3):
+  /rollup-plugin-dts@6.1.0(rollup@4.14.0)(typescript@5.4.5):
     resolution: {integrity: sha512-ijSCPICkRMDKDLBK9torss07+8dl9UpY9z1N/zTeA1cIqdzMlpkV3MOOC7zukyvQfDyxa1s3Dl2+DeiP/G6DOw==}
     engines: {node: '>=16'}
     peerDependencies:
@@ -22344,7 +22363,7 @@ packages:
     dependencies:
       magic-string: 0.30.6
       rollup: 4.14.0
-      typescript: 5.4.3
+      typescript: 5.4.5
     optionalDependencies:
       '@babel/code-frame': 7.24.7
     dev: true

@@ -1,4 +1,4 @@
-import { FileStat } from '$/types'
+import { FileStat, StorageType } from '$/types'
 import { StorageDriver } from '$/drivers/base'
 import fs from 'fs'
 import path from 'path'
@@ -9,6 +9,7 @@ export type DiskDriverConfig = {
 }
 
 export class DiskDriver extends StorageDriver {
+  public type = StorageType.disk
   private root: string
 
   constructor(config: DiskDriverConfig) {

@@ -1,4 +1,5 @@
 import {
+  FailedMaterializationInfo,
   findAndMaterializeQueries,
   MaterializationInfo,
 } from '@latitude-data/source-manager'
@@ -113,7 +114,8 @@ function successMaterializationToTable(
 function failedMaterializationToTable(materializations: MaterializationInfo[]) {
   const table = materializations
     .filter((info) => info.cached === false && info.success === false)
-    .map((info) => {
+    .map((i) => {
+      const info = i as FailedMaterializationInfo
       return {
         queryPath: info.queryPath,
         error: info.error.message,

@@ -112,7 +112,7 @@ interface SuccessMaterializationInfo extends IMissMaterializationInfo {
   time: number
 }
 
-interface FailedMaterializationInfo extends IMissMaterializationInfo {
+export interface FailedMaterializationInfo extends IMissMaterializationInfo {
   cached: false
   success: false
   error: Error

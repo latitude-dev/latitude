@@ -5,6 +5,7 @@ import {
   StorageType,
   getStorageDriver,
 } from '@latitude-data/storage-driver'
+import { resolveSecrets } from '@latitude-data/source-manager'
 
 const DEFAULT_STORAGE_CONFIG = {
   type: StorageType.disk,
@@ -12,15 +13,15 @@ const DEFAULT_STORAGE_CONFIG = {
 }
 
 function readStorageConfig(): StorageDriverConfig {
-  if (!fs.existsSync(APP_CONFIG_PATH)) {
-    return DEFAULT_STORAGE_CONFIG
-  }
+  if (!fs.existsSync(APP_CONFIG_PATH)) return DEFAULT_STORAGE_CONFIG
 
-  const file = fs.readFileSync(APP_CONFIG_PATH, 'utf8')
   try {
-    const latitudeJson = JSON.parse(file)
-    const storageConfig = latitudeJson?.storage ?? {}
-    if (!storageConfig.type) return DEFAULT_STORAGE_CONFIG
+    const file = fs.readFileSync(APP_CONFIG_PATH, 'utf8')
+    const latitudeJson = resolveSecrets({ unresolvedSecrets: JSON.parse(file) })
+    const storageConfig = latitudeJson?.storage
+
+    if (!storageConfig) return DEFAULT_STORAGE_CONFIG
+
     return storageConfig
   } catch (e) {
     return DEFAULT_STORAGE_CONFIG

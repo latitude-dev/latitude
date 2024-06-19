@@ -26,6 +26,7 @@ export default [
       'fs',
       'path',
       'crypto',
+      'stream',
       'uuid',
       'dotenv/config',
       '@latitude-data/sql-compiler',

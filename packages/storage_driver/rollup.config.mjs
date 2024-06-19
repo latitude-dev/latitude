@@ -15,6 +15,9 @@ export default {
   ],
   external: [
     'fs',
+    '@aws-sdk/client-s3',
+    '@aws-sdk/lib-storage',
+    'stream',
     'path',
   ],
 }

@@ -17,6 +17,7 @@ export default {
   external: [
     'react',
     'ink',
+    'v8',
     'ink-spinner',
     'chokidar',
     '@latitude-data/source-manager',
