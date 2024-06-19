@@ -1,0 +1,136 @@
+---
+title: 'Materialize on S3'
+description: 'Configure your project to store materialized files on an S3 bucket'
+---
+
+## Introduction
+
+Query materializations are typically stored locally on the Latitude server. However, for large datasets or projects that require frequent updates, storing materialized queries on an S3 bucket can be a better option.
+
+This guide will walk you through configuring your project to store materialized files on an S3 bucket.
+
+## Step 0: Create an S3 bucket
+
+If you already have an available S3 bucket, you can skip this step.
+
+To create a new S3 bucket:
+
+1. Go to the [AWS Management Console](https://console.aws.amazon.com/) and log in to your account.
+2. In the navigation pane, click on **S3** under the **Storage** section.
+3. Click on **Create bucket**. 
+4. Enter a name for your bucket and choose the region where you want to store your data.
+5. Click on **Create bucket**. 
+
+## Step 1: Create an IAM user for the Latitude server
+
+Latitude needs an IAM user with read and write permissions to your S3 bucket.
+
+The best way to manage these permissions is to first create a policy for the Latitude server, and then assign it to a new IAM user. This will ensure that the Latitude server has the necessary permissions to access your S3 bucket, and that you can manage and even revoke these permissions as needed.
+
+<Steps>
+  <Step title="Create a Policy for the Latitude Server">
+    1. Go to the [AWS Management Console](https://console.aws.amazon.com/) and log in to your account.
+    2. In the navigation pane, click on **IAM** in the **Security** section.
+    3. Click on **Policies** under the **Access management** section.
+    4. Click on **Create policy**.
+    5. In the **Policy editor** section, select **JSON** and paste the following policy document:
+
+      ```json
+      {
+          "Version": "2012-10-17",
+          "Statement": [
+              {
+                  "Sid": "LatitudeBucketListing",
+                  "Effect": "Allow",
+                  "Action": [ "s3:ListAllMyBuckets" ],
+                  "Resource": [ "*" ]
+              },
+              {
+                  "Sid": "LatitudeBucketOperations",
+                  "Action": [
+                      "s3:GetObject",
+                      "s3:PutObject",
+                      "s3:DeleteObject",
+                      "s3:ListBucket"
+                  ],
+                  "Resource": [
+                      "arn:aws:s3:::<bucket_name>",
+                      "arn:aws:s3:::<bucket_name>/*"
+                  ],
+                  "Effect": "Allow"
+              }
+          ]
+      }
+      ```
+
+      Replace `<bucket_name>` with the name of your S3 bucket.
+
+      <Note>
+        This policy will allow the Latitude server to read, write, and list all files from the specified S3 bucket. Latitude requires these permissions to check, store, and retrieve materialized queries.
+      </Note>
+
+    6. Click **Next**, add a name and description for your policy, and click **Create policy**.
+  </Step>
+  <Step title="Create an IAM User abd attach the Policy">
+    1. In the AWS Management Console, go to **IAM** and click on **Users** under the **Access management** section.
+    2. Click **Create user**.
+    3. Enter a user name (e.g., "LatitudeServer") and click **Next**.
+    4. In the **Permissions options** section, select **Attach policies directly**.
+    5. Search for the policy you created and check the box next to it.
+    6. Click **Next**, review the information, and click **Create user**.
+  </Step>
+  <Step title="Obtain Access Credentials for the IAM User">
+    1. Navigate to the **User** section in IAM and find the user you just created.
+    2. In the **Summary** section, click **Create access key**.
+    3. Select **Other** as your use case, add a description tag, and click **Next**.
+    4. Click **Create access key**.
+    5. Copy the **Access key** and **Secret access key** values, or download the .csv file containing them. 
+
+    <Note>
+      If you forget the access key and secret access key, you can always create new keys for the same user, and even revoke the old ones for security purposes.
+    </Note>
+  </Step>
+</Steps>
+
+## Step 2: Configure Your Latitude Project
+
+Add your IAM user credentials to your Latitude project by modifying the `latitude.json` file:
+
+```json
+{
+    "name": <latitude-project-name>,
+    "version": <latitude-project-version>,
+    "storage": {
+        "type": "s3",
+        "bucket": <your-s3-bucket-name>,
+        "region": <your-s3-bucket-region>,
+        "accessKeyId": <your-access-key-id>,
+        "secretAccessKey": <your-secret-access-key>
+    }
+}
+```
+
+<Note>
+  We recommend storing credentials as secrets instead of directly saving them in the `latitude.json` file. To learn more about how to do this, see the [Source credentials](/sources/credentials) documentation.
+</Note>
+
+This configuration will alow the `latitude materialize` command to store your materialized queries in your S3 bucket.
+
+## Step 3: Configure Your DuckDB Source
+
+Although your Latitude project is configured to materialize on S3, you will still need to configure your DuckDB source to read materialized queries from S3. This can be done by adding your S3 credentials to the DuckDB source configuration.
+
+```yaml
+type: duckdb
+details:
+  s3:
+    accessKeyId: <your-access-key-id>
+    secretAccessKey: <your-secret-access-key>
+    region: <your-region>
+```
+
+<Note>
+  You can use different credentials for writing and reading materialized queries. This can be useful for separating development and production environments.
+</Note>
+
+For more information about this configuration, see the [DuckDB source configuration](/sources/duckdb) documentation.
