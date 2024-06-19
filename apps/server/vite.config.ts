@@ -47,7 +47,14 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@latitude-data/source-manager', 'path', 'child_process'],
+      external: [
+        'path',
+        'child_process',
+        '@latitude-data/source-manager',
+        '@latitude-data/storage-driver',
+        '@latitude-data/display_table',
+        '@latitude-data/custome_types',
+      ],
     },
   },
 })

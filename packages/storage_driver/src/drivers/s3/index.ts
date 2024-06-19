@@ -1,4 +1,4 @@
-import { FileStat } from '$/types'
+import { FileStat, StorageType } from '$/types'
 import { StorageDriver } from '$/drivers/base'
 import { Writable, Readable } from 'stream'
 import {
@@ -20,6 +20,7 @@ export type S3DriverConfig = {
 }
 
 export class S3Driver extends StorageDriver {
+  public type = StorageType.s3
   private client: S3Client
   private bucket: string
 

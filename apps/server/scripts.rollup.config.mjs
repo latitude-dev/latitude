@@ -13,7 +13,13 @@ const materializeScript = {
     format: 'esm',
     sourcemap: true,
   },
-  external: ['fs', 'ora', '@latitude-data/source-manager', 'node:util'],
+  external: [
+    'fs',
+    'ora',
+    '@latitude-data/storage-driver',
+    '@latitude-data/source-manager',
+    'node:util',
+  ],
   ...common,
 }
 
@@ -25,11 +31,12 @@ const runScript = {
     sourcemap: true,
   },
   external: [
-    '@latitude-data/display_table',
     'node:util',
     'path',
     '@latitude-data/source-manager',
+    '@latitude-data/storage-driver',
     '@latitude-data/custom_types',
+    '@latitude-data/display_table',
     'fs',
   ],
   ...common,
