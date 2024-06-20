@@ -147,9 +147,11 @@ export default function Table({ data }: { data: QueryResult }) {
     if (selectedCell.col < colsOffset) {
       setColsOffset(selectedCell.col)
     } else if (selectedCell.col >= colsOffset + visibleCols.length) {
-      setColsOffset(selectedCell.col - visibleCols.length + 1)
+      setColsOffset(
+        Math.min(columns.length - 1, selectedCell.col - visibleCols.length + 1),
+      )
     }
-  }, [selectedCell, visibleRows.length, visibleCols.length])
+  }, [selectedCell, visibleRows.length, visibleCols.length, columns.length])
 
   return (
     <Box

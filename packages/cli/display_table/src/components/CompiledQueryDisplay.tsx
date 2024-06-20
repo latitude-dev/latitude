@@ -4,6 +4,7 @@ import type {
   ResolvedParam,
 } from '@latitude-data/source-manager'
 import { Box, Text } from 'ink'
+import Scrollable from './Scrollable.js'
 
 export default function CompiledQueryDisplay({
   compiledQuery,
@@ -36,9 +37,9 @@ export default function CompiledQueryDisplay({
       borderColor='blue'
       flexWrap='wrap'
     >
-      <Box flexGrow={1} paddingLeft={1}>
+      <Scrollable flexGrow={5} autoFocus>
         <Text>{completeSql()}</Text>
-      </Box>
+      </Scrollable>
       {compiledQuery.resolvedParams.length ? (
         <Box
           flexDirection='column'
@@ -54,16 +55,18 @@ export default function CompiledQueryDisplay({
             {' '}
             Parameterized values{' '}
           </Text>
-          {compiledQuery.resolvedParams.map(
-            (param: ResolvedParam, index: number) => (
-              <Box key={index} flexDirection='row'>
-                <Text color='blue' bold>
-                  {param.resolvedAs}
-                </Text>
-                <Text> {JSON.stringify(param.value)}</Text>
-              </Box>
-            ),
-          )}
+          <Scrollable flexGrow={1} minWidth={32}>
+            {compiledQuery.resolvedParams.map(
+              (param: ResolvedParam, index: number) => (
+                <Box key={index} flexDirection='row'>
+                  <Text color='blue' bold>
+                    {param.resolvedAs}
+                  </Text>
+                  <Text> {JSON.stringify(param.value)}</Text>
+                </Box>
+              ),
+            )}
+          </Scrollable>
         </Box>
       ) : null}
     </Box>
