@@ -1,5 +1,13 @@
 # @latitude-data/source-manager
 
+## 1.2.0-canary.3
+
+### Patch Changes
+
+- 5fabfb6: Parquet files will be stored in a temporal path while materialization is still in process. Only when it finishes, it will then be moved to the actual path.
+- Updated dependencies [5fabfb6]
+  - @latitude-data/storage-driver@0.1.0-canary.2
+
 ## 1.2.0-canary.2
 
 ### Patch Changes
