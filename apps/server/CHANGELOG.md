@@ -1,5 +1,12 @@
 # @latitude-data/server
 
+## 2.0.4
+
+### Patch Changes
+
+- Updated dependencies [1363413]
+  - @latitude-data/display_table@0.0.4
+
 ## 2.0.3
 
 ### Patch Changes

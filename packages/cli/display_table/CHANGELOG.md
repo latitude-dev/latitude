@@ -1,5 +1,11 @@
 # @latitude-data/display_table
 
+## 0.0.4
+
+### Patch Changes
+
+- 1363413: Added Scrollable containers for queries and errors.
+
 ## 0.0.3
 
 ### Patch Changes
