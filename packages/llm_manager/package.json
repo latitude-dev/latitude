@@ -1,0 +1,38 @@
+{
+  "name": "@latitude-data/llm-manager",
+  "version": "0.0.0",
+  "license": "LGPL",
+  "description": "Manage LLM models and prompts",
+  "scripts": {
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "test": "vitest --run",
+    "lint": "eslint . --max-warnings 0 --ext .ts src",
+    "tc": "tsc --noEmit",
+    "test:watch": "vitest",
+    "prettier": "prettier --write src/**/*.ts"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@latitude-data/source-manager": "workspace:1.2.0-canary.2",
+    "@latitude-data/sql-compiler": "workspace:^",
+    "dotenv": "^16.4.5",
+    "openai": "^4.52.0",
+    "yaml": "^2.3.4"
+  },
+  "devDependencies": {
+    "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/typescript": "workspace:*",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/mock-fs": "^4.13.4",
+    "@types/node": "^20.10.6",
+    "mock-fs": "^5.2.0",
+    "rollup": "^4.10.0",
+    "tslib": "^2.4.1",
+    "typescript": "^5.4.5",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.2.2"
+  }
+}

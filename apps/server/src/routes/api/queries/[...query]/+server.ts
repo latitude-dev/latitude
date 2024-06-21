@@ -1,4 +1,4 @@
-import handleError from '$lib/errors/handler'
+import { handleQueryError } from '$lib/errors/handler'
 import findOrCompute from '$lib/query_service/find_or_compute'
 import getQueryParams from './getQueryParams'
 
@@ -33,6 +33,6 @@ export async function GET({ params: args, url }: Props) {
       })
     }
   } catch (e) {
-    return handleError(e as Error)
+    return handleQueryError(e as Error)
   }
 }

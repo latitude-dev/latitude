@@ -12,6 +12,7 @@ import initSentry from '$src/integrations/sentry'
 import loginCommand from './commands/cloud/login'
 import logoutCommand from './commands/cloud/logout'
 import runCommand from './commands/run'
+import promptCommand from './commands/prompt'
 import materializeCommand from './commands/materialize'
 import sade from 'sade'
 import setupCommand from './commands/setup'
@@ -95,6 +96,22 @@ CLI.command('run <query_name>')
   .example('run --watch users')
   .example('run users --param user_id=foo --param limit=10')
   .action(runCommand)
+
+CLI.command('prompt <prompt_name>')
+  .describe('Run a prompt from the Latitude app.')
+  .option(
+    '--debug',
+    'Watch debug messages from while the prompt is being generated',
+  )
+  .option(
+    '--param',
+    'Add a parameter to the prompt. Use the format --param <name>=<value>',
+  )
+  .example('prompt analysis')
+  .example(
+    'prompt analysis --param query=users --param user_id=foo --param limit=10',
+  )
+  .action(promptCommand)
 
 CLI.command('materialize')
   .describe(

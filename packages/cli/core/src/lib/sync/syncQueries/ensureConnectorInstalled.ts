@@ -2,7 +2,7 @@ import fs from 'fs'
 import colors from 'picocolors'
 import config from '$src/config'
 import { SourceManager } from '@latitude-data/source-manager'
-import isSourceFile from '$src/lib/isSourceFile'
+import isConfigFile from '$src/lib/isConfigFile'
 
 let _sourceManager: SourceManager
 function currentSourceManager(): SourceManager {
@@ -85,7 +85,7 @@ export default async function ensureConnectorInstalled(
   sourcePath: string,
   type: 'add' | 'change' | 'unlink',
 ) {
-  if (!isSourceFile(sourcePath)) return
+  if (!isConfigFile(sourcePath)) return
 
   const sourceManager = currentSourceManager()
   let source = await loadConfigFromSourcePath(sourcePath)

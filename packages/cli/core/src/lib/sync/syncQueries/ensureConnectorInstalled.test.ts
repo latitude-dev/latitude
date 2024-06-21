@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import ensureConnectorInstalled from './ensureConnectorInstalled'
-import isSourceFile from '$src/lib/isSourceFile'
+import isConfigFile from '$src/lib/isConfigFile'
 
 // Mock external dependencies
 vi.mock('fs')
@@ -28,7 +28,7 @@ vi.mock('@latitude-data/source-manager', () => {
     SourceManager: sourceManagerMock,
   }
 })
-vi.mock('$src/lib/isSourceFile', () => ({ default: vi.fn() }))
+vi.mock('$src/lib/isConfigFile', () => ({ default: vi.fn() }))
 
 describe('ensureConnectorInstalled', () => {
   beforeEach(() => {
@@ -36,11 +36,11 @@ describe('ensureConnectorInstalled', () => {
     loadFromConfigFileMock.mockResolvedValue({
       connectorPackageName: 'mocked-package',
     })
-    vi.mocked(isSourceFile).mockImplementation(() => true)
+    vi.mocked(isConfigFile).mockImplementation(() => true)
   })
 
   it('should return immediately if not a source file', async () => {
-    vi.mocked(isSourceFile).mockImplementation(() => false)
+    vi.mocked(isConfigFile).mockImplementation(() => false)
 
     const result = await ensureConnectorInstalled('path/to/file', 'add')
 
