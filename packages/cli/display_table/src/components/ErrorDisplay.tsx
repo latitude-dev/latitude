@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CompileError } from '@latitude-data/sql-compiler'
 import { Box, Text } from 'ink'
+import Scrollable from './Scrollable'
 
 export default function Error({ error }: { error: Error }) {
   const [errorMsg, setErrorMsg] = useState(error.message)
@@ -24,11 +25,13 @@ export default function Error({ error }: { error: Error }) {
       borderColor='red'
       padding={1}
     >
-      <Text color='red' inverse bold>
-        {' '}
-        {errorType}{' '}
-      </Text>
-      <Text color='red'> {errorMsg} </Text>
+      <Scrollable autoFocus scrollbarColor='red'>
+        <Text color='red' inverse bold>
+          {' '}
+          {errorType}{' '}
+        </Text>
+        <Text color='red'> {errorMsg} </Text>
+      </Scrollable>
     </Box>
   )
 }
