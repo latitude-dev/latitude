@@ -5,6 +5,8 @@ import { ConnectorType } from '@/types'
 import findAndMaterializeQueries from './findAndMaterializeQueries'
 import { getStorageDriver } from '@latitude-data/storage-driver'
 import { v4 as uuidv4 } from 'uuid'
+import path from 'path'
+import fs from 'fs'
 
 const QUERIES_DIR = 'queries'
 const MATERIALIZED_DIR = 'storage'
@@ -224,5 +226,62 @@ describe('findAndMaterializeQueries', () => {
         },
       ],
     })
+  })
+
+  it('Does not remove older materialized files if new materialization fails', async () => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'query.sql': materializableFailingSql(),
+        'source.yml': `type: ${ConnectorType.TestInternal}`,
+      },
+      [MATERIALIZED_DIR]: {},
+    })
+
+    const storage = getStorageDriver({
+      type: 'disk',
+      path: `/${MATERIALIZED_DIR}`,
+    })
+    const customManager = new SourceManager(`${QUERIES_DIR}`, { storage })
+
+    const materializedFile = await customManager.materializationUrl('query.sql')
+    const originalContent = 'PARQUET_QUERY_CONTENT'
+    fs.mkdirSync(path.dirname(materializedFile), { recursive: true })
+    fs.writeFileSync(materializedFile, originalContent)
+
+    await findAndMaterializeQueries({ sourceManager: customManager })
+
+    expect(fs.existsSync(materializedFile)).toBe(true)
+    expect(fs.readFileSync(materializedFile).toString()).toBe(originalContent)
+  })
+
+  it('Updates older materialized files if new materialization succeeds', async () => {
+    mockFs({
+      [QUERIES_DIR]: {
+        'query.sql': materializableSql(),
+        'source.yml': `type: ${ConnectorType.TestInternal}`,
+      },
+      [MATERIALIZED_DIR]: {},
+    })
+
+    const storage = getStorageDriver({
+      type: 'disk',
+      path: `/${MATERIALIZED_DIR}`,
+    })
+    const customManager = new SourceManager(`${QUERIES_DIR}`, { storage })
+
+    const materializedFile = await customManager.materializationUrl('query.sql')
+    const originalContent = 'PARQUET_QUERY_CONTENT'
+    fs.mkdirSync(path.dirname(materializedFile), { recursive: true })
+    fs.writeFileSync(materializedFile, originalContent)
+
+    await findAndMaterializeQueries({
+      sourceManager: customManager,
+      force: true,
+    })
+
+    expect(fs.existsSync(materializedFile)).toBe(true)
+    expect(fs.readFileSync(materializedFile).toString()).not.toBe(
+      originalContent,
+    )
   })
 })

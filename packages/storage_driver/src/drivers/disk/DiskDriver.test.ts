@@ -121,4 +121,28 @@ describe('DiskDriver', () => {
     const content = fs.readFileSync('/mocked/path/file.txt')
     expect(content.toString()).toBe('hello world')
   })
+
+  it('should move a file', async () => {
+    const fromPath = '/mocked/path/from.txt'
+    const toPath = '/mocked/path/to.txt'
+    mockFs({
+      '/mocked/path': {
+        'from.txt': 'content',
+      },
+    })
+    await driver.move(fromPath, toPath)
+    expect(fs.existsSync(toPath)).toBe(true)
+    expect(fs.existsSync(fromPath)).toBe(false)
+  })
+
+  it('should not move a file if it does not exist', async () => {
+    const fromPath = '/mocked/path/from.txt'
+    const toPath = '/mocked/path/to.txt'
+    mockFs({
+      '/mocked/path': {},
+    })
+    await driver.move(fromPath, toPath)
+    expect(fs.existsSync(toPath)).toBe(false)
+    expect(fs.existsSync(fromPath)).toBe(false)
+  })
 })

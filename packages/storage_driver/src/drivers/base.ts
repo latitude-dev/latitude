@@ -23,5 +23,8 @@ export abstract class StorageDriver {
     encoding?: T,
   ): Promise<T extends undefined ? Buffer : string>
 
+  abstract move(from: string, to: string): Promise<void>
+  abstract delete(path: string): Promise<void>
+
   abstract createWriteStream(path: string): Promise<Writable>
 }
