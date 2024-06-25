@@ -11,7 +11,7 @@ function versionLine({ name, version }: { name: string; version: string }) {
 async function showVersions() {
   const latitudeJson = await findOrCreateConfigFile()
   const appVersion = latitudeJson.data.version
-  const installed = getInstalledVersion(config.rootDir)
+  const installed = getInstalledVersion(config.appDir)
   boxedMessage({
     color: 'green',
     title: 'Latitude versions',
