@@ -1,5 +1,12 @@
 # @latitude-data/react
 
+## 0.9.2-canary.0
+
+### Patch Changes
+
+- Updated dependencies [d8ab241]
+  - @latitude-data/client@0.11.1-canary.0
+
 ## 0.9.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @latitude-data/client
 
+## 0.11.1-canary.0
+
+### Patch Changes
+
+- d8ab241: Added new STREAM_PARAM constant for the prompt API
+
 ## 0.11.0
 
 ### Minor Changes

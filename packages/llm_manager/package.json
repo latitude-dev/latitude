@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/llm-manager",
-  "version": "0.0.0",
+  "version": "0.0.1-canary.0",
   "license": "LGPL",
   "description": "Manage LLM models and prompts",
   "scripts": {
