@@ -1,5 +1,11 @@
 # @latitude-data/llm-manager
 
+## 0.0.1-canary.1
+
+### Patch Changes
+
+- 060da6a: Added missing readQuery function
+
 ## 0.0.1-canary.0
 
 ### Patch Changes

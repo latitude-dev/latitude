@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.11.0-canary.6
+
+### Patch Changes
+
+- 060da6a: Fixed version checking not recognizing the installed Latitude version from a project
+
 ## 1.11.0-canary.5
 
 ### Minor Changes
