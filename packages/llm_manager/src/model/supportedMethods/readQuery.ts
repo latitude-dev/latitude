@@ -9,7 +9,7 @@ const buildReadQueryMethod = ({
   model,
 }: BuildSupportedMethodsArgs): SupportedMethod => ({
   requirements: {
-    interpolationPolicy: 'disallow', // Cannot be directly interpolated
+    interpolationPolicy: 'allow', // Cannot be directly interpolated
     interpolationMethod: 'raw', // When interpolating, use parameterization
     requireStaticArguments: false, // Can only use static arguments
   },

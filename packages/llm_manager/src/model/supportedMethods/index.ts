@@ -5,6 +5,7 @@ import { default as buildCast } from './cast'
 import { default as buildParam } from './param'
 import { default as buildRef } from './ref'
 import { default as buildRunQuery } from './runQuery'
+import { default as buildReadQuery } from './readQuery' 
 
 export default function buildSupportedMethods(
   args: BuildSupportedMethodsArgs,
@@ -14,5 +15,6 @@ export default function buildSupportedMethods(
     ref: buildRef(args),
     runQuery: buildRunQuery(args),
     cast: buildCast(args),
+    readQuery: buildReadQuery(args),
   }
 }
