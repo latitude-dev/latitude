@@ -30,7 +30,8 @@
     "@latitude-data/eslint-config": "0.1.0",
     "latitude-vscode": "0.0.5",
     "@latitude-data/typescript": "0.1.0",
-    "@latitude-data/storage-driver": "0.0.0"
+    "@latitude-data/storage-driver": "0.0.0",
+    "@latitude-data/llm-manager": "0.0.0"
   },
   "changesets": [
     "angry-windows-heal",
@@ -38,16 +39,20 @@
     "bright-teachers-learn",
     "brown-swans-battle",
     "cuddly-baboons-help",
+    "dry-houses-happen",
     "eighty-yaks-happen",
+    "eleven-rocks-sneeze",
     "hip-colts-sell",
     "hip-pears-clap",
     "honest-comics-sit",
     "hungry-adults-jump",
     "lovely-apricots-bake",
     "orange-pets-act",
+    "rare-queens-impress",
     "ten-chefs-cheat",
     "ten-masks-tap",
     "tender-years-rhyme",
+    "thick-beans-double",
     "wet-bikes-check",
     "wise-lions-breathe"
   ]

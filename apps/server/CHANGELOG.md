@@ -1,5 +1,19 @@
 # @latitude-data/server
 
+## 2.1.0-canary.4
+
+### Minor Changes
+
+- d8ab241: Added new dynamic endpoint for prompts folder, and created a script to run prompts from a dev terminal.
+
+### Patch Changes
+
+- Updated dependencies [d8ab241]
+- Updated dependencies [d8ab241]
+  - @latitude-data/client@0.11.1-canary.0
+  - @latitude-data/llm-manager@0.0.1-canary.0
+  - @latitude-data/svelte@0.8.1-canary.0
+
 ## 2.1.0-canary.3
 
 ### Patch Changes

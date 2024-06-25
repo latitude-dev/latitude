@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.11.0-canary.5
+
+### Minor Changes
+
+- d8ab241: prompt folder is now automatically synced with the Latitude project. New prompt command on CLI to generate AI reports based on prompts.
+
 ## 1.11.0-canary.4
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @latitude-data/svelte
 
+## 0.8.1-canary.0
+
+### Patch Changes
+
+- Updated dependencies [d8ab241]
+  - @latitude-data/client@0.11.1-canary.0
+
 ## 0.8.0
 
 ### Minor Changes
