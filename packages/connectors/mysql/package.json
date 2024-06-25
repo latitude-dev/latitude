@@ -20,15 +20,14 @@
     "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/mysql": "^2.15.25",
     "@types/node": "^20.10.6",
     "rollup": "^4.10.0",
     "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.4.0"
   },
   "dependencies": {
-    "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/query_result": "workspace:^",
-    "mysql": "^2.18.1"
+    "@latitude-data/source-manager": "workspace:^",
+    "mysql2": "^3.10.1"
   }
 }
