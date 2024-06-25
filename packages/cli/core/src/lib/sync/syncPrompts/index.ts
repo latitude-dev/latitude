@@ -1,7 +1,6 @@
 import config from '$src/config'
 import path from 'path'
 import watcher from '../shared/watcher'
-import { APP_FOLDER } from '$src/commands/constants'
 import syncFiles from '../shared/syncFiles'
 import {
   existsSync,
@@ -12,34 +11,24 @@ import {
   unlinkSync,
 } from 'fs'
 import { onExit } from '$src/utils'
-import ensureConnectorInstalled from '$src/lib/sync/syncQueries/ensureConnectorInstalled'
 import isConfigFile from '$src/lib/isConfigFile'
 
 function buildDestPath({
   srcPath,
-  destinationQueriesDir,
-  destinationCsvsDir,
+  destinationPromptsDir,
 }: {
   srcPath: string
-  destinationQueriesDir: string
-  destinationCsvsDir: string
+  destinationPromptsDir: string
 }) {
   const relativePath = path
     .relative(config.rootDir, srcPath)
-    .replace(/^queries\/?/, '')
+    .replace(/^prompts\/?/, '')
 
   let destPath
 
-  if (srcPath.endsWith('.csv')) {
+  if (srcPath.endsWith('.prompt') || isConfigFile(srcPath)) {
     return {
-      destPath: path.join(destinationCsvsDir, relativePath),
-      relativePath,
-    }
-  }
-
-  if (srcPath.endsWith('.sql') || isConfigFile(srcPath)) {
-    return {
-      destPath: path.join(destinationQueriesDir, relativePath),
+      destPath: path.join(destinationPromptsDir, relativePath),
       relativePath,
     }
   }
@@ -75,12 +64,10 @@ export function clearFolders(folders: string[]) {
   })
 }
 
-export function syncQueriesAndCsvs({
-  destinationCsvsDir,
-  destinationQueriesDir,
+export function syncPromptsFiles({
+  destinationPromptsDir,
 }: {
-  destinationCsvsDir: string
-  destinationQueriesDir: string
+  destinationPromptsDir: string
 }) {
   return async (
     srcPath: string,
@@ -89,44 +76,40 @@ export function syncQueriesAndCsvs({
   ) => {
     const { destPath, relativePath } = buildDestPath({
       srcPath,
-      destinationQueriesDir,
-      destinationCsvsDir,
+      destinationPromptsDir,
     })
 
-    // Not a valid extension .sql, .csv, .yml or .yaml
+    // Not a valid extension .prompt, .yml or .yaml
     if (!destPath) return
 
     syncFiles({ srcPath, relativePath, destPath, type, ready })
-    await ensureConnectorInstalled(destPath, type)
   }
 }
 
-export default async function syncQueries({
+export default async function syncPrompts({
   watch = false,
 }: {
   watch?: boolean
 }) {
   const rootDir = config.rootDir
-  const queriesDir = path.join(rootDir, 'queries')
-  const destinationCsvsDir = path.join(rootDir, APP_FOLDER, 'queries')
-  const destinationQueriesDir = config.queriesDir
+  const promptsDir = path.join(rootDir, 'prompts')
+  const destinationPromptsDir = config.promptsDir
 
-  clearFolders([destinationQueriesDir, destinationCsvsDir])
+  clearFolders([destinationPromptsDir])
 
-  const syncFn = syncQueriesAndCsvs({
-    destinationCsvsDir,
-    destinationQueriesDir,
+  const syncFn = syncPromptsFiles({
+    destinationPromptsDir,
   })
 
   if (watch) {
-    await watcher(queriesDir, syncFn, { debug: config.verbose })
+    await watcher(promptsDir, syncFn, { debug: config.verbose })
   } else {
-    syncDirectory(queriesDir, syncFn)
+    syncDirectory(promptsDir, syncFn)
   }
 
   onExit(() => {
     if (!watch) return
 
-    clearFolders([destinationQueriesDir, destinationCsvsDir])
+    clearFolders([destinationPromptsDir])
   })
 }

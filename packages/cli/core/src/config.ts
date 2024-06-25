@@ -68,6 +68,10 @@ class CLIConfig {
   public get queriesDir() {
     return path.join(this.rootDir, APP_FOLDER, 'static', '.latitude', 'queries')
   }
+
+  public get promptsDir() {
+    return path.join(this.rootDir, APP_FOLDER, 'static', '.latitude', 'prompts')
+  }
 }
 
 export default new CLIConfig({

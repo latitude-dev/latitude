@@ -19,6 +19,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --output human-verbose",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "query": "node scripts/dist/run_query.js",
+    "prompt": "node scripts/dist/run_prompt.js",
     "materialize_queries": "node scripts/dist/materialize_queries.js"
   },
   "devDependencies": {
@@ -64,10 +65,13 @@
     "@latitude-data/display_table": "workspace:^",
     "@latitude-data/embedding": "workspace:*",
     "@latitude-data/jwt": "workspace:*",
+    "@latitude-data/llm-manager": "workspace:^",
     "@latitude-data/source-manager": "workspace:^",
     "@latitude-data/storage-driver": "workspace:^",
     "@latitude-data/svelte": "workspace:*",
+    "chalk": "^5.3.0",
     "cheerio": "1.0.0-rc.12",
+    "cli-width": "^4.1.0",
     "lodash-es": "^4.17.21",
     "ora": "^8.0.1"
   }

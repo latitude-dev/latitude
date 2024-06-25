@@ -23,7 +23,7 @@ const materializeScript = {
   ...common,
 }
 
-const runScript = {
+const runQueryScript = {
   input: 'scripts/run_query/index.ts',
   output: {
     file: 'scripts/dist/run_query.js',
@@ -42,8 +42,29 @@ const runScript = {
   ...common,
 }
 
+const runPromptScript = {
+  input: 'scripts/run_prompt/index.ts',
+  output: {
+    file: 'scripts/dist/run_prompt.js',
+    format: 'esm',
+    sourcemap: true,
+  },
+  external: [
+    'node:util',
+    'ora',
+    'fs',
+    'chalk',
+    'cli-width',
+    '@latitude-data/source-manager',
+    '@latitude-data/llm-manager',
+    '@latitude-data/storage-driver',
+    '@latitude-data/custom_types',
+  ],
+  ...common,
+}
+
 /**
  * @typedef {import('rollup').RollupOptions} RollupOptions
  * @type {RollupOptions}
  */
-export default [materializeScript, runScript]
+export default [materializeScript, runQueryScript, runPromptScript]
