@@ -117,6 +117,12 @@
       ]
     },
     {
+      "group": "Advanced",
+      "pages": [
+        "sources/advanced/s3-storage"
+      ]
+    },
+    {
       "group": "Basics",
       "pages": [
         "queries/basics/file-structure",

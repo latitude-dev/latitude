@@ -42,6 +42,10 @@ To configure the connection with your DuckDB database follow these steps:
     type: duckdb
     details:
       url: <your-duckdb-url>
+      s3:
+        accessKeyId: <your-access-key-id>
+        secretAccessKey: <your-secret-access-key>
+        region: <your-region>
     ```
   </Step>
   <Step title='Done!'></Step>
@@ -50,6 +54,17 @@ To configure the connection with your DuckDB database follow these steps:
 ## Attributes
 
 - **URL** → (Optional) This refers to the location of the DuckDB database file. DuckDB is an embedded database, so instead of connecting over a network, you specify the path to the database file on your local system or a shared filesystem. This path tells your application exactly where to find the DuckDB database you want to work with. In its absence, duckDB starts a new database in memory that will not get persisted once the connection is closed.
+
+- **S3** → (Optional) You can configure the connector to be able to access remote files on S3 buckets. To add access to an S3 bucket, you need all of the following credentials from an authorized IAM user:
+  - **accessKeyId** → The access key ID of the S3 user.
+  - **secretAccessKey** → The secret access key of the S3 user.
+  - **region** → The region of the S3 user.
+
+  <Note>
+    This option will configure a temporal secret with the IAM User's credentials on the DuckDB connection.
+    
+    For more information about DuckDB's S3 support, see the [official documentation](https://duckdb.org/docs/extensions/httpfs/s3api.html).
+  </Note>
 
 ## Testing the connection
 
