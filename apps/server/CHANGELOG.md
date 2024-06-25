@@ -1,5 +1,12 @@
 # @latitude-data/server
 
+## 2.1.0-canary.5
+
+### Patch Changes
+
+- Updated dependencies [060da6a]
+  - @latitude-data/llm-manager@0.0.1-canary.1
+
 ## 2.1.0-canary.4
 
 ### Minor Changes
