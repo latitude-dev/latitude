@@ -1,5 +1,12 @@
 # @latitude-data/cli
 
+## 1.11.0-canary.3
+
+### Patch Changes
+
+- Updated dependencies [5fabfb6]
+  - @latitude-data/source-manager@1.2.0-canary.3
+
 ## 1.11.0-canary.2
 
 ### Patch Changes
