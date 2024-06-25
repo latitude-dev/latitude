@@ -1,5 +1,11 @@
 # @latitude-data/mysql-connector
 
+## 3.1.0
+
+### Minor Changes
+
+- 7163256: Migrated mysql connector to mysql2
+
 ## 3.0.2
 
 ### Patch Changes
