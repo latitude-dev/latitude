@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.11.0-canary.4
+
+### Patch Changes
+
+- c2802e4: Some more fixes to make cloud deploy work
+
 ## 1.11.0-canary.3
 
 ### Patch Changes
