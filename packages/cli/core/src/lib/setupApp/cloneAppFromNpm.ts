@@ -18,7 +18,7 @@ export default async function cloneAppFromNpm({
   const latitudeJson = await findOrCreateConfigFile()
   version = version ?? latitudeJson.data.version
   const command = `npm view ${PACKAGE_NAME}@${version} dist.tarball`
-  const installedVersion = getInstalledVersion(config.rootDir)
+  const installedVersion = getInstalledVersion(config.appDir)
 
   if (installedVersion === version && existsSync(config.appDir)) return
 
