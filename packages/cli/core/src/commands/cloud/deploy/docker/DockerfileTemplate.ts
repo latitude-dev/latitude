@@ -13,6 +13,9 @@ COPY <<-"EOT" ./copy-folders.sh
   cp -r /usr/src/app/queries/. /latitude-app/queries
   cp /usr/src/app/latitude.json /latitude-app/latitude.json
 
+  # Set read permissions
+  chmod -R 755 /latitude-app
+
   exec "$@"
 EOT
 
