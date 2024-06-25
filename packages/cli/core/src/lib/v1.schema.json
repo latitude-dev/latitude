@@ -9,7 +9,7 @@
       "type": "string",
       "minLength": 5,
       "maxLength": 14,
-      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-next\\.(?:0|[1-9]\\d*))?$",
+      "pattern": "^(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)\\.(?:0|[1-9]\\d*)(?:-canary\\.(?:0|[1-9]\\d*))?$",
       "description": "Latitude app version used."
     },
     "theme": {

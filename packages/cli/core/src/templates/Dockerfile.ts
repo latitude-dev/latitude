@@ -1,7 +1,8 @@
 import config from '$src/config'
 
 function cliVersion() {
-  if (config.dev) return 'latest'
+  // FIXME: Revert this change
+  if (config.dev) return '1.11.0-canary.3'
 
   return process.env.PACKAGE_VERSION
 }
