@@ -16,7 +16,7 @@ export default {
   external: [
     '@latitude-data/source-manager',
     '@latitude-data/query_result',
-    'mysql',
+    'mysql2/promise',
     'fs',
   ],
 }

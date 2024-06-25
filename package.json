@@ -33,10 +33,6 @@
   "engines": {
     "node": ">=18"
   },
-  "dependencies": {
-    "@latitude-data/duckdb-connector": "workspace:*",
-    "@latitude-data/postgresql-connector": "workspace:*"
-  },
   "pnpm": {
     "patchedDependencies": {
       "ink@4.4.1": "patches/ink@4.4.1.patch",

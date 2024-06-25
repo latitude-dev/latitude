@@ -1,11 +1,21 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest'
 import MysqlConnector from './index'
 import { readFileSync } from 'fs'
-import { createPool } from 'mysql'
+import pkg from 'mysql2/promise'
 
-vi.mock('mysql', () => ({
-  createPool: vi.fn(),
-}))
+const { createPool } = pkg
+
+vi.mock('mysql2/promise', async (importOriginal) => {
+  const app = (await importOriginal()) as Object & { default: Object }
+
+  return {
+    ...app,
+    default: {
+      ...app.default,
+      createPool: vi.fn(),
+    },
+  }
+})
 
 vi.mock('fs', () => ({
   readFileSync: vi.fn((path: string) => `mocked-content-for-${path}`),
@@ -28,7 +38,6 @@ describe('MysqlConnector SSL Configurations', () => {
       },
     })
 
-    // @ts-expect-error - mock
     const poolConfig = vi.mocked(createPool).mock.calls[0]?.[0]?.ssl
     expect(poolConfig).toEqual({})
   })
@@ -40,7 +49,7 @@ describe('MysqlConnector SSL Configurations', () => {
         user: 'user',
         password: 'password',
         database: 'database',
-        host: 'host',
+        host: 'localhost',
         ssl: {
           ca: 'path/to/ca',
           key: 'path/to/key',
@@ -53,7 +62,6 @@ describe('MysqlConnector SSL Configurations', () => {
     expect(readFileSync).toHaveBeenCalledWith('path/to/key')
     expect(readFileSync).toHaveBeenCalledWith('path/to/cert')
 
-    // @ts-expect-error - mock
     const poolConfig = vi.mocked(createPool).mock.calls[0]?.[0]?.ssl
     expect(poolConfig).toEqual({
       rejectUnauthorized: undefined,
@@ -69,9 +77,12 @@ describe('runQuery', () => {
     const poolMock = {
       getConnection: vi
         .fn()
-        .mockImplementationOnce((cb) => cb(new Error('connection error'))),
+        .mockImplementationOnce(
+          () =>
+            new Promise((_, reject) => reject(new Error('connection error'))),
+        ),
     }
-    // @ts-expect-error - mock
+    // @ts-expect-error - Mock
     vi.mocked(createPool).mockReturnValue(poolMock)
 
     const connector = new MysqlConnector({
@@ -95,16 +106,22 @@ describe('runQuery', () => {
 
   it('releases the connection when connection.query completes', async () => {
     const connectionMock = {
-      query: vi.fn().mockImplementationOnce((_, __, cb) => cb(null, [], [])),
+      execute: vi
+        .fn()
+        .mockImplementationOnce(
+          (_, __) => new Promise((resolve) => resolve([[], []])),
+        ),
       release: vi.fn(),
     }
     const poolMock = {
       end: vi.fn(),
       getConnection: vi
         .fn()
-        .mockImplementationOnce((cb) => cb(null, connectionMock)),
+        .mockImplementationOnce(
+          () => new Promise((resolve) => resolve(connectionMock)),
+        ),
     }
-    // @ts-expect-error - mock
+    // @ts-expect-error - Mock
     vi.mocked(createPool).mockReturnValue(poolMock)
 
     const connector = new MysqlConnector({

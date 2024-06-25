@@ -3,12 +3,13 @@ import {
   ConnectionError,
   CompiledQuery,
   ResolvedParam,
-  QueryError,
   ConnectorOptions,
 } from '@latitude-data/source-manager'
 import { readFileSync } from 'fs'
-import { Pool, PoolConfig, Types, createPool } from 'mysql'
+import pkg, { Pool, RowDataPacket } from 'mysql2/promise'
 import QueryResult, { DataType, Field } from '@latitude-data/query_result'
+
+const { Types, createPool } = pkg
 
 export type SSLConfig = {
   ca?: string
@@ -49,47 +50,38 @@ export default class MysqlConnector extends BaseConnector<ConnectionParams> {
     }
   }
 
-  runQuery(query: CompiledQuery): Promise<QueryResult> {
-    return new Promise((resolve, reject) => {
-      if (!this.pool) {
-        reject(new ConnectionError('Connection not established'))
-        return
-      }
+  async runQuery(query: CompiledQuery): Promise<QueryResult> {
+    if (!this.pool) {
+      throw new ConnectionError('Connection not established')
+    }
 
-      this.pool.getConnection((err, connection) => {
-        if (err) {
-          return reject(new ConnectionError(err.message))
-        }
+    try {
+      const conn = await this.pool.getConnection()
+      const [rows, fields] = await conn.execute<RowDataPacket[][]>(
+        query.sql,
+        this.buildQueryParams(query.resolvedParams),
+      )
 
-        connection.query(
-          query.sql,
-          this.buildQueryParams(query.resolvedParams),
-          (error, results, fields) => {
-            connection.release()
+      conn.release()
 
-            if (error) {
-              return reject(new QueryError(error.message))
-            }
+      if (!rows) return new QueryResult({})
 
-            resolve(
-              new QueryResult({
-                rowCount: results.length,
-                fields: (fields ?? [])?.map(
-                  (field) =>
-                    ({
-                      name: field.name,
-                      type: this.convertDataType(field.type),
-                    }) as Field,
-                ),
-                rows: results.map((row: Record<string, unknown>) =>
-                  row ? Object.values(row) : [],
-                ),
-              }),
-            )
-          },
-        )
+      return new QueryResult({
+        rowCount: rows.length,
+        fields: (fields ?? [])?.map(
+          (field) =>
+            ({
+              name: field.name,
+              type: this.convertDataType(field.type),
+            }) as Field,
+        ),
+        rows: rows.map((row: RowDataPacket[]) =>
+          row ? Object.values(row) : [],
+        ),
       })
-    })
+    } catch (error) {
+      throw new ConnectionError((error as Error).message)
+    }
   }
 
   private buildConnectionParams(params: ConnectionParams) {
@@ -100,7 +92,7 @@ export default class MysqlConnector extends BaseConnector<ConnectionParams> {
       database: params.database,
       ssl:
         params.ssl !== undefined ? this.buildSSLConfig(params.ssl) : undefined,
-    } as Partial<PoolConfig>
+    }
 
     return this.compact(payload)
   }
@@ -143,7 +135,10 @@ export default class MysqlConnector extends BaseConnector<ConnectionParams> {
     return params.map((param) => param.value)
   }
 
-  private convertDataType(dataTypeID: Types, fallbackType = DataType.Unknown) {
+  private convertDataType(
+    dataTypeID: number | undefined,
+    fallbackType = DataType.Unknown,
+  ) {
     switch (dataTypeID) {
       case Types.VARCHAR:
       case Types.VAR_STRING:
@@ -160,10 +155,7 @@ export default class MysqlConnector extends BaseConnector<ConnectionParams> {
       case Types.NEWDECIMAL:
         return DataType.Float
       case Types.TIME:
-      case Types.TIME2:
-      case Types.TIMESTAMP2:
       case Types.DATETIME:
-      case Types.DATETIME2:
       case Types.YEAR:
       case Types.NEWDATE:
       case Types.TIMESTAMP:
