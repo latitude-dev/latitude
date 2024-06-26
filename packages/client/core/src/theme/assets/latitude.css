@@ -3,18 +3,28 @@
 @tailwind utilities;
 
 @layer base {
+  /* Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+    overflow: -moz-scrollbars-none; /* Firefox */
+  }
   .custom-scrollbar {
     /** Make scrollbar to not take space **/
     overflow: overlay !important;
   }
   .custom-scrollbar::-webkit-scrollbar {
-    @apply lat-w-5 lat-h-5;
+    @apply lat-h-5 lat-w-5;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
     @apply lat-bg-gray-400;
-    @apply lat-rounded-full lat-bg-clip-padding lat-border-solid;
-    @apply lat-border-transparent lat-border-[6px];
+    @apply lat-rounded-full lat-border-solid lat-bg-clip-padding;
+    @apply lat-border-[6px] lat-border-transparent;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {

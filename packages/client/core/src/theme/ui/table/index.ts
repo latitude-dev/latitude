@@ -43,7 +43,7 @@ function tableFooterCssClass({ className }: Props) {
 
 function tableCellCssClass({ className }: Props) {
   return cn(
-    'lat-p-2 lat-align-middle [&:has([role=checkbox])]:lat-pr-0 [&>[role=checkbox]]:lat-translate-y-[2px]',
+    'lat-p-2 lat-max-w-80 lat-overflow-x-auto no-scrollbar lat-align-middle [&:has([role=checkbox])]:lat-pr-0 [&>[role=checkbox]]:lat-translate-y-[2px]',
     className,
   )
 }

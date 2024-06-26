@@ -10,7 +10,10 @@
 
 <script lang="ts">
   import * as Table from '$lib/internal/ui/_table'
-  import QueryResult from '@latitude-data/query_result'
+  import QueryResult, {
+    type Field,
+    type QueryResultRow,
+  } from '@latitude-data/query_result'
   import { Card } from '$lib'
   import { createTable, Render, Subscribe } from 'svelte-headless-table'
   import { readable } from 'svelte/store'
@@ -26,11 +29,27 @@
   let className: $$Props['class'] = undefined
   export { className as class }
 
-  $: table = createTable(readable(data.toArray()))
+  /**
+   * This is very similar to QueryResult.toArray
+   * but please resists your sharp dry instintcs and
+   * leave this method here.
+   * We only want to stringify JSON columns in this case
+   */
+  function toArray(fields: Field[], result: QueryResult) {
+    return result.rows.map((row: unknown[]) =>
+      row.reduce((acc: Record<string, unknown>, value, i) => {
+        acc[fields[i]!.name] =
+          typeof value === 'object' ? JSON.stringify(value) : value
+        return acc
+      }, {} as QueryResultRow),
+    )
+  }
+
+  $: table = createTable(readable(toArray(data.fields, data)))
   $: columns = table.createColumns(
     data.fields.map((field) =>
-      table.column({ accessor: field.name, header: field.name })
-    )
+      table.column({ accessor: field.name, header: field.name }),
+    ),
   )
   $: ({ headerRows, pageRows, tableAttrs, tableBodyAttrs } =
     table.createViewModel(columns))
