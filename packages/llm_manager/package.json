@@ -16,7 +16,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@latitude-data/source-manager": "workspace:1.2.0-canary.2",
+    "@latitude-data/source-manager": "workspace:*",
     "@latitude-data/sql-compiler": "workspace:^",
     "dotenv": "^16.4.5",
     "openai": "^4.52.0",
