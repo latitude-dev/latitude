@@ -1,5 +1,13 @@
 # @latitude-data/svelte
 
+## 0.8.1
+
+### Patch Changes
+
+- d71b03a: Fix show JSON columns in Svelte table component
+- Updated dependencies [d71b03a]
+  - @latitude-data/client@0.11.1
+
 ## 0.8.0
 
 ### Minor Changes
