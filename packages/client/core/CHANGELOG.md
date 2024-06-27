@@ -1,5 +1,12 @@
 # @latitude-data/client
 
+## 0.11.1-canary.1
+
+### Patch Changes
+
+- Updated dependencies [5c4e829]
+  - @latitude-data/query_result@0.3.0-canary.0
+
 ## 0.11.1-canary.0
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/clickhouse-connector",
-  "version": "2.0.3-canary.3",
+  "version": "2.0.3-canary.4",
   "license": "LGPL",
   "description": "ClickHouse connector for Latitude",
   "scripts": {

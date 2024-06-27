@@ -1,5 +1,11 @@
 # @latitude-data/react
 
+## 0.9.2-canary.1
+
+### Patch Changes
+
+- @latitude-data/client@0.11.1-canary.1
+
 ## 0.9.2-canary.0
 
 ### Patch Changes

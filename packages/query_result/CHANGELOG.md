@@ -1,5 +1,11 @@
 # @latitude-data/query_result
 
+## 0.3.0-canary.0
+
+### Minor Changes
+
+- 5c4e829: Support materializing tables with JSONB fields
+
 ## 0.2.0
 
 ### Minor Changes

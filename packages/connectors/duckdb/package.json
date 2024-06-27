@@ -1,6 +1,6 @@
 {
   "name": "@latitude-data/duckdb-connector",
-  "version": "3.1.0-canary.3",
+  "version": "3.1.0-canary.4",
   "license": "LGPL",
   "description": "Duckdb connector for Latitude",
   "type": "module",
