@@ -1,0 +1,22 @@
+---
+title: 'Test'
+description: 'A test model for debugging purposes'
+---
+
+The Test model is a simple model that can be used for debugging purposes. It will always return the contents from the prompt, instead of actually generating a response.
+
+Just add "test" as the model type in your `.yaml` file:
+
+```yaml prompts/test/source.yaml
+type: test
+```
+
+## Propmts
+
+Creating a propmt with simple text will just return the same text as the response.
+
+Additionally, you can use custom commands to make the model behave differently. To do so, create a new line in your prompt with the following format:
+
+ - `FAIL <message>`: Will always fail with the specified message.
+ - `SLEEP <milliseconds>`: Will wait for the specified number of milliseconds before contining generating the response.
+

@@ -1,0 +1,34 @@
+---
+title: 'API Reference'
+description: 'How your prompt endpoints are exposed'
+---
+
+## Introduction
+
+For each of your prompts, Latitude automatially generates a REST API at `/api/prompt/<prompt-name>`.
+
+Accessing to this endpoint will return as a plain text the response of your prompt.
+
+## Parameters
+
+In your prompt, you can use dynamic parameters, like it is explained in the [Parameters Section](/prompts/logic/parameters). To pass these parameters to your API, you can simply add them as query parameters in the URL.
+
+For example, if you have a prompt named `joke` with the following content:
+
+```prompt
+Tell me a joke about { param('topic') }
+```
+
+You can access to this prompt at `/api/prompt/joke?topic=cats` and it will return a joke about cats.
+
+## Streaming
+
+If you want to stream the response of your prompt instead of waiting for it to be generated, you can add the internal `__stream` parameter to your URL and set it to `true`. This will make Latitude return a [SSE stream](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) instead of a plain text response.
+
+For example, if you have a prompt named `joke` with the following content:
+
+```prompt
+Tell me a joke about { param('topic') }
+```
+
+You can access to this prompt at `/api/prompt/joke?topic=cats&__stream=true` and it will return a SSE stream of the response of your prompt.

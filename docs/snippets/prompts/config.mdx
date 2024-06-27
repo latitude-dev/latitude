@@ -1,0 +1,25 @@
+<ParamField path="model" type="string">
+  The name of the Language Model. This name must be available from the used model type, or it will fail otherwise.
+</ParamField>
+
+<ParamField path='temperature' type='number'>
+  A number between 0 and 1 that controls the randomness of the generated response. A higher value will make the response more random, while a lower value will make it more deterministic.
+</ParamField>
+
+<ParamField path='top_p' type='number'>
+  An alternative to sampling with temperature, called nucleus sampling, where the model considers the results of the tokens with top_p probability mass. So 0.1 means only the tokens comprising the top 10% probability mass are considered.
+</ParamField>
+
+<ParamField path='seed' type='number'>
+  A number that controls the randomness of the generated response. If the rest of the config does not change, same seeds will **always** generate the same response.
+  
+  If not specified, the response will always be random.
+</ParamField>
+
+<ParamField path='json' type='boolean'>
+  If set to true, the response will be garanteed to be a valid JSON object.
+
+  <Note>
+    Even if this is set to true, you still need to specify that the response must be a JSON object in the prompt itself.
+  </Note>
+</ParamField>

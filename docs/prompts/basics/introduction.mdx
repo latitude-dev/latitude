@@ -1,0 +1,71 @@
+---
+title: 'Introduction'
+description: 'Learn the basics on how to prompt your data'
+---
+
+## Introduction
+
+Latitude Prompts is a powerful tool that allows you to easily generate AI insights from your data. It is a versatile tool that can be used for a variety of purposes, such as data analysis, data visualization, and data augmentation.
+
+Similar to how Latitude Queries work, Prompts are automatically exposed as endpoints to your Latitude API! This means that you can use them in your frontend, in your backend, or even in your database. Also, thanks to our dynamic engine, you can easily integrate your data and even user inputs into your prompts.
+
+## Setup
+
+To use Latitude Prompts, just follow these steps:
+
+<Steps>
+  <Step title="Create a Latitude project">
+    [Use the CLI](/guides/examples/basic-example#1-create-a-new-data-app) to create a new project.
+  </Step>
+  <Step title="Create a prompts folder">
+    Add a folder called `prompts` to your project's root. This is where you will store your prompts.
+  </Step>
+  <Step title="Configure a model">
+    Create a `.yaml` file with your Model configuration. This file will let Latitude know how to connect to your Language Model and how to generate responses.
+    
+    Read [Model Configuration](/prompts/basics/model-configuration) to learn more about how to configure your model.
+  </Step>
+  <Step title="Write your prompt">
+    Inside the `prompts` folder, create a `.prompt` file with your prompt.
+  </Step>
+</Steps>
+
+## Prompt syntax
+
+Regular prompts are written in plain text. Just write your prompt as you would write it in a regular text editor, and your Language Model will generate a response based on the prompt.
+
+However, you can also use special syntax to make your prompts more powerful and dynamic. This syntax allows you to reference data from your database, pass parameters to your Language Model, and more.
+
+Read more about the prompt syntax in the [Logic Section](/prompts/logic/variables) section.
+
+## Run your prompt
+
+Once you have configured your model and prompt, you can run your prompt by using the CLI or the API.
+
+### CLI
+
+To run your prompt using the CLI, use the `prompt` command:
+
+```bash
+latitude prompt <prompt-name>
+```
+
+This will run your prompt and print the response to the console as it is generated. The prompt name is defined by the relative path of the `.prompt` file from the `prompts` folder.
+
+To add parameters from the CLI, use the `--param` flag. You can add it multiple times to pass multiple parameters.
+
+```bash
+latitude prompt table_insights --param limit=10 --param user_name="John Doe"
+````
+
+For debugging purposes, you can use the `--debug` flag to print the final prompt that will be sent to your Language Model. This can be useful for debugging and understanding how your prompt is being generated.
+
+```bash
+latitude prompt table_insights --debug
+```
+
+### API
+
+You can also run your prompt using the API. To do this, you can use the `/api/prompt/<prompt-name>` endpoint.
+
+Read more about the API in the [API Reference](/prompts/basics/api-reference) section.

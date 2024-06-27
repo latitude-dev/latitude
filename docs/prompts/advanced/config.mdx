@@ -1,0 +1,30 @@
+---
+title: 'Prompt configuration'
+description: 'Configure how your Language Model generates each prompt'
+---
+import PromptConfigDocs from '/snippets/prompts/config.mdx'
+
+In addition to your own source's behaviour, you can configure how Latitude will handle the data in each specific query. This can be done by adding a `config` tag to the query itself.
+This keyword will not be included in the query that gets sent to your source, but it defines how Latitude will handle the data.
+
+## Syntax
+
+A `config` tag is defined as a key-value object in the query. Here's an example:
+```sql
+{@config model = 'gpt-3.5-turbo'} /* Sets the model to use */
+{@config json = true} /* Sets the response to be a JSON object */
+
+Create a JSON object with a list of users and their corresponding emails.
+```
+
+<Note>
+  Any `@config` value must be defined using a literal value, without any variables or expressions. Using variables or expressions will result in a syntax error.
+</Note>
+
+## Default configuration
+
+If you want to set a default configuration for all the prompts in a model, you can do so by adding a `config` object in the model schema. Go to [Model configuration](/prompts/basics/model-configuration) to learn more about the configuration file.
+
+## Available options
+
+<PromptConfigDocs />

@@ -1,0 +1,70 @@
+---
+title: 'Run Query'
+description: 'Analyze the results of a query and generate instructions based on the results.'
+---
+
+## Introduction
+
+The `runQuery` function allows you to dynamically create instructions based on the results from a query. This functionality is particularly useful when you need to analyze data, or generate different instructions based on a value from your database.
+
+## Syntax
+
+The `runQuery` function must take a string as an argument, which represents the path to the query file.
+
+Additionally, you can pass a JSON object as a second argument to the function, to specify the parameters required by the query.
+
+```jsx
+{ user_id = param('user_id') }
+{ results = runQuery('user_actions', { user_id: user_id }) }
+```
+
+The returned value will always be an array of objects, where each object represents a row in the query result, and the keys of the object represent the column names.
+
+```json
+[
+  {
+    "id": 302,
+    "user_id": 1,
+    "action": "signup",
+    "date": "2023-01-01"
+  },
+  {
+    "id": 527,
+    "user_id": 1,
+    "action": "purchase",
+    "date": "2023-01-02"
+  },
+  {
+    "id": 1091,
+    "user_id": 2,
+    "action": "purchase",
+    "date": "2023-01-03"
+  }
+]
+```
+
+## Interpolating to the prompt
+
+Depending on your needs, you may want to print the results to the resulting prompt in a specific format. To do this, you can simply use the table, json or csv functions to automatically format the results.
+
+However, if you want to print them in a different format, you will need to iterate over the results and print them manually. Read more about [Loops](/prompts/logic/loops) to learn how to do this.
+
+<CodeGroup>
+  ```jsx Raw prompt
+  {user_id = param('user_id')}
+  {results = runQuery('user_actions', { user_id: user_id })}
+
+  Based on the following actions from user {user_id}, generate a report:
+
+  {#each results as row}
+    - {row.date}: {row.action}
+  {/each}
+  ```
+  ```md Compiled prompt
+  Based on the following actions from user 1, generate a report:
+
+  - 2023-01-01: signup
+  - 2023-01-02: purchase
+  - 2023-01-03: purchase
+  ```
+</CodeGroup>

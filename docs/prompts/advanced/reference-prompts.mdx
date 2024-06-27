@@ -1,0 +1,41 @@
+---
+title: 'Reference other prompts'
+description: 'Learn how to include code from another prompt'
+---
+
+## Introduction
+
+The Reference Prompts feature allows you to include code from another file in your current prompt. This is useful for reusing common parts of a prompt, ensuring that your instructions are consistent and easy to maintain.
+
+## How It Works
+
+To reference code from another prompt, use the syntax `{ref ('other_prompt')}`, where `other_prompt` is the name of another `.prompt` file located in the `/prompts` folder. This syntax compiles the specified prompt and imports the instructions to the location where it is added.
+
+### Referencing prompts as a source
+
+An important use case for referencing other prompts is creating specific instructions for multiple prompts. You can do this as follows:
+
+```jsx prompts/data/data_engineer_description.prompt
+You are a data engineer, an expert on data analysis and visualization.
+```
+
+```jsx prompts/data/analysis.prompt
+{ref('./data_engineer_description')}
+
+Describe the results of the following table:
+{table(runQuery('data'))}
+```
+
+Which will translate to:
+
+```md prompts/data/analysis.prompt
+You are a data engineer, an expert on data analysis and visualization.
+
+Describe the results of the following table:
+
+| id | name | age | city |
+|----|------|-----|------|
+| 1  | John | 25  | New York |
+| 2  | Jane | 30  | Los Angeles |
+| 3  | Bob  | 35  | Chicago |
+```

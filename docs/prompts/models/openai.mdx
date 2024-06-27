@@ -1,0 +1,32 @@
+---
+title: 'OpenAI'
+description: 'Configure your OpenAI language model'
+---
+
+## Details
+
+In order to use Latitude with OpenAI, you will need the following information:
+
+<ParamField path='apiKey' type='string'>
+  Your OpenAI API key. You can find it in your [OpenAI dashboard](https://platform.openai.com/account/api-keys).
+</ParamField>
+
+```yaml prompts/openai/source.yaml
+type: openai
+details:
+  apiKey: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+<Note>
+  Instead of using your API key directly, we recommend using environment variables to store your secrets. Read more about [environment variables](/guides/development/environment-variables) to learn how to do this.
+</Note>
+
+## Default configuration
+
+By default, openai prompts will use the following configuration:
+ - **model**: gpt-4o
+ - **temperature**: 0.1
+ - **top_p**: 1
+ - **json**: false
+
+To learn more about the configuration options, read the [model configuration section](/prompts/basics/model-configuration#config-options).

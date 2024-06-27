@@ -1,0 +1,38 @@
+---
+title: 'Parameters'
+description: 'Dynamic parameters in AI prompts'
+---
+
+## Introduction
+In some cases, we want to generate prompts based on some dynamic input. This allows for more flexibility in the responses we generate and how we display them.
+
+This can be done with the help of parameters, which are passed to the prompt when it is executed.
+
+## Parameters
+The parameters are values that are passed to the prompt when it is executed, either through [View components](/views/basics/running-prompts#parameters), [API requests](/guides/examples/api#4-1-passing-parameters-to-your-prompts), or [using the CLI](/guides/development/latitude-cli#passing-parameters). To know more information about how parameters are used in each case, please refer to their own documentation.
+
+In the prompt, the parameters can be used with the `param()` function. This function retrieves the value specified by the user and inserts it safely into the prompt.
+
+```jsx
+{param('greeting')}, how can I assist you today?
+```
+
+### Fallback
+
+If the required parameter is not found in the request, the prompt will fail. To avoid this, you can set a fallback value in the `param()` function.
+
+```jsx
+{param('greeting', 'Hello')}, how can I assist you today?
+/* If no greeting is found, it will use 'Hello' as the value */
+```
+
+### Check if a parameter is present
+
+Requesting a parameter that is not present will result in an error. To avoid this, you can check if the parameter is present using a [conditional statement](/prompts/logic/if-else) and `false` as the fallback value.
+
+```jsx
+{#if param('user_id', false)}
+  /* The parameter is present in the request */
+  Welcome back, user {param('user_id')}!
+{/if}
+```

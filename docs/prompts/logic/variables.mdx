@@ -1,0 +1,112 @@
+---
+title: 'Variables'
+description: 'Modify and optimize prompt generation with the flexibility of variables'
+---
+
+## Introduction
+
+Variables and constants store values you can later use anywhere in your prompt.
+
+## Basic Usage
+Variables are placeholders that can be assigned and reassigned values throughout the prompt.
+
+To assign a value to a variable, use the equal sign `=` followed by the value.
+```jsx
+{name = 'foo'}
+{age = 30}
+{sum = 2 + 4} 
+```
+
+For example, take a look at the following prompt definition and what will actually be generated:
+<CodeGroup>
+```jsx Your Prompt
+/* Defining the variable and prompt */
+{sum = 2 + 4} 
+
+Generate a list of {sum} names.
+```
+
+```md Compiled Prompt
+Generate a list of 6 names.
+```
+</CodeGroup>
+
+### Incrementing
+Variables can be modified using operations such as addition.
+
+<CodeGroup>
+```jsx Your Prompt
+{counter = 10} /* Define the variable */
+
+List the following values:
+{#each [1, 2, 3] as item, index}
+  Value {counter}
+
+  /* Add a comma at the end to every element except the last one */
+  {#if index + 1 < item.length}
+    ,
+  {/if}
+
+  /* Increment the value of the variable */             
+  {counter = counter + 10}
+{/each}
+```
+```md Compiled Prompt
+Please list the following values:
+Value 10, Value 20, Value 30
+```
+</CodeGroup>
+
+## Constants
+Constants are similar to variables but, once defined, their value cannot be changed. Also, the main syntax difference is constants are defined using the `@const` keyword.
+
+```jsx
+{@const greeting = 'Hello.'}
+```
+
+<CodeGroup>
+```jsx Your Prompt
+{@const greeting = 'Hello.'} /* Defined a constant */
+
+{#if param('tone') == 'informal'}
+    {greeting = 'Hi!'} /* Attempting to reassign the constant */
+{/if}
+```
+```md Compiled Prompt
+'!Error: Cannot reassign a constant'
+```
+</CodeGroup>
+
+## Scope
+### Global
+Variables defined outside of any logic blocks are considered global and can be modified and accessed throughout the entire code.
+```jsx
+{greeting = 'Hello.'}
+```
+
+Variables can be accessed and modified anywhere in the code.
+<CodeGroup>
+```jsx Your Prompt
+{greeting = 'Hello.'} /* Define the variable */
+
+{greeting} It is a beautiful day.
+
+{greeting = 'Hi!'} /* Reassign the variable */
+
+{greeting} How are you doing?
+```
+```md Compiled Prompt
+Hello. It is a beautiful day.
+Hi! How are you doing?
+```
+</CodeGroup>
+
+### Local Variables
+Variables defined within logic blocks are local to that block. They cannot be accessed outside the block in which they are defined.
+
+```jsx
+{greeting = 'Hello.'}
+{#if condition}
+    {goodbye = 'Goodbye.'} /* Accessible only within this block */
+{/if}
+```
