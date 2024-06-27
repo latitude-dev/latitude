@@ -37,6 +37,8 @@ function buildDestPath({
 }
 
 export function syncDirectory(dirPath: string, syncFn: Function): void {
+  if (!existsSync(dirPath)) return
+
   readdirSync(dirPath, { withFileTypes: true }).forEach((dirent) => {
     const currentPath = path.join(dirPath, dirent.name)
     if (dirent.isDirectory()) {
