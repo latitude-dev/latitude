@@ -41,6 +41,9 @@ function mapDataTypeToParquet(dataType: DataType): ParquetType {
     case DataType.Datetime:
       return ParquetLogicalType.TIMESTAMP_MICROS
 
+    case DataType.JSONB:
+      return ParquetLogicalType.BSON
+
     case DataType.Integer:
       // TODO: review this decision.
       // This will make all integers to be stored as INT64 in parquet, making the parquet file

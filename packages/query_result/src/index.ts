@@ -7,6 +7,7 @@ export enum DataType {
   Integer = 'integer',
   Null = 'null',
   String = 'string',
+  JSONB = 'jsonb',
   Unknown = 'unknown',
 }
 
