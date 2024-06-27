@@ -43,7 +43,7 @@ const buildRefMethod = ({
       refContext,
     )
 
-    return `(${compiledSubPrompt.prompt})`
+    return compiledSubPrompt.prompt
   },
 
   readMetadata: async () => {

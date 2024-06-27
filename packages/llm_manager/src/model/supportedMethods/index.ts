@@ -6,6 +6,9 @@ import { default as buildParam } from './param'
 import { default as buildRef } from './ref'
 import { default as buildRunQuery } from './runQuery'
 import { default as buildReadQuery } from './readQuery'
+import { default as table } from './table'
+import { default as json } from './json'
+import { default as csv } from './csv'
 
 export default function buildSupportedMethods(
   args: BuildSupportedMethodsArgs,
@@ -16,5 +19,8 @@ export default function buildSupportedMethods(
     runQuery: buildRunQuery(args),
     cast: buildCast(args),
     readQuery: buildReadQuery(args),
+    table: table(args),
+    json: json(args),
+    csv: csv(args),
   }
 }
