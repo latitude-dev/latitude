@@ -1346,6 +1346,9 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      json-2-csv:
+        specifier: ^5.5.1
+        version: 5.5.1
       openai:
         specifier: ^4.52.0
         version: 4.52.0
@@ -1356,6 +1359,9 @@ importers:
       '@latitude-data/eslint-config':
         specifier: workspace:*
         version: link:../../tools/eslint-config
+      '@latitude-data/query_result':
+        specifier: workspace:*
+        version: link:../query_result
       '@latitude-data/typescript':
         specifier: workspace:*
         version: link:../../tools/typescript

@@ -19,11 +19,13 @@
     "@latitude-data/source-manager": "workspace:*",
     "@latitude-data/sql-compiler": "workspace:^",
     "dotenv": "^16.4.5",
+    "json-2-csv": "^5.5.1",
     "openai": "^4.52.0",
     "yaml": "^2.3.4"
   },
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
+    "@latitude-data/query_result": "workspace:*",
     "@latitude-data/typescript": "workspace:*",
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/mock-fs": "^4.13.4",
