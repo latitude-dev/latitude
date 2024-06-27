@@ -1,0 +1,126 @@
+---
+title: 'Loops'
+description: 'Learn how to use loops to repeat prompt indications from a list of elements.'
+
+---
+
+## Introduction
+
+Loops allow you to add a prompt indication for each item in a collection.
+
+## Syntax
+
+The syntax for a loop is defined by three main components:
+```jsx
+{#each collection as item, index}
+  /* prompt */
+{/each}
+```
+  - **Collection**: An iterable object that contains the items to be looped over. This can be a manual array, an expression, or an existing variable.
+  - **Item**: The current element in the collection for this iteration. This will define a new variable only available within the loop.
+  - **Index** (optional): The current index of the item in the collection, starting by 0. As with the item, this will define a new variable only available within the loop.
+
+Let's see an example of how it works:
+<CodeGroup>
+```jsx Your Prompt
+For each of the following items, describe its importance:
+{#each ["trust", "integrity", "communication", "teamwork", "innovation"] as value, i}
+  {i+1}. {value}
+{/each}
+```
+``` Compiled Prompt
+For each of the following items, describe its importance:
+1. trust
+2. integrity
+3. communication
+4. teamwork
+5. innovation
+```
+</CodeGroup>
+
+You can also add an `{:else}` block after the loop, which would be executed if the collection is empty:
+
+```jsx
+{#each collection as item, index}
+  /* prompt for each item */
+{:else}
+  /* prompt if there are no items */
+{/each}
+```
+
+## Use cases
+
+### Avoiding repetitive prompts
+
+Now, consider the scenario where you need to ask about feedback on different aspects such as service, product quality, and user experience. The prompts would look like this:
+
+```md
+Please provide your feedback on the following aspects:
+1. Service
+2. Product Quality
+3. User Experience
+```
+
+Instead of writing repetitive code, you can use a loop to iterate over the aspects and generate the prompts dynamically:
+
+<CodeGroup>
+```jsx Your Prompt
+{aspects = ["Service", "Product Quality", "User Experience"]}
+
+Please provide your feedback on the following aspects:
+{#each aspects as aspect, i}
+  {i+1}. {aspect}
+{/each}
+```
+```md Compiled Prompt
+Please provide your feedback on the following aspects:
+1. Service
+2. Product Quality
+3. User Experience
+```
+</CodeGroup>
+
+### Iterating over other query results
+
+You can also use loops to iterate over the results from a query. For example, if you have a list of tasks and you want to ask for their status, you can use a loop to iterate over the task IDs:
+
+<CodeGroup>
+```jsx Your Prompt
+{tasks = runQuery('tasks')}
+
+Please provide the status of the following tasks:
+{#each tasks as task, i}
+  {#if i > 0} , {/if} /* Add a comma before each item except the first one */
+  Task {task.id}: {task.name}
+{/each}
+```
+```md Compiled Prompt
+Please provide the status of the following tasks:
+Task 1: Design Phase, Task 2: Development Phase, Task 3: Testing Phase
+```
+</CodeGroup>
+
+### Iterating params for a prompt
+
+Imagine you have a multi-select option in your application that allows selecting multiple values. You can pass the selected values as an array to the prompt param and iterate over it to include each selected value in the prompt.
+
+In this case, we pass `selected_topics` that can be some of these `['AI', 'Machine Learning', 'Data Science']`
+<CodeGroup>
+
+```jsx Your Prompt
+Please provide a summary for each of the selected topics:
+{selectedTopics = param('selected_topics', [])}
+
+{#if selectedTopics.length > 0}
+  {#each selectedTopics as topic, index}
+    - {topic}
+  {/each}
+{/if}
+```
+```md Compiled Prompt
+Please provide a summary for each of the selected topics:
+- AI
+- Machine Learning
+- Data Science  
+```
+</CodeGroup>

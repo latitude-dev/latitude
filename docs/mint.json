@@ -42,6 +42,10 @@
       "url": "views"
     },
     {
+      "name": "Prompts",
+      "url": "prompts"
+    },
+    {
       "name": "React",
       "url": "react"
     }
@@ -148,6 +152,38 @@
         "queries/advanced/interpolation",
         "queries/advanced/config",
         "queries/advanced/materialized-queries"
+      ]
+    },
+    {
+      "group": "Basics",
+      "pages": [
+        "prompts/basics/introduction",
+        "prompts/basics/model-configuration",
+        "prompts/basics/api-reference"
+      ]
+    },
+    {
+      "group": "Logic",
+      "pages": [
+        "prompts/logic/variables",
+        "prompts/logic/parameters",
+        "prompts/logic/if-else",
+        "prompts/logic/loops"
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        "prompts/advanced/config",
+        "prompts/advanced/run-query",
+        "prompts/advanced/reference-prompts",
+        "prompts/advanced/cast-methods"
+      ]
+    },
+    {
+      "group": "Models",
+      "pages": [
+        "prompts/models/openai"
       ]
     },
     {

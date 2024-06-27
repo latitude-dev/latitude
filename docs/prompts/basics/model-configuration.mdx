@@ -1,0 +1,42 @@
+---
+title: 'Model Configuration'
+description: 'Learn how to configure your language model'
+---
+import PromptConfigDocs from '/snippets/prompts/config.mdx'
+
+## Introduction
+
+Language Models are the engines that generate responses from your prompts. You can configure your Language Model by creating a `.yaml` file in your project's `prompts` folder.
+
+## Structure
+
+You can configure multiple Language Models in your project, each with their own configuration. To do this, you can create multiple `.yaml` in different subfolders. Prompts will automatically use the configuration file closest to the prompt file.
+
+<Warning>
+  You can not add two Model configuration files in the same folder.
+</Warning>
+
+## Configuration
+
+The configuration file is a YAML file that contains the following fields:
+
+- `type`: The type of your Language Model. Check out the [Models Section](/prompts/models/openai) to learn more about the available models.
+- `details`: Configuration details for your Language Model. This field is specific to each type of Language Model.
+- `config`: A configuration object that defines how your Language Models will generate responses. Although all model types have the same properties, each type will have different default values.
+
+### Config options
+
+The `config` field can contain any of the following properties:
+
+<PromptConfigDocs />
+
+#### Example:
+
+```yaml
+type: openai
+config:
+  model: gpt-3.5-turbo
+  temperature: 0.2 # Lower temperature values are better if consistency is important
+  json: true
+```
+
