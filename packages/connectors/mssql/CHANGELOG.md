@@ -1,5 +1,13 @@
 # @latitude-data/mssql-connector
 
+## 3.0.3-canary.4
+
+### Patch Changes
+
+- Updated dependencies [5c4e829]
+  - @latitude-data/source-manager@1.2.0-canary.4
+  - @latitude-data/query_result@0.3.0-canary.0
+
 ## 3.0.3-canary.3
 
 ### Patch Changes
