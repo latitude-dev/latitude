@@ -1,5 +1,11 @@
 # @latitude-data/cli
 
+## 1.11.0-canary.8
+
+### Patch Changes
+
+- 92113ec: Fix build failing when projects does not has a prompts folder
+
 ## 1.11.0-canary.7
 
 ### Patch Changes
