@@ -191,6 +191,8 @@ export default class PostgresConnector extends BaseConnector<ConnectionParams> {
       case pgtypes.builtins.TIMESTAMP:
       case pgtypes.builtins.TIMESTAMPTZ:
         return DataType.Datetime
+      case pgtypes.builtins.JSONB:
+        return DataType.JSONB
 
       default:
         return fallbackType
