@@ -30,6 +30,8 @@
     "@types/node": "^20.10.6",
     "mock-fs": "^5.2.0",
     "rollup": "^4.10.0",
+    "rollup-plugin-dts": "^6.1.0",
+    "@rollup/plugin-alias": "^5.1.0",
     "tslib": "^2.4.1",
     "typescript": "^5.4.5",
     "vite-tsconfig-paths": "^4.3.1",

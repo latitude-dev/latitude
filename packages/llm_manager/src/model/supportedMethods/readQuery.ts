@@ -36,7 +36,7 @@ const buildReadQueryMethod = ({
       // way to know which is which is by its appearance in the query
       const regex = new RegExp(`\\${resolvedAs}`, 'g')
 
-      query = query.replace(regex, value)
+      query = query.replace(regex, value as string)
     })
 
     return query

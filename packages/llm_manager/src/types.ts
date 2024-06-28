@@ -1,4 +1,5 @@
-import { Model } from './model'
+import { Model } from '$/model'
+
 export { CompileError } from '@latitude-data/sql-compiler'
 
 export enum ModelType {
