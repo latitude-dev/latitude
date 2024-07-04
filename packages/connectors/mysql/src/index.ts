@@ -23,6 +23,7 @@ type SSLOptions = boolean | 'Amazon RDS' | SSLConfig
 export type ConnectionParams = {
   host: string
   user: string
+  port: number
   password: string
   database: string
   ssl?: SSLOptions
@@ -87,6 +88,7 @@ export default class MysqlConnector extends BaseConnector<ConnectionParams> {
   private buildConnectionParams(params: ConnectionParams) {
     const payload = {
       host: params.host,
+      port: params.port,
       user: params.user,
       password: params.password,
       database: params.database,

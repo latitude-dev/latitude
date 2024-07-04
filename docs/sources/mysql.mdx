@@ -34,6 +34,7 @@ To configure the connection with your MySQL database follow these steps:
       details:
         host: string
         user: string
+        port: string
         password: string
         database: string
         ssl: boolean | 'Amazon RDS' | SSLConfig
@@ -49,6 +50,7 @@ To configure the connection with your MySQL database follow these steps:
 ## Attributes
 
 - **Host** → The address of the server where your MySQL database lives. It could be a straightforward IP address like 192.168.1.1 or a domain name such as database.example.com. Think of it as the location where your database is hosted.
+- **Port** → The port of the server where your MySQL database lives. Defaults to 3306.
 - **User** → The username you use to log into your MySQL database. It's like your personal key that identifies you to the MySQL server, allowing you access to perform operations within the database.
 - **Password** → The password goes hand-in-hand with your username. It's the secret code that proves your identity to the MySQL server, ensuring that only authorized users can access the database.
 - **Database** → The name of the specific MySQL database you want to get data from.
