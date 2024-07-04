@@ -23,9 +23,9 @@ type SSLOptions = boolean | 'Amazon RDS' | SSLConfig
 export type ConnectionParams = {
   host: string
   user: string
-  port: number
   password: string
   database: string
+  port?: number
   ssl?: SSLOptions
 }
 
