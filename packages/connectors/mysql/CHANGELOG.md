@@ -1,5 +1,11 @@
 # @latitude-data/mysql-connector
 
+## 3.1.1
+
+### Patch Changes
+
+- 25444d8: Added support for custom port in mysql connector
+
 ## 3.1.0
 
 ### Minor Changes
