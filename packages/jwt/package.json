@@ -14,7 +14,7 @@
   },
   "type": "module",
   "dependencies": {
-    "jose": "^5.2.3"
+    "jose": "^5.2.4"
   },
   "devDependencies": {
     "@latitude-data/eslint-config": "workspace:*",
