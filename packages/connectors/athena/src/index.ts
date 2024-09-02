@@ -130,7 +130,9 @@ export default class AthenaConnector extends BaseConnector<ConnectionParams> {
         )
 
         const rowCount = ResultSet?.Rows?.length
-        const rows = ResultSet?.Rows?.slice(1, -1).map(
+          ? ResultSet.Rows.length - 1
+          : undefined
+        const rows = ResultSet?.Rows?.slice(1).map(
           (row: Row) => row?.Data?.map((value) => value.VarCharValue) || [],
         )
         const fields = ResultSet?.ResultSetMetadata?.ColumnInfo?.map(
