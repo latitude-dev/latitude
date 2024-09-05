@@ -1,5 +1,11 @@
 # @latitude-data/athena-connector
 
+## 3.0.3
+
+### Patch Changes
+
+- a7105ec: Do not cut off last athena ResultSet row
+
 ## 3.0.2
 
 ### Patch Changes
