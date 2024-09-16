@@ -17,7 +17,7 @@ The missing analytics layer between your database and your users.
 
   <p align="center">
     <br />
-    <a href="https://docs.latitude.so" rel="dofollow"><strong>See documentation →</strong></a>
+    <a href="https://docs-analytics.latitude.so" rel="dofollow"><strong>See documentation →</strong></a>
     <br />
     <br/>
     <a href="https://github.com/latitude-dev/latitude/issues/new">Report Bug</a>
@@ -100,7 +100,7 @@ Run the following command to install the Latitude CLI globally on your machine:
 npm install -g @latitude-data/cli
 ```
 
-Note that if you're using Windows, you might need to follow these instructions first: [Windows setup](https://docs.latitude.so/guides/getting-started/windows-compatibility).
+Note that if you're using Windows, you might need to follow these instructions first: [Windows setup](https://docs-analytics.latitude.so/guides/getting-started/windows-compatibility).
 
 ### 2. Create the starter project
 
@@ -141,24 +141,24 @@ details:
   ssl: true
 ```
 
-We do not recommend to store your database credentials in the configuration file. Instead, you can use environment variables to store your credentials securely. Find out more about this in the [documentation](https://docs.latitude.so/sources/credentials).
+We do not recommend to store your database credentials in the configuration file. Instead, you can use environment variables to store your credentials securely. Find out more about this in the [documentation](https://docs-analytics.latitude.so/sources/credentials).
 
 We support the following sources:
 
-- [x] [Athena](https://docs.latitude.so/sources/athena)
-- [x] [BigQuery](https://docs.latitude.so/sources/bigquery)
-- [x] [Clickhouse](https://docs.latitude.so/sources/clickhouse)
-- [x] [Databricks](https://docs.latitude.so/sources/databricks)
-- [x] [DuckDB](https://docs.latitude.so/sources/duckdb)
-- [x] [MS SQL](https://docs.latitude.so/sources/mssql)
-- [x] [MySQL](https://docs.latitude.so/sources/mysql)
-- [x] [PostgreSQL](https://docs.latitude.so/sources/postgresql)
-- [x] [Redshift](https://docs.latitude.so/sources/redshift)
-- [x] [Snowflake](https://docs.latitude.so/sources/snowflake)
-- [x] [SQLite](https://docs.latitude.so/sources/sqlite)
-- [x] [Trino](https://docs.latitude.so/sources/trino)
+- [x] [Athena](https://docs-analytics.latitude.so/sources/athena)
+- [x] [BigQuery](https://docs-analytics.latitude.so/sources/bigquery)
+- [x] [Clickhouse](https://docs-analytics.latitude.so/sources/clickhouse)
+- [x] [Databricks](https://docs-analytics.latitude.so/sources/databricks)
+- [x] [DuckDB](https://docs-analytics.latitude.so/sources/duckdb)
+- [x] [MS SQL](https://docs-analytics.latitude.so/sources/mssql)
+- [x] [MySQL](https://docs-analytics.latitude.so/sources/mysql)
+- [x] [PostgreSQL](https://docs-analytics.latitude.so/sources/postgresql)
+- [x] [Redshift](https://docs-analytics.latitude.so/sources/redshift)
+- [x] [Snowflake](https://docs-analytics.latitude.so/sources/snowflake)
+- [x] [SQLite](https://docs-analytics.latitude.so/sources/sqlite)
+- [x] [Trino](https://docs-analytics.latitude.so/sources/trino)
 
-Find out more about connecting to sources in the [documentation](https://docs.latitude.so/sources/how-to-configure-sources).
+Find out more about connecting to sources in the [documentation](https://docs-analytics.latitude.so/sources/how-to-configure-sources).
 
 ## 🧑‍💻 Write your SQL queries
 
@@ -292,7 +292,7 @@ This dashboard can be accessed by navigating to `http://localhost:3000/`.
 
 To pass parameters to the queries, add them to the URL as query parameters. For example: `http://localhost:3000/?start_year=2000&end_year=2020`.
 
-Another option is to use our `<Input>` component to create a form that allows users to input parameters. Find out more about this in the [documentation](https://docs.latitude.so/views/components/inputs/text).
+Another option is to use our `<Input>` component to create a form that allows users to input parameters. Find out more about this in the [documentation](https://docs-analytics.latitude.so/views/components/inputs/text).
 
 ### Embedding a standalone dashboard
 
@@ -306,7 +306,7 @@ You can embed the dashboard in your application using an iframe. To do so, simpl
 />
 ```
 
-If you're using React, we released a React component that simplifies the process of embedding dashboards in your application. [Check out the documentation](https://docs.latitude.so/guides/embed/react-embed) to learn more.
+If you're using React, we released a React component that simplifies the process of embedding dashboards in your application. [Check out the documentation](https://docs-analytics.latitude.so/guides/embed/react-embed) to learn more.
 
 ## 🌍 Deploy
 
@@ -320,7 +320,7 @@ This will deploy your project to the Latitude cloud, and you will get a URL wher
 
 If it's your first time deploying, make sure to log in or sign up to Latitude by running `latitude login` or `latitude signup` respectively.
 
-You can also deploy your project to your own infrastructure. Find out more about this in the [documentation](https://docs.latitude.so/guides/deploy/docker).
+You can also deploy your project to your own infrastructure. Find out more about this in the [documentation](https://docs-analytics.latitude.so/guides/deploy/docker).
 
 ## 👥 Community
 
@@ -341,7 +341,7 @@ contribute a pull request.
 ## 🔗 Links
 
 - [Home page](https://latitude.so?utm_campaign=github-readme)
-- [Documentation](https://docs.latitude.so/)
+- [Documentation](https://docs-analytics.latitude.so/)
 - [Slack community](https://trylatitude.slack.com/join/shared_invite/zt-17dyj4elt-rwM~h2OorAA3NtgmibhnLA#/shared-invite/email)
 - [X / Twitter](https://x.com/trylatitude)
 
