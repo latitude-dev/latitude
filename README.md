@@ -1,3 +1,8 @@
+<h1>No longer maintained</h1>
+<p>Latitude embedded analytics is no longer maintained as we've switched our focus to <a href='https://github.com/latitude-dev/latitude-llm'>Latitude LLM</a>. License is maintained so you are still free to use this project as it is. New maintainers are welcome.</p>
+
+<br />
+
 <div align="center">
   <a href="https://latitude.so?utm_source=github" target="_blank">
   <picture>
